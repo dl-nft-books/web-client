@@ -22,7 +22,8 @@
     "buttons-page-link": "Buttons page",
     "inputs-page-link": "Inputs page",
     "simple-form-link": "Simple form",
-    "simple-common-link": "Commons"
+    "simple-common-link": "Commons",
+    "web3-link": "Web3"
   },
   "login-form": {
     "login-lbl": "Login",

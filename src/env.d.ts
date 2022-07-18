@@ -22,4 +22,15 @@ declare global {
   interface Document {
     ENV: ImportMetaEnv
   }
+
+  interface Window {
+    ethereum?: {
+      isMetamask?: boolean
+      providers?: any[]
+    }
+    solflare?: {
+      isSolflare: boolean
+    }
+    solana?: PhantomWallet
+  }
 }

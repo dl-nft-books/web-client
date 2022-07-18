@@ -4,4 +4,5 @@ export enum ROUTE_NAMES {
   inputs = 'inputs',
   forms = 'forms',
   common = 'common',
+  web3 = 'web3',
 }

@@ -33,6 +33,11 @@ const routes: Array<RouteRecordRaw> = [
     name: ROUTE_NAMES.common,
     component: () => import('@/pages/CommonPage.vue'),
   },
+  {
+    path: '/web3',
+    name: ROUTE_NAMES.web3,
+    component: () => import('@/pages/Web3Page.vue'),
+  },
 ]
 
 const router = createRouter({

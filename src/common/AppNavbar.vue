@@ -34,6 +34,14 @@
       >
         {{ $t('app-navbar.simple-common-link') }}
       </app-button>
+      <app-button
+        class="app-navbar__link"
+        schemes="flat"
+        modifications="small border-rounded"
+        :route="{ name: $routes.web3 }"
+      >
+        {{ $t('app-navbar.web3-link') }}
+      </app-button>
     </div>
   </div>
 </template>
