@@ -1,7 +1,7 @@
 import { PROVIDERS } from '@/enums'
-import { ErrorHandler } from '@/helpers'
 import { computed, ref } from 'vue'
 import { useMetamask } from './use-metamask'
+import { useCoinbase } from './use-coinbase'
 import { DesignatedProvider, TxRequestBody } from '@/types'
 
 export const useProvider = () => {
@@ -16,27 +16,14 @@ export const useProvider = () => {
 
   const init = async (provider: DesignatedProvider) => {
     switch (provider.name as PROVIDERS) {
-      case PROVIDERS.fallback:
-        break
       case PROVIDERS.metamask:
         providerWrp.value = useMetamask(provider.instance)
         break
       case PROVIDERS.coinbase:
-        break
-      case PROVIDERS.trust:
-        break
-      case PROVIDERS.walletConnect:
-        break
-      case PROVIDERS.brave:
-        break
-      case PROVIDERS.ledger:
-        break
-      case PROVIDERS.phantom:
-        break
-      case PROVIDERS.solflare:
+        providerWrp.value = useCoinbase(provider.instance)
         break
       default:
-        ErrorHandler.process(new Error('Invalid Provider'))
+        throw new Error('Invalid Provider')
     }
     selectedProvider.value = provider.name
     await providerWrp.value.init()

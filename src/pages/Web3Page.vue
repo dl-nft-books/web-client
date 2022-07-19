@@ -6,7 +6,11 @@
       </template>
       <template v-else>
         <div class="web3-page__list">
-          <div class="web3-page__card">
+          <div
+            class="web3-page__card"
+            v-for="provider in providers"
+            :key="provider.selectedProvider.value"
+          >
             <div
               class="web3-page__card-indicator"
               :class="{
@@ -42,14 +46,14 @@
               schemes="flat"
               modifications="border-rounded small"
               :text="'add chain optimism'"
-              @click="addChainOptimism"
+              @click="addChainOptimism(provider)"
             />
             <app-button
               class="web3-page__card-btn"
               schemes="flat"
               modifications="border-rounded small"
               :text="'sendTx'"
-              @click="sendTx"
+              @click="sendTx(provider)"
             />
           </div>
         </div>
@@ -68,6 +72,7 @@ import { defineComponent, ref } from 'vue'
 import { useWeb3ProvidersStore } from '@/store'
 import { ErrorHandler } from '@/helpers'
 import { useProvider } from '@/composables'
+import { UseProvider } from '@/types'
 
 export default defineComponent({
   name: 'web3-page',
@@ -77,12 +82,19 @@ export default defineComponent({
     const isLoadFailed = ref(false)
 
     const web3Store = useWeb3ProvidersStore()
-    const provider = useProvider()
+
+    const providers: UseProvider[] = []
 
     const init = async () => {
       try {
         await web3Store.detectProviders()
-        await provider.init(web3Store.providers[0])
+
+        for (const designatedProvider of web3Store.providers) {
+          const provider = useProvider()
+
+          await provider.init(designatedProvider)
+          providers.push(provider)
+        }
       } catch (error) {
         ErrorHandler.processWithoutFeedback(error)
         isLoadFailed.value = true
@@ -90,7 +102,7 @@ export default defineComponent({
       isLoaded.value = true
     }
 
-    const addChainOptimism = async () => {
+    const addChainOptimism = async (provider: UseProvider) => {
       try {
         await provider.addChain(10, 'Optimism', 'https://mainnet.optimism.io')
       } catch (error) {
@@ -98,7 +110,7 @@ export default defineComponent({
       }
     }
 
-    const sendTx = async () => {
+    const sendTx = async (provider: UseProvider) => {
       try {
         await provider.signAndSendTx({
           from: {
@@ -107,7 +119,7 @@ export default defineComponent({
           to: {
             wallet: '0x0b216630Ec5adfA4ff7423A29b7f8a98F047DdD9',
           },
-          contents: 'Hello, Bob!',
+          contents: 'Hello!',
         })
       } catch (error) {
         ErrorHandler.process(error)
@@ -120,7 +132,7 @@ export default defineComponent({
       isLoaded,
       isLoadFailed,
 
-      provider,
+      providers,
 
       addChainOptimism,
       sendTx,

@@ -13,11 +13,11 @@ export enum PROVIDERS {
 export enum PROVIDERS_CHECKS {
   fallback = 'isWeb3',
   metamask = 'isMetaMask',
-  coinbase = 'isTrust',
-  trust = 'isCoinbaseWallet',
-  walletConnect = 'isBraveWallet',
-  brave = 'isWalletConnect',
-  ledger = 'isPhantom',
-  phantom = 'isSolflare',
-  solflare = 'isLedger',
+  coinbase = 'isCoinbaseWallet',
+  trust = 'isTrust',
+  walletConnect = 'isWalletConnect',
+  brave = 'isBraveWallet',
+  ledger = 'isLedger',
+  phantom = 'isPhantom',
+  solflare = 'isSolflare',
 }
