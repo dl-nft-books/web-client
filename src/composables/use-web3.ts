@@ -1,11 +1,12 @@
 import { computed, ref } from 'vue'
 import { sleep } from '@/helpers'
 import { PROVIDERS, PROVIDERS_CHECKS } from '@/enums'
+import { DesignatedProvider, ProviderInstance } from '@/types'
 
 export const useWeb3 = () => {
-  const providers = ref<any[]>([])
+  const providers = ref<DesignatedProvider[]>([])
 
-  const _browserProviders = ref<any[]>([])
+  const _browserProviders = ref<ProviderInstance[]>([])
 
   const isEnabled = computed(() => providers.value.length)
 
@@ -28,7 +29,6 @@ export const useWeb3 = () => {
       ...(solflareProvider ? [solflareProvider] : []),
     ]
   }
-
   const _defineProviders = async () => {
     if (_browserProviders.value.length) {
       await handleProviders()
@@ -43,16 +43,16 @@ export const useWeb3 = () => {
     }
   }
 
-  const designateBrowserProviders = (): any[] => {
+  const designateBrowserProviders = (): DesignatedProvider[] => {
     if (!_browserProviders.value.length) return []
 
     const designatedProviders = _browserProviders.value.map(el => {
-      const appropriatedProviderName = getAppropriateProviderName(el)
+      const appropriatedProviderName: PROVIDERS = getAppropriateProviderName(el)
 
       return {
         name: appropriatedProviderName,
-        provider: el,
-      }
+        instance: el,
+      } as DesignatedProvider
     })
 
     return designatedProviders.filter(
@@ -60,14 +60,20 @@ export const useWeb3 = () => {
     )
   }
 
-  const getAppropriateProviderName = (provider: any) => {
+  const getAppropriateProviderName = (
+    provider: ProviderInstance,
+  ): PROVIDERS => {
     const providerName = Object.entries(PROVIDERS_CHECKS).find(el => {
-      const [_, value] = el
+      const [, value] = el
 
-      return provider[value] as keyof typeof PROVIDERS
+      return ((<unknown>provider) as { [key in PROVIDERS_CHECKS]: boolean })[
+        value
+      ]
     })
 
-    return (providerName && providerName[0]) || PROVIDERS.fallback
+    return (
+      ((providerName && providerName[0]) as PROVIDERS) || PROVIDERS.fallback
+    )
   }
 
   return {
