@@ -5,6 +5,10 @@ import { ethers } from 'ethers'
 import { Deferrable } from '@ethersproject/properties'
 import { TransactionRequest } from '@ethersproject/abstract-provider'
 import { EthereumProvider } from '@/types/ethereum.types'
+import {
+  Transaction as SolTransaction,
+  TransactionSignature,
+} from '@solana/web3.js'
 
 /**
  * Non defined provider from browser
@@ -19,9 +23,15 @@ export type DesignatedProvider = {
   instance: ProviderInstance
 }
 
-export type TxRequestBody = Deferrable<TransactionRequest> | unknown
+export type TxRequestBody =
+  | Deferrable<TransactionRequest>
+  | SolTransaction
+  | unknown
 
-export type TransactionResponse = ethers.providers.TransactionResponse | unknown
+export type TransactionResponse =
+  | ethers.providers.TransactionResponse
+  | TransactionSignature
+  | unknown
 
 /**
  * composable object of designated provider,

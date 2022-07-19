@@ -28,11 +28,11 @@ export const useMetamask = (provider: ProviderInstance): ProviderWrapper => {
   )
 
   const init = async () => {
-    setListeners()
-    _updateProviderState()
+    _setListeners()
+    await _updateProviderState()
   }
 
-  const setListeners = () => {
+  const _setListeners = () => {
     const tempProviderStub = currentProvider.provider as {
       on: (eventName: string, cb: () => void) => void
     }

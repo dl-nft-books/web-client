@@ -2,6 +2,7 @@ import { PROVIDERS } from '@/enums'
 import { computed, ref } from 'vue'
 import { useMetamask } from './use-metamask'
 import { useCoinbase } from './use-coinbase'
+import { usePhantom } from './usePhantom'
 import { DesignatedProvider, TxRequestBody } from '@/types'
 
 export const useProvider = () => {
@@ -21,6 +22,9 @@ export const useProvider = () => {
         break
       case PROVIDERS.coinbase:
         providerWrp.value = useCoinbase(provider.instance)
+        break
+      case PROVIDERS.phantom:
+        providerWrp.value = usePhantom(provider.instance)
         break
       default:
         throw new Error('Invalid Provider')

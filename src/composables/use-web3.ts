@@ -25,7 +25,7 @@ export const useWeb3 = () => {
 
     _browserProviders.value = [
       ...(ethProviders ? ethProviders : []),
-      // ...(phantomProvider ? [phantomProvider] : []),
+      ...(phantomProvider ? [phantomProvider] : []),
       // ...(solflareProvider ? [solflareProvider] : []),
     ]
   }
