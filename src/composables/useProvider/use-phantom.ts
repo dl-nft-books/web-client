@@ -6,7 +6,7 @@ import {
   TxRequestBody,
 } from '@/types'
 import { computed, ref } from 'vue'
-import { handleSolError } from '@/helpers/solana.helpers'
+import { handleSolError } from '@/helpers'
 import {
   Connection,
   clusterApiUrl,
