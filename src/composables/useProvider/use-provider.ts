@@ -1,16 +1,24 @@
 import { PROVIDERS } from '@/enums'
-import { computed, ref } from 'vue'
-import { useMetamask } from './use-metamask'
-import { useCoinbase } from './use-coinbase'
-import { usePhantom } from './usePhantom'
-import { DesignatedProvider, TxRequestBody } from '@/types'
+import { computed, ComputedRef, ref } from 'vue'
+import {
+  useMetamask,
+  useCoinbase,
+  usePhantom,
+  useSolflare,
+} from '@/composables/useProvider'
+import { DesignatedProvider, ProviderWrapper, TxRequestBody } from '@/types'
+import { ProviderWrapperMethodNotFoundError } from '@/errors'
 
 export const useProvider = () => {
-  const providerWrp = ref()
+  const providerWrp = ref<ProviderWrapper | undefined>()
 
   const selectedProvider = ref()
-  const chainId = computed(() => providerWrp.value?.chainId)
-  const selectedAddress = computed(() => providerWrp.value?.selectedAddress)
+  const chainId: ComputedRef<string | number | undefined> = computed(
+    () => providerWrp.value?.chainId as string | number | undefined,
+  )
+  const selectedAddress: ComputedRef<string | undefined> = computed(
+    () => providerWrp.value?.selectedAddress as string | undefined,
+  )
   const isConnected = computed(() =>
     Boolean(chainId.value && selectedAddress.value),
   )
@@ -26,6 +34,9 @@ export const useProvider = () => {
       case PROVIDERS.phantom:
         providerWrp.value = usePhantom(provider.instance)
         break
+      case PROVIDERS.solflare:
+        providerWrp.value = useSolflare(provider.instance)
+        break
       default:
         throw new Error('Invalid Provider')
     }
@@ -34,10 +45,14 @@ export const useProvider = () => {
   }
 
   const connect = async () => {
+    if (!providerWrp.value) throw new ProviderWrapperMethodNotFoundError()
+
     await providerWrp.value.connect()
   }
 
   const switchChain = async (chainId: string | number) => {
+    if (!providerWrp.value) throw new ProviderWrapperMethodNotFoundError()
+
     await providerWrp.value.switchChain(chainId)
   }
 
@@ -46,6 +61,9 @@ export const useProvider = () => {
     chainName: string,
     chainRpcUrl: string,
   ) => {
+    if (!providerWrp.value || !providerWrp.value?.addChain)
+      throw new ProviderWrapperMethodNotFoundError()
+
     await providerWrp.value.addChain(chainId, chainName, chainRpcUrl)
   }
 
@@ -54,6 +72,8 @@ export const useProvider = () => {
   }
 
   const signAndSendTx = async (txRequestBody: TxRequestBody) => {
+    if (!providerWrp.value) throw new ProviderWrapperMethodNotFoundError()
+
     await providerWrp.value.signAndSendTransaction(txRequestBody)
   }
 

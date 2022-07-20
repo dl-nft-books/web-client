@@ -3,6 +3,8 @@
  */
 export class RuntimeError extends Error {}
 
+export class ProviderWrapperMethodNotFoundError extends RuntimeError {}
+
 export class ProviderChainNotFoundError extends RuntimeError {}
 
 export class ProviderNotSupportedError extends RuntimeError {}

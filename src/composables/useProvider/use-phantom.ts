@@ -1,4 +1,5 @@
 import {
+  PhantomProvider,
   ProviderInstance,
   ProviderWrapper,
   SolProviderRpcError,
@@ -11,15 +12,17 @@ import {
   clusterApiUrl,
   Cluster,
   Transaction as SolTransaction,
-  Keypair,
+  PublicKey,
 } from '@solana/web3.js'
 
 export const usePhantom = (provider: ProviderInstance): ProviderWrapper => {
+  const currentProvider = provider as PhantomProvider
+
   const chainId = ref<number | string>('devnet') // TODO: create chains enum (maybe)
   const selectedAddress = ref('')
 
   const connection = ref(
-    new Connection(clusterApiUrl(chainId.value) as Cluster),
+    new Connection(clusterApiUrl(chainId.value as Cluster)),
   )
 
   const isConnected = computed(() =>
@@ -31,22 +34,25 @@ export const usePhantom = (provider: ProviderInstance): ProviderWrapper => {
   }
 
   const _setListeners = () => {
-    provider.on('connect', () => {
+    currentProvider.on('connect', () => {
       _updateProviderState()
     })
-    provider.on('disconnect', () => {
+    currentProvider.on('disconnect', () => {
+      _updateProviderState()
+    })
+    currentProvider.on('accountChanged', () => {
       _updateProviderState()
     })
   }
 
   const _updateProviderState = async () => {
-    const publicKey = provider.publicKey
-    selectedAddress.value = publicKey ? provider.publicKey.toBase58() : ''
+    const publicKey = currentProvider.publicKey
+    selectedAddress.value = publicKey ? new PublicKey(publicKey).toBase58() : ''
   }
 
   const connect = async () => {
     try {
-      await provider.connect()
+      await currentProvider.connect()
     } catch (error) {
       handleSolError(error as SolProviderRpcError)
     }
@@ -54,20 +60,8 @@ export const usePhantom = (provider: ProviderInstance): ProviderWrapper => {
 
   const switchChain = async (_chainId: string | number) => {
     try {
-      connection.value = new Connection(clusterApiUrl(chainId) as Cluster)
+      connection.value = new Connection(clusterApiUrl(chainId.value as Cluster))
       chainId.value = _chainId
-    } catch (error) {
-      handleSolError(error as SolProviderRpcError)
-    }
-  }
-
-  const addChain = async (
-    chainId: string | number,
-    chainName: string,
-    chainRpcUrl: string,
-  ) => {
-    // eslint-disable-next-line no-empty
-    try {
     } catch (error) {
       handleSolError(error as SolProviderRpcError)
     }
@@ -75,13 +69,10 @@ export const usePhantom = (provider: ProviderInstance): ProviderWrapper => {
 
   const signAndSendTransaction = async (txRequestBody: TxRequestBody) => {
     try {
-      console.log('here')
-      const { signature } = await provider.signAndSendTransaction(
+      const { signature } = await currentProvider.signAndSendTransaction(
         txRequestBody as SolTransaction,
       )
-      console.log('here 1')
       await connection.value.confirmTransaction(signature)
-      console.log('here 2')
       return signature
     } catch (error) {
       handleSolError(error as SolProviderRpcError)
@@ -96,7 +87,6 @@ export const usePhantom = (provider: ProviderInstance): ProviderWrapper => {
     init,
     connect,
     switchChain,
-    addChain,
     signAndSendTransaction,
   }
 }

@@ -20,7 +20,9 @@ import {
 import { SolProviderRpcError } from '@/types'
 
 export function handleSolError(error: SolProviderRpcError) {
-  switch (error.error.code) {
+  const ErrorCode = error?.error?.code || error?.code
+
+  switch (ErrorCode) {
     case 4001:
       throw new ProviderUserRejectedRequest()
     case 4100:

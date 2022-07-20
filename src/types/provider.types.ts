@@ -9,11 +9,12 @@ import {
   Transaction as SolTransaction,
   TransactionSignature,
 } from '@solana/web3.js'
+import { PhantomProvider } from '@/types/solana.types'
 
 /**
  * Non defined provider from browser
  */
-export type ProviderInstance = EthereumProvider | unknown
+export type ProviderInstance = EthereumProvider | PhantomProvider | unknown
 
 /**
  * provider, which we've designated, it has a name and instance
@@ -45,7 +46,7 @@ export interface ProviderWrapper {
   init: () => Promise<void>
   connect: () => Promise<void>
   switchChain: (chainId: string | number) => Promise<void>
-  addChain: (
+  addChain?: (
     chainId: string | number,
     chainName: string,
     chainRpcUrl: string,
