@@ -1,1 +1,5 @@
-export * from './runtime.errors'
+import * as runtimeErrors from './runtime.errors'
+
+export const errors = {
+  ...runtimeErrors,
+}

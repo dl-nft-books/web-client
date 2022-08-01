@@ -1,23 +1,5 @@
 import { EthProviderRpcError } from '@/types'
-import {
-  ProviderChainDisconnected,
-  ProviderDisconnected,
-  ProviderInternalError,
-  ProviderInvalidInput,
-  ProviderInvalidParams,
-  ProviderInvalidRequest,
-  ProviderJsonRpcVersionNotSupported,
-  ProviderLimitExceeded,
-  ProviderMethodNotFound,
-  ProviderMethodNotSupported,
-  ProviderParseError,
-  ProviderResourceNotFound,
-  ProviderResourceUnavailable,
-  ProviderTransactionRejected,
-  ProviderUnauthorized,
-  ProviderUnsupportedMethod,
-  ProviderUserRejectedRequest,
-} from '@/errors'
+import { errors } from '@/errors'
 import { ethers } from 'ethers'
 
 export const connectEthAccounts = async (
@@ -53,39 +35,39 @@ export async function requestAddEthChain(
 export function handleEthError(error: EthProviderRpcError) {
   switch (error.code) {
     case 4001:
-      throw new ProviderUserRejectedRequest()
+      throw new errors.ProviderUserRejectedRequest()
     case 4100:
-      throw new ProviderUnauthorized()
+      throw new errors.ProviderUnauthorized()
     case 4200:
-      throw new ProviderUnsupportedMethod()
+      throw new errors.ProviderUnsupportedMethod()
     case 4900:
-      throw new ProviderDisconnected()
+      throw new errors.ProviderDisconnected()
     case 4901:
-      throw new ProviderChainDisconnected()
+      throw new errors.ProviderChainDisconnected()
     case -32700:
-      throw new ProviderParseError()
+      throw new errors.ProviderParseError()
     case -32600:
-      throw new ProviderInvalidRequest()
+      throw new errors.ProviderInvalidRequest()
     case -32601:
-      throw new ProviderMethodNotFound()
+      throw new errors.ProviderMethodNotFound()
     case -32602:
-      throw new ProviderInvalidParams()
+      throw new errors.ProviderInvalidParams()
     case -32603:
-      throw new ProviderInternalError()
+      throw new errors.ProviderInternalError()
     case -32000:
-      throw new ProviderInvalidInput()
+      throw new errors.ProviderInvalidInput()
     case -32001:
-      throw new ProviderResourceNotFound()
+      throw new errors.ProviderResourceNotFound()
     case -32002:
-      throw new ProviderResourceUnavailable()
+      throw new errors.ProviderResourceUnavailable()
     case -32003:
-      throw new ProviderTransactionRejected()
+      throw new errors.ProviderTransactionRejected()
     case -32004:
-      throw new ProviderMethodNotSupported()
+      throw new errors.ProviderMethodNotSupported()
     case -32005:
-      throw new ProviderLimitExceeded()
+      throw new errors.ProviderLimitExceeded()
     case -32006:
-      throw new ProviderJsonRpcVersionNotSupported()
+      throw new errors.ProviderJsonRpcVersionNotSupported()
     default:
       throw error
   }

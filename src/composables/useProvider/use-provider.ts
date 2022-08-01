@@ -6,15 +6,20 @@ import {
   usePhantom,
   useSolflare,
 } from '@/composables/useProvider'
-import { DesignatedProvider, ProviderWrapper, TxRequestBody } from '@/types'
-import { ProviderWrapperMethodNotFoundError } from '@/errors'
+import {
+  DesignatedProvider,
+  ProviderChainId,
+  ProviderWrapper,
+  TxRequestBody,
+} from '@/types'
+import { errors } from '@/errors'
 
 export const useProvider = () => {
   const providerWrp = ref<ProviderWrapper | undefined>()
 
-  const selectedProvider = ref()
-  const chainId: ComputedRef<string | number | undefined> = computed(
-    () => providerWrp.value?.chainId as string | number | undefined,
+  const selectedProvider = ref<PROVIDERS | undefined>()
+  const chainId: ComputedRef<ProviderChainId | undefined> = computed(
+    () => providerWrp.value?.chainId as ProviderChainId | undefined,
   )
   const selectedAddress: ComputedRef<string | undefined> = computed(
     () => providerWrp.value?.selectedAddress as string | undefined,
@@ -45,24 +50,26 @@ export const useProvider = () => {
   }
 
   const connect = async () => {
-    if (!providerWrp.value) throw new ProviderWrapperMethodNotFoundError()
+    if (!providerWrp.value)
+      throw new errors.ProviderWrapperMethodNotFoundError()
 
     await providerWrp.value.connect()
   }
 
-  const switchChain = async (chainId: string | number) => {
-    if (!providerWrp.value) throw new ProviderWrapperMethodNotFoundError()
+  const switchChain = async (chainId: ProviderChainId) => {
+    if (!providerWrp.value)
+      throw new errors.ProviderWrapperMethodNotFoundError()
 
     await providerWrp.value.switchChain(chainId)
   }
 
   const addChain = async (
-    chainId: string | number,
+    chainId: ProviderChainId,
     chainName: string,
     chainRpcUrl: string,
   ) => {
     if (!providerWrp.value || !providerWrp.value?.addChain)
-      throw new ProviderWrapperMethodNotFoundError()
+      throw new errors.ProviderWrapperMethodNotFoundError()
 
     await providerWrp.value.addChain(chainId, chainName, chainRpcUrl)
   }
@@ -72,7 +79,8 @@ export const useProvider = () => {
   }
 
   const signAndSendTx = async (txRequestBody: TxRequestBody) => {
-    if (!providerWrp.value) throw new ProviderWrapperMethodNotFoundError()
+    if (!providerWrp.value)
+      throw new errors.ProviderWrapperMethodNotFoundError()
 
     await providerWrp.value.signAndSendTransaction(txRequestBody)
   }

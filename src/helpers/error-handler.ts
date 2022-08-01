@@ -1,28 +1,7 @@
 import log from 'loglevel'
 import { Bus } from '@/helpers'
 import { i18n } from '@/localization'
-import {
-  ProviderChainDisconnected,
-  ProviderChainNotFoundError,
-  ProviderDisconnected,
-  ProviderInternalError,
-  ProviderInvalidInput,
-  ProviderInvalidParams,
-  ProviderInvalidRequest,
-  ProviderJsonRpcVersionNotSupported,
-  ProviderLimitExceeded,
-  ProviderMethodNotFound,
-  ProviderMethodNotSupported,
-  ProviderNotSupportedError,
-  ProviderParseError,
-  ProviderResourceNotFound,
-  ProviderResourceUnavailable,
-  ProviderTransactionRejected,
-  ProviderUnauthorized,
-  ProviderUnsupportedMethod,
-  ProviderUserRejectedRequest,
-  ProviderWrapperMethodNotFoundError,
-} from '@/errors'
+import { errors } from '@/errors'
 
 export class ErrorHandler {
   static process(error: Error | unknown, errorMessage = ''): void {
@@ -42,64 +21,64 @@ export class ErrorHandler {
 
     if (error instanceof Error)
       switch (error.constructor) {
-        case ProviderChainNotFoundError:
+        case errors.ProviderChainNotFoundError:
           errorMessage = t('errors.provider-chain-not-found-error')
           break
-        case ProviderNotSupportedError:
+        case errors.ProviderNotSupportedError:
           errorMessage = t('errors.provider-not-supported-error')
           break
-        case ProviderUserRejectedRequest:
+        case errors.ProviderUserRejectedRequest:
           errorMessage = t('errors.provider-user-rejected-request')
           break
-        case ProviderUnauthorized:
+        case errors.ProviderUnauthorized:
           errorMessage = t('errors.provider-unauthorized')
           break
-        case ProviderUnsupportedMethod:
+        case errors.ProviderUnsupportedMethod:
           errorMessage = t('errors.provider-unsupported-method')
           break
-        case ProviderDisconnected:
+        case errors.ProviderDisconnected:
           errorMessage = t('errors.provider-disconnected')
           break
-        case ProviderChainDisconnected:
+        case errors.ProviderChainDisconnected:
           errorMessage = t('errors.provider-chain-disconnected')
           break
-        case ProviderParseError:
+        case errors.ProviderParseError:
           errorMessage = t('errors.provider-parse-error')
           break
-        case ProviderInvalidRequest:
+        case errors.ProviderInvalidRequest:
           errorMessage = t('errors.provider-invalid-request')
           break
-        case ProviderMethodNotFound:
+        case errors.ProviderMethodNotFound:
           errorMessage = t('errors.provider-method-not-found')
           break
-        case ProviderInvalidParams:
+        case errors.ProviderInvalidParams:
           errorMessage = t('errors.provider-invalid-params')
           break
-        case ProviderInternalError:
+        case errors.ProviderInternalError:
           errorMessage = t('errors.provider-internal-error')
           break
-        case ProviderInvalidInput:
+        case errors.ProviderInvalidInput:
           errorMessage = t('errors.provider-invalid-input')
           break
-        case ProviderResourceNotFound:
+        case errors.ProviderResourceNotFound:
           errorMessage = t('errors.provider-resource-not-found')
           break
-        case ProviderResourceUnavailable:
+        case errors.ProviderResourceUnavailable:
           errorMessage = t('errors.provider-resource-unavailable')
           break
-        case ProviderTransactionRejected:
+        case errors.ProviderTransactionRejected:
           errorMessage = t('errors.provider-transaction-rejected')
           break
-        case ProviderMethodNotSupported:
+        case errors.ProviderMethodNotSupported:
           errorMessage = t('errors.provider-method-not-supported')
           break
-        case ProviderLimitExceeded:
+        case errors.ProviderLimitExceeded:
           errorMessage = t('errors.provider-limit-exceeded')
           break
-        case ProviderJsonRpcVersionNotSupported:
+        case errors.ProviderJsonRpcVersionNotSupported:
           errorMessage = t('errors.provider-json-rpc-version-not-supported')
           break
-        case ProviderWrapperMethodNotFoundError:
+        case errors.ProviderWrapperMethodNotFoundError:
           errorMessage = t('errors.provider-wrapper-method-not-found')
           break
         default: {

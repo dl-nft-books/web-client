@@ -34,34 +34,37 @@
               @click="connect(provider)"
               :disabled="provider.isConnected.value"
             />
-            <app-button
-              class="web3-page__card-btn"
-              schemes="flat"
-              modifications="border-rounded small"
-              :text="'switch chain to kovan'"
-              @click="switchChain(provider, 42)"
-            />
-            <app-button
-              class="web3-page__card-btn"
-              schemes="flat"
-              modifications="border-rounded small"
-              :text="'add chain optimism'"
-              @click="
-                addChain(provider, { id: 10, name: 'optimism', rpcUrl: '' })
-              "
-            />
-            <app-button
-              class="web3-page__card-btn"
-              schemes="flat"
-              modifications="border-rounded small"
-              :text="'sendTx'"
-              @click="
-                sendTx(
-                  provider,
-                  transactionsBodyToTest[provider.selectedProvider.value],
-                )
-              "
-            />
+            <template
+              v-if="testingData[provider.selectedProvider.value]?.chainToSwitch"
+            >
+              <app-button
+                class="web3-page__card-btn"
+                schemes="flat"
+                modifications="border-rounded small"
+                :text="'switch chain'"
+                @click="switchChain(provider)"
+              />
+            </template>
+            <template
+              v-if="testingData[provider.selectedProvider.value]?.chainToAdd"
+            >
+              <app-button
+                class="web3-page__card-btn"
+                schemes="flat"
+                modifications="border-rounded small"
+                :text="'add chain'"
+                @click="addChain(provider)"
+              />
+            </template>
+            <template v-if="testingData[provider.selectedProvider.value]?.tx">
+              <app-button
+                class="web3-page__card-btn"
+                schemes="flat"
+                modifications="border-rounded small"
+                :text="'sendTx'"
+                @click="sendTx(provider)"
+              />
+            </template>
           </div>
         </div>
       </template>
@@ -77,31 +80,80 @@ import { AppButton, Loader, ErrorMessage } from '@/common'
 
 import { defineComponent, ref } from 'vue'
 import { useWeb3ProvidersStore } from '@/store'
-import { ErrorHandler } from '@/helpers'
+import { convertEncodedSolTx, ErrorHandler } from '@/helpers'
 import { useProvider } from '@/composables'
-import { TxRequestBody, UseProvider } from '@/types'
-import bs58 from 'bs58'
-import { Transaction } from '@solana/web3.js'
+import { ProviderChainId, TxRequestBody, UseProvider } from '@/types'
+import { PROVIDERS } from '@/enums'
 
-const transactionsBodyToTest = {
-  metamask: {
-    from: '0x0b216630ec5adfa4ff7423a29b7f8a98f047ddd9',
-    to: '0x2f318C334780961FB129D2a6c30D0763d9a5C970',
-    value: '0x5',
-    maxFeePerGas: '0x9502f916',
-    maxPriorityFeePerGas: '0x9502F900',
+const testingData: Record<
+  PROVIDERS,
+  {
+    tx?: TxRequestBody
+    chainToSwitch?: {
+      first: ProviderChainId
+      second: ProviderChainId
+    }
+    chainToAdd?: {
+      id: number
+      name: string
+      rpcUrl: string
+    }
+  }
+> = {
+  [PROVIDERS.metamask]: {
+    tx: {
+      from: '0x0b216630ec5adfa4ff7423a29b7f8a98f047ddd9',
+      to: '0x2f318C334780961FB129D2a6c30D0763d9a5C970',
+      value: '0x5',
+      maxFeePerGas: '0x9502f916',
+      maxPriorityFeePerGas: '0x9502F900',
+    },
+    chainToSwitch: {
+      first: 4,
+      second: 42,
+    },
+    chainToAdd: {
+      id: 10,
+      name: 'optimism',
+      rpcUrl: 'https://mainnet.optimism.io',
+    },
   },
-  coinbase: {
-    from: '0x4c94f25007931Af6eE059A240FbEF8cb7a944080',
-    to: '0x2f318C334780961FB129D2a6c30D0763d9a5C970',
-    value: '0x5',
-    maxFeePerGas: '0x9502f916',
-    maxPriorityFeePerGas: '0x9502F900',
+  [PROVIDERS.coinbase]: {
+    tx: {
+      from: '0x4c94f25007931Af6eE059A240FbEF8cb7a944080',
+      to: '0x2f318C334780961FB129D2a6c30D0763d9a5C970',
+      value: '0x5',
+      maxFeePerGas: '0x9502f916',
+      maxPriorityFeePerGas: '0x9502F900',
+    },
+    chainToSwitch: {
+      first: 4,
+      second: 42,
+    },
   },
-  phantom:
-    '4MUn5mQ9ujcRJCLvt7fUVwcDoYtGhoJJNzXaG28Fbwb5W8pGRqLNPFLV5JSuPwjrWMKzdaTiBicBz3c8jJrtHpHnC9xtwzF95LFrazGqAvZBrZ4C84bsxhvEAuuedpQhPKhY9LRGZdeNBWFy6gJx3LWoyRMhvY2KGEtbTCXT5G5ESYzRZN98PR2DcFndvwMaCTMe6SUJGMXR2SFPvvRJdW89EPFrYuf64P5AjF4C4aGCTRrP73YBNUzuS3TBx8U5YSsHdfttSV1iVgkEj2u6sP27vUKXRCAdV2ZkqpxzVu5Bf2MruJEuouUTGa6BEeFrmLtzdQVaUE2uUzNoxYWDghd4UuNn8ntfdsuqhchGYfqGj5tFUmN1MZwHeL91ZT96EbVtMPPPvscLmhkVWGPDmC3RnsuhKw3k13aixEAmM7XB8qjA9GzAQMDcw3sX7yxRW12WBSTatFt8WkiG5LBVPB2HMjSmCdJC1xsUiVRNJ8Wbt73rMLmbwYjwtL4i4gMnXCqvZPNgszqhNhUeKe3WgXCNwTxrV6mx2H7NmyEZeuTbnYBsaZux7sNSTYsaagLtfs5Dx2g27DMb2fEc4DBTLZkVTW4iXMqNNcuwYtW6kHEMrjgKAuUhsEToXwun3PvgwguYJxSDJShSYJ1fc6QDbkJ1Vf6ehCqw4yD6ogn6tJDRfDyi8bKYCp9UkNjKeiFbpr9naLpkBqjLNekhFcpxDSj1zV1kXWEoCw2Fs84S73EYD8Kd2nC9ktAMVsyhEUBxJ1FE9i7b8n3fSyDZVZguw1GfQG36PaX3jTTE7qVcANXxj6ud',
-  solflare:
-    '4MUn5mQ9ujcRJCLvt7fUVwcDoYtGhoJJNzXaG28Fbwb5W8pGRqLNPFLV5JSuPwjrWMKzdaTiBicBz3c8jJrtHpHnC9xtwzF95LFrazGqAvZBrZ4C84bsxhvEAuuedpQhPKhY9LRGZdeNBWFy6gJx3LWoyRMhvY2KGEtbTCXT5G5ESYzRZN98PR2DcFndvwMaCTMe6SUJGMXR2SFPvvRJdW89EPFrYuf64P5AjF4C4aGCTRrP73YBNUzuS3TBx8U5YSsHdfttSV1iVgkEj2u6sP27vUKXRCAdV2ZkqpxzVu5Bf2MruJEuouUTGa6BEeFrmLtzdQVaUE2uUzNoxYWDghd4UuNn8ntfdsuqhchGYfqGj5tFUmN1MZwHeL91ZT96EbVtMPPPvscLmhkVWGPDmC3RnsuhKw3k13aixEAmM7XB8qjA9GzAQMDcw3sX7yxRW12WBSTatFt8WkiG5LBVPB2HMjSmCdJC1xsUiVRNJ8Wbt73rMLmbwYjwtL4i4gMnXCqvZPNgszqhNhUeKe3WgXCNwTxrV6mx2H7NmyEZeuTbnYBsaZux7sNSTYsaagLtfs5Dx2g27DMb2fEc4DBTLZkVTW4iXMqNNcuwYtW6kHEMrjgKAuUhsEToXwun3PvgwguYJxSDJShSYJ1fc6QDbkJ1Vf6ehCqw4yD6ogn6tJDRfDyi8bKYCp9UkNjKeiFbpr9naLpkBqjLNekhFcpxDSj1zV1kXWEoCw2Fs84S73EYD8Kd2nC9ktAMVsyhEUBxJ1FE9i7b8n3fSyDZVZguw1GfQG36PaX3jTTE7qVcANXxj6ud',
+  [PROVIDERS.phantom]: {
+    tx: convertEncodedSolTx(
+      '4MUn5mQ9ujcRJCLvt7fUVwcDoYtGhoJJNzXaG28Fbwb5W8pGRqLNPFLV5JSuPwjrWMKzdaTiBicBz3c8jJrtHpHnC9xtwzF95LFrazGqAvZBrZ4C84bsxhvEAuuedpQhPKhY9LRGZdeNBWFy6gJx3LWoyRMhvY2KGEtbTCXT5G5ESYzRZN98PR2DcFndvwMaCTMe6SUJGMXR2SFPvvRJdW89EPFrYuf64P5AjF4C4aGCTRrP73YBNUzuS3TBx8U5YSsHdfttSV1iVgkEj2u6sP27vUKXRCAdV2ZkqpxzVu5Bf2MruJEuouUTGa6BEeFrmLtzdQVaUE2uUzNoxYWDghd4UuNn8ntfdsuqhchGYfqGj5tFUmN1MZwHeL91ZT96EbVtMPPPvscLmhkVWGPDmC3RnsuhKw3k13aixEAmM7XB8qjA9GzAQMDcw3sX7yxRW12WBSTatFt8WkiG5LBVPB2HMjSmCdJC1xsUiVRNJ8Wbt73rMLmbwYjwtL4i4gMnXCqvZPNgszqhNhUeKe3WgXCNwTxrV6mx2H7NmyEZeuTbnYBsaZux7sNSTYsaagLtfs5Dx2g27DMb2fEc4DBTLZkVTW4iXMqNNcuwYtW6kHEMrjgKAuUhsEToXwun3PvgwguYJxSDJShSYJ1fc6QDbkJ1Vf6ehCqw4yD6ogn6tJDRfDyi8bKYCp9UkNjKeiFbpr9naLpkBqjLNekhFcpxDSj1zV1kXWEoCw2Fs84S73EYD8Kd2nC9ktAMVsyhEUBxJ1FE9i7b8n3fSyDZVZguw1GfQG36PaX3jTTE7qVcANXxj6ud',
+    ),
+    chainToSwitch: {
+      first: 'devnet',
+      second: 'testnet',
+    },
+  },
+  [PROVIDERS.solflare]: {
+    tx: convertEncodedSolTx(
+      '4MUn5mQ9ujcRJCLvt7fUVwcDoYtGhoJJNzXaG28Fbwb5W8pGRqLNPFLV5JSuPwjrWMKzdaTiBicBz3c8jJrtHpHnC9xtwzF95LFrazGqAvZBrZ4C84bsxhvEAuuedpQhPKhY9LRGZdeNBWFy6gJx3LWoyRMhvY2KGEtbTCXT5G5ESYzRZN98PR2DcFndvwMaCTMe6SUJGMXR2SFPvvRJdW89EPFrYuf64P5AjF4C4aGCTRrP73YBNUzuS3TBx8U5YSsHdfttSV1iVgkEj2u6sP27vUKXRCAdV2ZkqpxzVu5Bf2MruJEuouUTGa6BEeFrmLtzdQVaUE2uUzNoxYWDghd4UuNn8ntfdsuqhchGYfqGj5tFUmN1MZwHeL91ZT96EbVtMPPPvscLmhkVWGPDmC3RnsuhKw3k13aixEAmM7XB8qjA9GzAQMDcw3sX7yxRW12WBSTatFt8WkiG5LBVPB2HMjSmCdJC1xsUiVRNJ8Wbt73rMLmbwYjwtL4i4gMnXCqvZPNgszqhNhUeKe3WgXCNwTxrV6mx2H7NmyEZeuTbnYBsaZux7sNSTYsaagLtfs5Dx2g27DMb2fEc4DBTLZkVTW4iXMqNNcuwYtW6kHEMrjgKAuUhsEToXwun3PvgwguYJxSDJShSYJ1fc6QDbkJ1Vf6ehCqw4yD6ogn6tJDRfDyi8bKYCp9UkNjKeiFbpr9naLpkBqjLNekhFcpxDSj1zV1kXWEoCw2Fs84S73EYD8Kd2nC9ktAMVsyhEUBxJ1FE9i7b8n3fSyDZVZguw1GfQG36PaX3jTTE7qVcANXxj6ud',
+    ),
+    chainToSwitch: {
+      first: 'devnet',
+      second: 'testnet',
+    },
+  },
+  [PROVIDERS.walletConnect]: {},
+  [PROVIDERS.brave]: {},
+  [PROVIDERS.trust]: {},
+  [PROVIDERS.fallback]: {},
+  [PROVIDERS.ledger]: {},
 }
 
 export default defineComponent({
@@ -140,39 +192,49 @@ export default defineComponent({
       }
     }
 
-    const switchChain = async (provider: UseProvider, chainId: number) => {
+    const switchChain = async (provider: UseProvider) => {
+      if (!provider.selectedProvider.value) return
+      const providerDataToTest = testingData[provider.selectedProvider.value]
+
+      if (!providerDataToTest?.chainToSwitch) return
+
+      const chainToSwitch =
+        provider.chainId.value === providerDataToTest.chainToSwitch.first
+          ? providerDataToTest.chainToSwitch.second
+          : providerDataToTest.chainToSwitch.first
+
       try {
-        await provider.switchChain(chainId)
+        await provider.switchChain(chainToSwitch)
       } catch (error) {
         ErrorHandler.process(error)
       }
     }
 
-    const addChain = async (
-      provider: UseProvider,
-      chainParams: { id: number; name: string; rpcUrl: string },
-    ) => {
+    const addChain = async (provider: UseProvider) => {
+      if (!provider.selectedProvider.value) return
+      const providerDataToTest = testingData[provider.selectedProvider.value]
+
+      if (!providerDataToTest.chainToAdd) return
+
       try {
         await provider.addChain(
-          chainParams.id,
-          chainParams.name,
-          chainParams.rpcUrl,
+          providerDataToTest.chainToAdd.id,
+          providerDataToTest.chainToAdd.name,
+          providerDataToTest.chainToAdd.rpcUrl,
         )
       } catch (error) {
         ErrorHandler.process(error)
       }
     }
 
-    const sendTx = async (
-      provider: UseProvider,
-      transactionBody: TxRequestBody,
-    ) => {
+    const sendTx = async (provider: UseProvider) => {
+      if (!provider.selectedProvider.value) return
+      const providerDataToTest = testingData[provider.selectedProvider.value]
+
+      const tx = providerDataToTest.tx
+
       try {
-        const txBody =
-          typeof transactionBody === 'string'
-            ? Transaction.from(bs58.decode(transactionBody))
-            : transactionBody
-        await provider.signAndSendTx(txBody)
+        await provider.signAndSendTx(tx)
       } catch (error) {
         ErrorHandler.process(error)
       }
@@ -191,7 +253,7 @@ export default defineComponent({
       addChain,
       sendTx,
 
-      transactionsBodyToTest,
+      testingData,
     }
   },
 })

@@ -8,6 +8,7 @@ import {
 import { computed, ref } from 'vue'
 import {
   EthProviderRpcError,
+  ProviderChainId,
   ProviderInstance,
   ProviderWrapper,
   TxRequestBody,
@@ -16,7 +17,7 @@ import { Deferrable } from '@ethersproject/properties'
 import { TransactionRequest } from '@ethersproject/abstract-provider'
 
 export const useCoinbase = (provider: ProviderInstance): ProviderWrapper => {
-  const chainId = ref<number | string>('')
+  const chainId = ref<ProviderChainId>('')
   const selectedAddress = ref('')
 
   const currentProvider = new ethers.providers.Web3Provider(
@@ -68,7 +69,7 @@ export const useCoinbase = (provider: ProviderInstance): ProviderWrapper => {
     }
   }
 
-  const switchChain = async (chainId: string | number) => {
+  const switchChain = async (chainId: ProviderChainId) => {
     try {
       await requestSwitchEthChain(currentProvider, Number(chainId))
     } catch (error) {
@@ -77,7 +78,7 @@ export const useCoinbase = (provider: ProviderInstance): ProviderWrapper => {
   }
 
   const addChain = async (
-    chainId: string | number,
+    chainId: ProviderChainId,
     chainName: string,
     chainRpcUrl: string,
   ) => {

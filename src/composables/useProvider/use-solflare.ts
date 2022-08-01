@@ -1,5 +1,6 @@
 import {
   PhantomProvider,
+  ProviderChainId,
   ProviderInstance,
   ProviderWrapper,
   SolProviderRpcError,
@@ -14,11 +15,12 @@ import {
   Transaction as SolTransaction,
   PublicKey,
 } from '@solana/web3.js'
+import { SOLANA_CHAINS } from '@/enums'
 
 export const useSolflare = (provider: ProviderInstance): ProviderWrapper => {
   const currentProvider = provider as PhantomProvider
 
-  const chainId = ref<number | string>('devnet') // TODO: create chains enum (maybe)
+  const chainId = ref<ProviderChainId>(SOLANA_CHAINS.devnet)
   const selectedAddress = ref('')
 
   const connection = ref(
@@ -58,7 +60,7 @@ export const useSolflare = (provider: ProviderInstance): ProviderWrapper => {
     }
   }
 
-  const switchChain = async (_chainId: string | number) => {
+  const switchChain = async (_chainId: ProviderChainId) => {
     try {
       connection.value = new Connection(clusterApiUrl(chainId.value as Cluster))
       chainId.value = _chainId

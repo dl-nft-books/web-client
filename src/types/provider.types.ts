@@ -16,6 +16,8 @@ import { PhantomProvider } from '@/types/solana.types'
  */
 export type ProviderInstance = EthereumProvider | PhantomProvider | unknown
 
+export type ProviderChainId = string | number
+
 /**
  * provider, which we've designated, it has a name and instance
  */
@@ -39,15 +41,15 @@ export type TransactionResponse =
  * which we can use to solve user needs
  */
 export interface ProviderWrapper {
-  chainId: Ref<string | number>
+  chainId: Ref<ProviderChainId>
   selectedAddress: Ref<string>
   isConnected: ComputedRef<boolean>
 
   init: () => Promise<void>
   connect: () => Promise<void>
-  switchChain: (chainId: string | number) => Promise<void>
+  switchChain: (chainId: ProviderChainId) => Promise<void>
   addChain?: (
-    chainId: string | number,
+    chainId: ProviderChainId,
     chainName: string,
     chainRpcUrl: string,
   ) => Promise<void>
