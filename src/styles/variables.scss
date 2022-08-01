@@ -77,9 +77,12 @@
   /* Field variables */
 
   /* --------------------------------------- */
+  --field-bg: var(--app-bg);
 
   /* label */
   --field-label: var(--text-primary-main);
+  --field-label-hover: var(--text-primary-main);
+  --field-label-focus: var(--text-primary-main);
   --field-label-font-size: #{toRem(14)};
   --field-label-line-height: 1.4;
 
@@ -109,5 +112,4 @@
     var(--field-padding-left);
 
   --field-error: var(--error-main);
-  --field-bg: var(--app-bg);
 }
