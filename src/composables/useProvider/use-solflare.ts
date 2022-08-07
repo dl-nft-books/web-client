@@ -1,13 +1,20 @@
 import {
   PhantomProvider,
-  ProviderChainId,
+  ChainId,
   ProviderInstance,
   ProviderWrapper,
+  SolanaTransactionResponse,
   SolProviderRpcError,
+  TransactionResponse,
   TxRequestBody,
 } from '@/types'
 import { computed, ref } from 'vue'
-import { handleSolError } from '@/helpers'
+import {
+  convertEncodedSolTx,
+  getSolExplorerAddressUrl,
+  getSolExplorerTxUrl,
+  handleSolError,
+} from '@/helpers'
 import {
   Connection,
   clusterApiUrl,
@@ -20,7 +27,7 @@ import { SOLANA_CHAINS } from '@/enums'
 export const useSolflare = (provider: ProviderInstance): ProviderWrapper => {
   const currentProvider = provider as PhantomProvider
 
-  const chainId = ref<ProviderChainId>(SOLANA_CHAINS.devnet)
+  const chainId = ref<ChainId>(SOLANA_CHAINS.devnet)
   const selectedAddress = ref('')
 
   const connection = ref(
@@ -60,7 +67,7 @@ export const useSolflare = (provider: ProviderInstance): ProviderWrapper => {
     }
   }
 
-  const switchChain = async (_chainId: ProviderChainId) => {
+  const switchChain = async (_chainId: ChainId) => {
     try {
       connection.value = new Connection(clusterApiUrl(chainId.value as Cluster))
       chainId.value = _chainId
@@ -71,17 +78,41 @@ export const useSolflare = (provider: ProviderInstance): ProviderWrapper => {
 
   const signAndSendTransaction = async (txRequestBody: TxRequestBody) => {
     try {
+      const txBody =
+        typeof txRequestBody === 'string'
+          ? convertEncodedSolTx(txRequestBody)
+          : txRequestBody
+
       const signedTx = await currentProvider.signTransaction(
-        txRequestBody as SolTransaction,
+        txBody as SolTransaction,
       )
-      const signature = await connection.value.sendRawTransaction(
+
+      const connection = new Connection(clusterApiUrl(chainId.value as Cluster))
+
+      const signature = await connection.sendRawTransaction(
         signedTx.serialize(),
       )
-      await connection.value.confirmTransaction(signature)
+      await connection.confirmTransaction(signature)
       return signature
     } catch (error) {
       handleSolError(error as SolProviderRpcError)
     }
+  }
+
+  const getHashFromTxResponse = (txResponse: TransactionResponse) => {
+    return txResponse as SolanaTransactionResponse
+  }
+
+  const getTxUrl = (explorerUrl: string, txHash: string) => {
+    return getSolExplorerTxUrl(chainId.value as string, explorerUrl, txHash)
+  }
+
+  const getAddressUrl = (explorerUrl: string, txHash: string) => {
+    return getSolExplorerAddressUrl(
+      chainId.value as string,
+      explorerUrl,
+      txHash,
+    )
   }
 
   return {
@@ -93,5 +124,8 @@ export const useSolflare = (provider: ProviderInstance): ProviderWrapper => {
     connect,
     switchChain,
     signAndSendTransaction,
+    getHashFromTxResponse,
+    getTxUrl,
+    getAddressUrl,
   }
 }

@@ -1,6 +1,8 @@
 import { ethers } from 'ethers'
 import {
   connectEthAccounts,
+  getEthExplorerAddressUrl,
+  getEthExplorerTxUrl,
   handleEthError,
   requestAddEthChain,
   requestSwitchEthChain,
@@ -8,20 +10,23 @@ import {
 import { computed, ref } from 'vue'
 import {
   EthProviderRpcError,
-  ProviderChainId,
+  EthTransactionResponse,
+  ChainId,
   ProviderInstance,
   ProviderWrapper,
+  TransactionResponse,
   TxRequestBody,
 } from '@/types'
 import { Deferrable } from '@ethersproject/properties'
 import { TransactionRequest } from '@ethersproject/abstract-provider'
 
 export const useCoinbase = (provider: ProviderInstance): ProviderWrapper => {
-  const chainId = ref<ProviderChainId>('')
+  const chainId = ref<ChainId>('')
   const selectedAddress = ref('')
 
   const currentProvider = new ethers.providers.Web3Provider(
     provider as ethers.providers.ExternalProvider,
+    'any',
   )
 
   const isConnected = computed(() =>
@@ -69,7 +74,7 @@ export const useCoinbase = (provider: ProviderInstance): ProviderWrapper => {
     }
   }
 
-  const switchChain = async (chainId: ProviderChainId) => {
+  const switchChain = async (chainId: ChainId) => {
     try {
       await requestSwitchEthChain(currentProvider, Number(chainId))
     } catch (error) {
@@ -78,7 +83,7 @@ export const useCoinbase = (provider: ProviderInstance): ProviderWrapper => {
   }
 
   const addChain = async (
-    chainId: ProviderChainId,
+    chainId: ChainId,
     chainName: string,
     chainRpcUrl: string,
   ) => {
@@ -108,6 +113,20 @@ export const useCoinbase = (provider: ProviderInstance): ProviderWrapper => {
     }
   }
 
+  const getHashFromTxResponse = (txResponse: TransactionResponse) => {
+    const transactionResponse = txResponse as EthTransactionResponse
+
+    return transactionResponse.hash
+  }
+
+  const getTxUrl = (explorerUrl: string, txHash: string) => {
+    return getEthExplorerTxUrl(explorerUrl, txHash)
+  }
+
+  const getAddressUrl = (explorerUrl: string, address: string) => {
+    return getEthExplorerAddressUrl(explorerUrl, address)
+  }
+
   return {
     chainId,
     selectedAddress,
@@ -118,5 +137,8 @@ export const useCoinbase = (provider: ProviderInstance): ProviderWrapper => {
     switchChain,
     addChain,
     signAndSendTransaction,
+    getHashFromTxResponse,
+    getTxUrl,
+    getAddressUrl,
   }
 }

@@ -1,5 +1,5 @@
 import { PROVIDERS } from '@/enums'
-import { computed, ComputedRef, ref } from 'vue'
+import { computed, ComputedRef, Ref, ref } from 'vue'
 import {
   useMetamask,
   useCoinbase,
@@ -8,18 +8,40 @@ import {
 } from '@/composables/useProvider'
 import {
   DesignatedProvider,
-  ProviderChainId,
+  ChainId,
   ProviderWrapper,
+  TransactionResponse,
   TxRequestBody,
 } from '@/types'
 import { errors } from '@/errors'
 
-export const useProvider = () => {
+export interface UseProvider {
+  selectedProvider: Ref<PROVIDERS | undefined>
+  chainId: ComputedRef<ChainId | undefined>
+  selectedAddress: ComputedRef<string | undefined>
+  isConnected: ComputedRef<boolean>
+
+  init: (provider: DesignatedProvider) => Promise<void>
+  connect: () => Promise<void>
+  disconnect: () => void
+  switchChain: (chainId: ChainId) => Promise<void>
+  addChain: (
+    chainId: ChainId,
+    chainName: string,
+    chainRpcUrl: string,
+  ) => Promise<void>
+  signAndSendTx: (txRequestBody: TxRequestBody) => Promise<TransactionResponse>
+  getHashFromTxResponse: (txResponse: TransactionResponse) => string
+  getTxUrl: (explorerUrl: string, txHash: string) => string
+  getAddressUrl: (explorerUrl: string, address: string) => string
+}
+
+export const useProvider = (): UseProvider => {
   const providerWrp = ref<ProviderWrapper | undefined>()
 
   const selectedProvider = ref<PROVIDERS | undefined>()
-  const chainId: ComputedRef<ProviderChainId | undefined> = computed(
-    () => providerWrp.value?.chainId as ProviderChainId | undefined,
+  const chainId: ComputedRef<ChainId | undefined> = computed(
+    () => providerWrp.value?.chainId as ChainId | undefined,
   )
   const selectedAddress: ComputedRef<string | undefined> = computed(
     () => providerWrp.value?.selectedAddress as string | undefined,
@@ -56,7 +78,11 @@ export const useProvider = () => {
     await providerWrp.value.connect()
   }
 
-  const switchChain = async (chainId: ProviderChainId) => {
+  const disconnect = () => {
+    providerWrp.value = undefined
+  }
+
+  const switchChain = async (chainId: ChainId) => {
     if (!providerWrp.value)
       throw new errors.ProviderWrapperMethodNotFoundError()
 
@@ -64,7 +90,7 @@ export const useProvider = () => {
   }
 
   const addChain = async (
-    chainId: ProviderChainId,
+    chainId: ChainId,
     chainName: string,
     chainRpcUrl: string,
   ) => {
@@ -74,15 +100,34 @@ export const useProvider = () => {
     await providerWrp.value.addChain(chainId, chainName, chainRpcUrl)
   }
 
-  const disconnect = () => {
-    providerWrp.value = undefined
-  }
-
-  const signAndSendTx = async (txRequestBody: TxRequestBody) => {
+  const signAndSendTx = async (
+    txRequestBody: TxRequestBody,
+  ): Promise<TransactionResponse> => {
     if (!providerWrp.value)
       throw new errors.ProviderWrapperMethodNotFoundError()
 
-    await providerWrp.value.signAndSendTransaction(txRequestBody)
+    return providerWrp.value.signAndSendTransaction(txRequestBody)
+  }
+
+  const getHashFromTxResponse = (txResponse: TransactionResponse): string => {
+    if (!providerWrp.value)
+      throw new errors.ProviderWrapperMethodNotFoundError()
+
+    return providerWrp.value.getHashFromTxResponse(txResponse)
+  }
+
+  const getTxUrl = (explorerUrl: string, txHash: string): string => {
+    if (!providerWrp.value)
+      throw new errors.ProviderWrapperMethodNotFoundError()
+
+    return providerWrp.value.getTxUrl(explorerUrl, txHash)
+  }
+
+  const getAddressUrl = (explorerUrl: string, address: string): string => {
+    if (!providerWrp.value)
+      throw new errors.ProviderWrapperMethodNotFoundError()
+
+    return providerWrp.value.getAddressUrl(explorerUrl, address)
   }
 
   return {
@@ -93,9 +138,12 @@ export const useProvider = () => {
 
     init,
     connect,
+    disconnect,
     switchChain,
     addChain,
-    disconnect,
     signAndSendTx,
+    getHashFromTxResponse,
+    getTxUrl,
+    getAddressUrl,
   }
 }

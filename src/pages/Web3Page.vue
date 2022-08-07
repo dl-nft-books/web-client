@@ -82,16 +82,16 @@ import { defineComponent, ref } from 'vue'
 import { useWeb3ProvidersStore } from '@/store'
 import { convertEncodedSolTx, ErrorHandler } from '@/helpers'
 import { useProvider } from '@/composables'
-import { ProviderChainId, TxRequestBody, UseProvider } from '@/types'
-import { PROVIDERS } from '@/enums'
+import { ChainId, TxRequestBody, UseProvider } from '@/types'
+import { PROVIDERS, SOLANA_CHAINS } from '@/enums'
 
 const testingData: Record<
   PROVIDERS,
   {
     tx?: TxRequestBody
     chainToSwitch?: {
-      first: ProviderChainId
-      second: ProviderChainId
+      first: ChainId
+      second: ChainId
     }
     chainToAdd?: {
       id: number
@@ -136,8 +136,8 @@ const testingData: Record<
       '4MUn5mQ9ujcRJCLvt7fUVwcDoYtGhoJJNzXaG28Fbwb5W8pGRqLNPFLV5JSuPwjrWMKzdaTiBicBz3c8jJrtHpHnC9xtwzF95LFrazGqAvZBrZ4C84bsxhvEAuuedpQhPKhY9LRGZdeNBWFy6gJx3LWoyRMhvY2KGEtbTCXT5G5ESYzRZN98PR2DcFndvwMaCTMe6SUJGMXR2SFPvvRJdW89EPFrYuf64P5AjF4C4aGCTRrP73YBNUzuS3TBx8U5YSsHdfttSV1iVgkEj2u6sP27vUKXRCAdV2ZkqpxzVu5Bf2MruJEuouUTGa6BEeFrmLtzdQVaUE2uUzNoxYWDghd4UuNn8ntfdsuqhchGYfqGj5tFUmN1MZwHeL91ZT96EbVtMPPPvscLmhkVWGPDmC3RnsuhKw3k13aixEAmM7XB8qjA9GzAQMDcw3sX7yxRW12WBSTatFt8WkiG5LBVPB2HMjSmCdJC1xsUiVRNJ8Wbt73rMLmbwYjwtL4i4gMnXCqvZPNgszqhNhUeKe3WgXCNwTxrV6mx2H7NmyEZeuTbnYBsaZux7sNSTYsaagLtfs5Dx2g27DMb2fEc4DBTLZkVTW4iXMqNNcuwYtW6kHEMrjgKAuUhsEToXwun3PvgwguYJxSDJShSYJ1fc6QDbkJ1Vf6ehCqw4yD6ogn6tJDRfDyi8bKYCp9UkNjKeiFbpr9naLpkBqjLNekhFcpxDSj1zV1kXWEoCw2Fs84S73EYD8Kd2nC9ktAMVsyhEUBxJ1FE9i7b8n3fSyDZVZguw1GfQG36PaX3jTTE7qVcANXxj6ud',
     ),
     chainToSwitch: {
-      first: 'devnet',
-      second: 'testnet',
+      first: SOLANA_CHAINS.devnet,
+      second: SOLANA_CHAINS.testnet,
     },
   },
   [PROVIDERS.solflare]: {
@@ -145,8 +145,8 @@ const testingData: Record<
       '4MUn5mQ9ujcRJCLvt7fUVwcDoYtGhoJJNzXaG28Fbwb5W8pGRqLNPFLV5JSuPwjrWMKzdaTiBicBz3c8jJrtHpHnC9xtwzF95LFrazGqAvZBrZ4C84bsxhvEAuuedpQhPKhY9LRGZdeNBWFy6gJx3LWoyRMhvY2KGEtbTCXT5G5ESYzRZN98PR2DcFndvwMaCTMe6SUJGMXR2SFPvvRJdW89EPFrYuf64P5AjF4C4aGCTRrP73YBNUzuS3TBx8U5YSsHdfttSV1iVgkEj2u6sP27vUKXRCAdV2ZkqpxzVu5Bf2MruJEuouUTGa6BEeFrmLtzdQVaUE2uUzNoxYWDghd4UuNn8ntfdsuqhchGYfqGj5tFUmN1MZwHeL91ZT96EbVtMPPPvscLmhkVWGPDmC3RnsuhKw3k13aixEAmM7XB8qjA9GzAQMDcw3sX7yxRW12WBSTatFt8WkiG5LBVPB2HMjSmCdJC1xsUiVRNJ8Wbt73rMLmbwYjwtL4i4gMnXCqvZPNgszqhNhUeKe3WgXCNwTxrV6mx2H7NmyEZeuTbnYBsaZux7sNSTYsaagLtfs5Dx2g27DMb2fEc4DBTLZkVTW4iXMqNNcuwYtW6kHEMrjgKAuUhsEToXwun3PvgwguYJxSDJShSYJ1fc6QDbkJ1Vf6ehCqw4yD6ogn6tJDRfDyi8bKYCp9UkNjKeiFbpr9naLpkBqjLNekhFcpxDSj1zV1kXWEoCw2Fs84S73EYD8Kd2nC9ktAMVsyhEUBxJ1FE9i7b8n3fSyDZVZguw1GfQG36PaX3jTTE7qVcANXxj6ud',
     ),
     chainToSwitch: {
-      first: 'devnet',
-      second: 'testnet',
+      first: SOLANA_CHAINS.devnet,
+      second: SOLANA_CHAINS.testnet,
     },
   },
   [PROVIDERS.walletConnect]: {},

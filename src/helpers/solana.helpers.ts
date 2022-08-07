@@ -2,6 +2,7 @@ import { errors } from '@/errors'
 import { SolProviderRpcError } from '@/types'
 import { Transaction } from '@solana/web3.js'
 import bs58 from 'bs58'
+import { SOLANA_CHAINS } from '@/enums'
 
 export function handleSolError(error: SolProviderRpcError) {
   const ErrorCode = error?.error?.code || error?.code
@@ -48,4 +49,24 @@ export function handleSolError(error: SolProviderRpcError) {
 
 export function convertEncodedSolTx(encodedTx: string) {
   return Transaction.from(bs58.decode(encodedTx))
+}
+
+export function getSolExplorerTxUrl(
+  chainId: string,
+  explorerUrl: string,
+  txHash: string,
+) {
+  return chainId === SOLANA_CHAINS.mainet
+    ? `${explorerUrl}/tx/${txHash}`
+    : `${explorerUrl}/tx/${txHash}?cluster=${chainId}`
+}
+
+export function getSolExplorerAddressUrl(
+  chainId: string,
+  explorerUrl: string,
+  address: string,
+) {
+  return chainId === SOLANA_CHAINS.mainet
+    ? `${explorerUrl}/address/${address}`
+    : `${explorerUrl}/address/${address}?cluster=${chainId}`
 }
