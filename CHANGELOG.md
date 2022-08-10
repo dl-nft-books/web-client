@@ -1,49 +1,49 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
-The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
-and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+Th format is based on [Keep a Changelog
+an this project adheres to [Semantic Versioning
 
 ## [Unreleased]
 #### Added
-- [Eslint](.eslintrc.js)
-- [Stylelint](stylelint.config.js)
-- [prettier](.eslintrc.js)
-- [Vite bundler](vite.config.ts)
-- [PiniaJS store](src/store/index.ts)
-- [Vue-Router](src/router/index.ts)
+- Eslint
+- Stylelint
+- prettier
+- Vite bundler
+- PiniaJS store
+- Vue-Router
 - CI/CD
-  - [gitlab-ci](.gitlab-ci.yml)
-  - [werf.yaml](werf.yaml)
-- [Dockerfile](Dockerfile)
-- [nginx.conf](nginx.conf)
-- [static dir as public dir](static)
-  - [branding static files](static/branding)
-  - [styles and files for init-loader](static/init-loader)
-  - [noscript files](static/noscript)
-- [sanity-check](scripts/release-sanity-check.mjs)
-- [ErrorHandler](src/helpers/error-handler.ts)
-- [Event Bus by mitt](src/helpers/event-bus.ts)
-- [i18n localization](src/localization/index.ts)
-- [MathUtil](src/utils/math.util.ts)
-- [DateUtil](src/utils/date.util.ts)
-- [Styles structure](src/styles)
-- [Loader](src/common/Loader.vue)
-  - [Spinner](src/common/loader/Spinner.vue)
-- [ErrorMessage](src/common/ErrorMessage.vue)
-- [AppButton](src/common/AppButton.vue)
-- [App navbar](src/common/AppNavbar.vue)
-- [App logo](src/common/AppLogo.vue)
-- [Icon](src/common/Icon.vue)
-- [Fields](src/fields)
-  - [InputField](src/fields/InputField.vue)
-  - [CheckboxField](src/fields/CheckboxField.vue)
-- [composables](src/composables)
-  - [useForm](src/composables/use-form.ts)
-  - [useFormValidation](src/composables/use-form-validation.ts)
-  - [useNotifications](src/composables/use-notifications.ts)
-- [Collapse](src/common/Collapse.vue)
-- [Unit tests](vitest.config.ts)
+  - gitlab-ci
+  - werf.yaml
+- Dockerfile
+- nginx.conf
+- static dir as public dir
+  - branding static files
+  - styles and files for init-loader
+  - noscript files
+- sanity-check
+- ErrorHandler
+- Event Bus by mitt
+- i18n localization
+- MathUtil
+- DateUtil
+- Styles structure
+- Loader
+  - Spinner
+- ErrorMessage
+- AppButton
+- App navbar
+- App logo
+- Icon
+- Fields
+  - InputField
+  - CheckboxField
+- composables
+  - useForm
+  - useFormValidation
+  - useNotifications
+- Collapse
+- Unit tests
 
 ## [1.0.0-rc.0] - 2021-12-23
 #### Under the hood changes

@@ -15,9 +15,10 @@ declare module '@vue/runtime-core' {
 }
 
 interface ImportMetaEnv {
-  VITE_APP_API_URL: string
-  VITE_APP_ENVIRONMENT: string
-  VITE_APP_LOG_LEVEL: LogLevelDesc
+  VITE_ENVIRONMENT: string
+  VITE_PORT: string
+  VITE_API_URL: string
+  VITE_APP_NAME: string
 }
 
 declare global {

@@ -2,17 +2,10 @@ import packageJson from '../package.json'
 import { LogLevelDesc } from 'loglevel'
 import { pickBy, mapKeys } from 'lodash-es'
 
-interface AppConfig {
-  APP_NAME: string
-  API_URL: string
-  LOG_LEVEL: LogLevelDesc
-  BUILD_VERSION: string
-}
-
-export const config: AppConfig = {
+export const config = {
   API_URL: import.meta.env.VITE_API_URL,
   APP_NAME: import.meta.env.VITE_APP_NAME,
-  LOG_LEVEL: 'trace',
+  LOG_LEVEL: 'trace' as LogLevelDesc,
   BUILD_VERSION: packageJson.version || import.meta.env.VITE_APP_BUILD_VERSION,
 } as const
 
