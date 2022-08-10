@@ -44,6 +44,13 @@ an this project adheres to [Semantic Versioning
   - useNotifications
 - Collapse
 - Unit tests
+- Web3 supporting
+  - detecting browser providers
+  - use common interface to control provider wrappers
+  - metamask wrapper
+  - coinbase wrapper
+  - phantom wrapper
+  - solflare wrapper
 
 ## [1.0.0-rc.0] - 2021-12-23
 #### Under the hood changes
