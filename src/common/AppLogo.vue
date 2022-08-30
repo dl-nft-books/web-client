@@ -22,6 +22,7 @@ export default defineComponent({
   display: flex;
   flex-direction: column;
   position: relative;
+  background: var(--primary-main);
 }
 
 .app-logo__link {

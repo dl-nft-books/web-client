@@ -1,54 +1,56 @@
-import { errors } from '@/errors'
-import { SolProviderRpcError } from '@/types'
 import { Transaction } from '@solana/web3.js'
 import bs58 from 'bs58'
-import { SOLANA_CHAINS } from '@/enums'
 
-export function handleSolError(error: SolProviderRpcError) {
+import { EIP1193, EIP1474, SOLANA_CHAINS } from '@/enums'
+import { errors } from '@/errors'
+import { SolanaProviderRpcError } from '@/types'
+
+export function handleSolError(error: SolanaProviderRpcError) {
   const ErrorCode = error?.error?.code || error?.code
 
   switch (ErrorCode) {
-    case 4001:
+    case EIP1193.userRejectedRequest:
       throw new errors.ProviderUserRejectedRequest()
-    case 4100:
+    case EIP1193.unauthorized:
       throw new errors.ProviderUnauthorized()
-    case 4200:
+    case EIP1193.unsupportedMethod:
       throw new errors.ProviderUnsupportedMethod()
-    case 4900:
+    case EIP1193.disconnected:
       throw new errors.ProviderDisconnected()
-    case 4901:
+    case EIP1193.chainDisconnected:
       throw new errors.ProviderChainDisconnected()
-    case -32700:
+    case EIP1474.parseError:
       throw new errors.ProviderParseError()
-    case -32600:
+    case EIP1474.invalidRequest:
       throw new errors.ProviderInvalidRequest()
-    case -32601:
+    case EIP1474.methodNotFound:
       throw new errors.ProviderMethodNotFound()
-    case -32602:
+    case EIP1474.invalidParams:
       throw new errors.ProviderInvalidParams()
-    case -32603:
+    case EIP1474.internalError:
       throw new errors.ProviderInternalError()
-    case -32000:
+    case EIP1474.invalidInput:
       throw new errors.ProviderInvalidInput()
-    case -32001:
+    case EIP1474.resourceNotFound:
       throw new errors.ProviderResourceNotFound()
-    case -32002:
+    case EIP1474.resourceUnavailable:
       throw new errors.ProviderResourceUnavailable()
-    case -32003:
+    case EIP1474.transactionRejected:
       throw new errors.ProviderTransactionRejected()
-    case -32004:
+    case EIP1474.methodNotSupported:
       throw new errors.ProviderMethodNotSupported()
-    case -32005:
+    case EIP1474.limitExceeded:
       throw new errors.ProviderLimitExceeded()
-    case -32006:
+    case EIP1474.jsonRpcVersionNotSupported:
       throw new errors.ProviderJsonRpcVersionNotSupported()
     default:
       throw error
   }
 }
 
-export function convertEncodedSolTx(encodedTx: string) {
-  return Transaction.from(bs58.decode(encodedTx))
+export function decodeSolanaTx(tx: string) {
+  const buff = bs58.decode(tx)
+  return Transaction.from(buff)
 }
 
 export function getSolExplorerTxUrl(

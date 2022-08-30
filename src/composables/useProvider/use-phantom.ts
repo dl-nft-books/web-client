@@ -3,14 +3,14 @@ import {
   ChainId,
   ProviderInstance,
   ProviderWrapper,
-  SolProviderRpcError,
+  SolanaProviderRpcError,
   TxRequestBody,
   SolanaTransactionResponse,
   TransactionResponse,
 } from '@/types'
 import { computed, ref } from 'vue'
 import {
-  convertEncodedSolTx,
+  decodeSolanaTx,
   getSolExplorerAddressUrl,
   getSolExplorerTxUrl,
   handleSolError,
@@ -59,7 +59,7 @@ export const usePhantom = (provider: ProviderInstance): ProviderWrapper => {
     try {
       await currentProvider.connect()
     } catch (error) {
-      handleSolError(error as SolProviderRpcError)
+      handleSolError(error as SolanaProviderRpcError)
     }
   }
 
@@ -67,7 +67,7 @@ export const usePhantom = (provider: ProviderInstance): ProviderWrapper => {
     try {
       chainId.value = _chainId
     } catch (error) {
-      handleSolError(error as SolProviderRpcError)
+      handleSolError(error as SolanaProviderRpcError)
     }
   }
 
@@ -75,7 +75,7 @@ export const usePhantom = (provider: ProviderInstance): ProviderWrapper => {
     try {
       const txBody =
         typeof txRequestBody === 'string'
-          ? convertEncodedSolTx(txRequestBody)
+          ? decodeSolanaTx(txRequestBody)
           : txRequestBody
 
       const connection = new Connection(clusterApiUrl(chainId.value as Cluster))
@@ -86,7 +86,7 @@ export const usePhantom = (provider: ProviderInstance): ProviderWrapper => {
       await connection.confirmTransaction(signature)
       return signature
     } catch (error) {
-      handleSolError(error as SolProviderRpcError)
+      handleSolError(error as SolanaProviderRpcError)
     }
   }
 

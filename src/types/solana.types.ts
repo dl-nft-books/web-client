@@ -41,7 +41,7 @@ export type PhantomProvider = {
 }
 /* eslint-enable */
 
-export type SolProviderRpcError = {
+export type SolanaProviderRpcError = {
   error: {
     code: number
     message: string

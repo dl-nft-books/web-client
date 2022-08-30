@@ -1,6 +1,7 @@
 import { EthProviderRpcError } from '@/types'
 import { errors } from '@/errors'
 import { ethers } from 'ethers'
+import { EIP1193, EIP1474 } from '@/enums'
 
 export const connectEthAccounts = async (
   provider: ethers.providers.Web3Provider,
@@ -34,40 +35,40 @@ export async function requestAddEthChain(
 
 export function handleEthError(error: EthProviderRpcError) {
   switch (error.code) {
-    case 4001:
-      throw new errors.ProviderUserRejectedRequest()
-    case 4100:
-      throw new errors.ProviderUnauthorized()
-    case 4200:
-      throw new errors.ProviderUnsupportedMethod()
-    case 4900:
-      throw new errors.ProviderDisconnected()
-    case 4901:
-      throw new errors.ProviderChainDisconnected()
-    case -32700:
-      throw new errors.ProviderParseError()
-    case -32600:
-      throw new errors.ProviderInvalidRequest()
-    case -32601:
-      throw new errors.ProviderMethodNotFound()
-    case -32602:
-      throw new errors.ProviderInvalidParams()
-    case -32603:
-      throw new errors.ProviderInternalError()
-    case -32000:
-      throw new errors.ProviderInvalidInput()
-    case -32001:
-      throw new errors.ProviderResourceNotFound()
-    case -32002:
-      throw new errors.ProviderResourceUnavailable()
-    case -32003:
-      throw new errors.ProviderTransactionRejected()
-    case -32004:
-      throw new errors.ProviderMethodNotSupported()
-    case -32005:
-      throw new errors.ProviderLimitExceeded()
-    case -32006:
-      throw new errors.ProviderJsonRpcVersionNotSupported()
+    case EIP1193.userRejectedRequest:
+      throw new errors.ProviderUserRejectedRequest(error.message)
+    case EIP1193.unauthorized:
+      throw new errors.ProviderUnauthorized(error.message)
+    case EIP1193.unsupportedMethod:
+      throw new errors.ProviderUnsupportedMethod(error.message)
+    case EIP1193.disconnected:
+      throw new errors.ProviderDisconnected(error.message)
+    case EIP1193.chainDisconnected:
+      throw new errors.ProviderChainDisconnected(error.message)
+    case EIP1474.parseError:
+      throw new errors.ProviderParseError(error.message)
+    case EIP1474.invalidRequest:
+      throw new errors.ProviderInvalidRequest(error.message)
+    case EIP1474.methodNotFound:
+      throw new errors.ProviderMethodNotFound(error.message)
+    case EIP1474.invalidParams:
+      throw new errors.ProviderInvalidParams(error.message)
+    case EIP1474.internalError:
+      throw new errors.ProviderInternalError(error.message)
+    case EIP1474.invalidInput:
+      throw new errors.ProviderInvalidInput(error.message)
+    case EIP1474.resourceNotFound:
+      throw new errors.ProviderResourceNotFound(error.message)
+    case EIP1474.resourceUnavailable:
+      throw new errors.ProviderResourceUnavailable(error.message)
+    case EIP1474.transactionRejected:
+      throw new errors.ProviderTransactionRejected(error.message)
+    case EIP1474.methodNotSupported:
+      throw new errors.ProviderMethodNotSupported(error.message)
+    case EIP1474.limitExceeded:
+      throw new errors.ProviderLimitExceeded(error.message)
+    case EIP1474.jsonRpcVersionNotSupported:
+      throw new errors.ProviderJsonRpcVersionNotSupported(error.message)
     default:
       throw error
   }

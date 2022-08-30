@@ -19,7 +19,9 @@ export class ErrorHandler {
     const { t } = i18n.global
     let errorMessage = ''
 
-    if (error instanceof Error)
+    if (error instanceof Error) {
+      if (error.message) return error.message
+
       switch (error.constructor) {
         case errors.ProviderChainNotFoundError:
           errorMessage = t('errors.provider-chain-not-found-error')
@@ -85,6 +87,7 @@ export class ErrorHandler {
           errorMessage = t('errors.default')
         }
       }
+    }
 
     return errorMessage
   }

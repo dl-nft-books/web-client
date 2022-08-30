@@ -4,13 +4,13 @@ import {
   ProviderInstance,
   ProviderWrapper,
   SolanaTransactionResponse,
-  SolProviderRpcError,
+  SolanaProviderRpcError,
   TransactionResponse,
   TxRequestBody,
 } from '@/types'
 import { computed, ref } from 'vue'
 import {
-  convertEncodedSolTx,
+  decodeSolanaTx,
   getSolExplorerAddressUrl,
   getSolExplorerTxUrl,
   handleSolError,
@@ -63,7 +63,7 @@ export const useSolflare = (provider: ProviderInstance): ProviderWrapper => {
     try {
       await currentProvider.connect()
     } catch (error) {
-      handleSolError(error as SolProviderRpcError)
+      handleSolError(error as SolanaProviderRpcError)
     }
   }
 
@@ -72,7 +72,7 @@ export const useSolflare = (provider: ProviderInstance): ProviderWrapper => {
       connection.value = new Connection(clusterApiUrl(chainId.value as Cluster))
       chainId.value = _chainId
     } catch (error) {
-      handleSolError(error as SolProviderRpcError)
+      handleSolError(error as SolanaProviderRpcError)
     }
   }
 
@@ -80,7 +80,7 @@ export const useSolflare = (provider: ProviderInstance): ProviderWrapper => {
     try {
       const txBody =
         typeof txRequestBody === 'string'
-          ? convertEncodedSolTx(txRequestBody)
+          ? decodeSolanaTx(txRequestBody)
           : txRequestBody
 
       const signedTx = await currentProvider.signTransaction(
@@ -95,7 +95,7 @@ export const useSolflare = (provider: ProviderInstance): ProviderWrapper => {
       await connection.confirmTransaction(signature)
       return signature
     } catch (error) {
-      handleSolError(error as SolProviderRpcError)
+      handleSolError(error as SolanaProviderRpcError)
     }
   }
 
