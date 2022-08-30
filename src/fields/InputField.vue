@@ -185,7 +185,7 @@ export default defineComponent({
   overflow: hidden;
   text-overflow: ellipsis;
 
-  @extend %field-label;
+  @include field-label;
 
   .input-field--error & {
     color: var(--field-error);
@@ -202,28 +202,28 @@ export default defineComponent({
   padding: var(--field-padding);
   transition-property: box-shadow;
 
-  @extend %field-text;
+  @include field-text;
 
-  @extend %field-border;
+  @include field-border;
 
   &::-webkit-input-placeholder {
-    @extend %field-placeholder;
+    @include field-placeholder;
   }
 
   &::-moz-placeholder {
-    @extend %field-placeholder;
+    @include field-placeholder;
   }
 
   &:-moz-placeholder {
-    @extend %field-placeholder;
+    @include field-placeholder;
   }
 
   &:-ms-input-placeholder {
-    @extend %field-placeholder;
+    @include field-placeholder;
   }
 
   &::placeholder {
-    @extend %field-placeholder;
+    @include field-placeholder;
   }
 
   &:not(:read-only) {
@@ -289,7 +289,7 @@ export default defineComponent({
 }
 
 .input-field__err-msg {
-  @extend %field-error;
+  @include field-error;
 }
 
 .input-field__err-msg-transition-enter-active {

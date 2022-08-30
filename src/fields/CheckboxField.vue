@@ -129,6 +129,6 @@ export default defineComponent({
   display: inline-flex;
   user-select: none;
 
-  @extend %field-text;
+  @include field-text;
 }
 </style>

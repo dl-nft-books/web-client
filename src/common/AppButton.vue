@@ -306,6 +306,6 @@ export default defineComponent({
   word-break: break-all;
   min-width: 0;
 
-  @extend %text-ellipsis;
+  @include text-ellipsis;
 }
 </style>
