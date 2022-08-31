@@ -57,7 +57,6 @@ export default defineConfig(({ command, mode }) => {
         scss: {
           additionalData: `
           @import "@/styles/_functions.scss";
-          @import "@/styles/_placeholders.scss";
           @import "@/styles/_mixins.scss";
         `,
         },
