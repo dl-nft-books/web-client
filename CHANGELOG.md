@@ -56,5 +56,5 @@ an this project adheres to [Semantic Versioning
 #### Under the hood changes
 - Initiated and setup project
 
-[Unreleased]: https://gitlab.com/lukachi/vue-vite-template/compare/1.0.0-rc.0...main
-[1.0.0-rc.0]: https://gitlab.com/lukachi/vue-vite-template/tags/1.0.0-rc.0
+[Unreleased]: https://gitlab.com/distributed_lab/frontend/vue-template/compare/1.0.0-rc.0...main
+[1.0.0-rc.0]: https://gitlab.com/distributed_lab/frontend/vue-template/tags/1.0.0-rc.0
