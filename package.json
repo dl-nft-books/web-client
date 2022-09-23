@@ -1,6 +1,6 @@
 {
   "name": "vue-vite-template",
-  "version": "1.0.0-rc.0",
+  "version": "1.0.0-rc.1",
   "gitHooks": {
     "pre-commit": "yarn lint",
     "pre-push": "yarn test && yarn rsc"
