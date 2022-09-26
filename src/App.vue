@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import AppNavbar from '@/common/AppNavbar.vue'
+import { AppNavbar } from '@/common'
 
 import { ErrorHandler } from '@/helpers/error-handler'
 import { ref } from 'vue'
@@ -11,6 +11,8 @@ const init = async () => {
   try {
     useNotifications()
     document.title = config.APP_NAME
+    // eslint-disable-next-line no-console
+    console.log(config.BUILD_VERSION)
   } catch (error) {
     ErrorHandler.process(error)
   }

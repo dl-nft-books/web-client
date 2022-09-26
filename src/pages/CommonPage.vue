@@ -287,10 +287,10 @@ import {
   NoDataMessage,
   Loader,
   Icon,
+  Collapse,
 } from '@/common'
 
 import { defineComponent, ref } from 'vue'
-import Collapse from '@/common/Collapse.vue'
 
 export default defineComponent({
   name: 'common-page',
