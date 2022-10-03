@@ -1,10 +1,16 @@
-# ViteJS + Vue 3 + Typescript + Vue-Router + PiniaJS
+# Web client NFT-books
 
-# Eslint + Stylelint
+## based on:
+ - Vite
+ - Vue 3
+ - Typescript
+ - Vue-Router
+ - PiniaJS
+ - Eslint + Stylelint + prettier
 
 ## Project setup
 ```
-yarn install
+yarn
 ```
 
 ### Compiles and hot-reloads for development
@@ -33,6 +39,6 @@ yarn rsc %release-version%
 ```
 
 ### Build docker image with version
-```dockerfile
+```
  docker build --no-cache --progress=plain --build-arg BUILD_VERSION=1.0.0-rc.0 -t vue-template .
 ```

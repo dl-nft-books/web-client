@@ -1,5 +1,5 @@
 {
-  "name": "vue-vite-template",
+  "name": "web-client-nft-books",
   "version": "1.0.0-rc.1",
   "gitHooks": {
     "pre-commit": "yarn lint",
