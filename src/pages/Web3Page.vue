@@ -1,87 +1,10 @@
-<template>
-  <div class="web3-page">
-    <template v-if="isLoaded">
-      <template v-if="isLoadFailed">
-        <error-message :message="$t('web3-page.loading-error-msg')" />
-      </template>
-      <template v-else>
-        <div class="web3-page__list">
-          <div
-            class="web3-page__card"
-            v-for="provider in providers"
-            :key="provider.selectedProvider.value"
-          >
-            <div
-              class="web3-page__card-indicator"
-              :class="{
-                'web3-page__card-indicator--active': provider.isConnected.value,
-              }"
-            />
-            <h2 class="web3-page__card-title">
-              {{ provider.selectedProvider.value }}
-            </h2>
-            <span class="web3-page__card-name">
-              {{ provider.selectedAddress.value }}
-            </span>
-            <span class="web3-page__txt">
-              {{ `chainId: ${provider.chainId.value}` }}
-            </span>
-            <app-button
-              class="web3-page__card-btn"
-              schemes="flat"
-              modifications="border-rounded small"
-              :text="provider.selectedAddress.value || 'Connect'"
-              @click="connect(provider)"
-              :disabled="provider.isConnected.value"
-            />
-            <template
-              v-if="testingData[provider.selectedProvider.value]?.chainToSwitch"
-            >
-              <app-button
-                class="web3-page__card-btn"
-                schemes="flat"
-                modifications="border-rounded small"
-                :text="'switch chain'"
-                @click="switchChain(provider)"
-              />
-            </template>
-            <template
-              v-if="testingData[provider.selectedProvider.value]?.chainToAdd"
-            >
-              <app-button
-                class="web3-page__card-btn"
-                schemes="flat"
-                modifications="border-rounded small"
-                :text="'add chain'"
-                @click="addChain(provider)"
-              />
-            </template>
-            <template v-if="testingData[provider.selectedProvider.value]?.tx">
-              <app-button
-                class="web3-page__card-btn"
-                schemes="flat"
-                modifications="border-rounded small"
-                :text="'sendTx'"
-                @click="sendTx(provider)"
-              />
-            </template>
-          </div>
-        </div>
-      </template>
-    </template>
-    <template v-else>
-      <loader />
-    </template>
-  </div>
-</template>
-
-<script lang="ts">
+<script lang="ts" setup>
 import { AppButton, Loader, ErrorMessage } from '@/common'
 
-import { defineComponent, ref } from 'vue'
+import { ref } from 'vue'
 import { useWeb3ProvidersStore } from '@/store'
-import { ErrorHandler } from '@/helpers'
 import { useProvider } from '@/composables'
+import { ErrorHandler } from '@/helpers'
 import { ChainId, TxRequestBody, UseProvider } from '@/types'
 import { PROVIDERS, SOLANA_CHAINS } from '@/enums'
 
@@ -152,108 +75,165 @@ const testingData: Record<
   [PROVIDERS.ledger]: {},
 }
 
-export default defineComponent({
-  name: 'web3-page',
-  components: { ErrorMessage, Loader, AppButton },
-  setup() {
-    const isLoaded = ref(false)
-    const isLoadFailed = ref(false)
+const isLoaded = ref(false)
+const isLoadFailed = ref(false)
 
-    const web3Store = useWeb3ProvidersStore()
+const web3Store = useWeb3ProvidersStore()
 
-    const providers: UseProvider[] = []
+const providers: UseProvider[] = []
 
-    const init = async () => {
-      try {
-        await web3Store.detectProviders()
+const init = async () => {
+  try {
+    await web3Store.detectProviders()
 
-        for (const designatedProvider of web3Store.providers) {
-          const provider = useProvider()
+    for (const designatedProvider of web3Store.providers) {
+      const provider = useProvider()
 
-          await provider.init(designatedProvider)
-          providers.push(provider)
-        }
-      } catch (error) {
-        ErrorHandler.processWithoutFeedback(error)
-        isLoadFailed.value = true
-      }
-      isLoaded.value = true
+      await provider.init(designatedProvider)
+      providers.push(provider)
     }
+  } catch (error) {
+    ErrorHandler.processWithoutFeedback(error)
+    isLoadFailed.value = true
+  }
+  isLoaded.value = true
+}
 
-    const connect = async (provider: UseProvider) => {
-      try {
-        await provider.connect()
-      } catch (error) {
-        ErrorHandler.process(error)
-      }
-    }
+const connect = async (provider: UseProvider) => {
+  try {
+    await provider.connect()
+  } catch (error) {
+    ErrorHandler.process(error)
+  }
+}
 
-    const switchChain = async (provider: UseProvider) => {
-      if (!provider.selectedProvider.value) return
-      const providerDataToTest = testingData[provider.selectedProvider.value]
+const switchChain = async (provider: UseProvider) => {
+  if (!provider.selectedProvider.value) return
+  const providerDataToTest = testingData[provider.selectedProvider.value]
 
-      if (!providerDataToTest?.chainToSwitch) return
+  if (!providerDataToTest?.chainToSwitch) return
 
-      const chainToSwitch =
-        provider.chainId.value === providerDataToTest.chainToSwitch.first
-          ? providerDataToTest.chainToSwitch.second
-          : providerDataToTest.chainToSwitch.first
+  const chainToSwitch =
+    provider.chainId.value === providerDataToTest.chainToSwitch.first
+      ? providerDataToTest.chainToSwitch.second
+      : providerDataToTest.chainToSwitch.first
 
-      try {
-        await provider.switchChain(chainToSwitch)
-      } catch (error) {
-        ErrorHandler.process(error)
-      }
-    }
+  try {
+    await provider.switchChain(chainToSwitch)
+  } catch (error) {
+    ErrorHandler.process(error)
+  }
+}
 
-    const addChain = async (provider: UseProvider) => {
-      if (!provider.selectedProvider.value) return
-      const providerDataToTest = testingData[provider.selectedProvider.value]
+const addChain = async (provider: UseProvider) => {
+  if (!provider.selectedProvider.value) return
+  const providerDataToTest = testingData[provider.selectedProvider.value]
 
-      if (!providerDataToTest.chainToAdd) return
+  if (!providerDataToTest.chainToAdd) return
 
-      try {
-        await provider.addChain(
-          providerDataToTest.chainToAdd.id,
-          providerDataToTest.chainToAdd.name,
-          providerDataToTest.chainToAdd.rpcUrl,
-        )
-      } catch (error) {
-        ErrorHandler.process(error)
-      }
-    }
+  try {
+    await provider.addChain(
+      providerDataToTest.chainToAdd.id,
+      providerDataToTest.chainToAdd.name,
+      providerDataToTest.chainToAdd.rpcUrl,
+    )
+  } catch (error) {
+    ErrorHandler.process(error)
+  }
+}
 
-    const sendTx = async (provider: UseProvider) => {
-      if (!provider.selectedProvider.value) return
-      const providerDataToTest = testingData[provider.selectedProvider.value]
+const sendTx = async (provider: UseProvider) => {
+  if (!provider.selectedProvider.value) return
+  const providerDataToTest = testingData[provider.selectedProvider.value]
 
-      const tx = providerDataToTest.tx
+  const tx = providerDataToTest.tx
 
-      try {
-        await provider.signAndSendTx(tx)
-      } catch (error) {
-        ErrorHandler.process(error)
-      }
-    }
+  try {
+    await provider.signAndSendTx(tx)
+  } catch (error) {
+    ErrorHandler.process(error)
+  }
+}
 
-    init()
-
-    return {
-      isLoaded,
-      isLoadFailed,
-
-      providers,
-
-      connect,
-      switchChain,
-      addChain,
-      sendTx,
-
-      testingData,
-    }
-  },
-})
+init()
 </script>
+
+<template>
+  <div class="web3-page">
+    <template v-if="isLoaded">
+      <template v-if="isLoadFailed">
+        <error-message :message="$t('web3-page.loading-error-msg')" />
+      </template>
+      <template v-else>
+        <div class="web3-page__list">
+          <div
+            class="web3-page__card"
+            v-for="provider in providers"
+            :key="provider.selectedProvider.value"
+          >
+            <div
+              class="web3-page__card-indicator"
+              :class="{
+                'web3-page__card-indicator--active': provider.isConnected.value,
+              }"
+            />
+            <h2 class="web3-page__card-title">
+              {{ provider.selectedProvider.value }}
+            </h2>
+            <span class="web3-page__card-name">
+              {{ provider.selectedAddress.value }}
+            </span>
+            <span class="web3-page__txt">
+              {{ `chainId: ${provider.chainId.value}` }}
+            </span>
+            <app-button
+              scheme="flat"
+              size="small"
+              class="web3-page__card-btn"
+              :text="provider.selectedAddress.value || 'Connect'"
+              @click="connect(provider)"
+              :disabled="provider.isConnected.value"
+            />
+            <template
+              v-if="testingData[provider.selectedProvider.value]?.chainToSwitch"
+            >
+              <app-button
+                scheme="flat"
+                size="small"
+                class="web3-page__card-btn"
+                :text="'switch chain'"
+                @click="switchChain(provider)"
+              />
+            </template>
+            <template
+              v-if="testingData[provider.selectedProvider.value]?.chainToAdd"
+            >
+              <app-button
+                scheme="flat"
+                size="small"
+                class="web3-page__card-btn"
+                :text="'add chain'"
+                @click="addChain(provider)"
+              />
+            </template>
+            <template v-if="testingData[provider.selectedProvider.value]?.tx">
+              <app-button
+                scheme="flat"
+                size="small"
+                class="web3-page__card-btn"
+                :text="'sendTx'"
+                @click="sendTx(provider)"
+              />
+            </template>
+          </div>
+        </div>
+      </template>
+    </template>
+    <template v-else>
+      <loader />
+    </template>
+  </div>
+</template>
 
 <style lang="scss" scoped>
 .web3-page__list {

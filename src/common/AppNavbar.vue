@@ -1,61 +1,12 @@
+<script lang="ts" setup>
+import { AppLogo } from '@/common'
+</script>
+
 <template>
   <div class="app-navbar">
     <app-logo class="app-navbar__logo" />
-    <div class="app-navbar__links-section">
-      <app-button
-        class="app-navbar__link"
-        schemes="flat"
-        modifications="small border-rounded"
-        :route="{ name: $routes.buttons }"
-      >
-        {{ $t('app-navbar.buttons-page-link') }}
-      </app-button>
-      <app-button
-        class="app-navbar__link"
-        schemes="flat"
-        modifications="small border-rounded"
-        :route="{ name: $routes.inputs }"
-      >
-        {{ $t('app-navbar.inputs-page-link') }}
-      </app-button>
-      <app-button
-        class="app-navbar__link"
-        schemes="flat"
-        modifications="small border-rounded"
-        :route="{ name: $routes.forms }"
-      >
-        {{ $t('app-navbar.simple-form-link') }}
-      </app-button>
-      <app-button
-        class="app-navbar__link"
-        schemes="flat"
-        modifications="small border-rounded"
-        :route="{ name: $routes.common }"
-      >
-        {{ $t('app-navbar.simple-common-link') }}
-      </app-button>
-      <app-button
-        class="app-navbar__link"
-        schemes="flat"
-        modifications="small border-rounded"
-        :route="{ name: $routes.web3 }"
-      >
-        {{ $t('app-navbar.web3-link') }}
-      </app-button>
-    </div>
   </div>
 </template>
-
-<script lang="ts">
-import { AppLogo, AppButton } from '@/common'
-
-import { defineComponent } from 'vue'
-
-export default defineComponent({
-  name: 'app-navbar',
-  components: { AppButton, AppLogo },
-})
-</script>
 
 <style lang="scss" scoped>
 .app-navbar {
@@ -74,41 +25,6 @@ export default defineComponent({
   @include respond-to(xsmall) {
     width: 100%;
     margin-bottom: toRem(24);
-  }
-}
-
-.app-navbar__links-section {
-  display: flex;
-  align-items: center;
-  margin: 0 auto;
-
-  @include respond-to(tablet) {
-    width: 100%;
-    order: 3;
-  }
-
-  @include respond-to(xsmall) {
-    flex-direction: column;
-    align-items: flex-start;
-    width: 50%;
-    order: 1;
-  }
-}
-
-.app-navbar__link {
-  transition: 0.35s ease-in-out;
-
-  &:not(:last-child) {
-    margin-right: toRem(64);
-
-    @include respond-to(xsmall) {
-      margin-right: 0;
-      padding: toRem(6) 0;
-    }
-  }
-
-  &.router-link-active {
-    color: var(--primary-dark);
   }
 }
 </style>

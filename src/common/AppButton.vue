@@ -1,3 +1,68 @@
+<script lang="ts" setup>
+import { Icon } from '@/common'
+
+import { computed, useAttrs } from 'vue'
+import { LocationAsRelativeRaw } from 'vue-router'
+import { ICON_NAMES } from '@/enums'
+
+type SCHEMES = 'filled' | 'flat' | 'default'
+
+type MODIFICATIONS = 'border-circle' | 'border-rounded' | 'default'
+
+type COLORS =
+  | 'primary'
+  | 'secondary'
+  | 'success'
+  | 'error'
+  | 'warning'
+  | 'info'
+  | 'default'
+
+type SIZES = 'large' | 'medium' | 'small' | 'x-small' | 'default'
+
+const props = withDefaults(
+  defineProps<{
+    text?: string
+    scheme?: SCHEMES
+    modification?: MODIFICATIONS
+    color?: COLORS
+    size?: SIZES
+    route?: LocationAsRelativeRaw
+    href?: string
+    iconLeft?: ICON_NAMES
+    iconRight?: ICON_NAMES
+  }>(),
+  {
+    text: '',
+    scheme: 'filled',
+    modification: 'border-rounded',
+    color: 'primary',
+    size: 'medium',
+    route: undefined,
+    href: '',
+    iconLeft: undefined,
+    iconRight: undefined,
+  },
+)
+
+const attrs = useAttrs()
+
+const isDisabled = computed((): boolean =>
+  ['', 'disabled', true].includes(attrs.disabled as string | boolean),
+)
+
+const buttonClasses = computed(() =>
+  [
+    'app-button',
+    `app-button--${props.scheme}`,
+    `app-button--${props.modification}`,
+    `app-button--${props.color}`,
+    `app-button--${props.size}`,
+    ...(isDisabled.value ? ['app-button--disabled'] : []),
+  ].join(' '),
+)
+</script>
+
 <template>
   <template v-if="route">
     <router-link
@@ -6,6 +71,7 @@
       v-bind="$attrs"
       :to="route"
     >
+      <icon v-if="iconLeft" class="app-button__icon-left" :name="iconLeft" />
       <template v-if="$slots.default">
         <slot />
       </template>
@@ -14,11 +80,12 @@
           {{ text }}
         </span>
       </template>
-      <icon v-if="iconName" class="app-button__icon" :name="iconName" />
+      <icon v-if="iconRight" class="app-button__icon-right" :name="iconRight" />
     </router-link>
   </template>
   <template v-else-if="href">
     <a class="app-button" :class="buttonClasses" v-bind="$attrs" :href="href">
+      <icon v-if="iconLeft" class="app-button__icon-left" :name="iconLeft" />
       <template v-if="$slots.default">
         <slot />
       </template>
@@ -27,7 +94,7 @@
           {{ text }}
         </span>
       </template>
-      <icon v-if="iconName" class="app-button__icon" :name="iconName" />
+      <icon v-if="iconRight" class="app-button__icon-right" :name="iconRight" />
     </a>
   </template>
   <template v-else>
@@ -38,6 +105,7 @@
       :disabled="isDisabled"
       :type="$attrs.type || 'button'"
     >
+      <icon v-if="iconLeft" class="app-button__icon-left" :name="iconLeft" />
       <template v-if="$slots.default">
         <slot />
       </template>
@@ -46,91 +114,10 @@
           {{ text }}
         </span>
       </template>
-      <icon v-if="iconName" class="app-button__icon" :name="iconName" />
+      <icon v-if="iconRight" class="app-button__icon-right" :name="iconRight" />
     </button>
   </template>
 </template>
-
-<script lang="ts">
-import { Icon } from '@/common'
-
-import { computed, defineComponent, PropType } from 'vue'
-import { ICON_NAMES } from '@/enums'
-import { LocationAsRelativeRaw } from 'vue-router'
-import { isObject } from 'lodash-es'
-
-enum SCHEMES {
-  primary = 'primary',
-  flat = 'flat',
-}
-
-enum MODIFICATIONS {
-  borderCircle = 'border-circle',
-  borderRounded = 'border-rounded',
-  iconFirst = 'icon-first',
-  big = 'big',
-  small = 'small',
-  success = 'success',
-  error = 'error',
-  warning = 'warning',
-  info = 'info',
-}
-
-export default defineComponent({
-  name: 'app-button',
-  components: { Icon },
-  inheritAttrs: false,
-  props: {
-    iconName: { type: String as PropType<ICON_NAMES>, default: '' },
-    text: { type: String, default: '' },
-    schemes: {
-      type: String as PropType<SCHEMES>,
-      default: SCHEMES.primary,
-    },
-    modifications: {
-      type: String as PropType<MODIFICATIONS>,
-      default: MODIFICATIONS.borderRounded,
-    },
-    route: {
-      type: Object as PropType<LocationAsRelativeRaw>,
-      default: null,
-      validator: (value: LocationAsRelativeRaw): boolean => {
-        return !value || (isObject(value) && Boolean(value.name))
-      },
-    },
-    href: {
-      type: String,
-      default: '',
-    },
-  },
-  setup(props, { attrs }) {
-    const isDisabled = computed((): boolean =>
-      ['', 'disabled', true].includes(attrs.disabled as string | boolean),
-    )
-
-    const buttonClasses = computed(() => {
-      const schemes = props.schemes
-        .split(' ')
-        .filter(el => Boolean(el))
-        .map(el => `app-button--${el}`)
-
-      const modifications = props.modifications
-        .split(' ')
-        .filter(el => Boolean(el))
-        .map(el => `app-button--${el}`)
-
-      const states = [...(isDisabled.value ? ['app-button--disabled'] : [])]
-
-      return schemes.concat(modifications).concat(states).join(' ')
-    })
-
-    return {
-      buttonClasses,
-      isDisabled,
-    }
-  },
-})
-</script>
 
 <style lang="scss" scoped>
 .app-button {
@@ -145,14 +132,8 @@ export default defineComponent({
   display: grid;
   width: min-content;
   grid: auto / auto-flow max-content;
-  grid-gap: toRem(12);
   align-items: center;
   justify-content: center;
-  padding: toRem(16) toRem(30);
-  font-size: toRem(16);
-  line-height: 1.4;
-  font-weight: 600;
-  letter-spacing: 0;
   transition: var(--button-transition-duration) ease-in;
   transition-property: background-color, color;
   text-decoration: none;
@@ -185,20 +166,20 @@ export default defineComponent({
     border: var(--app-button-border-active);
   }
 
-  &--primary {
-    --app-button-primary-bg: var(--primary-main);
-    --app-button-primary-bg-hover: var(--primary-dark);
-    --app-button-primary-bg-active: var(--primary-dark);
+  &--filled {
+    --app-button-filled-bg: var(--primary-main);
+    --app-button-filled-bg-hover: var(--primary-dark);
+    --app-button-filled-bg-active: var(--primary-dark);
 
-    --app-button-primary-text: var(--text-primary-invert-main);
-    --app-button-primary-text-hover: var(--text-primary-invert-main);
+    --app-button-filled-text: var(--text-primary-invert-main);
+    --app-button-filled-text-hover: var(--text-primary-invert-main);
 
-    --app-button-bg: var(--app-button-primary-bg);
-    --app-button-bg-hover: var(--app-button-primary-bg-hover);
-    --app-button-bg-active: var(--app-button-primary-bg-active);
+    --app-button-bg: var(--app-button-filled-bg);
+    --app-button-bg-hover: var(--app-button-filled-bg-hover);
+    --app-button-bg-active: var(--app-button-filled-bg-active);
 
-    --app-button-text: var(--app-button-primary-text);
-    --app-button-text-hover: var(--app-button-primary-text-hover);
+    --app-button-text: var(--app-button-filled-text);
+    --app-button-text-hover: var(--app-button-filled-text-hover);
 
     --app-button-border: 0;
     --app-button-border-hover: 0;
@@ -232,9 +213,9 @@ export default defineComponent({
     --app-button-flat-border-hover: #{toRem(2)} solid var(--success-dark);
     --app-button-flat-border-active: #{toRem(2)} solid var(--success-dark);
 
-    --app-button-primary-bg: var(--success-main);
-    --app-button-primary-bg-hover: var(--success-dark);
-    --app-button-primary-bg-active: var(--success-dark);
+    --app-button-filled-bg: var(--success-main);
+    --app-button-filled-bg-hover: var(--success-dark);
+    --app-button-filled-bg-active: var(--success-dark);
   }
 
   &--error {
@@ -244,9 +225,9 @@ export default defineComponent({
     --app-button-flat-border-hover: #{toRem(2)} solid var(--error-dark);
     --app-button-flat-border-active: #{toRem(2)} solid var(--error-dark);
 
-    --app-button-primary-bg: var(--error-main);
-    --app-button-primary-bg-hover: var(--error-dark);
-    --app-button-primary-bg-active: var(--error-dark);
+    --app-button-filled-bg: var(--error-main);
+    --app-button-filled-bg-hover: var(--error-dark);
+    --app-button-filled-bg-active: var(--error-dark);
   }
 
   &--warning {
@@ -256,9 +237,9 @@ export default defineComponent({
     --app-button-flat-border-hover: #{toRem(2)} solid var(--warning-dark);
     --app-button-flat-border-active: #{toRem(2)} solid var(--warning-dark);
 
-    --app-button-primary-bg: var(--warning-main);
-    --app-button-primary-bg-hover: var(--warning-dark);
-    --app-button-primary-bg-active: var(--warning-dark);
+    --app-button-filled-bg: var(--warning-main);
+    --app-button-filled-bg-hover: var(--warning-dark);
+    --app-button-filled-bg-active: var(--warning-dark);
   }
 
   &--info {
@@ -268,9 +249,9 @@ export default defineComponent({
     --app-button-flat-border-hover: #{toRem(2)} solid var(--info-dark);
     --app-button-flat-border-active: #{toRem(2)} solid var(--info-dark);
 
-    --app-button-primary-bg: var(--info-main);
-    --app-button-primary-bg-hover: var(--info-dark);
-    --app-button-primary-bg-active: var(--info-dark);
+    --app-button-filled-bg: var(--info-main);
+    --app-button-filled-bg-hover: var(--info-dark);
+    --app-button-filled-bg-active: var(--info-dark);
   }
 
   &--border-circle {
@@ -281,22 +262,30 @@ export default defineComponent({
     border-radius: toRem(10);
   }
 
-  &--big {
-    padding: toRem(20) toRem(30);
+  &--large {
+    padding: toRem(24) toRem(50);
+    grid-gap: toRem(16);
+  }
+
+  &--medium {
+    padding: toRem(16) toRem(30);
+    font-size: toRem(16);
+    line-height: 1.4;
+    font-weight: 600;
+    grid-gap: toRem(12);
+    letter-spacing: 0;
   }
 
   &--small {
-    padding: toRem(8) toRem(30);
+    padding: toRem(8) toRem(15);
+    grid-gap: toRem(8);
   }
 }
 
-.app-button__icon {
+.app-button__icon-left,
+.app-button__icon-right {
   height: 1.2em;
   width: 1.2em;
-
-  .app-button--icon-first & {
-    grid-column: -1;
-  }
 }
 
 .app-button__text {
