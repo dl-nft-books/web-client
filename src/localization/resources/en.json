@@ -4,7 +4,25 @@
     "field-error_email": "Field must be a valid email"
   },
   "errors": {
-    "default": "Something went wrong"
+    "default": "Oops... Something went wrong",
+    "provider-user-rejected-request": "User rejected request.",
+    "provider-unauthorized": "The requested method and/or account has not been authorized by the user.",
+    "provider-unsupported-method": "The Provider does not support the requested method.",
+    "provider-disconnected": "The Provider is disconnected from all chains.",
+    "provider-chain-disconnected": "The Provider is not connected to the requested chain.",
+    "provider-parse-error": "Invalid JSON standard",
+    "provider-invalid-request": "JSON is not a valid request object standard",
+    "provider-method-not-found": "Method does not exist standard",
+    "provider-invalid-params": "Invalid method parameters standard",
+    "provider-internal-error": "Internal JSON-RPC error standard",
+    "provider-invalid-input": "Missing or invalid parameters non-standard",
+    "provider-resource-not-found": "equested resource not found non-standard",
+    "provider-resource-unavailable": "Requested resource not available non-standard",
+    "provider-transaction-rejected": "Transaction creation failed non-standard",
+    "provider-method-not-supported": "Method is not implemented non-standard",
+    "provider-limit-exceeded": "Request exceeds defined limit non-standard",
+    "provider-json-rpc-version-not-supported": "Version of JSON-RPC protocol is not supported non-standard",
+    "provider-wrapper-method-not-found": "provider not exist or hasn't this method"
   },
   "notification": {
     "default-title-success": "Success",
@@ -34,5 +52,8 @@
     "collapse-text": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
     "loading-error-msg": "Oops, something went wrong",
     "no-data-msg": "Empty data, please add new"
+  },
+  "web3-page": {
+    "loading-error-msg": "Oops... Something went wrong"
   }
 }

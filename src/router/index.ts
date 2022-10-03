@@ -18,6 +18,11 @@ const routes: Array<RouteRecordRaw> = [
     name: ROUTE_NAMES.uiKit,
     component: () => import('@/pages/UiKitPage.vue'),
   },
+  {
+    path: '/web3',
+    name: ROUTE_NAMES.web3,
+    component: () => import('@/pages/Web3Page.vue'),
+  },
 ]
 
 const router = createRouter({

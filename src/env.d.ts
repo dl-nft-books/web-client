@@ -1,7 +1,9 @@
 /// <reference types="vite/client" />
+
 import { config } from '@config'
 import { ICON_NAMES, ROUTE_NAMES } from '@/enums'
 import { WritableComputedRef } from 'vue'
+import { EthereumProvider } from '@/types'
 
 declare module '@vue/runtime-core' {
   export interface ComponentCustomProperties {
@@ -22,5 +24,13 @@ interface ImportMetaEnv {
 declare global {
   interface Document {
     ENV: ImportMetaEnv
+  }
+
+  interface Window {
+    ethereum?: EthereumProvider
+    solflare?: {
+      isSolflare: boolean
+    }
+    solana?: unknown
   }
 }
