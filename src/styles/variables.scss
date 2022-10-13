@@ -63,9 +63,9 @@
   /* App variables */
   --app-bg: #{$app-bg};
   --app-txt: #{$text-primary-main};
-  --app-font-family: 'Roboto', 'Arial', sans-serif;
-  --app-padding-right: #{toRem(120)};
-  --app-padding-left: #{toRem(120)};
+  --app-font-family: 'Gilroy', sans-serif;
+  --app-padding-right: #{toRem(100)};
+  --app-padding-left: #{toRem(100)};
 
   @include respond-to(small) {
     --app-padding-right: #{toRem(24)};
@@ -112,4 +112,15 @@
     var(--field-padding-left);
 
   --field-error: var(--error-main);
+
+  /* header */
+  --app-header-text: #{$col-header-text};
+  --app-header-icon: #{$col-header-icon};
+
+  /* footer */
+  --app-footer-background: #{$col-footer-background};
+  --app-footer-line: #{$col-footer-line};
+  --app-footer-icon: #{$col-footer-icon};
+  --app-footer-text: #{$col-footer-text};
+  --app-footer-social-links-icons: #{$col-social-links-icons};
 }

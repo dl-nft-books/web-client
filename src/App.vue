@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { AppNavbar } from '@/common'
+import { AppHeader, AppFooter } from '@/common'
 
 import { ErrorHandler } from '@/helpers/error-handler'
 import { ref } from 'vue'
@@ -22,12 +22,13 @@ init()
 
 <template>
   <div v-if="isAppInitialized" class="app__container">
-    <app-navbar class="app__navbar" />
+    <app-header />
     <router-view v-slot="{ Component, route }">
       <transition :name="route.meta.transition || 'fade'" mode="out-in">
         <component class="app__main" :is="Component" />
       </transition>
     </router-view>
+    <app-footer />
   </div>
 </template>
 
@@ -35,7 +36,7 @@ init()
 .app__container {
   overflow: hidden;
   display: grid;
-  grid-template-rows: toRem(85) 1fr max-content;
+  grid-template-rows: auto 1fr max-content;
   flex: 1;
 
   @include respond-to(small) {
