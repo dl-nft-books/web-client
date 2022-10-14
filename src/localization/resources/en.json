@@ -55,5 +55,16 @@
   },
   "web3-page": {
     "loading-error-msg": "Oops... Something went wrong"
+  },
+  "app-navbar": {
+    "bookshelf-link": "bookshelf",
+    "about-link": "about project",
+    "my-nfts-link": "my nfts",
+    "connect-provider-button": "Connect to Matamask"
+  },
+  "app-footer": {
+    "faq-link": "faq",
+    "help-link": "Help & Support",
+    "blog-link": "blog"
   }
 }

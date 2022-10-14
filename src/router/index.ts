@@ -11,7 +11,7 @@ import { ROUTE_NAMES } from '@/enums'
 const routes: Array<RouteRecordRaw> = [
   {
     path: '/:catchAll(.*)',
-    redirect: { name: ROUTE_NAMES.uiKit },
+    redirect: { name: ROUTE_NAMES.home },
   },
   {
     path: '/ui-kit',
@@ -19,9 +19,9 @@ const routes: Array<RouteRecordRaw> = [
     component: () => import('@/pages/UiKitPage.vue'),
   },
   {
-    path: '/web3',
-    name: ROUTE_NAMES.web3,
-    component: () => import('@/pages/Web3Page.vue'),
+    path: '/',
+    name: ROUTE_NAMES.home,
+    component: () => import('@/pages/HomePage.vue'),
   },
 ]
 
