@@ -11,7 +11,6 @@ const props = withDefaults(
     scheme: 'dark',
   },
 )
-
 </script>
 
 <template>
@@ -19,10 +18,7 @@ const props = withDefaults(
     :class="`app-logo app-logo--${props.scheme}`"
     :to="{ name: $routes.home }"
   >
-    <icon
-      class="app-logo__book-icon"
-      :name="$icons.book"
-    />
+    <icon class="app-logo__book-icon" :name="$icons.book" />
     <icon
       class="app-logo__store-text-icon"
       :name="$icons.distributedStoreText"

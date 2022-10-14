@@ -18,10 +18,11 @@ import { AppButton, AppLogo } from '@/common'
     </div>
     <div class="app-navbar__provider-button-wrapper">
       <app-button
-        class=".app-navbar__provider-btn"
+        class="app-navbar__provider-btn"
         type="button"
         :icon-left="$icons.metamask"
         scheme="flat"
+        size="small"
         :text="$t('app-navbar.connect-provider-button')"
       />
     </div>
@@ -53,10 +54,16 @@ import { AppButton, AppLogo } from '@/common'
 }
 
 .app-navbar__provider-btn {
+  text-transform: uppercase;
   font-family: var(--app-font-family);
   color: var(--text-secondary-main);
   font-size: toRem(16);
-  text-transform: uppercase;
   font-weight: 500;
+  padding: toRem(9) toRem(16);
+
+  &:deep(.app-button__icon-left) {
+    width: toRem(30);
+    height: toRem(30);
+  }
 }
 </style>
