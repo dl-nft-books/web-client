@@ -4,154 +4,135 @@ import { ICON_NAMES } from '@/enums'
 
 const SOCIAL_LINKS = [
   {
-    name: ICON_NAMES.facebook,
+    iconName: ICON_NAMES.facebookCircle,
     link: '/',
   },
   {
-    name: ICON_NAMES.instagram,
+    iconName: ICON_NAMES.instagramCircle,
     link: '/',
   },
   {
-    name: ICON_NAMES.youtube,
+    iconName: ICON_NAMES.youtubeCircle,
     link: '/',
   },
   {
-    name: ICON_NAMES.linkedin,
+    iconName: ICON_NAMES.linkedinCircle,
     link: '/',
   },
   {
-    name: ICON_NAMES.telegram,
+    iconName: ICON_NAMES.telegramCircle,
     link: '/',
   },
 ]
+
 </script>
 
 <template>
-<footer class="app-footer">
-  <hr class="app-footer__line"/>
-  <div class="app-footer__content">
-    <router-link
-      :to="$routes.home"
-      class="app-footer__logo-wrapper"
-    >
-      <icon
-        class="app-footer__book-icon"
-        :name="$icons.book"
-      />
-      <icon
-        class="app-footer__store-text-icon"
-        :name="$icons.distributedStoreText"
-      />
-    </router-link>
-    <div class="app-footer__links-wrapper">
-      <router-link
-        class="app-footer__text-link"
-        to="/"
-      >
-        {{ $t('footer.faq-text') }}
-      </router-link>
-      <router-link
-        class="app-footer__text-link"
-        to="/"
-      >
-        {{ $t('footer.help-and-support-text') }}
-      </router-link>
-      <router-link
-        class="app-footer__text-link"
-        to="/"
-      >
-        {{ $t('footer.blog-text') }}
-      </router-link>
-    </div>
-    <div class="app-footer__social-links">
-      <a
-        class="app-footer__social-link"
-        target="_blank"
-        rel="noopener"
-        v-for="(social, idx) in SOCIAL_LINKS"
-        :key="idx"
-        :href="social.link"
-      >
+  <footer class="app-footer">
+    <hr class="app-footer__line" />
+    <div class="app-footer__content">
+      <router-link :to="$routes.home" class="app-footer__logo-wrapper">
+        <icon class="app-footer__book-icon" :name="$icons.book" />
         <icon
-          class="app-footer__social-link-icon"
-          :name="social.name"
+          class="app-footer__store-text-icon"
+          :name="$icons.distributedStoreText"
         />
-      </a>
+      </router-link>
+      <div class="app-footer__links-wrapper">
+        <router-link class="app-footer__text-link" to="/">
+          {{ $t('app-footer.faq-link') }}
+        </router-link>
+        <router-link class="app-footer__text-link" to="/">
+          {{ $t('app-footer.help-link') }}
+        </router-link>
+        <router-link class="app-footer__text-link" to="/">
+          {{ $t('app-footer.blog-link') }}
+        </router-link>
+      </div>
+      <div class="app-footer__social-links">
+        <a
+          class="app-footer__social-link"
+          target="_blank"
+          rel="noopener"
+          v-for="(social, idx) in SOCIAL_LINKS"
+          :key="idx"
+          :href="social.link"
+        >
+          <icon
+            class="app-footer__social-link-icon"
+            :name="social.iconName"
+          />
+        </a>
+      </div>
     </div>
-  </div>
-</footer>
+  </footer>
 </template>
 
 <style lang="scss" scoped>
 .app-footer {
-  padding: 4rem var(--app-padding-right) 4rem var(--app-padding-left);
-  background: var(--app-footer-background);
+  padding: toRem(40) var(--app-padding-right) toRem(40) var(--app-padding-left);
+  background: var(--footer-bg);
 }
 
 .app-footer__line {
-  height: 0.1rem;
+  height: toRem(1);
   border: none;
-  background: var(--app-footer-line);
+  background: var(--primary-main);
 }
 
 .app-footer__content {
   display: flex;
   align-items: center;
-  margin-top: 3rem;
+  margin-top: toRem(30);
 }
 
 .app-footer__logo-wrapper {
   display: flex;
   align-items: center;
-  color: var(--app-footer-icon);
-  justify-self: flex-end;
+  color: var(--text-primary-invert-main);
 }
 
 .app-footer__book-icon {
-  max-width: 3rem;
-  max-height: 4.5rem;
-  margin-right: 1rem;
-  color: var(--app-footer-icon);
+  max-width: toRem(30);
+  max-height: toRem(45);
+  margin-right: toRem(10);
+  color: var(--text-primary-invert-main);
 }
 
 .app-footer__store-text-icon {
-  max-width: 20rem;
-  max-height: 1.5rem;
-  color: var(--app-footer-icon);
+  max-width: toRem(200);
+  max-height: toRem(15);
+  color: var(--text-primary-invert-main);
 }
 
 .app-footer__links-wrapper {
+  display: flex;
+  margin: 0 auto;
   justify-self: center;
   text-transform: uppercase;
+  column-gap: toRem(60);
 }
 
 .app-footer__text-link {
-  color: var(--app-footer-text);
+  color: var(--text-primary-invert-main);
   text-decoration: none;
   font-family: var(--app-font-family);
   font-weight: 500;
-  font-size: 1.4rem;
-
-  &:nth-child(2n) {
-    margin: 0 5rem;
-  }
+  font-size: toRem(14);
 }
 
 .app-footer__social-links {
   display: flex;
   justify-self: flex-end;
+  column-gap: toRem(15);
 }
 
 .app-footer__social-link {
-  width: 3.2rem;
-  height: 3.2rem;
-
-  &:nth-child(2n) {
-    margin: 0 1.5rem;
-  }
+  width: toRem(32);
+  height: toRem(32);
 }
 
 .app-footer__social-link-icon {
-  color: var(--app-footer-social-links-icons);
+  color: var(--footer-bg);
 }
 </style>

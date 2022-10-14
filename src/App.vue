@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { AppHeader, AppFooter } from '@/common'
+import { AppNavbar, AppFooter } from '@/common'
 
 import { ErrorHandler } from '@/helpers/error-handler'
 import { ref } from 'vue'
@@ -22,7 +22,7 @@ init()
 
 <template>
   <div v-if="isAppInitialized" class="app__container">
-    <app-header />
+    <app-navbar />
     <router-view v-slot="{ Component, route }">
       <transition :name="route.meta.transition || 'fade'" mode="out-in">
         <component class="app__main" :is="Component" />

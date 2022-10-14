@@ -30,14 +30,6 @@
   --primary-main: #{$primary-main};
   --primary-dark: #{$primary-dark};
 
-  --secondary-light: #{$secondary-light};
-  --secondary-main: #{$secondary-main};
-  --secondary-dark: #{$secondary-dark};
-
-  --tertiary-light: #{$tertiary-light};
-  --tertiary-main: #{$tertiary-main};
-  --tertiary-dark: #{$tertiary-dark};
-
   /* typography colors */
   --text-primary-light: #{$text-primary-light};
   --text-primary-main: #{$text-primary-main};
@@ -62,6 +54,7 @@
 
   /* App variables */
   --app-bg: #{$app-bg};
+  --footer-bg: #{$footer-bg};
   --app-txt: #{$text-primary-main};
   --app-font-family: 'Gilroy', sans-serif;
   --app-padding-right: #{toRem(100)};
@@ -112,15 +105,4 @@
     var(--field-padding-left);
 
   --field-error: var(--error-main);
-
-  /* header */
-  --app-header-text: #{$col-header-text};
-  --app-header-icon: #{$col-header-icon};
-
-  /* footer */
-  --app-footer-background: #{$col-footer-background};
-  --app-footer-line: #{$col-footer-line};
-  --app-footer-icon: #{$col-footer-icon};
-  --app-footer-text: #{$col-footer-text};
-  --app-footer-social-links-icons: #{$col-social-links-icons};
 }

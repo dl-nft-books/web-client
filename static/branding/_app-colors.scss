@@ -3,7 +3,8 @@ $white-rgb: hexToRGB($white);
 $black: #000000;
 $black-rgb: hexToRGB($black);
 
-$app-bg: #ffffff;
+$app-bg: #f5f5f5;
+$footer-bg: #232323;
 
 /* status colors */
 
@@ -25,27 +26,19 @@ $info-dark: #0094cc;
 
 /* brand colors */
 
-$primary-light: #768fff;
+$primary-light: #84f1ff;
 $primary-main: #4cbecf;
-$primary-dark: #0039cb;
-
-$secondary-light: #8e8e8e;
-$secondary-main: #616161;
-$secondary-dark: #373737;
-
-$tertiary-light: #ffff6b;
-$tertiary-main: #fdd835;
-$tertiary-dark: #c6a700;
+$primary-dark: #008d9e;
 
 /* typography colors */
 
-$text-primary-light: #978d8d;
+$text-primary-light: #717171;
 $text-primary-main: #464646;
-$text-primary-dark: #232323;
+$text-primary-dark: #1f1f1f;
 
-$text-secondary-light: #4f5b62;
-$text-secondary-main: #263238;
-$text-secondary-dark: #000a12;
+$text-secondary-light: #c8bdbd;
+$text-secondary-main: #978d8d;
+$text-secondary-dark: #696060;
 
 $text-primary-invert-light: #ffffff;
 $text-primary-invert-main: #ffffff;
@@ -57,16 +50,6 @@ $text-secondary-invert-dark: #ffffff;
 
 /* border colors */
 
-$border-primary-light: #cfcfcf;
-$border-primary-main: #9e9e9e;
-$border-primary-dark: #707070;
-
-/* app colors */
-$col-header-text: $text-primary-light;
-$col-header-icon: $text-primary-main;
-
-$col-footer-background: $text-primary-dark;
-$col-footer-line: $primary-main;
-$col-footer-icon: $text-primary-invert-light;
-$col-footer-text: $text-primary-invert-light;
-$col-social-links-icons: $text-primary-dark;
+$border-primary-light: #c8bdbd;
+$border-primary-main: #978d8d;
+$border-primary-dark: #696060;
