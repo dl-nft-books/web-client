@@ -23,6 +23,11 @@ const routes: Array<RouteRecordRaw> = [
     name: ROUTE_NAMES.home,
     component: () => import('@/pages/HomePage.vue'),
   },
+  {
+    path: '/bookshelf',
+    name: ROUTE_NAMES.bookshelf,
+    component: () => import('@/pages/BookshelfPage.vue'),
+  },
 ]
 
 const router = createRouter({

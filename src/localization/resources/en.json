@@ -66,5 +66,11 @@
     "faq-link": "faq",
     "help-link": "Help & Support",
     "blog-link": "blog"
+  },
+  "bookshelf-page": {
+    "title": "Bookshelf",
+    "loading-error-msg": "Oops... Something went wrong",
+    "no-data-msg": "Empty data, please add new",
+    "purchase-btn": "Buy"
   }
 }
