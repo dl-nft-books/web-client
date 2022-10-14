@@ -14,8 +14,12 @@ import {
   TxRequestBody,
 } from '@/types'
 import { errors } from '@/errors'
+import { ethers } from 'ethers'
 
 export interface UseProvider {
+  currentProvider: ComputedRef<ethers.providers.Web3Provider | undefined>
+  currentSigner: ComputedRef<ethers.providers.JsonRpcSigner | undefined>
+
   selectedProvider: Ref<PROVIDERS | undefined>
   chainId: ComputedRef<ChainId | undefined>
   selectedAddress: ComputedRef<string | undefined>
@@ -39,11 +43,22 @@ export interface UseProvider {
 export const useProvider = (): UseProvider => {
   const providerWrp = ref<ProviderWrapper | undefined>()
 
+  const currentProvider = computed(
+    () =>
+      providerWrp.value
+        ?.currentProvider as unknown as ethers.providers.Web3Provider,
+  )
+  const currentSigner = computed(
+    () =>
+      providerWrp.value
+        ?.currentSigner as unknown as ethers.providers.JsonRpcSigner,
+  )
+
   const selectedProvider = ref<PROVIDERS | undefined>()
-  const chainId: ComputedRef<ChainId | undefined> = computed(
+  const chainId = computed(
     () => providerWrp.value?.chainId as ChainId | undefined,
   )
-  const selectedAddress: ComputedRef<string | undefined> = computed(
+  const selectedAddress = computed(
     () => providerWrp.value?.selectedAddress as string | undefined,
   )
   const isConnected = computed(() =>
@@ -131,6 +146,9 @@ export const useProvider = (): UseProvider => {
   }
 
   return {
+    currentProvider,
+    currentSigner,
+
     selectedProvider,
     chainId,
     selectedAddress,

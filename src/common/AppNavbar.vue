@@ -1,5 +1,18 @@
 <script lang="ts" setup>
 import { AppButton, AppLogo } from '@/common'
+import { useWeb3ProvidersStore } from '@/store'
+import { cropAddress } from '@/helpers'
+import { storeToRefs } from 'pinia'
+
+const { provider } = storeToRefs(useWeb3ProvidersStore())
+
+const handleProviderClick = () => {
+  if (provider.value.selectedAddress) {
+    provider.value.disconnect()
+  } else {
+    provider.value.connect()
+  }
+}
 </script>
 
 <template>
@@ -23,7 +36,12 @@ import { AppButton, AppLogo } from '@/common'
         :icon-left="$icons.metamask"
         scheme="flat"
         size="small"
-        :text="$t('app-navbar.connect-provider-button')"
+        :text="
+          provider.selectedAddress
+            ? cropAddress(provider.selectedAddress)
+            : $t('app-navbar.connect-provider-button')
+        "
+        @click="handleProviderClick"
       />
     </div>
   </nav>

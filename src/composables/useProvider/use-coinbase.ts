@@ -24,10 +24,14 @@ export const useCoinbase = (provider: ProviderInstance): ProviderWrapper => {
   const chainId = ref<ChainId>('')
   const selectedAddress = ref('')
 
-  const currentProvider = new ethers.providers.Web3Provider(
-    provider as ethers.providers.ExternalProvider,
-    'any',
+  const currentProvider = computed(
+    () =>
+      new ethers.providers.Web3Provider(
+        provider as ethers.providers.ExternalProvider,
+        'any',
+      ),
   )
+  const currentSigner = computed(() => currentProvider.value.getSigner())
 
   const isConnected = computed(() =>
     Boolean(selectedAddress.value && chainId.value),
@@ -39,7 +43,7 @@ export const useCoinbase = (provider: ProviderInstance): ProviderWrapper => {
   }
 
   const _setListeners = () => {
-    const tempProviderStub = currentProvider.provider as {
+    const tempProviderStub = currentProvider.value.provider as {
       on: (eventName: string, cb: () => void) => void
     }
 
@@ -56,10 +60,10 @@ export const useCoinbase = (provider: ProviderInstance): ProviderWrapper => {
 
   const _updateProviderState = async () => {
     try {
-      const network = await currentProvider.detectNetwork()
+      const network = await currentProvider.value.detectNetwork()
       chainId.value = network.chainId
 
-      const currentAccounts = await currentProvider.listAccounts()
+      const currentAccounts = await currentProvider.value.listAccounts()
       selectedAddress.value = currentAccounts[0]
     } catch (error) {
       handleEthError(error as EthProviderRpcError)
@@ -68,7 +72,7 @@ export const useCoinbase = (provider: ProviderInstance): ProviderWrapper => {
 
   const connect = async () => {
     try {
-      await connectEthAccounts(currentProvider)
+      await connectEthAccounts(currentProvider.value)
     } catch (error) {
       handleEthError(error as EthProviderRpcError)
     }
@@ -76,7 +80,7 @@ export const useCoinbase = (provider: ProviderInstance): ProviderWrapper => {
 
   const switchChain = async (chainId: ChainId) => {
     try {
-      await requestSwitchEthChain(currentProvider, Number(chainId))
+      await requestSwitchEthChain(currentProvider.value, Number(chainId))
     } catch (error) {
       handleEthError(error as EthProviderRpcError)
     }
@@ -89,7 +93,7 @@ export const useCoinbase = (provider: ProviderInstance): ProviderWrapper => {
   ) => {
     try {
       await requestAddEthChain(
-        currentProvider,
+        currentProvider.value,
         Number(chainId),
         chainName,
         chainRpcUrl,
@@ -101,8 +105,7 @@ export const useCoinbase = (provider: ProviderInstance): ProviderWrapper => {
 
   const signAndSendTransaction = async (txRequestBody: TxRequestBody) => {
     try {
-      const signer = currentProvider.getSigner()
-      const transactionResponse = await signer.sendTransaction(
+      const transactionResponse = await currentSigner.value.sendTransaction(
         txRequestBody as Deferrable<TransactionRequest>,
       )
       await transactionResponse.wait()
@@ -128,6 +131,9 @@ export const useCoinbase = (provider: ProviderInstance): ProviderWrapper => {
   }
 
   return {
+    currentProvider,
+    currentSigner,
+
     chainId,
     selectedAddress,
     isConnected,
