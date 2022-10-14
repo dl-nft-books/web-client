@@ -1,30 +1,30 @@
 <script lang="ts" setup>
 import { Icon } from '@/common'
 import { ICON_NAMES } from '@/enums'
+import { config } from '@config'
 
 const SOCIAL_LINKS = [
   {
     iconName: ICON_NAMES.facebookCircle,
-    link: '/',
+    link: config.FACEBOOK_LINK,
   },
   {
     iconName: ICON_NAMES.instagramCircle,
-    link: '/',
+    link: config.INSTAGRAM_LINK,
   },
   {
     iconName: ICON_NAMES.youtubeCircle,
-    link: '/',
+    link: config.YOUTUBE_LINK,
   },
   {
     iconName: ICON_NAMES.linkedinCircle,
-    link: '/',
+    link: config.LINKEDIN_LINK,
   },
   {
     iconName: ICON_NAMES.telegramCircle,
-    link: '/',
+    link: config.TELEGRAM_LINK,
   },
 ]
-
 </script>
 
 <template>
@@ -58,10 +58,7 @@ const SOCIAL_LINKS = [
           :key="idx"
           :href="social.link"
         >
-          <icon
-            class="app-footer__social-link-icon"
-            :name="social.iconName"
-          />
+          <icon class="app-footer__social-link-icon" :name="social.iconName" />
         </a>
       </div>
     </div>

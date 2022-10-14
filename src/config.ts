@@ -2,9 +2,12 @@ import packageJson from '../package.json'
 import { LogLevelDesc } from 'loglevel'
 import { pickBy, mapKeys } from 'lodash-es'
 
-// TODO: ADD LINK NAMES
-
 export const config = {
+  FACEBOOK_LINK: '',
+  INSTAGRAM_LINK: '',
+  YOUTUBE_LINK: '',
+  LINKEDIN_LINK: '',
+  TELEGRAM_LINK: '',
   API_URL: import.meta.env.VITE_API_URL,
   APP_NAME: import.meta.env.VITE_APP_NAME,
   LOG_LEVEL: 'trace' as LogLevelDesc,
