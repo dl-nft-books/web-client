@@ -53,8 +53,8 @@
   --border-primary-dark: #{$border-primary-dark};
 
   /* App variables */
-  --app-bg: #{$app-bg};
-  --footer-bg: #{$footer-bg};
+  --app-background-primary: #{$background-primary};
+  --app-background-secondary: #{$background-secondary};
   --app-txt: #{$text-primary-main};
   --app-font-family: 'Gilroy', sans-serif;
   --app-padding-right: #{toRem(100)};
@@ -70,7 +70,7 @@
   /* Field variables */
 
   /* --------------------------------------- */
-  --field-bg: var(--app-bg);
+  --field-bg: var(--app-background-primary);
 
   /* label */
   --field-label: var(--text-primary-main);

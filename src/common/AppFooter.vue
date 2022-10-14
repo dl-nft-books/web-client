@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import { Icon } from '@/common'
+import { AppLogo } from '@/common'
 import { ICON_NAMES } from '@/enums'
 import { config } from '@config'
 
@@ -31,13 +32,7 @@ const SOCIAL_LINKS = [
   <footer class="app-footer">
     <hr class="app-footer__line" />
     <div class="app-footer__content">
-      <router-link :to="$routes.home" class="app-footer__logo-wrapper">
-        <icon class="app-footer__book-icon" :name="$icons.book" />
-        <icon
-          class="app-footer__store-text-icon"
-          :name="$icons.distributedStoreText"
-        />
-      </router-link>
+      <app-logo scheme="light"/>
       <div class="app-footer__links-wrapper">
         <router-link class="app-footer__text-link" to="/">
           {{ $t('app-footer.faq-link') }}
@@ -68,7 +63,7 @@ const SOCIAL_LINKS = [
 <style lang="scss" scoped>
 .app-footer {
   padding: toRem(40) var(--app-padding-right) toRem(40) var(--app-padding-left);
-  background: var(--footer-bg);
+  background: var(--app-background-secondary);
 }
 
 .app-footer__line {
@@ -81,25 +76,6 @@ const SOCIAL_LINKS = [
   display: flex;
   align-items: center;
   margin-top: toRem(30);
-}
-
-.app-footer__logo-wrapper {
-  display: flex;
-  align-items: center;
-  color: var(--text-primary-invert-main);
-}
-
-.app-footer__book-icon {
-  max-width: toRem(30);
-  max-height: toRem(45);
-  margin-right: toRem(10);
-  color: var(--text-primary-invert-main);
-}
-
-.app-footer__store-text-icon {
-  max-width: toRem(200);
-  max-height: toRem(15);
-  color: var(--text-primary-invert-main);
 }
 
 .app-footer__links-wrapper {
@@ -130,6 +106,6 @@ const SOCIAL_LINKS = [
 }
 
 .app-footer__social-link-icon {
-  color: var(--footer-bg);
+  color: var(--app-background-secondary);
 }
 </style>
