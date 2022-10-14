@@ -19,7 +19,10 @@ const handleProviderClick = () => {
   <nav class="app-navbar">
     <app-logo />
     <div class="app-navbar__links-wrapper">
-      <router-link class="app-navbar__text-link" to="/">
+      <router-link
+        class="app-navbar__text-link"
+        :to="{ name: $routes.bookshelf }"
+      >
         {{ $t('app-navbar.bookshelf-link') }}
       </router-link>
       <router-link v-if="false" class="app-navbar__text-link" to="/">
@@ -57,9 +60,9 @@ const handleProviderClick = () => {
 
 .app-navbar__links-wrapper {
   display: flex;
-  margin: 0 auto;
-  justify-self: center;
   text-transform: uppercase;
+  align-items: center;
+  margin: 0 auto;
   column-gap: toRem(50);
 }
 

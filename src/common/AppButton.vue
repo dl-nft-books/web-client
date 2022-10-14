@@ -282,6 +282,11 @@ const buttonClasses = computed(() =>
     padding: toRem(12) toRem(16);
     grid-gap: toRem(12);
   }
+
+  &--x-small {
+    padding: toRem(7) toRem(16);
+    grid-gap: toRem(6);
+  }
 }
 
 .app-button__icon-left,
