@@ -66,5 +66,12 @@
     "faq-link": "faq",
     "help-link": "Help & Support",
     "blog-link": "blog"
+  },
+  "home-page": {
+    "title": "From Blockchain experts",
+    "subtitle": "Meet our ",
+    "subtitle-highlighted": "NFT book store",
+    "small-subtitle": "Buy and Collect most powerful \nblockchain literature",
+    "book-description": "Every book with your \npersonal sign inside"
   }
 }
