@@ -51,6 +51,7 @@ const emit = defineEmits<{
             class="purchasing-success-modal__purchase-btn"
             :text="$t('purchasing-success-modal.ok-btn')"
             size="small"
+            @click="modal.close"
           />
         </div>
       </div>

@@ -17,11 +17,20 @@ import { formatFiatAsset } from '@/helpers'
 const isLoaded = ref(false)
 const isLoadFailed = ref(false)
 const isPurchaseModalShown = ref(false)
-const isPurchaseSuccessModalShown = ref(true)
+const isPurchaseSuccessModalShown = ref(false)
 
 const book = ref<Book | undefined>()
 
 const route = useRoute()
+
+const submit = async () => {
+  try {
+    isPurchaseModalShown.value = false
+    isPurchaseSuccessModalShown.value = true
+  } catch (error) {
+    ErrorHandler.process(error)
+  }
+}
 
 const init = async () => {
   try {
@@ -112,6 +121,7 @@ init()
           <purchasing-modal
             v-model:is-shown="isPurchaseModalShown"
             :book="book"
+            @submit="submit"
           />
         </template>
         <purchasing-success-modal
