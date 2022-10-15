@@ -32,7 +32,7 @@ const SOCIAL_LINKS = [
   <footer class="app-footer">
     <hr class="app-footer__line" />
     <div class="app-footer__content">
-      <app-logo scheme="light"/>
+      <app-logo scheme="light" />
       <div class="app-footer__links-wrapper">
         <router-link class="app-footer__text-link" to="/">
           {{ $t('app-footer.faq-link') }}

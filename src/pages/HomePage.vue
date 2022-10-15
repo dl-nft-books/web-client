@@ -10,32 +10,22 @@ import { Icon } from '@/common'
       </h2>
       <h3 class="home-page__subtitle">
         {{ $t('home-page.subtitle') }}
-        <span
-          class="
-            home-page__subtitle
-            home-page__subtitle--highlighted
-          "
-        >
+        <span class="home-page__subtitle home-page__subtitle--highlighted">
           {{ $t('home-page.subtitle-highlighted') }}
         </span>
       </h3>
       <h4 class="home-page__small-title">
         {{ $t('home-page.small-subtitle') }}
       </h4>
-      <hr class="home-page__line home-page__line--page-title"/>
+      <hr class="home-page__line home-page__line--page-title" />
       <div class="home-page__book-description-wrapper">
-        <icon
-          class="home-page__book-description-icon"
-          :name="$icons.book"
-        />
+        <icon class="home-page__book-description-icon" :name="$icons.book" />
         <span class="home-page__book-description">
           {{ $t('home-page.book-description') }}
         </span>
       </div>
     </div>
-    <div class="home-page__most-popular">
-
-    </div>
+    <div class="home-page__most-popular"></div>
   </div>
 </template>
 
