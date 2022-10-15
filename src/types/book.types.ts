@@ -6,4 +6,8 @@ export type Book = {
     assetCode: string
   }
   coverUrl: string
+  description?: string
+  meta?: {
+    volume?: string
+  }
 }

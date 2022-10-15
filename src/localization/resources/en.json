@@ -78,5 +78,23 @@
     "no-data-msg": "Empty data, please add new",
     "title": "MY NFTs",
     "details-btn": "Details"
+  },
+  "bookshelf-item-page": {
+    "loading-error-msg": "Oops... Something went wrong",
+    "purchase-btn": "Buy",
+    "badge-1": "For any acceptable token",
+    "badge-2": "Add your personal sign"
+  },
+  "purchasing-modal": {
+    "title": "Purchasing",
+    "token-address-lbl": "Enter Token Address",
+    "signature-lbl": "Your Signature",
+    "purchase-btn": "Buy"
+  },
+  "purchasing-success-modal": {
+    "head-title": "Purchasing",
+    "title": "Your payment was successful.",
+    "message": "As soon as the NFT book is generated, it will appear in your wallet and in the My NFTs tab.",
+    "ok-btn": "Ok"
   }
 }
