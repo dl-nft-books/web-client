@@ -29,6 +29,11 @@ const routes: Array<RouteRecordRaw> = [
     component: () => import('@/pages/BookshelfPage.vue'),
   },
   {
+    path: '/bookshelf/:id',
+    name: ROUTE_NAMES.bookshelfItem,
+    component: () => import('@/pages/BookshelfItemPage.vue'),
+  },
+  {
     path: '/my-nfts',
     name: ROUTE_NAMES.myNFTs,
     component: () => import('@/pages/MyNFTsPage.vue'),
