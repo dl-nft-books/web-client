@@ -6,4 +6,5 @@ export type Book = {
     assetCode: string
   }
   coverUrl: string
+  description?: string
 }
