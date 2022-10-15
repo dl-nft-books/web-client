@@ -1,5 +1,12 @@
 <script lang="ts" setup>
-import { Loader, ErrorMessage, AppButton, Icon } from '@/common'
+import {
+  Loader,
+  ErrorMessage,
+  AppButton,
+  Icon,
+  PurchasingModal,
+  PurchasingSuccessModal,
+} from '@/common'
 
 import { ErrorHandler } from '@/helpers'
 import { Book } from '@/types'
@@ -9,6 +16,9 @@ import { formatFiatAsset } from '@/helpers'
 
 const isLoaded = ref(false)
 const isLoadFailed = ref(false)
+const isPurchaseModalShown = ref(false)
+const isPurchaseSuccessModalShown = ref(true)
+
 const book = ref<Book | undefined>()
 
 const route = useRoute()
@@ -37,6 +47,9 @@ const loadBook = async () => {
       'Lörem ipsum semiskop plaktig. Bent abvalens trera vipysamma. Rerade prer derade. Digisk nebelt fask. sdscqae \n' +
       'Mack nitevis. Mikropp antelånas londe. Tism svenna sitt liv i preliga. Sögisk euroråse belig. \n' +
       'Pögt ont puhet och supravinade. Dis vil gesåbelt och vaheten. Aning elektrogram eftersom miligen. Renyde korat. \n',
+    meta: {
+      volume: 'Volume 2',
+    },
   } as Book
 }
 
@@ -68,6 +81,7 @@ init()
             <app-button
               class="bookshelf-item-page__purchase-btn"
               :text="$t('bookshelf-item-page.purchase-btn')"
+              @click="isPurchaseModalShown = true"
             />
           </div>
           <div class="bookshelf-item-page__badges">
@@ -94,6 +108,15 @@ init()
             {{ book.description }}
           </p>
         </div>
+        <template v-if="book">
+          <purchasing-modal
+            v-model:is-shown="isPurchaseModalShown"
+            :book="book"
+          />
+        </template>
+        <purchasing-success-modal
+          v-model:is-shown="isPurchaseSuccessModalShown"
+        />
       </template>
     </template>
     <template v-else>

@@ -7,4 +7,7 @@ export type Book = {
   }
   coverUrl: string
   description?: string
+  meta?: {
+    volume?: string
+  }
 }

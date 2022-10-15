@@ -71,9 +71,6 @@ export default defineComponent({
 
 .modal__pane {
   position: relative;
-  background: var(--background-primary);
-  padding: toRem(50) toRem(100);
-  border-radius: toRem(10);
 }
 
 .modal-enter-active,
