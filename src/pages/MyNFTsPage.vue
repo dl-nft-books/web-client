@@ -4,7 +4,6 @@ import { Loader, ErrorMessage, NoDataMessage, BookCard } from '@/common'
 import { ErrorHandler } from '@/helpers'
 import { Book } from '@/types'
 import { ref } from 'vue'
-import AppButton from '@/common/AppButton.vue'
 
 const isLoaded = ref(false)
 const isLoadFailed = ref(false)
@@ -84,15 +83,8 @@ init()
             :key="book.id"
             :book="book"
             scheme="link"
-          >
-            <template #actionButton>
-              <app-button
-                class="my-nfts-page__card-action-btn"
-                :text="$t('my-nfts-page.details-btn')"
-                size="x-small"
-              />
-            </template>
-          </book-card>
+            :action-btn-text="$t('my-nfts-page.details-btn')"
+          />
         </div>
       </template>
       <template v-else>
@@ -126,9 +118,5 @@ init()
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(toRem(292), 1fr));
   grid-gap: toRem(20);
-}
-
-.my-nfts-page__card-action-btn {
-  min-width: toRem(110);
 }
 </style>

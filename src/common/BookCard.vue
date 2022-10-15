@@ -4,6 +4,7 @@ import { AppButton } from '@/common'
 import { Book } from '@/types'
 import { formatFiatAsset } from '@/helpers'
 import { computed } from 'vue'
+import { useI18n } from 'vue-i18n'
 
 const props = withDefaults(
   defineProps<{
@@ -11,13 +12,17 @@ const props = withDefaults(
     scheme?: 'purchase' | 'link'
     modification?: 'centered' | 'default'
     backgroundColor?: 'primary' | 'secondary'
+    actionBtnText?: string
   }>(),
   {
     scheme: 'purchase',
     modification: 'default',
     backgroundColor: 'primary',
+    actionBtnText: '',
   },
 )
+
+const { t } = useI18n({ useScope: 'global' })
 
 const bookCardClasses = computed(() =>
   [
@@ -27,6 +32,18 @@ const bookCardClasses = computed(() =>
     `book-card--${props.backgroundColor}`,
   ].join(' '),
 )
+
+const actionButtonText = computed(
+  () => props.actionBtnText || t('bookshelf-page.purchase-btn'),
+)
+
+/**
+ * TODO: if user is own this book nft - then use link to "my nft item page"
+ * const actionButtonLink = computed(() => isUserOwnThisBookNft.value
+ * ? { name: $routes.myNftItem, params: { id: book.id } }
+ * : { name: $routes.bookshelfItem, params: { id: book.id } }
+ * )
+ */
 </script>
 
 <template>
@@ -47,7 +64,8 @@ const bookCardClasses = computed(() =>
       <app-button
         class="book-card__purchase-btn"
         size="x-small"
-        :text="$t('bookshelf-page.purchase-btn')"
+        :text="actionButtonText"
+        :route="{ name: $routes.bookshelfItem, params: { id: book.id } }"
       />
     </template>
   </div>
