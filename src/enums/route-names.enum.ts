@@ -4,4 +4,5 @@ export enum ROUTE_NAMES {
   web3 = 'web3',
   home = 'home',
   bookshelf = 'bookshelf',
+  myNFTs = 'my-NFTs',
 }
