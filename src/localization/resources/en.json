@@ -68,9 +68,15 @@
     "blog-link": "blog"
   },
   "bookshelf-page": {
-    "title": "Bookshelf",
     "loading-error-msg": "Oops... Something went wrong",
     "no-data-msg": "Empty data, please add new",
+    "title": "Bookshelf",
     "purchase-btn": "Buy"
+  },
+  "my-nfts-page": {
+    "loading-error-msg": "Oops... Something went wrong",
+    "no-data-msg": "Empty data, please add new",
+    "title": "MY NFTs",
+    "details-btn": "Details"
   }
 }
