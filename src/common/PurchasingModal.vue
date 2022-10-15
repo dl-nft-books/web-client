@@ -1,9 +1,9 @@
 <script lang="ts" setup>
 import { AppButton, Modal } from '@/common'
+import { InputField, TextareaField } from '@/fields'
 
 import { Book } from '@/types'
 import { formatFiatAsset } from '@/helpers'
-import InputField from '@/fields/InputField.vue'
 import { reactive } from 'vue'
 
 defineProps<{
@@ -13,12 +13,17 @@ defineProps<{
 
 const emit = defineEmits<{
   (event: 'update:is-shown', value: boolean): void
+  (event: 'submit'): void
 }>()
 
 const form = reactive({
   tokenAddress: '',
   signature: '',
 })
+
+const submit = async () => {
+  emit('submit')
+}
 </script>
 
 <template>
@@ -67,15 +72,16 @@ const form = reactive({
             v-model="form.tokenAddress"
             :label="$t('purchasing-modal.token-address-lbl')"
           />
-          <input-field
+          <textarea-field
             class="purchasing-modal__textarea"
-            v-model="form.tokenAddress"
+            v-model="form.signature"
             :label="$t('purchasing-modal.signature-lbl')"
           />
           <app-button
             class="purchasing-modal__purchase-btn"
             :text="$t('purchasing-modal.purchase-btn')"
             size="small"
+            @click="submit"
           />
         </div>
       </div>
