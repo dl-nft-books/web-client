@@ -23,6 +23,21 @@ const routes: Array<RouteRecordRaw> = [
     name: ROUTE_NAMES.home,
     component: () => import('@/pages/HomePage.vue'),
   },
+  {
+    path: '/bookshelf',
+    name: ROUTE_NAMES.bookshelf,
+    component: () => import('@/pages/BookshelfPage.vue'),
+  },
+  {
+    path: '/bookshelf/:id',
+    name: ROUTE_NAMES.bookshelfItem,
+    component: () => import('@/pages/BookshelfItemPage.vue'),
+  },
+  {
+    path: '/my-nfts',
+    name: ROUTE_NAMES.myNFTs,
+    component: () => import('@/pages/MyNFTsPage.vue'),
+  },
 ]
 
 const router = createRouter({

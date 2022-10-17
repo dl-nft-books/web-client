@@ -237,4 +237,7 @@ export enum ICON_NAMES {
   youtubeCircle = 'youtube-circle',
   linkedinCircle = 'linkedin-circle',
   telegramCircle = 'telegram-circle',
+  badgeCircleStar = 'badge-circle-star',
+  badgePencil = 'badge-pencil',
+  sliderArrow = 'slider-arrow'
 }

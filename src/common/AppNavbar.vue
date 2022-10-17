@@ -1,28 +1,50 @@
 <script lang="ts" setup>
 import { AppButton, AppLogo } from '@/common'
+import { useWeb3ProvidersStore } from '@/store'
+import { cropAddress } from '@/helpers'
+import { storeToRefs } from 'pinia'
+
+const { provider } = storeToRefs(useWeb3ProvidersStore())
+
+const handleProviderClick = () => {
+  if (provider.value.selectedAddress) {
+    provider.value.disconnect()
+  } else {
+    provider.value.connect()
+  }
+}
 </script>
 
 <template>
   <nav class="app-navbar">
     <app-logo />
     <div class="app-navbar__links-wrapper">
-      <router-link class="app-navbar__text-link" to="/">
+      <router-link
+        class="app-navbar__text-link"
+        :to="{ name: $routes.bookshelf }"
+      >
         {{ $t('app-navbar.bookshelf-link') }}
       </router-link>
       <router-link v-if="false" class="app-navbar__text-link" to="/">
         {{ $t('app-navbar.about-link') }}
       </router-link>
-      <router-link class="app-navbar__text-link" to="/">
+      <router-link class="app-navbar__text-link" :to="{ name: $routes.myNFTs }">
         {{ $t('app-navbar.my-nfts-link') }}
       </router-link>
     </div>
     <div class="app-navbar__provider-button-wrapper">
       <app-button
-        class=".app-navbar__provider-btn"
+        class="app-navbar__provider-btn"
         type="button"
         :icon-left="$icons.metamask"
         scheme="flat"
-        :text="$t('app-navbar.connect-provider-button')"
+        size="small"
+        :text="
+          provider.selectedAddress
+            ? cropAddress(provider.selectedAddress)
+            : $t('app-navbar.connect-provider-button')
+        "
+        @click="handleProviderClick"
       />
     </div>
   </nav>
@@ -38,9 +60,9 @@ import { AppButton, AppLogo } from '@/common'
 
 .app-navbar__links-wrapper {
   display: flex;
-  margin: 0 auto;
-  justify-self: center;
   text-transform: uppercase;
+  align-items: center;
+  margin: 0 auto;
   column-gap: toRem(50);
 }
 
@@ -53,10 +75,16 @@ import { AppButton, AppLogo } from '@/common'
 }
 
 .app-navbar__provider-btn {
+  text-transform: uppercase;
   font-family: var(--app-font-family);
   color: var(--text-secondary-main);
   font-size: toRem(16);
-  text-transform: uppercase;
   font-weight: 500;
+  padding: toRem(9) toRem(16);
+
+  &:deep(.app-button__icon-left) {
+    width: toRem(30);
+    height: toRem(30);
+  }
 }
 </style>

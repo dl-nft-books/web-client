@@ -3,4 +3,7 @@ export enum ROUTE_NAMES {
   uiKit = 'ui-kit',
   web3 = 'web3',
   home = 'home',
+  bookshelf = 'bookshelf',
+  bookshelfItem = 'bookshelf-item',
+  myNFTs = 'my-NFTs',
 }

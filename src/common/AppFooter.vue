@@ -63,7 +63,7 @@ const SOCIAL_LINKS = [
 <style lang="scss" scoped>
 .app-footer {
   padding: toRem(40) var(--app-padding-right) toRem(40) var(--app-padding-left);
-  background: var(--app-background-secondary);
+  background: var(--background-secondary);
 }
 
 .app-footer__line {
@@ -106,6 +106,6 @@ const SOCIAL_LINKS = [
 }
 
 .app-footer__social-link-icon {
-  color: var(--app-background-secondary);
+  color: var(--background-secondary);
 }
 </style>

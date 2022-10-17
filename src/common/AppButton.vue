@@ -5,7 +5,7 @@ import { computed, useAttrs } from 'vue'
 import { LocationAsRelativeRaw } from 'vue-router'
 import { ICON_NAMES } from '@/enums'
 
-type SCHEMES = 'filled' | 'flat' | 'default'
+type SCHEMES = 'filled' | 'flat' | 'default' | 'flat-inverse'
 
 type MODIFICATIONS = 'border-circle' | 'border-rounded' | 'default'
 
@@ -184,6 +184,8 @@ const buttonClasses = computed(() =>
     --app-button-border: 0;
     --app-button-border-hover: 0;
     --app-button-border-active: 0;
+
+    filter: drop-shadow(0 toRem(4) toRem(10) rgba(157, 161, 166, 0.5));
   }
 
   &--flat {
@@ -191,6 +193,26 @@ const buttonClasses = computed(() =>
     --app-button-flat-text-hover: var(--text-primary-dark);
 
     --app-button-flat-border: #{toRem(2)} solid var(--text-primary-light);
+    --app-button-flat-border-hover: var(--app-button-flat-border);
+    --app-button-flat-border-active: var(--app-button-flat-border);
+
+    --app-button-bg: transparent;
+    --app-button-bg-hover: transparent;
+    --app-button-bg-active: transparent;
+
+    --app-button-text: var(--app-button-flat-text);
+    --app-button-text-hover: var(--app-button-flat-text-hover);
+
+    --app-button-border: var(--app-button-flat-border);
+    --app-button-border-hover: var(--app-button-flat-border-hover);
+    --app-button-border-active: var(--app-button-flat-border-active);
+  }
+
+  &--flat-inverse {
+    --app-button-flat-text: var(--text-primary-invert-main);
+    --app-button-flat-text-hover: var(--text-primary-invert-dark);
+
+    --app-button-flat-border: #{toRem(2)} solid var(--text-primary-invert-main);
     --app-button-flat-border-hover: var(--app-button-flat-border);
     --app-button-flat-border-active: var(--app-button-flat-border);
 
@@ -259,7 +281,7 @@ const buttonClasses = computed(() =>
   }
 
   &--border-rounded {
-    border-radius: toRem(10);
+    border-radius: toRem(8);
   }
 
   &--large {
@@ -268,7 +290,7 @@ const buttonClasses = computed(() =>
   }
 
   &--medium {
-    padding: toRem(16) toRem(30);
+    padding: toRem(20) toRem(16);
     font-size: toRem(16);
     line-height: 1.4;
     font-weight: 600;
@@ -277,8 +299,13 @@ const buttonClasses = computed(() =>
   }
 
   &--small {
-    padding: toRem(8) toRem(15);
-    grid-gap: toRem(8);
+    padding: toRem(12) toRem(16);
+    grid-gap: toRem(12);
+  }
+
+  &--x-small {
+    padding: toRem(7) toRem(16);
+    grid-gap: toRem(6);
   }
 }
 

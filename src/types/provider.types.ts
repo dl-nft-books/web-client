@@ -52,6 +52,9 @@ export type TransactionResponse =
  * which we can use to solve user needs
  */
 export interface ProviderWrapper {
+  currentProvider?: ComputedRef<ethers.providers.Web3Provider>
+  currentSigner?: ComputedRef<ethers.providers.JsonRpcSigner>
+
   chainId: Ref<ChainId>
   selectedAddress: Ref<string>
   isConnected: ComputedRef<boolean>

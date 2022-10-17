@@ -72,6 +72,47 @@
     "subtitle": "Meet our ",
     "subtitle-highlighted": "NFT book store",
     "small-subtitle": "Buy and Collect most powerful \nblockchain literature",
-    "book-description": "Every book with your \npersonal sign inside"
+    "book-description": "Every book with your \npersonal sign inside",
+    "most-popular-title": "Most Popular",
+    "loading-error-msg": "Oops... Something went wrong",
+    "no-data-msg": "Empty data, please add new",
+    "view-all-link": "View All",
+    "about-us-title": "About Us",
+    "about-us-text-1": "Neque quisque sollicitudin tempor vestibulum elit taciti. Sagittis tempor consequat turpis. Aenean curae elementum vestibulum dapibus vitae laoreet. Bibendum suspendisse himenaeos malesuada. Nisl taciti si platea dui. Euismod malesuada facilisis duis lobortis aliquet massa. Tincidunt vivamus ac consectetuer molestie pharetra. Sodales pulvinar non habitant.",
+    "about-us-text-2": "Nisl taciti si platea dui. Euismod malesuada facilisis duis lobortis aliquet massa. Tincidunt vivamus ac consectetuer molestie pharetra. Sodales pulvinar non habitant.",
+    "founder-title": "DR. PAVLO KRAVCHENKO",
+    "founder-subtitle": "Co‐Founder, CEO distributed lab",
+    "founder-description": "Neque quisque sollicitudin tempor vestibulum elit taciti. Sagittis tempor consequat turpis. Aenean curae elementum vestibulum dapibus vitae laoreet. Bibendum suspendisse himenaeos malesuada. Nisl taciti si platea dui. Euismod malesuada facilisis duis lobortis aliquet massa. Tincidunt vivamus ac consectetuer molestie pharetra. Sodales pulvinar non habitant.",
+    "founder-image": "DR. PAVLO KRAVCHENKO, Co‐Founder, CEO distributed lab"
+  },
+  "bookshelf-page": {
+    "loading-error-msg": "Oops... Something went wrong",
+    "no-data-msg": "Empty data, please add new",
+    "title": "Bookshelf",
+    "purchase-btn": "Buy"
+  },
+  "my-nfts-page": {
+    "loading-error-msg": "Oops... Something went wrong",
+    "no-data-msg": "Empty data, please add new",
+    "title": "MY NFTs",
+    "details-btn": "Details"
+  },
+  "bookshelf-item-page": {
+    "loading-error-msg": "Oops... Something went wrong",
+    "purchase-btn": "Buy",
+    "badge-1": "For any acceptable token",
+    "badge-2": "Add your personal sign"
+  },
+  "purchasing-modal": {
+    "title": "Purchasing",
+    "token-address-lbl": "Enter Token Address",
+    "signature-lbl": "Your Signature",
+    "purchase-btn": "Buy"
+  },
+  "purchasing-success-modal": {
+    "head-title": "Purchasing",
+    "title": "Your payment was successful.",
+    "message": "As soon as the NFT book is generated, it will appear in your wallet and in the My NFTs tab.",
+    "ok-btn": "Ok"
   }
 }
