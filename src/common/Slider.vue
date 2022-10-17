@@ -20,16 +20,10 @@ withDefaults(
   <div class="slider">
     <button
       v-if="isArrowsShown"
-      class="
-        slider__navigation
-        slider__navigation--left
-      "
+      class="slider__navigation slider__navigation--left"
       @click.prevent="$emit(EVENTS.previousPage)"
     >
-      <icon
-        class="slider__navigation-icon"
-        :name="$icons.sliderArrow"
-      />
+      <icon class="slider__navigation-icon" :name="$icons.sliderArrow" />
     </button>
     <div class="slider-content">
       <slot />
@@ -39,10 +33,7 @@ withDefaults(
       class="slider__navigation"
       @click.prevent="$emit(EVENTS.nextPage)"
     >
-      <icon
-        class="slider__navigation-icon"
-        :name="$icons.sliderArrow"
-      />
+      <icon class="slider__navigation-icon" :name="$icons.sliderArrow" />
     </button>
   </div>
 </template>

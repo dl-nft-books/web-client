@@ -18,11 +18,7 @@ const props = withDefaults(
 
 const { t } = useI18n({ useScope: 'global' })
 
-const bookCardClasses = computed(() =>
-  [
-    'popular-book-card',
-  ].join(' '),
-)
+const bookCardClasses = computed(() => ['popular-book-card'].join(' '))
 
 const actionButtonText = computed(
   () => props.actionBtnText || t('bookshelf-page.purchase-btn'),

@@ -2,9 +2,9 @@
 import { Icon } from '@/common'
 import { Slider } from '@/common'
 import PopularBookCard from '@/common/PopularBookCard.vue'
-import {ref} from 'vue'
+import { ref } from 'vue'
 import { Book } from '@/types'
-import {ErrorHandler} from '@/helpers'
+import { ErrorHandler } from '@/helpers'
 import { NoDataMessage, ErrorMessage, Loader, AppButton } from '@/common'
 import { Animation } from '@/common'
 import blockchainAnimation from '@/assets/animations/blockchain-animation.json'
@@ -22,8 +22,9 @@ const nextSlide = async () => {
   for (let i = 0; i < books.value.length; i += pageLimit.value) {
     bookSlides.value.push(books.value.slice(i, i + pageLimit.value))
   }
-  if (Math.ceil(bookSlides.value.length / pageLimit.value) >
-    currentSlide.value) {
+  if (
+    Math.ceil(bookSlides.value.length / pageLimit.value) > currentSlide.value
+  ) {
     currentSlide.value++
   } else {
     currentSlide.value = 0
@@ -88,7 +89,6 @@ const loadBooks = async () => {
   ]
 }
 init()
-
 </script>
 
 <template>
@@ -101,8 +101,8 @@ init()
         <h3 class="home-page__subtitle">
           {{ $t('home-page.subtitle') }}
           <span class="home-page__subtitle home-page__subtitle--highlighted">
-          {{ $t('home-page.subtitle-highlighted') }}
-        </span>
+            {{ $t('home-page.subtitle-highlighted') }}
+          </span>
         </h3>
         <h4 class="home-page__small-title">
           {{ $t('home-page.small-subtitle') }}
@@ -111,8 +111,8 @@ init()
         <div class="home-page__book-description-wrapper">
           <icon class="home-page__book-description-icon" :name="$icons.book" />
           <span class="home-page__book-description">
-          {{ $t('home-page.book-description') }}
-        </span>
+            {{ $t('home-page.book-description') }}
+          </span>
         </div>
       </div>
     </div>
@@ -126,10 +126,7 @@ init()
           <error-message :message="$t('home-page.loading-error-msg')" />
         </template>
         <template v-else-if="books.length">
-          <slider
-            @next-page="nextSlide"
-            @previous-page="previousSlide"
-          >
+          <slider @next-page="nextSlide" @previous-page="previousSlide">
             <div class="home-page__card-container">
               <popular-book-card
                 class="home-page__card"
