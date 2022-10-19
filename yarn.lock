@@ -3396,10 +3396,10 @@ loglevel@^1.8.0:
   resolved "https://registry.yarnpkg.com/loglevel/-/loglevel-1.8.0.tgz#e7ec73a57e1e7b419cb6c6ac06bf050b67356114"
   integrity sha512-G6A/nJLRgWOuuwdNuA6koovfEV1YpqqAG4pRUlFaz3jj2QNZ8M4vBqnVA+HBTmU/AMNUtlOsMmSpF6NyOjztbA==
 
-lottie-web-vue@^2.0.0:
-  version "2.0.6"
-  resolved "https://registry.yarnpkg.com/lottie-web-vue/-/lottie-web-vue-2.0.6.tgz#c92c8f5658b372b04c63f3d4e85cec46e20cf63d"
-  integrity sha512-xtdzuYsLoyiTcGWprJXnVu+tRza5T0OJuPzI5o4x+A+QrlifBLaDzUBX4EPye+mGJ/Nzd83lWtOJpknuFHpPCw==
+lottie-web-vue@2.0.0:
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/lottie-web-vue/-/lottie-web-vue-2.0.0.tgz#1dc116c136755f297fa7062267727f2df8309b11"
+  integrity sha512-wZkIFz3PesqU2kmnzUR93xaRLGRuurxhUIaBD7rdKdsIYL2sCnC4YHrdd1AW+D9Ah2Nfb3iu9rRiVP0SWutOIQ==
   dependencies:
     lottie-web "^5.8.1"
     vue "^3.2.29"
