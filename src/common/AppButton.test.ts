@@ -13,8 +13,6 @@ describe('AppButton tests', () => {
       'app-button--border-rounded',
       'app-button--primary',
       'app-button--medium',
-      'app-button--flat',
-      'app-button--flat-inverse'
     ])
   })
 })
