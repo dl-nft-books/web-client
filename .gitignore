@@ -10,6 +10,7 @@ test/unit/coverage
 selenium-debug.log
 .eslintcache
 package-lock.json
+
 deprecated
 
 # Editor directories and files
