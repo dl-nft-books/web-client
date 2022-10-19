@@ -81,7 +81,7 @@ const actionButtonText = computed(
   border: toRem(1) solid var(--border-primary-main);
   border-radius: toRem(12);
   padding: toRem(16) toRem(16) toRem(20);
-  min-width: toRem(292);
+  min-width: toRem(270);
 
   &--primary {
     background: var(--background-tertiary);

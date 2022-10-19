@@ -41,10 +41,20 @@ const props = withDefaults(
   max-width: toRem(30);
   max-height: toRem(45);
   margin-right: toRem(10);
+
+  @include respond-to(medium) {
+    max-width: toRem(20);
+    max-height: toRem(35);
+  }
 }
 
 .app-logo__store-text-icon {
   max-width: toRem(200);
   max-height: toRem(15);
+
+  @include respond-to(medium) {
+    max-width: toRem(150);
+    max-height: toRem(25);
+  }
 }
 </style>

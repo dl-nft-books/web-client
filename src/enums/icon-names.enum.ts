@@ -240,4 +240,7 @@ export enum ICON_NAMES {
   badgeCircleStar = 'badge-circle-star',
   badgePencil = 'badge-pencil',
   sliderArrow = 'slider-arrow',
+  hamburgerMenu = 'hamburger-menu',
+  close = 'close',
+  homePageBg = 'home-page-bg',
 }

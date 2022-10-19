@@ -60,7 +60,15 @@
     "bookshelf-link": "bookshelf",
     "about-link": "about project",
     "my-nfts-link": "my nfts",
-    "connect-provider-button": "Connect to Matamask"
+    "connect-provider-button": "Connect to Matamask",
+    "burger-button-label": "Burger open button "
+  },
+  "app-navigation-mobile": {
+    "bookshelf-link": "bookshelf",
+    "about-link": "about project",
+    "my-nfts-link": "my nfts",
+    "connect-provider-button": "Connect to Matamask",
+    "burger-button-label": "Burger open button "
   },
   "app-footer": {
     "faq-link": "faq",

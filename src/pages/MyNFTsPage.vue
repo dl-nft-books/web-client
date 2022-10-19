@@ -116,7 +116,7 @@ init()
 
 .my-nfts-page__list {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(toRem(292), 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(toRem(270), 1fr));
   grid-gap: toRem(20);
 }
 </style>

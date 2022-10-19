@@ -105,6 +105,10 @@ const submit = async () => {
   align-items: center;
   justify-content: space-between;
   margin-bottom: toRem(36);
+
+  @include respond-to(small) {
+    margin-bottom: toRem(20);
+  }
 }
 
 .purchasing-modal__head-title {
@@ -119,6 +123,11 @@ const submit = async () => {
   padding-bottom: toRem(24);
   margin-bottom: toRem(24);
   border-bottom: toRem(1) solid var(--border-primary-main);
+
+  @include respond-to(small) {
+    padding-bottom: toRem(15);
+    margin-bottom: toRem(15);
+  }
 }
 
 .purchasing-modal__body-preview-img-wrp {

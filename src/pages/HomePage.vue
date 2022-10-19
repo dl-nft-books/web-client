@@ -1,94 +1,7 @@
 <script setup lang="ts">
 import { Icon } from '@/common'
-import { Slider } from '@/common'
-import PopularBookCard from '@/common/PopularBookCard.vue'
-import { ref } from 'vue'
-import { Book } from '@/types'
-import { ErrorHandler } from '@/helpers'
-import { NoDataMessage, ErrorMessage, Loader, AppButton } from '@/common'
 import { Animation } from '@/common'
 import blockchainAnimation from '@/assets/animations/blockchain-animation.json'
-
-const isLoaded = ref(false)
-const isLoadFailed = ref(false)
-const books = ref<Book[]>([])
-const bookSlides = ref<Array<Book[]>>([])
-const pageLimit = ref(3)
-const currentSlide = ref(0)
-
-const nextSlide = async () => {
-  await loadBooks()
-  bookSlides.value = []
-  for (let i = 0; i < books.value.length; i += pageLimit.value) {
-    bookSlides.value.push(books.value.slice(i, i + pageLimit.value))
-  }
-  if (
-    Math.ceil(bookSlides.value.length / pageLimit.value) > currentSlide.value
-  ) {
-    currentSlide.value++
-  } else {
-    currentSlide.value = 0
-  }
-}
-
-const previousSlide = () => {
-  if (currentSlide.value) {
-    currentSlide.value--
-  }
-}
-
-const init = async () => {
-  try {
-    await loadBooks()
-    bookSlides.value?.push(books?.value.slice(0, pageLimit.value))
-  } catch (error) {
-    ErrorHandler.processWithoutFeedback(error)
-    isLoadFailed.value = true
-  }
-  isLoaded.value = true
-}
-
-const loadBooks = async () => {
-  books.value = [
-    {
-      id: '1',
-      title: 'Blockchain and decentralized systems, Volume 1',
-      price: {
-        amount: 109,
-        assetCode: 'USD',
-      },
-      coverUrl: 'https://i.ibb.co/dfjmZPF/mock-most-popular-image.png',
-    },
-    {
-      id: '2',
-      title: 'Blockchain and decentralized systems, Volume 1',
-      price: {
-        amount: 109,
-        assetCode: 'USD',
-      },
-      coverUrl: 'https://i.ibb.co/dfjmZPF/mock-most-popular-image.png',
-    },
-    {
-      id: '3',
-      title: 'Blockchain and decentralized systems, Volume 1',
-      price: {
-        amount: 109,
-        assetCode: 'USD',
-      },
-      coverUrl: 'https://i.ibb.co/dfjmZPF/mock-most-popular-image.png',
-    },
-    {
-      id: '4',
-      title: 'Blockchain and decentralized systems, Volume 1',
-      price: {
-        amount: 109,
-        assetCode: 'USD',
-      },
-      coverUrl: 'https://i.ibb.co/dfjmZPF/mock-most-popular-image.png',
-    },
-  ]
-}
-init()
 </script>
 
 <template>
@@ -115,41 +28,6 @@ init()
           </span>
         </div>
       </div>
-    </div>
-    <div class="home-page__most-popular">
-      <h5 class="home-page__most-popular-title">
-        {{ $t('home-page.most-popular-title') }}
-      </h5>
-      <hr class="home-page__line home-page__line--most-popular-title" />
-      <template v-if="isLoaded">
-        <template v-if="isLoadFailed">
-          <error-message :message="$t('home-page.loading-error-msg')" />
-        </template>
-        <template v-else-if="books.length">
-          <slider @next-page="nextSlide" @previous-page="previousSlide">
-            <div class="home-page__card-container">
-              <popular-book-card
-                class="home-page__card"
-                v-for="book in bookSlides[currentSlide]"
-                :key="book.id"
-                :book="book"
-              />
-            </div>
-          </slider>
-        </template>
-        <template v-else>
-          <no-data-message :message="$t('home-page.no-data-msg')" />
-        </template>
-      </template>
-      <template v-else>
-        <loader />
-      </template>
-      <app-button
-        scheme="flat-inverse"
-        class="home-page__view-all-btn"
-        :text="$t('home-page.view-all-link')"
-        size="small"
-      />
     </div>
     <div class="home-page__about-us">
       <div class="home-page__about-us-animation-wrapper">
@@ -190,7 +68,7 @@ init()
         <div class="home-page__founder-image-wrapper">
           <img
             class="home-page__founder-image"
-            src="/static/images/pavlo-kravchenko.png"
+            src="/images/pavlo-kravchenko.png"
             :alt="$t('home-page.founder-image')"
           />
         </div>
@@ -201,11 +79,25 @@ init()
 
 <style lang="scss" scoped>
 .home-page {
-  padding: toRem(100) 0 0;
+  padding: 0;
+  max-width: 100%;
+}
+
+.home-page__head {
+  background: url('/icons/home-page-bg.svg') no-repeat right bottom / contain;
+
+  @include respond-to(medium) {
+    background-size: toRem(450);
+  }
+
+  @include respond-to(small) {
+    background-size: toRem(300);
+  }
 }
 
 .home-page__head-wrapper {
-  padding: 0 var(--app-padding-right) 0 var(--app-padding-left);
+  padding: toRem(115) var(--app-padding-right) toRem(100)
+    var(--app-padding-left); /* stylelint-disable-line max-line-length */
 }
 
 .home-page__title {
@@ -214,11 +106,15 @@ init()
   font-size: toRem(58);
   letter-spacing: toRem(3);
   text-transform: uppercase;
-  color: var(--app-background-primary);
+  color: var(--background-primary);
   text-shadow: toRem(-1) toRem(1) 0 var(--text-primary-main),
     toRem(1) toRem(1) 0 var(--text-primary-main),
     toRem(1) toRem(-1) 0 var(--text-primary-main),
     toRem(-1) toRem(-1) 0 var(--text-primary-main);
+
+  @include respond-to(medium) {
+    font-size: toRem(40);
+  }
 }
 
 .home-page__subtitle {
@@ -229,6 +125,10 @@ init()
   &--highlighted {
     color: var(--primary-main);
   }
+
+  @include respond-to(medium) {
+    font-size: toRem(32);
+  }
 }
 
 .home-page__small-title {
@@ -237,6 +137,10 @@ init()
   white-space: pre-line;
   line-height: 120%;
   margin-bottom: toRem(10);
+
+  @include respond-to(medium) {
+    font-size: toRem(20);
+  }
 }
 
 .home-page__line {
@@ -259,6 +163,20 @@ init()
     width: toRem(228);
     margin-top: toRem(10);
   }
+
+  @include respond-to(medium) {
+    width: toRem(155);
+
+    &--about-us {
+      width: toRem(120);
+      margin: toRem(10) auto 0;
+    }
+
+    &--founder {
+      width: toRem(150);
+      margin: toRem(10) auto 0;
+    }
+  }
 }
 
 .home-page__book-description-wrapper {
@@ -273,31 +191,20 @@ init()
   line-height: 120%;
   font-weight: 400;
   white-space: pre-line;
+
+  @include respond-to(medium) {
+    font-size: toRem(16);
+  }
 }
 
 .home-page__book-description-icon {
   max-width: toRem(50);
   max-height: toRem(45);
-}
 
-.home-page__most-popular {
-  padding: toRem(100) 0;
-  background-color: var(--background-quinary);
-  background-image: url('/images/background-cubes-home-most-popular.png');
-  background-position: right bottom;
-  background-repeat: no-repeat;
-  background-size: toRem(600);
-}
-
-.home-page__most-popular-wrapper {
-  padding: 0 var(--app-padding-right) 0 var(--app-padding-left);
-}
-
-.home-page__most-popular-title {
-  text-align: center;
-  font-weight: 700;
-  font-size: toRem(40);
-  color: var(--text-primary-invert-main);
+  @include respond-to(medium) {
+    max-width: toRem(35);
+    max-height: toRem(30);
+  }
 }
 
 .home-page__card-container {
@@ -325,14 +232,29 @@ init()
   padding: 0 toRem(100) 0 toRem(20);
   grid-template-columns: repeat(2, minmax(toRem(100), 1fr));
   grid-column-gap: toRem(90);
+
+  @include respond-to(medium) {
+    display: flex;
+    flex-direction: column;
+    padding: 0 var(--app-padding-right) 0 var(--app-padding-left);
+  }
 }
 
 .home-page__about-us-content {
   padding: toRem(100) 0;
+
+  @include respond-to(medium) {
+    padding: toRem(50) 0 0;
+  }
 }
 
 .home-page__about-us-title {
   font-size: toRem(40);
+
+  @include respond-to(medium) {
+    font-size: toRem(30);
+    text-align: center;
+  }
 }
 
 .home-page__about-us-text {
@@ -341,6 +263,11 @@ init()
 
   &:nth-child(2n) {
     margin-top: toRem(25);
+  }
+
+  @include respond-to(medium) {
+    font-size: toRem(14);
+    text-align: center;
   }
 }
 
@@ -356,6 +283,10 @@ init()
   display: flex;
   column-gap: toRem(100);
   padding: toRem(45) var(--app-padding-right) toRem(80) var(--app-padding-left);
+
+  @include respond-to(medium) {
+    flex-direction: column;
+  }
 }
 
 .home-page__founder-content-title {
@@ -364,6 +295,11 @@ init()
   text-transform: uppercase;
   color: var(--text-primary-invert-main);
   margin-top: toRem(50);
+
+  @include respond-to(medium) {
+    text-align: center;
+    font-size: toRem(30);
+  }
 }
 
 .home-page__founder-content-subtitle {
@@ -371,11 +307,46 @@ init()
   font-size: toRem(20);
   text-transform: uppercase;
   margin-top: toRem(10);
+
+  @include respond-to(medium) {
+    text-align: center;
+    font-size: toRem(16);
+  }
 }
 
 .home-page__founder-content-description {
   color: var(--text-primary-invert-main);
   font-size: toRem(18);
   margin-top: toRem(55);
+
+  @include respond-to(medium) {
+    text-align: center;
+    font-size: toRem(14);
+  }
+}
+
+.home-page__founder-image-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.home-page__founder-image {
+  max-width: toRem(458);
+
+  @include respond-to(medium) {
+    margin-top: toRem(50);
+    max-width: toRem(250);
+  }
+}
+
+.home-page__about-us-animation-wrapper {
+  max-width: 100%;
+
+  @include respond-to(medium) {
+    width: 60%;
+    margin: 0 auto;
+    order: 1;
+  }
 }
 </style>

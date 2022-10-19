@@ -64,6 +64,11 @@
   --app-padding-right: #{toRem(100)};
   --app-padding-left: #{toRem(100)};
 
+  @include respond-to(xmedium) {
+    --app-padding-right: #{toRem(70)};
+    --app-padding-left: #{toRem(70)};
+  }
+
   @include respond-to(small) {
     --app-padding-right: #{toRem(24)};
     --app-padding-left: #{toRem(24)};
@@ -109,4 +114,7 @@
     var(--field-padding-left);
 
   --field-error: var(--error-main);
+
+  /* z-index */
+  --burger-z-index: 10;
 }
