@@ -10,7 +10,7 @@ test/unit/coverage
 selenium-debug.log
 .eslintcache
 package-lock.json
-src/common/AppButton.test.ts
+
 deprecated
 
 # Editor directories and files
