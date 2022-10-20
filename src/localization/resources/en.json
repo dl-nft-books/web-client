@@ -96,5 +96,23 @@
     "title": "Your payment was successful.",
     "message": "As soon as the NFT book is generated, it will appear in your wallet and in the My NFTs tab.",
     "ok-btn": "Ok"
+  },
+  "my-nft-item-page": {
+    "loading-error-msg": "Oops... Something went wrong",
+    "purchase-btn": "Buy",
+    "my-purchase-tab": "My Purchase",
+    "book-description-tab": "Book Description"
+  },
+  "nft-description": {
+    "badge-1": "For any acceptable token",
+    "badge-2": "Add your personal sign"
+  },
+  "nft-details": {
+    "price-lbl": "Price",
+    "purchase-date-lbl": "Purchase Date",
+    "your-token-lbl": "Your Token",
+    "token-amount-lbl": "Amount of Your Token",
+    "signature-lbl": "Your Signature",
+    "document-lbl": "Document"
   }
 }

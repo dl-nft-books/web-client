@@ -10,4 +10,13 @@ export type Book = {
   meta?: {
     volume?: string
   }
+  token?: {
+    amount: string
+    assetCode: string
+  }
+  document?: {
+    name: string
+  }
+  signature?: string
+  purchaseDate?: string
 }
