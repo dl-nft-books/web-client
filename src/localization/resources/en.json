@@ -68,7 +68,8 @@
     "about-link": "about project",
     "my-nfts-link": "my nfts",
     "connect-provider-button": "Connect to Matamask",
-    "burger-button-label": "Burger open button "
+    "burger-button-label": "Burger open button ",
+    "close-burger-button": "Close button"
   },
   "app-footer": {
     "faq-link": "faq",

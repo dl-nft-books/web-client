@@ -1,11 +1,12 @@
 <script lang="ts" setup>
-import { defineEmits } from 'vue'
+import { computed, defineEmits } from 'vue'
 import { Icon, AppButton, AppLogo } from '@/common'
 import { cropAddress } from '@/helpers'
 import { ICON_NAMES } from '@/enums'
 import { config } from '@config'
 import { storeToRefs } from 'pinia'
 import { useWeb3ProvidersStore } from '@/store'
+import { useContext } from '@/composables'
 
 enum EVENTS {
   close = 'close',
@@ -35,6 +36,7 @@ const SOCIAL_LINKS = [
 ]
 
 const { provider } = storeToRefs(useWeb3ProvidersStore())
+const { $t } = useContext()
 
 const handleProviderClick = () => {
   if (provider.value.selectedAddress) {
@@ -43,6 +45,12 @@ const handleProviderClick = () => {
   }
   provider.value.connect()
 }
+
+const connectProviderButtonText = computed(() => {
+  return provider.value.selectedAddress
+    ? cropAddress(provider.value.selectedAddress)
+    : $t('app-navbar.connect-provider-button')
+})
 
 const emit = defineEmits<{
   (e: EVENTS.close, isOpened: boolean): void
@@ -59,7 +67,7 @@ const closeSelf = () => {
       <app-logo scheme="light" />
       <button
         class="app-navigation-mobile__close-btn"
-        :aria-label="''"
+        :aria-label="$t('app-navigation-mobile.close-burger-button')"
         @click="closeSelf"
       >
         <icon class="app-navigation-mobile__close-icon" :name="$icons.close" />
@@ -96,11 +104,7 @@ const closeSelf = () => {
           type="button"
           :icon-left="$icons.metamask"
           size="small"
-          :text="
-            provider.selectedAddress
-              ? cropAddress(provider.selectedAddress)
-              : $t('app-navigation-mobile.connect-provider-button')
-          "
+          :text="connectProviderButtonText"
           @click="handleProviderClick"
         />
       </div>

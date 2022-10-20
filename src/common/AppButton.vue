@@ -5,7 +5,7 @@ import { computed, useAttrs } from 'vue'
 import { LocationAsRelativeRaw } from 'vue-router'
 import { ICON_NAMES } from '@/enums'
 
-type SCHEMES = 'filled' | 'flat' | 'default' | 'flat-inverse'
+type SCHEMES = 'filled' | 'flat' | 'default'
 
 type MODIFICATIONS = 'border-circle' | 'border-rounded' | 'default'
 
@@ -193,26 +193,6 @@ const buttonClasses = computed(() =>
     --app-button-flat-text-hover: var(--text-primary-dark);
 
     --app-button-flat-border: #{toRem(2)} solid var(--text-primary-light);
-    --app-button-flat-border-hover: var(--app-button-flat-border);
-    --app-button-flat-border-active: var(--app-button-flat-border);
-
-    --app-button-bg: transparent;
-    --app-button-bg-hover: transparent;
-    --app-button-bg-active: transparent;
-
-    --app-button-text: var(--app-button-flat-text);
-    --app-button-text-hover: var(--app-button-flat-text-hover);
-
-    --app-button-border: var(--app-button-flat-border);
-    --app-button-border-hover: var(--app-button-flat-border-hover);
-    --app-button-border-active: var(--app-button-flat-border-active);
-  }
-
-  &--flat-inverse {
-    --app-button-flat-text: var(--text-primary-invert-main);
-    --app-button-flat-text-hover: var(--text-primary-invert-dark);
-
-    --app-button-flat-border: #{toRem(2)} solid var(--text-primary-invert-main);
     --app-button-flat-border-hover: var(--app-button-flat-border);
     --app-button-flat-border-active: var(--app-button-flat-border);
 

@@ -1,17 +1,14 @@
 <script lang="ts" setup>
-import { AppButton, AppLogo } from '@/common'
+import { AppButton, AppLogo, Icon, AppNavigationMobile } from '@/common'
 import { useWeb3ProvidersStore } from '@/store'
-import { cropAddress, isMobileCheck } from '@/helpers'
+import { cropAddress } from '@/helpers'
 import { storeToRefs } from 'pinia'
-import { onBeforeUnmount, onMounted, ref } from 'vue'
-import { Icon } from '@/common'
-import { AppNavigationMobile } from '@/common'
-import { debounce } from 'lodash-es'
-const TABLET_WIDTH = 1024
-const DEBOUNCE_TIMEOUT = 200
+import { computed, ref } from 'vue'
+import { useContext } from '@/composables'
 
 const { provider } = storeToRefs(useWeb3ProvidersStore())
-const isMobile = ref(false)
+const { $t } = useContext()
+
 const isBurgerOpen = ref(false)
 
 const handleProviderClick = () => {
@@ -22,17 +19,14 @@ const handleProviderClick = () => {
   provider.value.connect()
 }
 
-const setIsMobile = () => {
-  isMobile.value = isMobileCheck() || window.innerWidth < TABLET_WIDTH
+const openBurgerMenu = () => {
+  isBurgerOpen.value = true
 }
 
-onMounted(() => {
-  setIsMobile()
-  window.addEventListener('resize', debounce(setIsMobile, DEBOUNCE_TIMEOUT))
-})
-
-onBeforeUnmount(() => {
-  window.removeEventListener('resize', debounce(setIsMobile, DEBOUNCE_TIMEOUT))
+const connectProviderButtonText = computed(() => {
+  return provider.value.selectedAddress
+    ? cropAddress(provider.value.selectedAddress)
+    : $t('app-navbar.connect-provider-button')
 })
 </script>
 
@@ -40,51 +34,41 @@ onBeforeUnmount(() => {
   <nav class="app-navbar">
     <app-logo />
     <button
-      v-if="isMobile"
       class="app-navbar__hamburger-button"
       type="button"
       :aria-label="$t('app-navbar.burger-button-label')"
-      @click="isBurgerOpen = true"
+      @click="openBurgerMenu"
     >
       <icon
         class="app-navbar__hamburger-button-icon"
         :name="$icons.hamburgerMenu"
       />
     </button>
-    <template v-else>
-      <div class="app-navbar__links-wrapper">
-        <router-link
-          class="app-navbar__text-link"
-          :to="{ name: $routes.bookshelf }"
-        >
-          {{ $t('app-navbar.bookshelf-link') }}
-        </router-link>
-        <router-link v-if="false" class="app-navbar__text-link" to="/">
-          {{ $t('app-navbar.about-link') }}
-        </router-link>
-        <router-link
-          class="app-navbar__text-link"
-          :to="{ name: $routes.myNFTs }"
-        >
-          {{ $t('app-navbar.my-nfts-link') }}
-        </router-link>
-      </div>
-      <div class="app-navbar__provider-button-wrapper">
-        <app-button
-          class="app-navbar__provider-btn"
-          type="button"
-          :icon-left="$icons.metamask"
-          scheme="flat"
-          size="small"
-          :text="
-            provider.selectedAddress
-              ? cropAddress(provider.selectedAddress)
-              : $t('app-navbar.connect-provider-button')
-          "
-          @click="handleProviderClick"
-        />
-      </div>
-    </template>
+    <div class="app-navbar__links-wrapper">
+      <router-link
+        class="app-navbar__text-link"
+        :to="{ name: $routes.bookshelf }"
+      >
+        {{ $t('app-navbar.bookshelf-link') }}
+      </router-link>
+      <router-link v-if="false" class="app-navbar__text-link" to="/">
+        {{ $t('app-navbar.about-link') }}
+      </router-link>
+      <router-link class="app-navbar__text-link" :to="{ name: $routes.myNFTs }">
+        {{ $t('app-navbar.my-nfts-link') }}
+      </router-link>
+    </div>
+    <div class="app-navbar__provider-button-wrapper">
+      <app-button
+        class="app-navbar__provider-btn"
+        type="button"
+        :icon-left="$icons.metamask"
+        scheme="flat"
+        size="small"
+        :text="connectProviderButtonText"
+        @click="handleProviderClick"
+      />
+    </div>
     <app-navigation-mobile
       class="app-navbar__navigation-mobile"
       :class="{ 'app-navbar__navigation-mobile--open': isBurgerOpen }"
@@ -107,6 +91,10 @@ onBeforeUnmount(() => {
   align-items: center;
   margin: 0 auto;
   column-gap: toRem(50);
+
+  @include respond-to(medium) {
+    display: none;
+  }
 }
 
 .app-navbar__text-link {
@@ -134,6 +122,11 @@ onBeforeUnmount(() => {
 .app-navbar__hamburger-button {
   width: toRem(32);
   height: toRem(32);
+  display: none;
+
+  @include respond-to(medium) {
+    display: block;
+  }
 }
 
 .app-navbar__hamburger-button-icon {
@@ -146,12 +139,18 @@ onBeforeUnmount(() => {
   transform: translateX(-100%);
   transition: all 0.4s;
 
+  &--open {
+    transform: translateX(0);
+  }
+
   @include respond-to(medium) {
     display: block;
   }
+}
 
-  &--open {
-    transform: translateX(0);
+.app-navbar__provider-button-wrapper {
+  @include respond-to(medium) {
+    display: none;
   }
 }
 </style>
