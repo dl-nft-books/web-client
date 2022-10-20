@@ -6,7 +6,7 @@ import { ICON_NAMES } from '@/enums'
 import { config } from '@config'
 import { storeToRefs } from 'pinia'
 import { useWeb3ProvidersStore } from '@/store'
-import { useContext } from '@/composables'
+import { useI18n } from 'vue-i18n'
 
 enum EVENTS {
   close = 'close',
@@ -36,7 +36,7 @@ const SOCIAL_LINKS = [
 ]
 
 const { provider } = storeToRefs(useWeb3ProvidersStore())
-const { $t } = useContext()
+const { t } = useI18n({ useScope: 'global' })
 
 const handleProviderClick = () => {
   if (provider.value.selectedAddress) {
@@ -49,7 +49,7 @@ const handleProviderClick = () => {
 const connectProviderButtonText = computed(() => {
   return provider.value.selectedAddress
     ? cropAddress(provider.value.selectedAddress)
-    : $t('app-navbar.connect-provider-button')
+    : t('app-navbar.connect-provider-button')
 })
 
 const emit = defineEmits<{
