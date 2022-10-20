@@ -11,7 +11,7 @@ export const useContext = (): {
 } => {
   const app = getCurrentInstance()
 
-  /* eslint-disable */
+  /* eslint-disable @typescript-eslint/no-non-null-assertion */
   const { $t, $config, $routes, $icons } =
     app!.appContext.config.globalProperties
 
