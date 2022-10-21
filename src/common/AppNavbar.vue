@@ -1,15 +1,17 @@
 <script lang="ts" setup>
 import { AppButton, AppLogo, Icon, AppNavigationMobile } from '@/common'
 import { useWeb3ProvidersStore } from '@/store'
-import { cropAddress } from '@/helpers'
+import { Bus, cropAddress } from '@/helpers'
 import { storeToRefs } from 'pinia'
-import { computed, ref } from 'vue'
-import { useContext } from '@/composables'
+import { computed } from 'vue'
+import { useI18n } from 'vue-i18n'
 
 const { provider } = storeToRefs(useWeb3ProvidersStore())
-const { $t } = useContext()
+const { t } = useI18n({ useScope: 'global' })
 
-const isBurgerOpen = ref(false)
+const openSidebar = () => {
+  Bus.emit(Bus.eventList.openSidebar)
+}
 
 const handleProviderClick = () => {
   if (provider.value.selectedAddress) {
@@ -19,14 +21,10 @@ const handleProviderClick = () => {
   provider.value.connect()
 }
 
-const openBurgerMenu = () => {
-  isBurgerOpen.value = true
-}
-
 const connectProviderButtonText = computed(() => {
   return provider.value.selectedAddress
     ? cropAddress(provider.value.selectedAddress)
-    : $t('app-navbar.connect-provider-button')
+    : t('app-navbar.connect-provider-button')
 })
 </script>
 
@@ -37,7 +35,7 @@ const connectProviderButtonText = computed(() => {
       class="app-navbar__hamburger-button"
       type="button"
       :aria-label="$t('app-navbar.burger-button-label')"
-      @click="openBurgerMenu"
+      @click="openSidebar"
     >
       <icon
         class="app-navbar__hamburger-button-icon"
@@ -69,11 +67,7 @@ const connectProviderButtonText = computed(() => {
         @click="handleProviderClick"
       />
     </div>
-    <app-navigation-mobile
-      class="app-navbar__navigation-mobile"
-      :class="{ 'app-navbar__navigation-mobile--open': isBurgerOpen }"
-      @close="isBurgerOpen = !isBurgerOpen"
-    />
+    <app-navigation-mobile />
   </nav>
 </template>
 
@@ -132,20 +126,6 @@ const connectProviderButtonText = computed(() => {
 .app-navbar__hamburger-button-icon {
   width: 100%;
   height: 100%;
-}
-
-.app-navbar__navigation-mobile {
-  display: none;
-  transform: translateX(-100%);
-  transition: all 0.4s;
-
-  &--open {
-    transform: translateX(0);
-  }
-
-  @include respond-to(medium) {
-    display: block;
-  }
 }
 
 .app-navbar__provider-button-wrapper {

@@ -2,25 +2,26 @@
 import { Icon } from '@/common'
 import { Animation } from '@/common'
 import blockchainAnimation from '@/assets/animations/blockchain-animation.json'
+
+const FOUNDER_IMAGE = '/images/pavlo-kravchenko.png'
 </script>
 
 <template>
   <div class="home-page">
     <div class="home-page__head">
       <div class="home-page__head-wrapper">
-        <h2 class="home-page__title">
+        <h1 class="home-page__title">
           {{ $t('home-page.title') }}
-        </h2>
+        </h1>
         <h3 class="home-page__subtitle">
           {{ $t('home-page.subtitle') }}
           <span class="home-page__subtitle home-page__subtitle--highlighted">
             {{ $t('home-page.subtitle-highlighted') }}
           </span>
         </h3>
-        <h4 class="home-page__small-title">
+        <h4 class="home-page__section-title home-page__section-title--small">
           {{ $t('home-page.small-subtitle') }}
         </h4>
-        <hr class="home-page__line" />
         <div class="home-page__book-description-wrapper">
           <icon class="home-page__book-description-icon" :name="$icons.book" />
           <span class="home-page__book-description">
@@ -39,10 +40,9 @@ import blockchainAnimation from '@/assets/animations/blockchain-animation.json'
         />
       </div>
       <div class="home-page__about-us-content">
-        <h4 class="home-page__about-us-title">
+        <h4 class="home-page__section-title">
           {{ $t('home-page.about-us-title') }}
         </h4>
-        <hr class="home-page__line home-page__line--about-us" />
         <p class="home-page__about-us-text">
           {{ $t('home-page.about-us-text-1') }}
         </p>
@@ -60,7 +60,6 @@ import blockchainAnimation from '@/assets/animations/blockchain-animation.json'
           <h5 class="home-page__founder-content-subtitle">
             {{ $t('home-page.founder-subtitle') }}
           </h5>
-          <hr class="home-page__line home-page__line--founder" />
           <p class="home-page__founder-content-description">
             {{ $t('home-page.founder-description') }}
           </p>
@@ -68,7 +67,7 @@ import blockchainAnimation from '@/assets/animations/blockchain-animation.json'
         <div class="home-page__founder-image-wrapper">
           <img
             class="home-page__founder-image"
-            src="/images/pavlo-kravchenko.png"
+            :src="FOUNDER_IMAGE"
             :alt="$t('home-page.founder-image')"
           />
         </div>
@@ -138,44 +137,17 @@ import blockchainAnimation from '@/assets/animations/blockchain-animation.json'
   line-height: 120%;
   margin-bottom: toRem(10);
 
-  @include respond-to(medium) {
-    font-size: toRem(20);
-  }
-}
-
-.home-page__line {
-  height: toRem(2);
-  border: none;
-  background: var(--primary-main);
-  margin: 0;
-  width: toRem(215);
-
-  &--most-popular-title {
-    margin: toRem(10) auto 0;
-  }
-
-  &--about-us {
-    width: toRem(145);
+  &:after {
+    display: block;
+    content: '';
+    width: clamp(#{toRem(155)}, 20%, #{toRem(215)});
+    height: toRem(2);
     margin-top: toRem(10);
-  }
-
-  &--founder {
-    width: toRem(228);
-    margin-top: toRem(10);
+    background: var(--primary-main);
   }
 
   @include respond-to(medium) {
-    width: toRem(155);
-
-    &--about-us {
-      width: toRem(120);
-      margin: toRem(10) auto 0;
-    }
-
-    &--founder {
-      width: toRem(150);
-      margin: toRem(10) auto 0;
-    }
+    font-size: toRem(20);
   }
 }
 
@@ -207,26 +179,6 @@ import blockchainAnimation from '@/assets/animations/blockchain-animation.json'
   }
 }
 
-.home-page__card-container {
-  width: 100%;
-  max-width: 100%;
-  display: grid;
-  justify-content: center;
-  grid-gap: toRem(20);
-  margin-top: toRem(30);
-  grid-template-columns: repeat(auto-fill, minmax(toRem(390), 1fr));
-}
-
-.home-page__card {
-  margin: 0 auto;
-}
-
-.home-page__view-all-btn {
-  margin: toRem(70) auto toRem(20);
-  padding: toRem(15) toRem(85);
-  text-transform: uppercase;
-}
-
 .home-page__about-us {
   display: grid;
   padding: 0 toRem(100) 0 toRem(20);
@@ -248,12 +200,46 @@ import blockchainAnimation from '@/assets/animations/blockchain-animation.json'
   }
 }
 
-.home-page__about-us-title {
+.home-page__section-title {
   font-size: toRem(40);
+
+  &:after {
+    display: block;
+    content: '';
+    width: clamp(#{toRem(120)}, 40%, #{toRem(145)});
+    height: toRem(2);
+    margin-top: toRem(10);
+    background: var(--primary-main);
+  }
+
+  &--small {
+    font-size: toRem(28);
+    font-weight: 400;
+    white-space: pre-line;
+    line-height: 120%;
+    margin-bottom: toRem(10);
+
+    &:after {
+      width: clamp(#{toRem(155)}, 20%, #{toRem(215)});
+    }
+  }
 
   @include respond-to(medium) {
     font-size: toRem(30);
     text-align: center;
+
+    &:after {
+      margin: toRem(10) auto 0;
+    }
+
+    &--small {
+      font-size: toRem(20);
+      text-align: left;
+
+      &:after {
+        margin: toRem(10) 0 0;
+      }
+    }
   }
 }
 
@@ -308,9 +294,22 @@ import blockchainAnimation from '@/assets/animations/blockchain-animation.json'
   text-transform: uppercase;
   margin-top: toRem(10);
 
+  &:after {
+    display: block;
+    content: '';
+    width: clamp(#{toRem(150)}, 40%, #{toRem(228)});
+    height: toRem(2);
+    margin-top: toRem(10);
+    background: var(--primary-main);
+  }
+
   @include respond-to(medium) {
     text-align: center;
     font-size: toRem(16);
+
+    &:after {
+      margin: toRem(10) auto 0;
+    }
   }
 }
 

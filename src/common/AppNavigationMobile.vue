@@ -1,16 +1,12 @@
 <script lang="ts" setup>
-import { computed, defineEmits } from 'vue'
+import { computed, ref } from 'vue'
 import { Icon, AppButton, AppLogo } from '@/common'
-import { cropAddress } from '@/helpers'
+import { Bus, cropAddress } from '@/helpers'
 import { ICON_NAMES } from '@/enums'
 import { config } from '@config'
 import { storeToRefs } from 'pinia'
 import { useWeb3ProvidersStore } from '@/store'
 import { useI18n } from 'vue-i18n'
-
-enum EVENTS {
-  close = 'close',
-}
 
 const SOCIAL_LINKS = [
   {
@@ -38,6 +34,8 @@ const SOCIAL_LINKS = [
 const { provider } = storeToRefs(useWeb3ProvidersStore())
 const { t } = useI18n({ useScope: 'global' })
 
+const isShowSidebar = ref(false)
+
 const handleProviderClick = () => {
   if (provider.value.selectedAddress) {
     provider.value.disconnect()
@@ -52,23 +50,31 @@ const connectProviderButtonText = computed(() => {
     : t('app-navbar.connect-provider-button')
 })
 
-const emit = defineEmits<{
-  (e: EVENTS.close, isOpened: boolean): void
-}>()
+Bus.on(Bus.eventList.openSidebar, () => {
+  showSidebar()
+})
 
-const closeSelf = () => {
-  emit(EVENTS.close, false)
+const showSidebar = () => {
+  isShowSidebar.value = true
+}
+
+const hideSidebar = () => {
+  isShowSidebar.value = false
 }
 </script>
 
 <template>
-  <div class="app-navigation-mobile">
+  <div
+    class="app-navigation-mobile"
+    :class="{ 'app-navigation-mobile--open': isShowSidebar }"
+  >
     <div class="app-navigation-mobile__header">
       <app-logo scheme="light" />
       <button
         class="app-navigation-mobile__close-btn"
+        type="button"
         :aria-label="$t('app-navigation-mobile.close-burger-button')"
-        @click="closeSelf"
+        @click="hideSidebar"
       >
         <icon class="app-navigation-mobile__close-icon" :name="$icons.close" />
       </button>
@@ -78,7 +84,7 @@ const closeSelf = () => {
         <router-link
           class="app-navigation-mobile__text-link"
           :to="{ name: $routes.bookshelf }"
-          @click="closeSelf"
+          @click="hideSidebar"
         >
           {{ $t('app-navigation-mobile.bookshelf-link') }}
         </router-link>
@@ -86,14 +92,14 @@ const closeSelf = () => {
           v-if="false"
           class="app-navigation-mobile__text-link"
           to="/"
-          @click="closeSelf"
+          @click="hideSidebar"
         >
           {{ $t('app-navigation-mobile.about-link') }}
         </router-link>
         <router-link
           class="app-navigation-mobile__text-link"
           :to="{ name: $routes.myNFTs }"
-          @click="closeSelf"
+          @click="hideSidebar"
         >
           {{ $t('app-navigation-mobile.my-nfts-link') }}
         </router-link>
@@ -128,9 +134,13 @@ const closeSelf = () => {
 </template>
 
 <style lang="scss">
-$header-height: toRem(70);
+$z-local: 10;
+$header-height: toRem(95);
 
 .app-navigation-mobile {
+  display: none;
+  transform: translateX(-100%);
+  transition: all 0.4s;
   height: 100vh;
   width: 100vw;
   position: fixed;
@@ -138,14 +148,22 @@ $header-height: toRem(70);
   left: 0;
   background: var(--background-quaternary);
   overflow-y: auto;
-  z-index: var(--burger-z-index);
+  z-index: $z-local;
+
+  &--open {
+    transform: translateX(0);
+  }
+
+  @include respond-to(medium) {
+    display: block;
+  }
 }
 
 .app-navigation-mobile__header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: toRem(25) toRem(25);
+  padding: toRem(30) var(--app-padding-right) toRem(30) var(--app-padding-left);
   max-height: $header-height;
 }
 
