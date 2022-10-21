@@ -13,10 +13,6 @@ export class DateUtil {
     return this._instance(date, format).unix()
   }
 
-  static formatDMY(date: dayjs.ConfigType) {
-    return this._instance(date).format('MMMM D, YYYY')
-  }
-
   static _instance(date?: dayjs.ConfigType, format?: dayjs.OptionType) {
     return format ? dayjs(date, format) : dayjs(date)
   }

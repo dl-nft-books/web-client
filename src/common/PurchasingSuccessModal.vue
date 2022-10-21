@@ -1,6 +1,5 @@
 <script lang="ts" setup>
 import { AppButton, Modal, Animation } from '@/common'
-import { PropType } from 'vue'
 
 import success from '@/assets/animations/success.json'
 
@@ -37,7 +36,7 @@ const emit = defineEmits<{
           <div class="purchasing-success-modal__animation-wrp">
             <animation
               class="purchasing-success-modal__animation"
-              :animation="success as PropType<JSON>"
+              :animation-data="success"
               :loop="true"
               :speed="0.75"
             />

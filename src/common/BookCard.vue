@@ -14,14 +14,14 @@ const props = withDefaults(
     modification?: 'centered' | 'default'
     backgroundColor?: 'primary' | 'secondary'
     actionBtnText?: string
-    isUserOwnThisBookNft?: boolean
+    isUserOwned?: boolean
   }>(),
   {
     scheme: 'purchase',
     modification: 'default',
     backgroundColor: 'primary',
     actionBtnText: '',
-    isUserOwnThisBookNft: false,
+    isUserOwned: false,
   },
 )
 
@@ -40,7 +40,7 @@ const actionButtonText = computed(
   () => props.actionBtnText || t('bookshelf-page.purchase-btn'),
 )
 const actionButtonLink = computed(() =>
-  props.isUserOwnThisBookNft
+  props.isUserOwned
     ? { name: ROUTE_NAMES.myNftItem, params: { id: props.book.id } }
     : { name: ROUTE_NAMES.bookshelfItem, params: { id: props.book.id } },
 )

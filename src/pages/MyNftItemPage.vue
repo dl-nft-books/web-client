@@ -10,21 +10,21 @@ import {
 import { ErrorHandler } from '@/helpers'
 import { Book } from '@/types'
 import { useRoute } from 'vue-router'
-import { ref, computed } from 'vue'
+import { ref } from 'vue'
 import { useI18n } from 'vue-i18n'
+
+const { t } = useI18n({ useScope: 'global' })
 
 const TABS = {
   myPurchase: {
-    translationId: 'my-nft-item-page.my-purchase-tab',
+    translation: t('my-nft-item-page.my-purchase-tab'),
     id: 'my-purchase-tab',
   },
   bookDescription: {
-    translationId: 'my-nft-item-page.book-description-tab',
+    translation: t('my-nft-item-page.book-description-tab'),
     id: 'book-description-tab',
   },
 }
-
-const { t } = useI18n({ useScope: 'global' })
 const isLoaded = ref(false)
 const isLoadFailed = ref(false)
 const currentTab = ref(TABS.myPurchase.id)
@@ -32,13 +32,6 @@ const currentTab = ref(TABS.myPurchase.id)
 const book = ref<Book | undefined>()
 
 const route = useRoute()
-
-const tabsWithTranslation = computed(() =>
-  Object.values(TABS).map(i => ({
-    translation: t(i.translationId),
-    id: i.id,
-  })),
-)
 
 const init = async () => {
   try {
@@ -103,7 +96,7 @@ init()
           </h2>
           <tabs
             v-model:current-tab-id="currentTab"
-            :tabs="tabsWithTranslation"
+            :tabs="Object.values(TABS)"
             class="my-nft-item-page__tabs"
           />
 

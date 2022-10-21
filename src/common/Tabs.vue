@@ -1,11 +1,7 @@
 <script lang="ts" setup>
-interface TabsType {
+type TabsType = {
   translation: string
   id: string
-}
-
-enum EVENTS {
-  updateCurrentTabId = 'update:current-tab-id',
 }
 
 defineProps<{
@@ -14,12 +10,8 @@ defineProps<{
 }>()
 
 const emit = defineEmits<{
-  (event: EVENTS.updateCurrentTabId, value: string): void
+  (event: 'update:current-tab-id', value: string): void
 }>()
-
-function onClick(id: string) {
-  emit(EVENTS.updateCurrentTabId, id)
-}
 </script>
 
 <template>
@@ -30,7 +22,7 @@ function onClick(id: string) {
       class="tabs__button"
       :class="{ 'tabs__button--active': currentTabId === item.id }"
       type="button"
-      @click="onClick(item.id)"
+      @click="emit('update:current-tab-id', item.id)"
     >
       {{ item.translation }}
     </button>
@@ -42,7 +34,7 @@ function onClick(id: string) {
   display: flex;
   gap: toRem(14);
   padding-bottom: toRem(2);
-  border-bottom: toRem(1) solid var(--border-secondary);
+  border-bottom: toRem(1) solid var(--border-secondary-main);
 }
 
 .tabs__button {
@@ -62,7 +54,7 @@ function onClick(id: string) {
       content: '';
       position: absolute;
       left: 0;
-      bottom: -toRem(3);
+      bottom: toRem(-3);
       width: 100%;
       height: toRem(2);
       background: var(--primary-main);

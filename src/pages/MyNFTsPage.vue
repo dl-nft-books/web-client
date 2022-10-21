@@ -84,7 +84,7 @@ init()
             :book="book"
             scheme="link"
             :action-btn-text="$t('my-nfts-page.details-btn')"
-            is-user-own-this-book-nft
+            is-user-owned
           />
         </div>
       </template>

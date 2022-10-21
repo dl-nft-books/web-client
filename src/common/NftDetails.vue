@@ -2,7 +2,7 @@
 import { Book } from '@/types'
 import { Icon } from '@/common'
 import { formatFiatAsset } from '@/helpers'
-import { DateUtil } from '@/utils/date.util'
+import { formatMDY } from '@/helpers'
 
 defineProps<{ book: Book }>()
 </script>
@@ -14,7 +14,7 @@ defineProps<{ book: Book }>()
         {{ $t('nft-details.purchase-date-lbl') }}
       </p>
       <p class="nft-details__row-value">
-        {{ DateUtil.formatDMY(book.purchaseDate) }}
+        {{ formatMDY(book.purchaseDate) }}
       </p>
     </div>
     <div class="nft-details__row">

@@ -17,7 +17,7 @@ export default defineComponent({
   name: 'animation',
   components: { LottieAnimation },
   props: {
-    animation: {
+    animationData: {
       type: Object as PropType<JSON>,
       required: true,
     },
