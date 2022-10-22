@@ -1,3 +1,4 @@
+<!-- TODO: refactor component -->
 <script lang="ts" setup>
 import { Icon } from '@/common'
 
