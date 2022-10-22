@@ -1,3 +1,4 @@
+<!-- TODO: refactor component -->
 <script lang="ts" setup>
 import { Book } from '@/types'
 import { Icon } from '@/common'
