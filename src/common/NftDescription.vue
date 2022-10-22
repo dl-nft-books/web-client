@@ -34,13 +34,23 @@ defineProps<{ description?: string }>()
   display: flex;
   align-items: center;
   justify-content: space-between;
+  gap: toRem(20) toRem(10);
+  margin-bottom: toRem(40);
+
+  @include respond-to(small) {
+    align-items: flex-start;
+    flex-direction: column;
+  }
 }
 
 .nft-description__badge {
   display: flex;
   align-items: center;
   gap: toRem(24);
-  margin-bottom: toRem(40);
+
+  @include respond-to(medium) {
+    gap: toRem(10);
+  }
 }
 
 .nft-description__badge-icon {
@@ -53,11 +63,25 @@ defineProps<{ description?: string }>()
   line-height: 1.2;
   font-weight: 500;
   font-style: italic;
+
+  @include respond-to(medium) {
+    text-align: center;
+    font-size: toRem(14);
+  }
+
+  @include respond-to(small) {
+    text-align: center;
+    font-size: toRem(16);
+  }
 }
 
 .nft-description__description {
   font-size: toRem(25);
   line-height: 1.2;
   font-weight: 400;
+
+  @include respond-to(medium) {
+    font-size: toRem(18);
+  }
 }
 </style>

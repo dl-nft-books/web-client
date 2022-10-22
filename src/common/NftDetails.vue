@@ -72,16 +72,30 @@ defineProps<{ book: Book }>()
   display: grid;
   grid-template-columns: toRem(220) 1fr;
   grid-gap: toRem(20);
+
+  @include respond-to(small) {
+    grid-template-columns: 1fr;
+    grid-gap: toRem(10);
+  }
 }
 
 .nft-details__row-label {
   font-size: toRem(20);
   line-height: 1.2;
+  color: var(--text-secondary-main);
+
+  @include respond-to(small) {
+    font-size: toRem(16);
+  }
 }
 
 .nft-details__row-value {
   font-size: toRem(24);
   line-height: 1.2;
+
+  @include respond-to(small) {
+    font-size: toRem(20);
+  }
 }
 
 .nft-details__row-value--document {

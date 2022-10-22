@@ -118,17 +118,28 @@ init()
 
 <style lang="scss" scoped>
 .my-nft-item-page {
+  $left-column: clamp(#{toRem(200)}, 40%, #{toRem(600)});
+  $right-column: clamp(#{toRem(250)}, 55%, #{toRem(700)});
+
   display: grid;
-
-  $left-column: clamp(#{toRem(415)}, 40%, #{toRem(600)});
-  $right-column: clamp(#{toRem(600)}, 55%, #{toRem(700)});
-
+  width: 100%;
   grid-template-columns: $left-column $right-column;
-  grid-column-gap: toRem(80);
+  grid-column-gap: clamp(#{toRem(10)}, 5%, #{toRem(80)});
   padding-top: toRem(40);
   padding-bottom: toRem(100);
+  justify-content: center;
   background: url('/images/background-cubes.png') no-repeat left bottom /
     contain;
+
+  @include respond-to(medium) {
+    display: flex;
+    flex-direction: column;
+    row-gap: toRem(40);
+  }
+
+  @include respond-to(small) {
+    max-width: 100%;
+  }
 }
 
 .my-nft-item-page__cover-wrp {
@@ -138,6 +149,14 @@ init()
 .my-nft-item-page__cover {
   width: 100%;
   height: auto;
+
+  @include respond-to(medium) {
+    display: block;
+    width: auto;
+    max-height: toRem(500);
+    max-width: 100%;
+    margin: 0 auto;
+  }
 }
 
 .my-nft-item-page__details {
@@ -151,6 +170,11 @@ init()
   line-height: 1.2;
   font-weight: 900;
   margin-bottom: toRem(65);
+
+  @include respond-to(medium) {
+    text-align: center;
+    font-size: toRem(30);
+  }
 }
 
 .my-nft-item-page__tabs {

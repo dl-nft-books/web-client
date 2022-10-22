@@ -61,5 +61,9 @@ const emit = defineEmits<{
       transition: all 0.2s ease;
     }
   }
+
+  @include respond-to(small) {
+    font-size: toRem(20);
+  }
 }
 </style>

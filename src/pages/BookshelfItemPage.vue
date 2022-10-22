@@ -3,9 +3,9 @@ import {
   Loader,
   ErrorMessage,
   AppButton,
-  Icon,
   PurchasingModal,
   PurchasingSuccessModal,
+  NftDescription,
 } from '@/common'
 
 import { ErrorHandler } from '@/helpers'
@@ -93,29 +93,7 @@ init()
               @click="isPurchaseModalShown = true"
             />
           </div>
-          <div class="bookshelf-item-page__badges">
-            <div class="bookshelf-item-page__badge">
-              <icon
-                class="bookshelf-item-page__badge-icon"
-                :name="$icons.badgeCircleStar"
-              />
-              <span class="bookshelf-item-page__badge-text">
-                {{ $t('bookshelf-item-page.badge-1') }}
-              </span>
-            </div>
-            <div class="bookshelf-item-page__badge">
-              <icon
-                class="bookshelf-item-page__badge-icon"
-                :name="$icons.badgePencil"
-              />
-              <span class="bookshelf-item-page__badge-text">
-                {{ $t('bookshelf-item-page.badge-2') }}
-              </span>
-            </div>
-          </div>
-          <p class="bookshelf-item-page__description">
-            {{ book.description }}
-          </p>
+          <nft-description :description="book.description" />
         </div>
         <template v-if="book">
           <purchasing-modal
@@ -228,54 +206,6 @@ init()
   @include respond-to(small) {
     margin: 0 auto;
     min-width: toRem(240);
-  }
-}
-
-.bookshelf-item-page__badges {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-
-  @include respond-to(small) {
-    align-items: flex-start;
-    flex-direction: column;
-  }
-}
-
-.bookshelf-item-page__badge {
-  display: flex;
-  align-items: center;
-  gap: toRem(16);
-  margin-bottom: toRem(40);
-
-  @include respond-to(medium) {
-    gap: toRem(10);
-  }
-
-  @include respond-to(small) {
-    margin: 0 auto toRem(40);
-  }
-}
-
-.bookshelf-item-page__badge-icon {
-  width: toRem(60);
-  height: toRem(60);
-}
-
-.bookshelf-item-page__badge-text {
-  font-size: toRem(22);
-  line-height: 1.2;
-  font-weight: 500;
-  font-style: italic;
-
-  @include respond-to(medium) {
-    text-align: center;
-    font-size: toRem(14);
-  }
-
-  @include respond-to(small) {
-    text-align: center;
-    font-size: toRem(16);
   }
 }
 
