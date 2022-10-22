@@ -2,8 +2,6 @@
 import { Icon } from '@/common'
 import { Animation } from '@/common'
 import blockchainAnimation from '@/assets/animations/blockchain-animation.json'
-
-const FOUNDER_IMAGE = '/images/pavlo-kravchenko.png'
 </script>
 
 <template>
@@ -19,7 +17,7 @@ const FOUNDER_IMAGE = '/images/pavlo-kravchenko.png'
             {{ $t('home-page.subtitle-highlighted') }}
           </span>
         </h3>
-        <h4 class="home-page__section-title home-page__section-title--small">
+        <h4 class="home-page__greet-description">
           {{ $t('home-page.small-subtitle') }}
         </h4>
         <div class="home-page__book-description-wrapper">
@@ -67,8 +65,8 @@ const FOUNDER_IMAGE = '/images/pavlo-kravchenko.png'
         <div class="home-page__founder-image-wrapper">
           <img
             class="home-page__founder-image"
-            :src="FOUNDER_IMAGE"
-            :alt="$t('home-page.founder-image')"
+            src="/images/pavlo-kravchenko.png"
+            alt="Founder image"
           />
         </div>
       </div>
@@ -83,14 +81,14 @@ const FOUNDER_IMAGE = '/images/pavlo-kravchenko.png'
 }
 
 .home-page__head {
-  background: url('/icons/home-page-bg.svg') no-repeat right bottom / contain;
+  background: url('/images/home-page-bg.png') no-repeat right bottom / contain;
 
   @include respond-to(medium) {
-    background-size: toRem(450);
+    background-size: toRem(550);
   }
 
   @include respond-to(small) {
-    background-size: toRem(300);
+    background-size: 100%;
   }
 }
 
@@ -200,6 +198,32 @@ const FOUNDER_IMAGE = '/images/pavlo-kravchenko.png'
   }
 }
 
+.home-page__greet-description {
+  font-size: toRem(28);
+  font-weight: 400;
+  white-space: pre-line;
+  line-height: 120%;
+  margin-bottom: toRem(10);
+
+  &:after {
+    display: block;
+    content: '';
+    height: toRem(2);
+    margin-top: toRem(10);
+    background: var(--primary-main);
+    width: clamp(#{toRem(155)}, 20%, #{toRem(215)});
+  }
+
+  @include respond-to(medium) {
+    font-size: toRem(20);
+    text-align: left;
+
+    &:after {
+      margin: toRem(10) 0 0;
+    }
+  }
+}
+
 .home-page__section-title {
   font-size: toRem(40);
 
@@ -212,33 +236,12 @@ const FOUNDER_IMAGE = '/images/pavlo-kravchenko.png'
     background: var(--primary-main);
   }
 
-  &--small {
-    font-size: toRem(28);
-    font-weight: 400;
-    white-space: pre-line;
-    line-height: 120%;
-    margin-bottom: toRem(10);
-
-    &:after {
-      width: clamp(#{toRem(155)}, 20%, #{toRem(215)});
-    }
-  }
-
   @include respond-to(medium) {
     font-size: toRem(30);
     text-align: center;
 
     &:after {
       margin: toRem(10) auto 0;
-    }
-
-    &--small {
-      font-size: toRem(20);
-      text-align: left;
-
-      &:after {
-        margin: toRem(10) 0 0;
-      }
     }
   }
 }

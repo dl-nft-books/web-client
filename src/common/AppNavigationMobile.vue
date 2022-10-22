@@ -135,7 +135,6 @@ const hideSidebar = () => {
 
 <style lang="scss">
 $z-local: 10;
-$header-height: toRem(95);
 
 .app-navigation-mobile {
   display: none;
@@ -155,7 +154,8 @@ $header-height: toRem(95);
   }
 
   @include respond-to(medium) {
-    display: block;
+    display: flex;
+    flex-direction: column;
   }
 }
 
@@ -164,14 +164,13 @@ $header-height: toRem(95);
   align-items: center;
   justify-content: space-between;
   padding: toRem(30) var(--app-padding-right) toRem(30) var(--app-padding-left);
-  max-height: $header-height;
 }
 
 .app-navigation-mobile__nav {
   display: flex;
   flex-direction: column;
   margin: 0 auto;
-  height: calc(100% - $header-height);
+  flex: 1;
 }
 
 .app-navigation-mobile__links-wrap {
@@ -198,10 +197,6 @@ $header-height: toRem(95);
   align-items: center;
   color: var(--text-primary-main);
   transition: color 0.3s;
-
-  .app-navigation-mobile__social-link:hover > & {
-    color: var(--text-primary-light);
-  }
 }
 
 .app-navigation-mobile__social-link {
@@ -219,10 +214,6 @@ $header-height: toRem(95);
   height: toRem(20);
   color: var(--text-primary-invert-main);
   transition: color 0.3s;
-
-  &:hover {
-    color: var(--text-primary-light);
-  }
 }
 
 .app-navigation-mobile__close-icon {
@@ -230,18 +221,6 @@ $header-height: toRem(95);
 
   @include respond-to(medium) {
     display: none;
-  }
-
-  @include respond-to(small) {
-    display: none;
-  }
-
-  @include respond-to(xsmall) {
-    display: none;
-  }
-
-  &:hover {
-    color: var(--text-primary-light);
   }
 }
 
@@ -257,10 +236,6 @@ $header-height: toRem(95);
 
   &:not(:first-child) {
     margin-top: toRem(20);
-  }
-
-  &:hover {
-    color: var(--text-secondary-light);
   }
 }
 
