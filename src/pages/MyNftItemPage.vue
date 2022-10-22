@@ -2,35 +2,36 @@
 import {
   Loader,
   ErrorMessage,
-  AppButton,
-  PurchasingModal,
-  PurchasingSuccessModal,
   NftDescription,
+  Tabs,
+  NftDetails,
 } from '@/common'
 
 import { ErrorHandler } from '@/helpers'
 import { Book } from '@/types'
 import { useRoute } from 'vue-router'
 import { ref } from 'vue'
-import { formatFiatAsset } from '@/helpers'
+import { useI18n } from 'vue-i18n'
 
+const { t } = useI18n({ useScope: 'global' })
+
+const TABS = {
+  myPurchase: {
+    translation: t('my-nft-item-page.my-purchase-tab'),
+    id: 'my-purchase-tab',
+  },
+  bookDescription: {
+    translation: t('my-nft-item-page.book-description-tab'),
+    id: 'book-description-tab',
+  },
+}
 const isLoaded = ref(false)
 const isLoadFailed = ref(false)
-const isPurchaseModalShown = ref(false)
-const isPurchaseSuccessModalShown = ref(false)
+const currentTab = ref(TABS.myPurchase.id)
 
 const book = ref<Book | undefined>()
 
 const route = useRoute()
-
-const submit = async () => {
-  try {
-    isPurchaseModalShown.value = false
-    isPurchaseSuccessModalShown.value = true
-  } catch (error) {
-    ErrorHandler.process(error)
-  }
-}
 
 const init = async () => {
   try {
@@ -59,6 +60,16 @@ const loadBook = async () => {
     meta: {
       volume: 'Volume 2',
     },
+    token: {
+      amount: '0,0056',
+      assetCode: 'BTC',
+    },
+    document: {
+      name: 'BDS_volume1.pdf',
+    },
+    signature:
+      'Lörem ipsum semiskop plaktig. Bent abvalens trera vipysamma. Rerade prer derade. Digisk nebelt fask. sdscqae',
+    purchaseDate: '2010-04-02T14:12:07',
   } as Book
 }
 
@@ -66,45 +77,37 @@ init()
 </script>
 
 <template>
-  <div class="bookshelf-item-page">
+  <div class="my-nft-item-page">
     <template v-if="isLoaded">
       <template v-if="isLoadFailed">
-        <error-message :message="$t('bookshelf-item-page.loading-error-msg')" />
+        <error-message :message="$t('my-nft-item-page.loading-error-msg')" />
       </template>
-      <template v-else>
-        <div class="bookshelf-item-page__cover-wrp">
+      <template v-else-if="book">
+        <div class="my-nft-item-page__cover-wrp">
           <img
             :src="book.coverUrl"
             :alt="book.title"
-            class="bookshelf-item-page__cover"
+            class="my-nft-item-page__cover"
           />
         </div>
-        <div class="bookshelf-item-page__details">
-          <h2 class="bookshelf-item-page__title">
+        <div class="my-nft-item-page__details">
+          <h2 class="my-nft-item-page__title">
             {{ book.title }}
           </h2>
-          <div class="bookshelf-item-page__actions">
-            <div class="bookshelf-item-page__price">
-              {{ formatFiatAsset(book.price.amount, book.price.assetCode) }}
-            </div>
-            <app-button
-              class="bookshelf-item-page__purchase-btn"
-              :text="$t('bookshelf-item-page.purchase-btn')"
-              @click="isPurchaseModalShown = true"
-            />
-          </div>
-          <nft-description :description="book.description" />
-        </div>
-        <template v-if="book">
-          <purchasing-modal
-            v-model:is-shown="isPurchaseModalShown"
-            :book="book"
-            @submit="submit"
+          <tabs
+            v-model:current-tab-id="currentTab"
+            :tabs="Object.values(TABS)"
+            class="my-nft-item-page__tabs"
           />
-        </template>
-        <purchasing-success-modal
-          v-model:is-shown="isPurchaseSuccessModalShown"
-        />
+
+          <template v-if="currentTab === TABS.bookDescription.id">
+            <nft-description :description="book.description" />
+          </template>
+
+          <template v-if="currentTab === TABS.myPurchase.id">
+            <nft-details :book="book" />
+          </template>
+        </div>
       </template>
     </template>
     <template v-else>
@@ -114,7 +117,7 @@ init()
 </template>
 
 <style lang="scss" scoped>
-.bookshelf-item-page {
+.my-nft-item-page {
   $left-column: clamp(#{toRem(200)}, 40%, #{toRem(600)});
   $right-column: clamp(#{toRem(250)}, 55%, #{toRem(700)});
 
@@ -139,11 +142,11 @@ init()
   }
 }
 
-.bookshelf-item-page__cover-wrp {
-  max-width: 100%;
+.my-nft-item-page__cover-wrp {
+  width: 100%;
 }
 
-.bookshelf-item-page__cover {
+.my-nft-item-page__cover {
   width: 100%;
   height: auto;
 
@@ -156,12 +159,12 @@ init()
   }
 }
 
-.bookshelf-item-page__details {
+.my-nft-item-page__details {
   display: flex;
   flex-direction: column;
 }
 
-.bookshelf-item-page__title {
+.my-nft-item-page__title {
   text-transform: uppercase;
   font-size: toRem(48);
   line-height: 1.2;
@@ -174,48 +177,7 @@ init()
   }
 }
 
-.bookshelf-item-page__actions {
-  display: flex;
-  align-items: center;
-  gap: toRem(20);
-  border-bottom: toRem(1) solid var(--border-primary-main);
-  padding-bottom: toRem(36);
+.my-nft-item-page__tabs {
   margin-bottom: toRem(40);
-
-  @include respond-to(small) {
-    flex-direction: column;
-  }
-}
-
-.bookshelf-item-page__price {
-  text-transform: uppercase;
-  font-size: toRem(48);
-  line-height: 1.2;
-  font-weight: 900;
-
-  @include respond-to(medium) {
-    text-align: center;
-    font-size: toRem(30);
-  }
-}
-
-.bookshelf-item-page__purchase-btn {
-  min-width: toRem(300);
-  margin-left: auto;
-
-  @include respond-to(small) {
-    margin: 0 auto;
-    min-width: toRem(240);
-  }
-}
-
-.bookshelf-item-page__description {
-  font-size: toRem(25);
-  line-height: 1.2;
-  font-weight: 400;
-
-  @include respond-to(medium) {
-    font-size: toRem(18);
-  }
 }
 </style>
