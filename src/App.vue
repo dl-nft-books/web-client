@@ -9,7 +9,6 @@ import { useWeb3ProvidersStore } from '@/store'
 import { PROVIDERS } from '@/enums'
 
 const isAppInitialized = ref(false)
-
 const web3Store = useWeb3ProvidersStore()
 
 const init = async () => {
