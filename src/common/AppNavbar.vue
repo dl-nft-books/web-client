@@ -1,23 +1,47 @@
 <script lang="ts" setup>
-import { AppButton, AppLogo } from '@/common'
+import { AppButton, AppLogo, Icon, AppNavigationMobile } from '@/common'
 import { useWeb3ProvidersStore } from '@/store'
-import { cropAddress } from '@/helpers'
+import { Bus, cropAddress } from '@/helpers'
 import { storeToRefs } from 'pinia'
+import { computed } from 'vue'
+import { useI18n } from 'vue-i18n'
 
 const { provider } = storeToRefs(useWeb3ProvidersStore())
+const { t } = useI18n({ useScope: 'global' })
+
+const openSidebar = () => {
+  Bus.emit(Bus.eventList.openSidebar)
+}
 
 const handleProviderClick = () => {
   if (provider.value.selectedAddress) {
     provider.value.disconnect()
-  } else {
-    provider.value.connect()
+    return
   }
+  provider.value.connect()
 }
+
+const connectProviderButtonText = computed(() => {
+  return provider.value.selectedAddress
+    ? cropAddress(provider.value.selectedAddress)
+    : t('app-navbar.connect-provider-button')
+})
 </script>
 
 <template>
   <nav class="app-navbar">
     <app-logo />
+    <button
+      class="app-navbar__hamburger-button"
+      type="button"
+      :aria-label="$t('app-navbar.burger-button-label')"
+      @click="openSidebar"
+    >
+      <icon
+        class="app-navbar__hamburger-button-icon"
+        :name="$icons.hamburgerMenu"
+      />
+    </button>
     <div class="app-navbar__links-wrapper">
       <router-link
         class="app-navbar__text-link"
@@ -39,14 +63,11 @@ const handleProviderClick = () => {
         :icon-left="$icons.metamask"
         scheme="flat"
         size="small"
-        :text="
-          provider.selectedAddress
-            ? cropAddress(provider.selectedAddress)
-            : $t('app-navbar.connect-provider-button')
-        "
+        :text="connectProviderButtonText"
         @click="handleProviderClick"
       />
     </div>
+    <app-navigation-mobile />
   </nav>
 </template>
 
@@ -64,6 +85,10 @@ const handleProviderClick = () => {
   align-items: center;
   margin: 0 auto;
   column-gap: toRem(50);
+
+  @include respond-to(medium) {
+    display: none;
+  }
 }
 
 .app-navbar__text-link {
@@ -85,6 +110,27 @@ const handleProviderClick = () => {
   &:deep(.app-button__icon-left) {
     width: toRem(30);
     height: toRem(30);
+  }
+}
+
+.app-navbar__hamburger-button {
+  width: toRem(32);
+  height: toRem(32);
+  display: none;
+
+  @include respond-to(medium) {
+    display: block;
+  }
+}
+
+.app-navbar__hamburger-button-icon {
+  width: 100%;
+  height: 100%;
+}
+
+.app-navbar__provider-button-wrapper {
+  @include respond-to(medium) {
+    display: none;
   }
 }
 </style>

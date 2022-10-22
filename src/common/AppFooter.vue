@@ -76,14 +76,19 @@ const SOCIAL_LINKS = [
   display: flex;
   align-items: center;
   margin-top: toRem(30);
+
+  @include respond-to(medium) {
+    flex-direction: column;
+    row-gap: toRem(25);
+  }
 }
 
 .app-footer__links-wrapper {
   display: flex;
   margin: 0 auto;
-  justify-self: center;
   text-transform: uppercase;
   column-gap: toRem(60);
+  text-align: center;
 }
 
 .app-footer__text-link {
