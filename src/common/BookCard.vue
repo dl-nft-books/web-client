@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { AppButton } from '@/common'
 
-import { Book } from '@/types'
+import { BookRecord } from '@/records'
 import { formatFiatAsset } from '@/helpers'
 import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
@@ -9,7 +9,7 @@ import { ROUTE_NAMES } from '@/enums'
 
 const props = withDefaults(
   defineProps<{
-    book: Book
+    book: BookRecord
     scheme?: 'purchase' | 'link'
     modification?: 'centered' | 'default'
     backgroundColor?: 'primary' | 'secondary'
@@ -49,12 +49,12 @@ const actionButtonLink = computed(() =>
 <template>
   <div :class="bookCardClasses">
     <div class="book-card__cover-wrp">
-      <img :src="book.coverUrl" :alt="book.title" class="book-card__cover" />
+      <img :src="book.bannerUrl" :alt="book.title" class="book-card__cover" />
     </div>
     <span class="book-card__title">{{ book.title }}</span>
     <span class="book-card__price">
       <template v-if="scheme === 'purchase'">
-        {{ formatFiatAsset(book.price.amount, book.price.assetCode) }}
+        {{ formatFiatAsset(book.price, 'USD') }}
       </template>
     </span>
     <template v-if="$slots.actionButton">

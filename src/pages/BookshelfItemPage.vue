@@ -8,20 +8,20 @@ import {
   NftDescription,
 } from '@/common'
 
-import { ErrorHandler } from '@/helpers'
-import { Book } from '@/types'
-import { useRoute } from 'vue-router'
+import { ErrorHandler, getBookById } from '@/helpers'
 import { ref } from 'vue'
 import { formatFiatAsset } from '@/helpers'
+import { BookRecord } from '@/records'
 
+const props = defineProps<{
+  id: string
+}>()
 const isLoaded = ref(false)
 const isLoadFailed = ref(false)
 const isPurchaseModalShown = ref(false)
 const isPurchaseSuccessModalShown = ref(false)
 
-const book = ref<Book | undefined>()
-
-const route = useRoute()
+const book = ref<BookRecord | undefined>()
 
 const submit = async () => {
   try {
@@ -34,32 +34,13 @@ const submit = async () => {
 
 const init = async () => {
   try {
-    await loadBook()
+    const bookResponse = await getBookById(props.id)
+    book.value = new BookRecord(bookResponse)
   } catch (error) {
     ErrorHandler.processWithoutFeedback(error)
     isLoadFailed.value = true
   }
   isLoaded.value = true
-}
-
-const loadBook = async () => {
-  book.value = {
-    id: route.params.id,
-    title: 'Blockchain and decentralized systems, Volume 1',
-    price: {
-      amount: 109,
-      assetCode: 'USD',
-    },
-    coverUrl:
-      'https://images.unsplash.com/photo-1629992101753-56d196c8aabb?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=990&q=80',
-    description:
-      'Lörem ipsum semiskop plaktig. Bent abvalens trera vipysamma. Rerade prer derade. Digisk nebelt fask. sdscqae \n' +
-      'Mack nitevis. Mikropp antelånas londe. Tism svenna sitt liv i preliga. Sögisk euroråse belig. \n' +
-      'Pögt ont puhet och supravinade. Dis vil gesåbelt och vaheten. Aning elektrogram eftersom miligen. Renyde korat. \n',
-    meta: {
-      volume: 'Volume 2',
-    },
-  } as Book
 }
 
 init()
@@ -71,10 +52,10 @@ init()
       <template v-if="isLoadFailed">
         <error-message :message="$t('bookshelf-item-page.loading-error-msg')" />
       </template>
-      <template v-else>
+      <template v-else-if="book">
         <div class="bookshelf-item-page__cover-wrp">
           <img
-            :src="book.coverUrl"
+            :src="book.bannerUrl"
             :alt="book.title"
             class="bookshelf-item-page__cover"
           />
@@ -85,7 +66,7 @@ init()
           </h2>
           <div class="bookshelf-item-page__actions">
             <div class="bookshelf-item-page__price">
-              {{ formatFiatAsset(book.price.amount, book.price.assetCode) }}
+              {{ formatFiatAsset(book.price, 'USD') }}
             </div>
             <app-button
               class="bookshelf-item-page__purchase-btn"

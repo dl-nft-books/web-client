@@ -2,13 +2,13 @@
 import { AppButton, Modal } from '@/common'
 import { InputField, TextareaField } from '@/fields'
 
-import { Book } from '@/types'
+import { BookRecord } from '@/records'
 import { formatFiatAsset } from '@/helpers'
 import { reactive } from 'vue'
 
 defineProps<{
   isShown: boolean
-  book: Book
+  book: BookRecord
 }>()
 
 const emit = defineEmits<{
@@ -51,19 +51,16 @@ const submit = async () => {
             <div class="purchasing-modal__body-preview-img-wrp">
               <img
                 class="purchasing-modal__body-preview-img"
-                :src="book.coverUrl"
+                :src="book.bannerUrl"
                 :alt="book.title"
               />
             </div>
             <div class="purchasing-modal__body-preview-details">
-              <span class="purchasing-modal__body-preview-over-title">
-                {{ book.meta.volume }}
-              </span>
               <h4 class="purchasing-modal__body-preview-title">
                 {{ book.title }}
               </h4>
               <span class="purchasing-modal__body-preview-price">
-                {{ formatFiatAsset(book.price.amount, book.price.assetCode) }}
+                {{ formatFiatAsset(book.price, 'USD') }}
               </span>
             </div>
           </div>
@@ -98,6 +95,11 @@ const submit = async () => {
   padding: toRem(32);
   background: var(--background-primary);
   border-radius: toRem(10);
+  min-width: toRem(460);
+
+  @include respond-to(small) {
+    min-width: auto;
+  }
 }
 
 .purchasing-modal__head {

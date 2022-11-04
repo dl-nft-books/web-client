@@ -31,6 +31,7 @@ const routes: Array<RouteRecordRaw> = [
   {
     path: '/bookshelf/:id',
     name: ROUTE_NAMES.bookshelfItem,
+    props: true,
     component: () => import('@/pages/BookshelfItemPage.vue'),
   },
   {
