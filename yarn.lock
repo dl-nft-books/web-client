@@ -469,6 +469,11 @@
     "@intlify/core-base" "9.2.2"
     "@intlify/shared" "9.2.2"
 
+"@invisiburu/vue-picker@^2.1.0":
+  version "2.1.0"
+  resolved "https://registry.yarnpkg.com/@invisiburu/vue-picker/-/vue-picker-2.1.0.tgz#67b6c4cfc94ddc97ec6546b94ddafde49936c37c"
+  integrity sha512-lbC5LT3KjI+qM/kbugWzbGbjI45SSLa0dAGCTkiwU4UJE+TimR+ozYQN0KHQRn6Ff0o4P2bH0NllQt5EAUYmXg==
+
 "@mapbox/stylelint-processor-arbitrary-tags@^0.4.0":
   version "0.4.0"
   resolved "https://registry.yarnpkg.com/@mapbox/stylelint-processor-arbitrary-tags/-/stylelint-processor-arbitrary-tags-0.4.0.tgz#da45723d8ce75140d08efe3bddd284eba3a3fe53"

@@ -1,7 +1,9 @@
 {
   "validations": {
     "field-error_required": "Please fill out this field",
-    "field-error_email": "Field must be a valid email"
+    "field-error_requiredIf": "Please fill out this field",
+    "field-error_email": "Field must be a valid email",
+    "field-error_address": "Field must be a valid address"
   },
   "errors": {
     "default": "Oops... Something went wrong",
@@ -115,7 +117,13 @@
     "title": "Purchasing",
     "token-address-lbl": "Enter Token Address",
     "signature-lbl": "Your Signature",
-    "purchase-btn": "Buy"
+    "purchase-btn": "Buy",
+    "token-type-lbl": "Token Type",
+    "token-amount-lbl": "Amount of Your Token",
+    "loading-error-msg":"Oops... Something went wrong",
+    "unsupported-token-msg": "This token unsupported. Please choose another token",
+    "submitting-title": "We are generating your NFT.",
+    "submitting-message": "As soon as NFT book will be generated you need to pay"
   },
   "purchasing-success-modal": {
     "head-title": "Purchasing",
