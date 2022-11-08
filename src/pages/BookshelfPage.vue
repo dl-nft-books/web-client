@@ -4,6 +4,7 @@ import { Loader, ErrorMessage, NoDataMessage, BookCard } from '@/common'
 import { ErrorHandler, getBooks } from '@/helpers'
 import { BookRecord } from '@/records'
 import { ref } from 'vue'
+import { BOOK_DEPLOY_STATUSES } from '@/enums'
 
 const isLoaded = ref(false)
 const isLoadFailed = ref(false)
@@ -11,7 +12,9 @@ const books = ref<BookRecord[]>([])
 
 const init = async () => {
   try {
-    const booksResponse = await getBooks()
+    const booksResponse = await getBooks({
+      deployStatus: [BOOK_DEPLOY_STATUSES.successful],
+    })
     books.value = booksResponse.map(book => new BookRecord(book))
   } catch (error) {
     ErrorHandler.processWithoutFeedback(error)
@@ -70,7 +73,7 @@ init()
 
 .bookshelf-page__list {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(toRem(270), 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(toRem(270), toRem(370)));
   grid-gap: toRem(20);
 }
 </style>

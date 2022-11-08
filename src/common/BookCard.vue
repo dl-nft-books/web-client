@@ -2,7 +2,7 @@
 import { AppButton } from '@/common'
 
 import { BookRecord } from '@/records'
-import { formatFiatAsset } from '@/helpers'
+import { formatFiatAssetFromWei } from '@/helpers'
 import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { ROUTE_NAMES } from '@/enums'
@@ -54,7 +54,7 @@ const actionButtonLink = computed(() =>
     <span class="book-card__title">{{ book.title }}</span>
     <span class="book-card__price">
       <template v-if="scheme === 'purchase'">
-        {{ formatFiatAsset(book.price, 'USD') }}
+        {{ formatFiatAssetFromWei(book.price, 'USD') }}
       </template>
     </span>
     <template v-if="$slots.actionButton">

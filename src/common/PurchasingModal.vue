@@ -7,7 +7,7 @@ import { storeToRefs } from 'pinia'
 import { BookRecord } from '@/records'
 import {
   ErrorHandler,
-  formatFiatAsset,
+  formatFiatAssetFromWei,
   createNewTask,
   getPlatformsList,
   getPriceByPlatform,
@@ -23,6 +23,7 @@ import { useI18n } from 'vue-i18n'
 import { ethers } from 'ethers'
 
 import loaderAnimation from '@/assets/animations/loader.json'
+import disableChainAnimation from '@/assets/animations/disable-chain.json'
 
 enum TOKEN_TYPES {
   native = 'Native',
@@ -63,8 +64,13 @@ const form = reactive({
 const isTokenAddressRequired = computed(
   () => form.tokenType !== TOKEN_TYPES.native,
 )
+const isValidChain = computed(
+  () =>
+    currentPlatform.value?.chain_identifier === provider.value.chainId ||
+    5 === provider.value.chainId,
+)
 const priceErrorMessage = computed(() => {
-  if (!isPriceError.value) return ''
+  if (!isPriceError.value && isLoaded) return ''
   return isTokenAddressUnsupported.value
     ? t('purchasing-modal.unsupported-token-msg')
     : t('purchasing-modal.loading-error-msg')
@@ -74,6 +80,7 @@ const formattedTokenAmount = computed(() => {
 
   // FIXME: fix decimals hardcode
   return new BN(props.book.price, { decimals: 18 })
+    .fromWei()
     .div(tokenPrice.value)
     .mul(TOKEN_AMOUNT_COEFFICIENT)
     .toFixed(18)
@@ -92,6 +99,12 @@ const { getFieldErrorMessage, touchField, isFormValid } = useFormValidation(
   })),
 )
 
+const title = computed(() => {
+  if (!isValidChain.value) return t('purchasing-modal.wrong-network-title')
+  return isFormDisabled.value
+    ? t('purchasing-modal.generation-title')
+    : t('purchasing-modal.title')
+})
 const tokenTypesOptions = computed(() => [
   TOKEN_TYPES.native,
   TOKEN_TYPES.erc20,
@@ -124,20 +137,20 @@ const submit = async () => {
       : new BN(props.book.price, { decimals: 18 })
           .div(tokenPrice.value)
           .mul(TOKEN_AMOUNT_COEFFICIENT)
-          .toWei()
           .toFixed()
           .toString()
 
     await nftBookToken.mintToken(
       isTokenAddressRequired.value ? form.tokenAddress : ZERO_ADDRESS,
       mintSignature.price,
-      mintSignature.signature.end_timestamp,
+      mintSignature.end_timestamp,
       generatedTask.metadata_ipfs_hash,
       mintSignature.signature.r,
       mintSignature.signature.s,
       mintSignature.signature.v,
       nativeToken,
     )
+
     emit('submit')
   } catch (e) {
     ErrorHandler.process(e)
@@ -200,11 +213,10 @@ init()
     @update:is-shown="value => emit('update:is-shown', value)"
   >
     <template #default="{ modal }">
-      {{ !isFormDisabled }}
       <div class="purchasing-modal__pane">
         <div class="purchasing-modal__head">
           <h3 class="purchasing-modal__head-title">
-            {{ $t('purchasing-modal.title') }}
+            {{ title }}
           </h3>
           <app-button
             v-if="!isFormDisabled"
@@ -217,89 +229,104 @@ init()
           />
         </div>
         <div class="purchasing-modal__body">
-          <template v-if="isFormDisabled">
-            <div class="purchasing-modal_submitting-animation-wrp">
+          <template v-if="!isValidChain && isLoaded">
+            <div class="purchasing-modal__submitting-animation-wrp">
               <animation
-                class="purchasing-modal_submitting-animation"
-                :animation-data="loaderAnimation"
+                class="purchasing-modal__submitting-animation"
+                :animation-data="disableChainAnimation"
                 :loop="true"
                 :speed="1"
               />
             </div>
-            <h4 class="purchasing-modal_submitting-title">
-              {{ $t('purchasing-modal.submitting-title') }}
-            </h4>
-            <span class="purchasing-modal_submitting-message">
-              {{ $t('purchasing-modal.submitting-message') }}
+            <span class="purchasing-modal__submitting-message">
+              {{ $t('purchasing-modal.wrong-network-message') }}
             </span>
           </template>
           <template v-else>
-            <div class="purchasing-modal__body-preview">
-              <div class="purchasing-modal__body-preview-img-wrp">
-                <img
-                  class="purchasing-modal__body-preview-img"
-                  :src="book.bannerUrl"
-                  :alt="book.title"
+            <template v-if="isFormDisabled">
+              <div class="purchasing-modal__submitting-animation-wrp">
+                <animation
+                  class="purchasing-modal__submitting-animation"
+                  :animation-data="loaderAnimation"
+                  :loop="true"
+                  :speed="1"
                 />
               </div>
-              <div class="purchasing-modal__body-preview-details">
-                <h4 class="purchasing-modal__body-preview-title">
-                  {{ book.title }}
-                </h4>
-                <span class="purchasing-modal__body-preview-price">
-                  {{ formatFiatAsset(book.price, 'USD') }}
-                </span>
-              </div>
-            </div>
-
-            <select-field
-              class="purchasing-modal__select"
-              v-model="form.tokenType"
-              :label="$t('purchasing-modal.token-type-lbl')"
-              :value-options="tokenTypesOptions"
-              :error-message="getFieldErrorMessage('tokenType')"
-              :disabled="isFormDisabled"
-              @blur="touchField('tokenType')"
-            />
-            <input-field
-              v-if="isTokenAddressRequired"
-              class="purchasing-modal__input"
-              v-model="form.tokenAddress"
-              :label="$t('purchasing-modal.token-address-lbl')"
-              :error-message="getFieldErrorMessage('tokenAddress')"
-              :disabled="isFormDisabled"
-              @blur="touchField('tokenAddress')"
-            />
-
-            <template v-if="isPriceLoaded">
-              <template v-if="priceErrorMessage">
-                <error-message :message="priceErrorMessage" />
-              </template>
-              <template v-else-if="tokenPrice">
-                <readonly-field
-                  class="purchasing-modal__readonly"
-                  :label="$t('purchasing-modal.token-amount-lbl')"
-                  :value="formattedTokenAmount"
-                />
-                <textarea-field
-                  class="purchasing-modal__textarea"
-                  v-model="form.signature"
-                  :label="$t('purchasing-modal.signature-lbl')"
-                  :error-message="getFieldErrorMessage('signature')"
-                  :disabled="isFormDisabled"
-                  @blur="touchField('signature')"
-                />
-                <app-button
-                  class="purchasing-modal__purchase-btn"
-                  :text="$t('purchasing-modal.purchase-btn')"
-                  size="small"
-                  :disabled="isFormDisabled"
-                  @click="submit"
-                />
-              </template>
+              <h4 class="purchasing-modal__submitting-title">
+                {{ $t('purchasing-modal.submitting-title') }}
+              </h4>
+              <span class="purchasing-modal__submitting-message">
+                {{ $t('purchasing-modal.submitting-message') }}
+              </span>
             </template>
             <template v-else>
-              <loader />
+              <div class="purchasing-modal__body-preview">
+                <div class="purchasing-modal__body-preview-img-wrp">
+                  <img
+                    class="purchasing-modal__body-preview-img"
+                    :src="book.bannerUrl"
+                    :alt="book.title"
+                  />
+                </div>
+                <div class="purchasing-modal__body-preview-details">
+                  <h4 class="purchasing-modal__body-preview-title">
+                    {{ book.title }}
+                  </h4>
+                  <span class="purchasing-modal__body-preview-price">
+                    {{ formatFiatAssetFromWei(book.price, 'USD') }}
+                  </span>
+                </div>
+              </div>
+
+              <select-field
+                class="purchasing-modal__select"
+                v-model="form.tokenType"
+                :label="$t('purchasing-modal.token-type-lbl')"
+                :value-options="tokenTypesOptions"
+                :error-message="getFieldErrorMessage('tokenType')"
+                :disabled="isFormDisabled"
+                @blur="touchField('tokenType')"
+              />
+              <input-field
+                v-if="isTokenAddressRequired"
+                class="purchasing-modal__input"
+                v-model="form.tokenAddress"
+                :label="$t('purchasing-modal.token-address-lbl')"
+                :error-message="getFieldErrorMessage('tokenAddress')"
+                :disabled="isFormDisabled"
+                @blur="touchField('tokenAddress')"
+              />
+
+              <template v-if="isPriceLoaded">
+                <template v-if="priceErrorMessage">
+                  <error-message :message="priceErrorMessage" />
+                </template>
+                <template v-else-if="tokenPrice">
+                  <readonly-field
+                    class="purchasing-modal__readonly"
+                    :label="$t('purchasing-modal.token-amount-lbl')"
+                    :value="formattedTokenAmount"
+                  />
+                  <textarea-field
+                    class="purchasing-modal__textarea"
+                    v-model="form.signature"
+                    :label="$t('purchasing-modal.signature-lbl')"
+                    :error-message="getFieldErrorMessage('signature')"
+                    :disabled="isFormDisabled"
+                    @blur="touchField('signature')"
+                  />
+                  <app-button
+                    class="purchasing-modal__purchase-btn"
+                    :text="$t('purchasing-modal.purchase-btn')"
+                    size="small"
+                    :disabled="isFormDisabled"
+                    @click="submit"
+                  />
+                </template>
+              </template>
+              <template v-else>
+                <loader />
+              </template>
             </template>
           </template>
         </div>
@@ -320,7 +347,7 @@ init()
   min-width: toRem(460);
 
   @include respond-to(small) {
-    min-width: auto;
+    min-width: 100%;
   }
 }
 
@@ -361,12 +388,12 @@ init()
   }
 }
 
-.purchasing-modal_submitting-animation-wrp {
+.purchasing-modal__submitting-animation-wrp {
   margin: 0 auto toRem(30);
   max-width: toRem(240);
 }
 
-.purchasing-modal_submitting-title {
+.purchasing-modal__submitting-title {
   margin-bottom: toRem(16);
   font-size: toRem(18);
   line-height: 1.2;
@@ -374,7 +401,7 @@ init()
   text-align: center;
 }
 
-.purchasing-modal_submitting-message {
+.purchasing-modal__submitting-message {
   max-width: toRem(310);
   font-size: toRem(18);
   line-height: 1.2;

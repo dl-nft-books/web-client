@@ -1,8 +1,17 @@
 import { api } from '@/api'
 import { BookResponse } from '@/types'
+import { BOOK_DEPLOY_STATUSES } from '@/enums'
 
-export async function getBooks() {
-  const { data } = await api.get<BookResponse[]>('/integrations/books')
+export async function getBooks(opts: {
+  deployStatus?: BOOK_DEPLOY_STATUSES[]
+}) {
+  const { data } = await api.get<BookResponse[]>('/integrations/books', {
+    filter: {
+      ...(opts.deployStatus?.length
+        ? { deploy_status: opts.deployStatus.join(',') }
+        : {}),
+    },
+  })
 
   return data
 }

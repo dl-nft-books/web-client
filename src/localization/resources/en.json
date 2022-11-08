@@ -111,7 +111,8 @@
     "loading-error-msg": "Oops.... Something went wrong",
     "purchase-btn": "Buy",
     "badge-1": "For any acceptable token",
-    "badge-2": "Add your personal sign"
+    "badge-2": "Add your personal sign",
+    "connect-btn": "Connect Wallet"
   },
   "purchasing-modal": {
     "title": "Purchasing",
@@ -123,7 +124,10 @@
     "loading-error-msg":"Oops... Something went wrong",
     "unsupported-token-msg": "This token unsupported. Please choose another token",
     "submitting-title": "We are generating your NFT.",
-    "submitting-message": "As soon as NFT book will be generated you need to pay"
+    "submitting-message": "As soon as NFT book will be generated you need to pay",
+    "wrong-network-message": "You are connected to the wrong network. To purchase NFT, please reconnect to another network",
+    "wrong-network-title": "Reconnecting to the network",
+    "generation-title": "Generation"
   },
   "purchasing-success-modal": {
     "head-title": "Purchasing",

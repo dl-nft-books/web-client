@@ -9,13 +9,16 @@ import {
 } from '@/common'
 
 import { ErrorHandler, getBookById } from '@/helpers'
-import { ref } from 'vue'
+import { ref, watch } from 'vue'
 import { formatFiatAsset } from '@/helpers'
 import { BookRecord } from '@/records'
+import { useWeb3ProvidersStore } from '@/store'
+import { storeToRefs } from 'pinia'
 
 const props = defineProps<{
   id: string
 }>()
+const { provider } = storeToRefs(useWeb3ProvidersStore())
 const isLoaded = ref(false)
 const isLoadFailed = ref(false)
 const isPurchaseModalShown = ref(false)
@@ -43,6 +46,15 @@ const init = async () => {
   isLoaded.value = true
 }
 
+watch(
+  () => provider.value.isConnected,
+  value => {
+    if (!value) {
+      isPurchaseModalShown.value = false
+    }
+  },
+)
+
 init()
 </script>
 
@@ -68,15 +80,24 @@ init()
             <div class="bookshelf-item-page__price">
               {{ formatFiatAsset(book.price, 'USD') }}
             </div>
-            <app-button
-              class="bookshelf-item-page__purchase-btn"
-              :text="$t('bookshelf-item-page.purchase-btn')"
-              @click="isPurchaseModalShown = true"
-            />
+            <template v-if="provider.isConnected">
+              <app-button
+                class="bookshelf-item-page__purchase-btn"
+                :text="$t('bookshelf-item-page.purchase-btn')"
+                @click="isPurchaseModalShown = true"
+              />
+            </template>
+            <template v-else>
+              <app-button
+                class="bookshelf-item-page__purchase-btn"
+                :text="$t('bookshelf-item-page.connect-btn')"
+                @click="provider.connect"
+              />
+            </template>
           </div>
           <nft-description :description="book.description" />
         </div>
-        <template v-if="book">
+        <template v-if="book && isPurchaseModalShown">
           <purchasing-modal
             v-model:is-shown="isPurchaseModalShown"
             :book="book"

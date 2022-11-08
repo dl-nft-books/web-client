@@ -1,4 +1,5 @@
 import { api } from '@/api'
+import { BookResponse } from '@/types'
 
 type Task = {
   id: string
@@ -10,6 +11,7 @@ type Task = {
   file_ipfs_hash: string
   metadata_ipfs_hash: string
   uri: string
+  book: BookResponse
 }
 
 export async function createNewTask(opts: {
@@ -32,6 +34,24 @@ export async function createNewTask(opts: {
   })
 
   return data
+}
+
+export async function getTasksList(opts: {
+  accounts?: string[]
+  states?: string[]
+}) {
+  const response = await api.get<
+    {
+      book: BookResponse
+    }[]
+  >('/integrations/generator/tasks', {
+    filter: {
+      ...(opts.accounts?.length ? { account: opts.accounts.join(',') } : {}),
+      ...(opts.states?.length ? { status: opts.states.join(',') } : {}),
+    },
+  })
+
+  return response
 }
 
 export async function getTaskById(id: string | number) {
@@ -96,15 +116,15 @@ export async function getMintSignature(
     id: string
     type: string
     price: string
+    end_timestamp: number
     signature: {
       id: string
       type: string
-      end_timestamp: number
       r: string
       s: string
       v: number
     }
-  }>('/integrations/generator/price', {
+  }>('/integrations/generator/signature/mint', {
     platform,
     task_id: taskId,
     ...(tokenAddress ? { token_address: tokenAddress } : {}),
