@@ -37,7 +37,7 @@ export type BookPaymentResponse = {
   type: string
   payer_address: string
   amount: string
-  price: string
+  minted_token_price: string
   purchase_timestamp: string
   book_url: string
   erc20_data: {

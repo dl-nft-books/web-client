@@ -23,7 +23,7 @@ defineProps<{ nftToken: GeneratedNFtRecord }>()
         {{ $t('nft-details.price-lbl') }}
       </p>
       <p class="nft-details__row-value">
-        {{ formatFiatAssetFromWei(nftToken.payment.price, 'USD') }}
+        {{ formatFiatAssetFromWei(nftToken.payment.mintedTokenPrice, 'USD') }}
       </p>
     </div>
     <div class="nft-details__row">

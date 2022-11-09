@@ -5,7 +5,7 @@ export class BookPaymentRecord {
   type: string
   payerAddress: string
   amount: string
-  price: string
+  mintedTokenPrice: string
   purchaseTimestamp: string
   erc20Address: string
   erc20Symbol: string
@@ -18,7 +18,7 @@ export class BookPaymentRecord {
     this.type = record.type
     this.payerAddress = record.payer_address
     this.amount = record.amount
-    this.price = record.price
+    this.mintedTokenPrice = record.minted_token_price
     this.purchaseTimestamp = record.purchase_timestamp
     this.erc20Address = record.erc20_data.address
     this.erc20Symbol = record.erc20_data.symbol
