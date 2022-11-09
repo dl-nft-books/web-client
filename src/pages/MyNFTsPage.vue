@@ -1,17 +1,31 @@
 <script lang="ts" setup>
 import { Loader, ErrorMessage, NoDataMessage, BookCard } from '@/common'
 
-import { ErrorHandler } from '@/helpers'
-import { Book } from '@/types'
-import { ref } from 'vue'
+import { ErrorHandler, getGeneratedTokens } from '@/helpers'
+import { ref, watch } from 'vue'
+import { GeneratedNFtRecord } from '@/records'
+import { useWeb3ProvidersStore } from '@/store'
+import { storeToRefs } from 'pinia'
+import { GENERATED_NFT_STATES } from '@/enums'
+
+const { provider } = storeToRefs(useWeb3ProvidersStore())
 
 const isLoaded = ref(false)
 const isLoadFailed = ref(false)
-const books = ref<Book[]>([])
+const nftList = ref<GeneratedNFtRecord[]>([])
 
 const init = async () => {
+  isLoaded.value = false
   try {
-    await loadBooks()
+    if (provider.value.selectedAddress) {
+      const data = await getGeneratedTokens({
+        account: [provider.value.selectedAddress],
+        state: [GENERATED_NFT_STATES.finishedUploading],
+      })
+      nftList.value = data.map(book => new GeneratedNFtRecord(book))
+    } else {
+      nftList.value = []
+    }
   } catch (error) {
     ErrorHandler.processWithoutFeedback(error)
     isLoadFailed.value = true
@@ -19,51 +33,7 @@ const init = async () => {
   isLoaded.value = true
 }
 
-const loadBooks = async () => {
-  books.value = [
-    {
-      id: '1',
-      title: 'Blockchain and decentralized systems, Volume 1',
-      price: {
-        amount: 109,
-        assetCode: 'USD',
-      },
-      coverUrl:
-        'https://images.unsplash.com/photo-1629992101753-56d196c8aabb?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=990&q=80',
-    },
-    {
-      id: '2',
-      title: 'Blockchain and decentralized systems, Volume 1',
-      price: {
-        amount: 109,
-        assetCode: 'USD',
-      },
-      coverUrl:
-        'https://images.unsplash.com/photo-1629992101753-56d196c8aabb?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=990&q=80',
-    },
-    {
-      id: '3',
-      title: 'Blockchain and decentralized systems, Volume 1',
-      price: {
-        amount: 109,
-        assetCode: 'USD',
-      },
-      coverUrl:
-        'https://images.unsplash.com/photo-1629992101753-56d196c8aabb?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=990&q=80',
-    },
-    {
-      id: '4',
-      title: 'Blockchain and decentralized systems, Volume 1',
-      price: {
-        amount: 109,
-        assetCode: 'USD',
-      },
-      coverUrl:
-        'https://images.unsplash.com/photo-1629992101753-56d196c8aabb?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=990&q=80',
-    },
-  ]
-}
-init()
+watch(() => provider.value.selectedAddress, init, { immediate: true })
 </script>
 
 <template>
@@ -75,11 +45,11 @@ init()
       <template v-if="isLoadFailed">
         <error-message :message="$t('my-nfts-page.loading-error-msg')" />
       </template>
-      <template v-else-if="books.length">
+      <template v-else-if="nftList.length">
         <div class="my-nfts-page__list">
           <book-card
             class="my-nfts-page__card"
-            v-for="book in books"
+            v-for="book in nftList"
             :key="book.id"
             :book="book"
             scheme="link"
@@ -117,7 +87,7 @@ init()
 
 .my-nfts-page__list {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(toRem(270), 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(toRem(270), toRem(370)));
   grid-gap: toRem(20);
 }
 </style>

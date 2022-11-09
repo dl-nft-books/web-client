@@ -1,26 +1,3 @@
-export type Book = {
-  id: number | string
-  title: string
-  price: {
-    amount: number
-    assetCode: string
-  }
-  coverUrl: string
-  description?: string
-  meta?: {
-    volume?: string
-  }
-  token?: {
-    amount: string
-    assetCode: string
-  }
-  document?: {
-    name: string
-  }
-  signature?: string
-  purchaseDate?: string
-}
-
 export interface BookFileResponse {
   id: string
   type: string
@@ -53,4 +30,31 @@ export interface TokenPriceResponse {
     symbol: string
     name: string
   }
+}
+
+export type BookPaymentResponse = {
+  id: number | string
+  type: string
+  payer_address: string
+  amount: string
+  price: string
+  purchase_timestamp: string
+  book_url: string
+  erc20_data: {
+    address: string
+    symbol: string
+    name: string
+    decimals: number
+  }
+}
+
+export interface GeneratedNFtResponse {
+  id: string
+  token_id: string
+  name: string
+  description: string
+  image_url: string
+  signature: string
+  status: string
+  payment: BookPaymentResponse
 }

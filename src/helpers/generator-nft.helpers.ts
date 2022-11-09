@@ -1,5 +1,6 @@
 import { api } from '@/api'
-import { BookResponse, TokenPriceResponse } from '@/types'
+import { BookResponse, TokenPriceResponse, GeneratedNFtResponse } from '@/types'
+import { GENERATED_NFT_STATES } from '@/enums'
 
 type Task = {
   id: string
@@ -128,6 +129,30 @@ export async function getMintSignature(
     task_id: taskId,
     ...(tokenAddress ? { token_address: tokenAddress } : {}),
   })
+
+  return data
+}
+export async function getGeneratedTokens(opts?: {
+  account?: string[]
+  state?: GENERATED_NFT_STATES[]
+}) {
+  const { data } = await api.get<GeneratedNFtResponse[]>(
+    '/integrations/generator/tokens',
+    {
+      filter: {
+        ...(opts?.account ? { account: opts.account } : {}),
+        ...(opts?.state?.length ? { state: opts.state.join(',') } : {}),
+      },
+    },
+  )
+
+  return data
+}
+
+export async function getGeneratedTokensById(id: string | number) {
+  const { data } = await api.get<GeneratedNFtResponse>(
+    `/integrations/generator/tokens/${id}`,
+  )
 
   return data
 }

@@ -7,11 +7,10 @@ import {
   NftDetails,
 } from '@/common'
 
-import { ErrorHandler } from '@/helpers'
-import { Book } from '@/types'
-import { useRoute } from 'vue-router'
+import { ErrorHandler, getGeneratedTokensById } from '@/helpers'
 import { ref } from 'vue'
 import { useI18n } from 'vue-i18n'
+import { GeneratedNFtRecord } from '@/records'
 
 const { t } = useI18n({ useScope: 'global' })
 
@@ -25,52 +24,25 @@ const TABS = {
     id: 'book-description-tab',
   },
 }
+const props = defineProps<{
+  id: string
+}>()
+
 const isLoaded = ref(false)
 const isLoadFailed = ref(false)
 const currentTab = ref(TABS.myPurchase.id)
 
-const book = ref<Book | undefined>()
-
-const route = useRoute()
+const nftToken = ref<GeneratedNFtRecord | undefined>()
 
 const init = async () => {
   try {
-    await loadBook()
+    const tokenResponse = await getGeneratedTokensById(props.id)
+    nftToken.value = new GeneratedNFtRecord(tokenResponse)
   } catch (error) {
     ErrorHandler.processWithoutFeedback(error)
     isLoadFailed.value = true
   }
   isLoaded.value = true
-}
-
-const loadBook = async () => {
-  book.value = {
-    id: route.params.id,
-    title: 'Blockchain and decentralized systems, Volume 1',
-    price: {
-      amount: 109,
-      assetCode: 'USD',
-    },
-    coverUrl:
-      'https://images.unsplash.com/photo-1629992101753-56d196c8aabb?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=990&q=80',
-    description:
-      'Lörem ipsum semiskop plaktig. Bent abvalens trera vipysamma. Rerade prer derade. Digisk nebelt fask. sdscqae \n' +
-      'Mack nitevis. Mikropp antelånas londe. Tism svenna sitt liv i preliga. Sögisk euroråse belig. \n' +
-      'Pögt ont puhet och supravinade. Dis vil gesåbelt och vaheten. Aning elektrogram eftersom miligen. Renyde korat. \n',
-    meta: {
-      volume: 'Volume 2',
-    },
-    token: {
-      amount: '0,0056',
-      assetCode: 'BTC',
-    },
-    document: {
-      name: 'BDS_volume1.pdf',
-    },
-    signature:
-      'Lörem ipsum semiskop plaktig. Bent abvalens trera vipysamma. Rerade prer derade. Digisk nebelt fask. sdscqae',
-    purchaseDate: '2010-04-02T14:12:07',
-  } as Book
 }
 
 init()
@@ -82,17 +54,17 @@ init()
       <template v-if="isLoadFailed">
         <error-message :message="$t('my-nft-item-page.loading-error-msg')" />
       </template>
-      <template v-else-if="book">
+      <template v-else-if="nftToken">
         <div class="my-nft-item-page__cover-wrp">
           <img
-            :src="book.coverUrl"
-            :alt="book.title"
+            :src="nftToken.imageUrl"
+            :alt="nftToken.name"
             class="my-nft-item-page__cover"
           />
         </div>
         <div class="my-nft-item-page__details">
           <h2 class="my-nft-item-page__title">
-            {{ book.title }}
+            {{ nftToken.name }}
           </h2>
           <tabs
             v-model:current-tab-id="currentTab"
@@ -101,11 +73,11 @@ init()
           />
 
           <template v-if="currentTab === TABS.bookDescription.id">
-            <nft-description :description="book.description" />
+            <nft-description :description="nftToken.description" />
           </template>
 
           <template v-if="currentTab === TABS.myPurchase.id">
-            <nft-details :book="book" />
+            <nft-details :nft-token="nftToken" />
           </template>
         </div>
       </template>
