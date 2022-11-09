@@ -14,11 +14,6 @@ const routes: Array<RouteRecordRaw> = [
     redirect: { name: ROUTE_NAMES.home },
   },
   {
-    path: '/ui-kit',
-    name: ROUTE_NAMES.uiKit,
-    component: () => import('@/pages/UiKitPage.vue'),
-  },
-  {
     path: '/',
     name: ROUTE_NAMES.home,
     component: () => import('@/pages/HomePage.vue'),

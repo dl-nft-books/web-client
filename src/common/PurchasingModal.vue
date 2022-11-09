@@ -72,9 +72,7 @@ const isTokenAddressRequired = computed(
   () => form.tokenType !== TOKEN_TYPES.native,
 )
 const isValidChain = computed(
-  () =>
-    currentPlatform.value?.chain_identifier === provider.value.chainId ||
-    5 === provider.value.chainId,
+  () => currentPlatform.value?.chain_identifier === provider.value.chainId,
 )
 const priceErrorMessage = computed(() => {
   if (!isPriceError.value && isLoaded) return ''
