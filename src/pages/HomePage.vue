@@ -47,6 +47,12 @@ import blockchainAnimation from '@/assets/animations/blockchain-animation.json'
         <p class="home-page__about-us-text">
           {{ $t('home-page.about-us-text-2') }}
         </p>
+        <p class="home-page__about-us-text">
+          {{ $t('home-page.about-us-text-3') }}
+        </p>
+        <p class="home-page__about-us-text">
+          {{ $t('home-page.about-us-text-4') }}
+        </p>
       </div>
     </div>
     <div class="home-page__founder">

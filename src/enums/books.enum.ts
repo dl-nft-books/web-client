@@ -6,5 +6,5 @@ export enum BOOK_DEPLOY_STATUSES {
 
 export enum GENERATED_NFT_STATUSES {
   uploading = 1,
-  finishedUploading = 2,
+  finishedUploading = 3,
 }

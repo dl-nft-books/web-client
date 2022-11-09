@@ -89,8 +89,10 @@
     "no-data-msg": "Empty data, please add new",
     "view-all-link": "View All",
     "about-us-title": "About Us",
-    "about-us-text-1": "Neque quisque sollicitudin tempor vestibulum elit taciti. Sagittis tempor consequat turpis. Aenean curae elementum vestibulum dapibus vitae laoreet. Bibendum suspendisse himenaeos malesuada. Nisl taciti si platea dui. Euismod malesuada facilisis duis lobortis aliquet massa. Tincidunt vivamus ac consectetuer molestie pharetra. Sodales pulvinar non habitant.",
-    "about-us-text-2": "Nisl taciti si platea dui. Euismod malesuada facilisis duis lobortis aliquet massa. Tincidunt vivamus ac consectetuer molestie pharetra. Sodales pulvinar non habitant.",
+    "about-us-text-1": "Distributed Lab is a team of cryptographers, computer engineers, researchers, and consultants focused on deep technical research and development since 2014.",
+    "about-us-text-2": "Our mission is to build the Financial Internet, which means flawless user experience between hundreds of financial accounting systems that use uniform API in order to be interoperable.",
+    "about-us-text-3": "Today we help businesses to implement latest cryptography and blockchain advancements in order to build next-generation  accounting systems that digitally transform the internal business processes from within.",
+    "about-us-text-4": "With community-building being the next big focus — holding non-profit events, conferences and courses, publishing free educational books for cyber security students all around the world — we aim to gather and teach the next generation of engineers who are ready and capable to transform all accounting systems in the world so that users could have a single e-wallet that connects to all of them.",
     "founder-title": "DR. PAVLO KRAVCHENKO",
     "founder-subtitle": "Co‐Founder, CEO distributed lab",
     "founder-description": "Neque quisque sollicitudin tempor vestibulum elit taciti. Sagittis tempor consequat turpis. Aenean curae elementum vestibulum dapibus vitae laoreet. Bibendum suspendisse himenaeos malesuada. Nisl taciti si platea dui. Euismod malesuada facilisis duis lobortis aliquet massa. Tincidunt vivamus ac consectetuer molestie pharetra. Sodales pulvinar non habitant."
@@ -152,5 +154,12 @@
     "token-amount-lbl": "Amount of Your Token",
     "signature-lbl": "Your Signature",
     "document-lbl": "Document"
+  },
+  "my-nfts-no-data": {
+    "message-first": "Your bookshelf is still empty.",
+    "message-second": "All of your purchased NFTs will be stored here",
+    "marketplace-btn": "Go to Marketplace",
+    "connect-metamask-btn": "Connect to MetaMask",
+    "connect-metamask-message": "To see purchased NFTs, please connect your MetaMask Wallet"
   }
 }

@@ -1,5 +1,6 @@
 <script lang="ts" setup>
-import { Loader, ErrorMessage, NoDataMessage, BookCard } from '@/common'
+import { Loader, ErrorMessage, BookCard } from '@/common'
+import MyNftsNoData from '@/pages/my-nfts/MyNftsNoData.vue'
 
 import { ErrorHandler, getGeneratedTokens } from '@/helpers'
 import { ref, watch } from 'vue'
@@ -41,29 +42,34 @@ watch(() => provider.value.selectedAddress, init, { immediate: true })
     <h2 class="my-nfts-page__title">
       {{ $t('my-nfts-page.title') }}
     </h2>
-    <template v-if="isLoaded">
-      <template v-if="isLoadFailed">
-        <error-message :message="$t('my-nfts-page.loading-error-msg')" />
-      </template>
-      <template v-else-if="nftList.length">
-        <div class="my-nfts-page__list">
-          <book-card
-            class="my-nfts-page__card"
-            v-for="book in nftList"
-            :key="book.id"
-            :book="book"
-            scheme="link"
-            :action-btn-text="$t('my-nfts-page.details-btn')"
-            is-user-owned
-          />
-        </div>
-      </template>
-      <template v-else>
-        <no-data-message :message="$t('my-nfts-page.no-data-msg')" />
-      </template>
+    <template v-if="!provider.isConnected">
+      <my-nfts-no-data is-no-connected />
     </template>
     <template v-else>
-      <loader />
+      <template v-if="isLoaded">
+        <template v-if="isLoadFailed">
+          <error-message :message="$t('my-nfts-page.loading-error-msg')" />
+        </template>
+        <template v-else-if="nftList.length">
+          <div class="my-nfts-page__list">
+            <book-card
+              class="my-nfts-page__card"
+              v-for="book in nftList"
+              :key="book.id"
+              :book="book"
+              scheme="link"
+              :action-btn-text="$t('my-nfts-page.details-btn')"
+              is-user-owned
+            />
+          </div>
+        </template>
+        <template v-else>
+          <my-nfts-no-data />
+        </template>
+      </template>
+      <template v-else>
+        <loader />
+      </template>
     </template>
   </div>
 </template>
