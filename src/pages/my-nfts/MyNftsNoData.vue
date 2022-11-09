@@ -14,7 +14,7 @@ const handleProviderClick = () => {
 
 withDefaults(
   defineProps<{
-    isNoConnected: boolean
+    isNoConnected?: boolean
   }>(),
   {
     isNoConnected: false,
