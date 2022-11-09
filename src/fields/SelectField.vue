@@ -237,6 +237,7 @@ $z-local-index: 1;
   text-align: left;
   width: 100%;
   height: 100%;
+  font-weight: 400;
 
   @include field-border;
 
@@ -309,6 +310,7 @@ $z-local-index: 1;
   text-align: left;
   width: 100%;
   padding: var(--field-padding);
+  font-weight: 400;
 
   &:hover {
     background: rgba(var(--primary-main-rgb), 0.05);

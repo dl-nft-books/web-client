@@ -10,7 +10,7 @@ import {
 } from '@/types'
 import { PROVIDERS } from '@/enums'
 
-export interface UseUnrefProvider {
+interface UseUnrefProvider {
   currentProvider: ethers.providers.Web3Provider | undefined
   currentSigner: ethers.providers.JsonRpcSigner | undefined
 
@@ -79,18 +79,26 @@ export const useNftBookToken = (
     v: number,
     value?: string,
   ) => {
-    const options = value ? { value } : undefined
-
-    const contractTransaction = await _instance_rw.value?.mintToken(
-      tokenAddress,
-      price,
-      endTimestamp,
-      tokenUri,
-      r,
-      s,
-      v,
-      options,
-    )
+    const contractTransaction = value
+      ? await _instance_rw.value?.mintToken(
+          tokenAddress,
+          price,
+          endTimestamp,
+          tokenUri,
+          r,
+          s,
+          v,
+          { value },
+        )
+      : await _instance_rw.value?.mintToken(
+          tokenAddress,
+          price,
+          endTimestamp,
+          tokenUri,
+          r,
+          s,
+          v,
+        )
 
     return contractTransaction
   }

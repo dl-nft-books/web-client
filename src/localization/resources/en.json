@@ -132,7 +132,7 @@
   "purchasing-success-modal": {
     "head-title": "Purchasing",
     "title": "Your payment was successful.",
-    "message": "As soon as the NFT book is generated, it will appear in your wallet and in the My NFTs tab.",
+    "message": "As soon as the NFT book is minted, it will appear in your wallet and in the My NFTs tab.",
     "ok-btn": "Ok"
   },
   "my-nft-item-page": {

@@ -15,12 +15,18 @@ import {
   untilTaskFinishedGeneration,
 } from '@/helpers'
 import { ref, reactive, computed, watch } from 'vue'
-import { useForm, useFormValidation, useNftBookToken } from '@/composables'
+import {
+  useForm,
+  useFormValidation,
+  useNftBookToken,
+  useErc20,
+} from '@/composables'
 import { required, requiredIf, address } from '@/validators'
 import { BN } from '@/utils/math.util'
 import { errors } from '@/api/json-api/errors'
 import { useI18n } from 'vue-i18n'
 import { ethers } from 'ethers'
+import { TokenPriceResponse } from '@/types'
 
 import loaderAnimation from '@/assets/animations/loader.json'
 import disableChainAnimation from '@/assets/animations/disable-chain.json'
@@ -48,12 +54,13 @@ const { t } = useI18n()
 const isLoaded = ref(false)
 const isPriceLoaded = ref(true)
 const currentPlatform = ref()
-const tokenPrice = ref('')
+const tokenPrice = ref<TokenPriceResponse | null>(null)
 const isTokenAddressUnsupported = ref(false)
 const isPriceError = ref(false)
 
 const { provider } = storeToRefs(useWeb3ProvidersStore())
 const nftBookToken = useNftBookToken(provider.value, props.book.contractAddress)
+const erc20 = useErc20(provider.value)
 
 const form = reactive({
   tokenAddress: '',
@@ -79,11 +86,10 @@ const formattedTokenAmount = computed(() => {
   if (!tokenPrice.value) return ''
 
   // FIXME: fix decimals hardcode
-  return new BN(props.book.price, { decimals: 18 })
+  return new BN(props.book.price, { decimals: tokenPrice.value.token.decimals })
     .fromWei()
-    .div(tokenPrice.value)
-    .mul(TOKEN_AMOUNT_COEFFICIENT)
-    .toFixed(18)
+    .div(tokenPrice.value.price)
+    .toFixed(tokenPrice.value.token.decimals)
     .toString()
 })
 const { disableForm, enableForm, isFormDisabled } = useForm()
@@ -111,7 +117,8 @@ const tokenTypesOptions = computed(() => [
 ])
 
 const submit = async () => {
-  if (!isFormValid() || !provider.value.selectedAddress) return
+  if (!isFormValid() || !provider.value.selectedAddress || !tokenPrice.value)
+    return
 
   disableForm()
 
@@ -131,14 +138,33 @@ const submit = async () => {
       isTokenAddressRequired.value ? form.tokenAddress : '',
     )
 
-    // FIXME: fix decimals hardcode
     const nativeToken = isTokenAddressRequired.value
       ? ''
-      : new BN(props.book.price, { decimals: 18 })
-          .div(tokenPrice.value)
+      : new BN(props.book.price, { decimals: tokenPrice.value.token.decimals })
+          .div(tokenPrice.value.price)
           .mul(TOKEN_AMOUNT_COEFFICIENT)
           .toFixed()
           .toString()
+
+    if (isTokenAddressRequired.value) {
+      erc20.init(form.tokenAddress)
+      await erc20.getAllowance(
+        provider.value.selectedAddress,
+        props.book.contractAddress,
+      )
+      if (erc20.allowance) {
+        const allowanceBN = new BN(erc20.allowance.value)
+        const tokenPriceAmount = new BN(formattedTokenAmount.value).toFraction(
+          tokenPrice.value.token.decimals,
+        )
+
+        if (allowanceBN.compare(tokenPriceAmount) === -1) {
+          const maxAmount = new BN(2).pow(256).sub(1).toString()
+          const tx = await erc20.approve(props.book.contractAddress, maxAmount)
+          await tx?.wait()
+        }
+      }
+    }
 
     await nftBookToken.mintToken(
       isTokenAddressRequired.value ? form.tokenAddress : ZERO_ADDRESS,
@@ -173,7 +199,7 @@ async function init() {
 }
 
 async function getPrice() {
-  tokenPrice.value = ''
+  tokenPrice.value = null
   if (
     !currentPlatform.value ||
     (isTokenAddressRequired.value && !ethers.utils.isAddress(form.tokenAddress))

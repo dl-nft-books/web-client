@@ -45,3 +45,12 @@ export interface BookResponse {
   title: string
   type: string
 }
+
+export interface TokenPriceResponse {
+  price: string
+  token: {
+    decimals: number
+    symbol: string
+    name: string
+  }
+}

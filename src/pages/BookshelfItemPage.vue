@@ -10,7 +10,7 @@ import {
 
 import { ErrorHandler, getBookById } from '@/helpers'
 import { ref, watch } from 'vue'
-import { formatFiatAsset } from '@/helpers'
+import { formatFiatAssetFromWei } from '@/helpers'
 import { BookRecord } from '@/records'
 import { useWeb3ProvidersStore } from '@/store'
 import { storeToRefs } from 'pinia'
@@ -78,7 +78,7 @@ init()
           </h2>
           <div class="bookshelf-item-page__actions">
             <div class="bookshelf-item-page__price">
-              {{ formatFiatAsset(book.price, 'USD') }}
+              {{ formatFiatAssetFromWei(book.price, 'USD') }}
             </div>
             <template v-if="provider.isConnected">
               <app-button

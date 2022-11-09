@@ -1,5 +1,5 @@
 import { api } from '@/api'
-import { BookResponse } from '@/types'
+import { BookResponse, TokenPriceResponse } from '@/types'
 
 type Task = {
   id: string
@@ -95,16 +95,15 @@ export async function getPlatformsList() {
 }
 
 export async function getPriceByPlatform(platform: string, contract?: string) {
-  const { data } = await api.get<{
-    id: string
-    type: string
-    price: string
-  }>('/integrations/pricer/price', {
-    platform,
-    ...(contract ? { contract } : {}),
-  })
+  const { data } = await api.get<TokenPriceResponse>(
+    '/integrations/pricer/price',
+    {
+      platform,
+      ...(contract ? { contract } : {}),
+    },
+  )
 
-  return data.price
+  return data
 }
 
 export async function getMintSignature(
