@@ -6,7 +6,7 @@ import { ref, watch } from 'vue'
 import { GeneratedNFtRecord } from '@/records'
 import { useWeb3ProvidersStore } from '@/store'
 import { storeToRefs } from 'pinia'
-import { GENERATED_NFT_STATES } from '@/enums'
+import { GENERATED_NFT_STATUSES } from '@/enums'
 
 const { provider } = storeToRefs(useWeb3ProvidersStore())
 
@@ -20,7 +20,7 @@ const init = async () => {
     if (provider.value.selectedAddress) {
       const data = await getGeneratedTokens({
         account: [provider.value.selectedAddress],
-        state: [GENERATED_NFT_STATES.finishedUploading],
+        status: [GENERATED_NFT_STATUSES.finishedUploading],
       })
       nftList.value = data.map(book => new GeneratedNFtRecord(book))
     } else {

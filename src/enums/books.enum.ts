@@ -4,7 +4,7 @@ export enum BOOK_DEPLOY_STATUSES {
   failed = 3,
 }
 
-export enum GENERATED_NFT_STATES {
+export enum GENERATED_NFT_STATUSES {
   uploading = 1,
   finishedUploading = 2,
 }
