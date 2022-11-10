@@ -58,10 +58,10 @@ const connectProviderButtonText = computed(() => {
     <div class="app-navbar__provider-button-wrapper">
       <app-button
         class="app-navbar__provider-btn"
-        type="button"
         :icon-left="$icons.metamask"
         scheme="flat"
         size="small"
+        :disabled="provider.selectedAddress"
         :text="connectProviderButtonText"
         @click="handleProviderClick"
       />
