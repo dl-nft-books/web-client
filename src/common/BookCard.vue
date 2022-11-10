@@ -110,7 +110,7 @@ const price = computed(() =>
 .book-card__cover {
   object-fit: cover;
   object-position: center;
-  max-height: toRem(200);
+  max-height: toRem(280);
   width: 100%;
   height: 100%;
 }

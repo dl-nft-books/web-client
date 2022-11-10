@@ -22,7 +22,7 @@ export default defineConfig(({ command, mode }) => {
 
   return {
     server: {
-      port: Number(env.VITE_PORT),
+      port: Number(env.VITE_APP_PORT),
     },
     publicDir: 'static',
     plugins: [

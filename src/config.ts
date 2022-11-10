@@ -8,8 +8,8 @@ export const config = {
   YOUTUBE_LINK: '',
   LINKEDIN_LINK: '',
   TELEGRAM_LINK: '',
-  API_URL: import.meta.env.VITE_API_URL,
-  APP_NAME: import.meta.env.VITE_APP_NAME,
+  API_URL: import.meta.env.VITE_APP_API_URL,
+  APP_NAME: import.meta.env.VITE_APP_APP_NAME,
   LOG_LEVEL: 'trace' as LogLevelDesc,
   BUILD_VERSION: packageJson.version || import.meta.env.VITE_APP_BUILD_VERSION,
 } as const
