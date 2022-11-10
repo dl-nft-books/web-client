@@ -15,6 +15,7 @@ export default defineComponent({
   display: inline-block;
   width: toRem(80);
   height: toRem(80);
+  overflow: hidden;
 }
 
 .spinner:after {

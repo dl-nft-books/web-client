@@ -34,6 +34,7 @@ import { errors } from '@/api/json-api/errors'
 import { useI18n } from 'vue-i18n'
 import { ethers } from 'ethers'
 import { TokenPriceResponse } from '@/types'
+import { config } from '@config'
 
 import loaderAnimation from '@/assets/animations/loader.json'
 import disableChainAnimation from '@/assets/animations/disable-chain.json'
@@ -191,10 +192,10 @@ async function init() {
     const platforms = await getPlatformsList()
 
     // FIXME: fix platforms hardcode
-    const isProduction = import.meta.env.VITE_APP_ENVIRONMENT === 'production'
-    currentPlatform.value = isProduction
-      ? platforms.find(i => i.id === 'polygon-pos')
-      : platforms.find(i => i.id === 'ethereum')
+    currentPlatform.value =
+      config.DEPLOY_ENVIRONMENT === 'production'
+        ? platforms.find(i => i.id === 'polygon-pos')
+        : platforms.find(i => i.id === 'ethereum')
     await getPrice()
   } catch (e) {
     ErrorHandler.processWithoutFeedback(e)
