@@ -28,10 +28,14 @@ export function formatFiatAssetFromWei(amount: BnLike, currency = '') {
   return _formatMoney(formattedAmount, currency)
 }
 
-export function formatAmount(amount: BnLike, decimals: number) {
-  const formattedAmount = new BN(amount).fromFraction(decimals)
+export function formatAssetFromWei(
+  amount: BnLike,
+  decimals: number,
+  currency = '',
+) {
+  const formattedAmount = new BN(amount).fromWei().format({ decimals })
 
-  return formattedAmount.toString()
+  return currency ? `${formattedAmount} ${currency}` : formattedAmount
 }
 
 export function formatNumber(amount: BnLike) {

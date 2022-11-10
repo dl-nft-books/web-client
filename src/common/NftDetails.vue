@@ -1,7 +1,7 @@
 <!-- TODO: refactor component -->
 <script lang="ts" setup>
 import { Icon } from '@/common'
-import { formatFiatAssetFromWei, formatAmount } from '@/helpers'
+import { formatFiatAssetFromWei, formatAssetFromWei } from '@/helpers'
 import { formatMDY } from '@/helpers'
 import { GeneratedNFtRecord } from '@/records'
 
@@ -32,7 +32,10 @@ defineProps<{ nftToken: GeneratedNFtRecord }>()
       </p>
       <p class="nft-details__row-value">
         {{
-          formatAmount(nftToken.payment.amount, nftToken.payment.erc20Decimals)
+          formatAssetFromWei(
+            nftToken.payment.amount,
+            nftToken.payment.erc20Decimals,
+          )
         }}
       </p>
     </div>
