@@ -1,5 +1,12 @@
 <script lang="ts" setup>
-import { AppButton, Modal, Loader, ErrorMessage, Animation } from '@/common'
+import {
+  AppButton,
+  Modal,
+  Loader,
+  ErrorMessage,
+  Animation,
+  Icon,
+} from '@/common'
 import { InputField, TextareaField, SelectField, ReadonlyField } from '@/fields'
 
 import { useWeb3ProvidersStore } from '@/store'
@@ -75,12 +82,7 @@ const isTokenAddressRequired = computed(
 const isValidChain = computed(
   () => currentPlatform.value?.chain_identifier === provider.value.chainId,
 )
-const priceErrorMessage = computed(() => {
-  if (!isPriceError.value && isLoaded) return ''
-  return isTokenAddressUnsupported.value
-    ? t('purchasing-modal.unsupported-token-msg')
-    : t('purchasing-modal.loading-error-msg')
-})
+
 const formattedTokenAmount = computed(() => {
   if (!tokenPrice.value) return ''
 
@@ -189,7 +191,10 @@ async function init() {
     const platforms = await getPlatformsList()
 
     // FIXME: fix platforms hardcode
-    currentPlatform.value = platforms.find(i => i.id === 'ethereum')
+    const isProduction = import.meta.env.VITE_APP_ENVIRONMENT === 'production'
+    currentPlatform.value = isProduction
+      ? platforms.find(i => i.id === 'polygon-pos')
+      : platforms.find(i => i.id === 'ethereum')
     await getPrice()
   } catch (e) {
     ErrorHandler.processWithoutFeedback(e)
@@ -323,8 +328,28 @@ init()
               />
 
               <template v-if="isPriceLoaded">
-                <template v-if="priceErrorMessage">
-                  <error-message :message="priceErrorMessage" />
+                <template v-if="isPriceError">
+                  <template v-if="isTokenAddressUnsupported">
+                    <div class="purchasing-modal__address-error">
+                      <icon
+                        class="purchasing-modal__address-error-icon"
+                        :name="$icons.exclamationCircle"
+                      />
+                      <div>
+                        <p class="purchasing-modal__address-error-message">
+                          {{ $t('purchasing-modal.unsupported-token-msg-1') }}
+                        </p>
+                        <p class="purchasing-modal__address-error-message">
+                          {{ $t('purchasing-modal.unsupported-token-msg-2') }}
+                        </p>
+                      </div>
+                    </div>
+                  </template>
+                  <template v-else>
+                    <error-message
+                      :message="$t('purchasing-modal.loading-error-msg')"
+                    />
+                  </template>
                 </template>
                 <template v-else-if="tokenPrice">
                   <readonly-field
@@ -373,7 +398,7 @@ init()
   min-width: toRem(460);
 
   @include respond-to(small) {
-    min-width: 100%;
+    min-width: 100vw;
   }
 }
 
@@ -398,6 +423,7 @@ init()
   display: flex;
   flex-direction: column;
   align-items: center;
+  overflow-y: auto;
 }
 
 .purchasing-modal__body-preview {
@@ -445,6 +471,7 @@ init()
   object-position: center;
   width: 100%;
   height: 100%;
+  filter: var(--cover-image-shadow-small);
 }
 
 .purchasing-modal__body-preview-details {
@@ -480,6 +507,27 @@ init()
 
 .purchasing-modal__input {
   margin-bottom: toRem(16);
+}
+
+.purchasing-modal__address-error {
+  display: flex;
+  gap: toRem(10);
+  width: 100%;
+  background: var(--background-error);
+  border-radius: toRem(4);
+  padding: toRem(12) toRem(10);
+}
+
+.purchasing-modal__address-error-icon {
+  width: toRem(15);
+  height: toRem(15);
+  color: var(--error-main);
+}
+
+.purchasing-modal__address-error-message {
+  font-size: toRem(14);
+  line-height: 1.2;
+  color: var(--error-main);
 }
 
 .purchasing-modal__readonly {

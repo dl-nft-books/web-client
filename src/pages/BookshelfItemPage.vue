@@ -148,6 +148,7 @@ init()
 .bookshelf-item-page__cover {
   width: 100%;
   height: auto;
+  filter: var(--cover-image-shadow);
 
   @include respond-to(medium) {
     display: block;

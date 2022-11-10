@@ -96,6 +96,10 @@ const connectProviderButtonText = computed(() => {
   font-family: var(--app-font-family);
   font-weight: 500;
   font-size: toRem(16);
+
+  &.router-link-active {
+    border-bottom: toRem(2) solid var(--primary-main);
+  }
 }
 
 .app-navbar__provider-btn {
