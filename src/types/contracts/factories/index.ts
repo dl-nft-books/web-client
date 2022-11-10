@@ -2,3 +2,4 @@
 /* tslint:disable */
 /* eslint-disable */
 export { Erc20__factory } from "./Erc20__factory";
+export { NftBookToken__factory } from "./NftBookToken__factory";

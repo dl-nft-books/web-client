@@ -1,5 +1,6 @@
 import {
   required as _required,
+  requiredIf as _requiredIf,
   email as _email,
   minLength as _minLength,
   maxLength as _maxLength,
@@ -10,6 +11,7 @@ import { Ref } from 'vue'
 import { createI18nMessage, MessageProps } from '@vuelidate/validators'
 import { get } from 'lodash-es'
 import { i18n } from '@/localization'
+import { ethers } from 'ethers'
 
 const { t } = i18n.global || i18n
 
@@ -19,6 +21,9 @@ const messagePath = ({ $validator }: MessageProps) =>
 const withI18nMessage = createI18nMessage({ t, messagePath })
 
 export const required = <ValidationRule>withI18nMessage(_required)
+
+export const requiredIf = (prop: boolean | Ref<boolean>): ValidationRule =>
+  <ValidationRule>withI18nMessage(_requiredIf(prop))
 
 export const email = <ValidationRule>withI18nMessage(_email)
 
@@ -31,3 +36,10 @@ export const maxLength = (length: number): ValidationRule =>
 export const sameAs = (field: Ref): ValidationRule => {
   return <ValidationRule>withI18nMessage(_sameAs(field, get(field, '_key')))
 }
+
+export const address = <ValidationRule>withI18nMessage({
+  $validator: (address: string) => ethers.utils.isAddress(address),
+  $params: {
+    type: 'address',
+  },
+})

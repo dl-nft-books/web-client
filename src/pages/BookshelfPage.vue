@@ -1,67 +1,26 @@
 <script lang="ts" setup>
 import { Loader, ErrorMessage, NoDataMessage, BookCard } from '@/common'
 
-import { ErrorHandler } from '@/helpers'
-import { Book } from '@/types'
+import { ErrorHandler, getBooks } from '@/helpers'
+import { BookRecord } from '@/records'
 import { ref } from 'vue'
+import { BOOK_DEPLOY_STATUSES } from '@/enums'
 
 const isLoaded = ref(false)
 const isLoadFailed = ref(false)
-const books = ref<Book[]>([])
+const books = ref<BookRecord[]>([])
 
 const init = async () => {
   try {
-    await loadBooks()
+    const booksResponse = await getBooks({
+      deployStatus: [BOOK_DEPLOY_STATUSES.successful],
+    })
+    books.value = booksResponse.map(book => new BookRecord(book))
   } catch (error) {
     ErrorHandler.processWithoutFeedback(error)
     isLoadFailed.value = true
   }
   isLoaded.value = true
-}
-
-const loadBooks = async () => {
-  books.value = [
-    {
-      id: '1',
-      title: 'Blockchain and decentralized systems, Volume 1',
-      price: {
-        amount: 109,
-        assetCode: 'USD',
-      },
-      coverUrl:
-        'https://images.unsplash.com/photo-1629992101753-56d196c8aabb?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=990&q=80',
-    },
-    {
-      id: '2',
-      title: 'Blockchain and decentralized systems, Volume 1',
-      price: {
-        amount: 109,
-        assetCode: 'USD',
-      },
-      coverUrl:
-        'https://images.unsplash.com/photo-1629992101753-56d196c8aabb?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=990&q=80',
-    },
-    {
-      id: '3',
-      title: 'Blockchain and decentralized systems, Volume 1',
-      price: {
-        amount: 109,
-        assetCode: 'USD',
-      },
-      coverUrl:
-        'https://images.unsplash.com/photo-1629992101753-56d196c8aabb?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=990&q=80',
-    },
-    {
-      id: '4',
-      title: 'Blockchain and decentralized systems, Volume 1',
-      price: {
-        amount: 109,
-        assetCode: 'USD',
-      },
-      coverUrl:
-        'https://images.unsplash.com/photo-1629992101753-56d196c8aabb?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=990&q=80',
-    },
-  ]
 }
 init()
 </script>
@@ -114,7 +73,7 @@ init()
 
 .bookshelf-page__list {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(toRem(270), 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(toRem(270), toRem(370)));
   grid-gap: toRem(20);
 }
 </style>

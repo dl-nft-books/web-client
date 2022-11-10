@@ -1,11 +1,11 @@
 <!-- TODO: refactor component -->
 <script lang="ts" setup>
-import { Book } from '@/types'
 import { Icon } from '@/common'
-import { formatFiatAsset } from '@/helpers'
+import { formatFiatAssetFromWei, formatAmount } from '@/helpers'
 import { formatMDY } from '@/helpers'
+import { GeneratedNFtRecord } from '@/records'
 
-defineProps<{ book: Book }>()
+defineProps<{ nftToken: GeneratedNFtRecord }>()
 </script>
 
 <template>
@@ -15,7 +15,7 @@ defineProps<{ book: Book }>()
         {{ $t('nft-details.purchase-date-lbl') }}
       </p>
       <p class="nft-details__row-value">
-        {{ formatMDY(book.purchaseDate) }}
+        {{ formatMDY(nftToken.payment.purchaseTimestamp) }}
       </p>
     </div>
     <div class="nft-details__row">
@@ -23,7 +23,7 @@ defineProps<{ book: Book }>()
         {{ $t('nft-details.price-lbl') }}
       </p>
       <p class="nft-details__row-value">
-        {{ formatFiatAsset(book.price.amount, 'USD') }}
+        {{ formatFiatAssetFromWei(nftToken.payment.mintedTokenPrice, 'USD') }}
       </p>
     </div>
     <div class="nft-details__row">
@@ -31,7 +31,9 @@ defineProps<{ book: Book }>()
         {{ $t('nft-details.token-amount-lbl') }}
       </p>
       <p class="nft-details__row-value">
-        {{ book.token?.amount }}
+        {{
+          formatAmount(nftToken.payment.amount, nftToken.payment.erc20Decimals)
+        }}
       </p>
     </div>
     <div class="nft-details__row">
@@ -39,7 +41,7 @@ defineProps<{ book: Book }>()
         {{ $t('nft-details.your-token-lbl') }}
       </p>
       <p class="nft-details__row-value">
-        {{ book.token?.assetCode }}
+        {{ nftToken.payment.erc20Symbol }}
       </p>
     </div>
     <div class="nft-details__row">
@@ -47,17 +49,24 @@ defineProps<{ book: Book }>()
         {{ $t('nft-details.signature-lbl') }}
       </p>
       <p class="nft-details__row-value">
-        {{ book.signature }}
+        {{ nftToken.signature }}
       </p>
     </div>
     <div class="nft-details__row">
       <p class="nft-details__row-label">
         {{ $t('nft-details.document-lbl') }}
       </p>
-      <p class="nft-details__row-value nft-details__row-value--document">
-        {{ book.document?.name }}
+      <a
+        target="_blank"
+        rel="noopener"
+        :href="nftToken.payment.bookUrl"
+        class="nft-details__row-value nft-details__row-value--document"
+      >
+        <span class="nft-details__row-value--document-text">
+          {{ nftToken.payment.bookUrl }}
+        </span>
         <icon class="nft-details__row-icon" :name="$icons.download" />
-      </p>
+      </a>
     </div>
   </div>
 </template>
@@ -103,14 +112,24 @@ defineProps<{ book: Book }>()
   display: flex;
   align-items: center;
   cursor: pointer;
-  max-width: max-content;
+  max-width: 100%;
+  overflow: hidden;
+  font-weight: inherit;
+}
+
+.nft-details__row-value--document-text {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  font-size: toRem(24);
 }
 
 .nft-details__row-icon {
-  display: block;
-  margin-left: toRem(10);
+  display: inline-block;
   width: toRem(24);
   height: toRem(24);
+  min-width: toRem(24);
   color: var(--primary-main);
+  margin-left: toRem(10);
 }
 </style>

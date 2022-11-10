@@ -1,40 +1,62 @@
-import { ref } from 'vue'
-import { UseProvider } from '@/types'
+import { ref, watch } from 'vue'
 import { BN } from '@/utils/math.util'
 import { Erc20, Erc20__factory } from '@/types'
+import { ethers } from 'ethers'
 
-export const useErc20 = (provider: UseProvider, address?: string) => {
+import {
+  DesignatedProvider,
+  ChainId,
+  TransactionResponse,
+  TxRequestBody,
+} from '@/types'
+import { PROVIDERS } from '@/enums'
+
+export interface UseUnrefProvider {
+  currentProvider: ethers.providers.Web3Provider | undefined
+  currentSigner: ethers.providers.JsonRpcSigner | undefined
+
+  selectedProvider: PROVIDERS | undefined
+  chainId: ChainId | undefined
+  selectedAddress: string | undefined
+  isConnected: boolean
+
+  init: (provider: DesignatedProvider) => Promise<void>
+  connect: () => Promise<void>
+  disconnect: () => void
+  switchChain: (chainId: ChainId) => Promise<void>
+  addChain: (
+    chainId: ChainId,
+    chainName: string,
+    chainRpcUrl: string,
+  ) => Promise<void>
+  signAndSendTx: (txRequestBody: TxRequestBody) => Promise<TransactionResponse>
+  getHashFromTxResponse: (txResponse: TransactionResponse) => string
+  getTxUrl: (explorerUrl: string, txHash: string) => string
+  getAddressUrl: (explorerUrl: string, address: string) => string
+}
+
+export const useErc20 = (provider: UseUnrefProvider, address?: string) => {
   const _instance = ref<Erc20 | undefined>()
   const _instance_rw = ref<Erc20 | undefined>()
 
-  if (
-    address &&
-    provider.currentProvider.value &&
-    provider.currentSigner.value
-  ) {
-    _instance.value = Erc20__factory.connect(
-      address,
-      provider.currentProvider.value,
-    )
-    _instance_rw.value = Erc20__factory.connect(
-      address,
-      provider.currentSigner.value,
-    )
+  watch(provider, () => {
+    if (address) init(address)
+  })
+
+  if (address && provider.currentProvider && provider.currentSigner) {
+    _instance.value = Erc20__factory.connect(address, provider.currentProvider)
+    _instance_rw.value = Erc20__factory.connect(address, provider.currentSigner)
   }
 
   const init = (address: string) => {
-    if (
-      address &&
-      provider.currentProvider.value &&
-      provider.currentSigner.value
-    ) {
+    if (address && provider.currentProvider && provider.currentSigner) {
       _instance.value = Erc20__factory.connect(
         address,
-        provider.currentProvider.value,
+        provider.currentProvider,
       )
       _instance_rw.value = Erc20__factory.connect(
         address,
-        provider.currentSigner.value,
+        provider.currentSigner,
       )
     }
   }
@@ -63,18 +85,16 @@ export const useErc20 = (provider: UseProvider, address?: string) => {
       getSymbol(),
       getTotalSupply(),
     ])
-    if (provider.currentSigner.value) {
+    if (provider.currentSigner) {
       balance.value = await getBalanceOf(
-        await provider.currentSigner.value?.getAddress(),
+        await provider.currentSigner?.getAddress(),
       )
     }
   }
 
-  const approve = async (spender: string, amount: number) => {
-    await _instance_rw.value?.approve(
-      spender,
-      new BN(amount).toFraction(decimals.value).toString(),
-    )
+  const approve = async (spender: string, amount: string) => {
+    const tx = await _instance_rw.value?.approve(spender, amount)
+    return tx
   }
 
   const decreaseAllowance = async (

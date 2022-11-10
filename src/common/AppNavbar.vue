@@ -15,7 +15,6 @@ const openSidebar = () => {
 
 const handleProviderClick = () => {
   if (provider.value.selectedAddress) {
-    provider.value.disconnect()
     return
   }
   provider.value.connect()
