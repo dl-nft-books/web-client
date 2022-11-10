@@ -12,7 +12,7 @@ import {
   getPlatformsList,
   getPriceByPlatform,
   getMintSignature,
-  untilTaskFinishedGeneration,
+  untilTaskFinishedGeneration, Bus,
 } from '@/helpers'
 import { ref, reactive, computed, watch } from 'vue'
 import {
@@ -36,6 +36,7 @@ enum TOKEN_TYPES {
   erc20 = 'ERC-20',
 }
 
+const MAX_SIGNATURE_LENGTH = 64
 const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000'
 const TOKEN_AMOUNT_COEFFICIENT = 1.02
 
@@ -177,7 +178,8 @@ const submit = async () => {
 
     emit('submit')
   } catch (e) {
-    ErrorHandler.process(e)
+    Bus.error('purchasing-modal.transaction-problem')
+    ErrorHandler.processWithoutFeedback(e)
   }
   enableForm()
 }
@@ -334,6 +336,7 @@ init()
                   <textarea-field
                     class="purchasing-modal__textarea"
                     v-model="form.signature"
+                    :maxlength="MAX_SIGNATURE_LENGTH"
                     :label="$t('purchasing-modal.signature-lbl')"
                     :error-message="getFieldErrorMessage('signature')"
                     :disabled="isFormDisabled"

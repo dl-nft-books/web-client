@@ -206,6 +206,12 @@ const buttonClasses = computed(() =>
     --app-button-border: var(--app-button-flat-border);
     --app-button-border-hover: var(--app-button-flat-border-hover);
     --app-button-border-active: var(--app-button-flat-border-active);
+
+    &:disabled,
+    &--disabled & {
+      filter: none;
+      opacity: 1;
+    }
   }
 
   &--success {
