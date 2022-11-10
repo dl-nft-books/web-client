@@ -63,8 +63,7 @@ export default defineComponent({
       try {
         Bus.success(t('login-form.login-success-msg'))
       } catch (error) {
-        Bus.error('login-form.login-error-msg')
-        ErrorHandler.processWithoutFeedback(error)
+        ErrorHandler.process(error)
       }
       enableForm()
     }

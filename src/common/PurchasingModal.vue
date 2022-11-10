@@ -12,7 +12,7 @@ import {
   getPlatformsList,
   getPriceByPlatform,
   getMintSignature,
-  untilTaskFinishedGeneration, Bus,
+  untilTaskFinishedGeneration,
 } from '@/helpers'
 import { ref, reactive, computed, watch } from 'vue'
 import {
@@ -178,8 +178,7 @@ const submit = async () => {
 
     emit('submit')
   } catch (e) {
-    Bus.error('purchasing-modal.transaction-problem')
-    ErrorHandler.processWithoutFeedback(e)
+    ErrorHandler.process(e)
   }
   enableForm()
 }

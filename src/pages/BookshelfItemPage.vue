@@ -31,7 +31,7 @@ const submit = async () => {
     isPurchaseModalShown.value = false
     isPurchaseSuccessModalShown.value = true
   } catch (error) {
-    ErrorHandler.processWithoutFeedback(error)
+    ErrorHandler.process(error)
   }
 }
 

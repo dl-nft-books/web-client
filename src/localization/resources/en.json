@@ -42,7 +42,6 @@
     "login-lbl": "Login",
     "password-lbl": "Password",
     "login-success-msg": "Access granted",
-    "login-error-msg": "Access not allowed. Try again.",
     "submit-btn": "Submit"
   },
   "ui-kit-page": {
@@ -130,8 +129,7 @@
     "submitting-message": "As soon as NFT book will be generated you need to pay",
     "wrong-network-message": "You are connected to the wrong network. To purchase NFT, please reconnect to another network",
     "wrong-network-title": "Reconnecting to the network",
-    "generation-title": "Generation",
-    "transaction-problem": "Something bad happened during the transaction, please try again."
+    "generation-title": "Generation"
   },
   "purchasing-success-modal": {
     "head-title": "Purchasing",
