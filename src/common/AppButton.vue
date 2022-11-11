@@ -129,9 +129,8 @@ const buttonClasses = computed(() =>
   cursor: pointer;
   user-select: none;
   overflow: hidden;
-  display: grid;
-  width: min-content;
-  grid: auto / auto-flow max-content;
+  display: flex;
+  width: max-content;
   align-items: center;
   justify-content: center;
   transition: var(--button-transition-duration) ease-in;
