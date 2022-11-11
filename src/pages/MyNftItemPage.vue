@@ -1,11 +1,5 @@
 <script lang="ts" setup>
-import {
-  Loader,
-  ErrorMessage,
-  NftDescription,
-  Tabs,
-  NftDetails,
-} from '@/common'
+import { Loader, ErrorMessage, Tabs, NftDetails } from '@/common'
 
 import { ErrorHandler, getGeneratedTokensById } from '@/helpers'
 import { ref } from 'vue'
@@ -73,7 +67,9 @@ init()
           />
 
           <template v-if="currentTab === TABS.bookDescription.id">
-            <nft-description :description="nftToken.description" />
+            <p class="my-nft-item-page__description">
+              {{ nftToken.description }}
+            </p>
           </template>
 
           <template v-if="currentTab === TABS.myPurchase.id">
@@ -152,5 +148,15 @@ init()
 
 .my-nft-item-page__tabs {
   margin-bottom: toRem(40);
+}
+
+.my-nft-item-page__description {
+  font-size: toRem(25);
+  line-height: 1.2;
+  font-weight: 400;
+
+  @include respond-to(medium) {
+    font-size: toRem(18);
+  }
 }
 </style>
