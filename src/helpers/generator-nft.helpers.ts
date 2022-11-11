@@ -46,6 +46,9 @@ export async function getTasksList(opts: {
       book: BookResponse
     }[]
   >('/integrations/generator/tasks', {
+    page: {
+      limit: 100, // FIXME: add pagination
+    },
     filter: {
       ...(opts.accounts?.length ? { account: opts.accounts.join(',') } : {}),
       ...(opts.states?.length ? { status: opts.states.join(',') } : {}),
@@ -68,6 +71,7 @@ export async function untilTaskFinishedGeneration(
   async function checkFinished() {
     const task = await getTaskById(id)
 
+    // FIXME: add statuses to enum
     if (task.status === 3) {
       response = task
       return
@@ -139,6 +143,9 @@ export async function getGeneratedTokens(opts?: {
   const { data } = await api.get<GeneratedNFtResponse[]>(
     '/integrations/generator/tokens',
     {
+      page: {
+        limit: 100, // FIXME: add pagination
+      },
       filter: {
         ...(opts?.account?.length ? { account: opts.account.join(',') } : {}),
         ...(opts?.status?.length ? { status: opts.status.join(',') } : {}),

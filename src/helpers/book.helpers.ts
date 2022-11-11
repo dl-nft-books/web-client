@@ -6,6 +6,9 @@ export async function getBooks(opts: {
   deployStatus?: BOOK_DEPLOY_STATUSES[]
 }) {
   const { data } = await api.get<BookResponse[]>('/integrations/books', {
+    page: {
+      limit: 100, // FIXME: add pagination
+    },
     filter: {
       ...(opts.deployStatus?.length
         ? { deploy_status: opts.deployStatus.join(',') }
