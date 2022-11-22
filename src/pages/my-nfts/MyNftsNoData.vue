@@ -103,7 +103,8 @@ withDefaults(
 }
 
 .my-nfts-no-data__message {
-  font-size: toRem(24);
+  font-size: toRem(30);
+  line-height: 1.33;
 
   @include respond-to(tablet) {
     text-align: center;
