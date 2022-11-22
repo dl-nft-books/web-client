@@ -73,7 +73,7 @@ init()
 
 .bookshelf-page__list {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(toRem(270), toRem(370)));
+  grid-template-columns: repeat(auto-fill, minmax(toRem(292), 1fr));
   grid-gap: toRem(20);
 }
 </style>
