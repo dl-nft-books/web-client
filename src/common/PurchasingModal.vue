@@ -88,7 +88,7 @@
                 @blur="touchField('tokenAddress')"
               />
 
-              <template v-if="isPriceLoaded">
+              <template v-if="isPriceAndBalanceLoaded">
                 <template v-if="isLoadFailed">
                   <template v-if="isTokenAddressUnsupported">
                     <div class="purchasing-modal__address-error">
@@ -216,7 +216,7 @@ const emit = defineEmits<{
 const { t } = useI18n()
 
 const isLoaded = ref(false)
-const isPriceLoaded = ref(false)
+const isPriceAndBalanceLoaded = ref(false)
 const currentPlatform = ref()
 const tokenPrice = ref<TokenPriceResponse | null>(null)
 const isTokenAddressUnsupported = ref(false)
@@ -347,7 +347,7 @@ async function init() {
       config.DEPLOY_ENVIRONMENT === 'production'
         ? platforms.find(i => i.id === 'polygon-pos')
         : platforms.find(i => i.id === 'ethereum')
-    await Promise.all([getPrice(), getBalance()])
+    await loadBalanceAndPrice()
   } catch (e) {
     ErrorHandler.processWithoutFeedback(e)
   }
@@ -355,16 +355,6 @@ async function init() {
 }
 
 async function getPrice() {
-  tokenPrice.value = null
-  if (
-    !currentPlatform.value ||
-    (isTokenAddressRequired.value && !ethers.utils.isAddress(form.tokenAddress))
-  )
-    return
-
-  isPriceLoaded.value = false
-  isLoadFailed.value = false
-  isTokenAddressUnsupported.value = false
   try {
     const contract = isTokenAddressRequired.value ? form.tokenAddress : ''
     tokenPrice.value = await getPriceByPlatform(
@@ -375,40 +365,51 @@ async function getPrice() {
     if (e instanceof errors.NotFoundError) {
       isTokenAddressUnsupported.value = true
     }
-    isLoadFailed.value = true
-    ErrorHandler.processWithoutFeedback(e)
+    throw e
   }
-  isPriceLoaded.value = true
 }
 
 const getBalance = async () => {
+  if (isTokenAddressRequired.value) {
+    erc20.init(form.tokenAddress)
+    await erc20.getDecimals()
+    const blnc = await erc20.getBalanceOf(provider.value.selectedAddress!)
+    balance.value = new BN(blnc).fromFraction(erc20.decimals.value).toString()
+  } else {
+    const blnc = await provider.value.getBalance(
+      provider.value.selectedAddress!,
+    )
+    balance.value = new BN(blnc).fromWei().toString()
+  }
+}
+
+const loadBalanceAndPrice = async () => {
+  tokenPrice.value = null
   balance.value = ''
 
+  if (
+    !currentPlatform.value ||
+    (isTokenAddressRequired.value && !ethers.utils.isAddress(form.tokenAddress))
+  )
+    return
+
+  isPriceAndBalanceLoaded.value = false
+  isLoadFailed.value = false
+  isTokenAddressUnsupported.value = false
+
   try {
-    if (isTokenAddressRequired.value) {
-      if (!ethers.utils.isAddress(form.tokenAddress)) return
-      erc20.init(form.tokenAddress)
-      await erc20.getDecimals()
-      const blnc = await erc20.getBalanceOf(provider.value.selectedAddress!)
-      balance.value = new BN(blnc).fromFraction(erc20.decimals.value).toString()
-    } else {
-      const blnc = await provider.value.getBalance(
-        provider.value.selectedAddress!,
-      )
-      balance.value = new BN(blnc).fromWei().toString()
-    }
+    await Promise.all([getPrice(), getBalance()])
   } catch (e) {
     isLoadFailed.value = true
     ErrorHandler.processWithoutFeedback(e)
   }
+
+  isPriceAndBalanceLoaded.value = true
 }
 
 watch(
   () => [form.tokenType, form.tokenAddress, provider.value.selectedAddress],
-  () => {
-    getPrice()
-    getBalance()
-  },
+  () => loadBalanceAndPrice(),
 )
 
 init()
