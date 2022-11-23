@@ -131,7 +131,7 @@
     "wrong-network-message": "You are connected to the wrong network. To purchase NFT, please reconnect to another network",
     "wrong-network-title": "Reconnecting to the network",
     "generation-title": "Generation",
-    "not-enough-balance-msg": "You don't have enough money to buy this NFT"
+    "not-enough-balance-msg": "You don't have enough tokens to buy this NFT"
   },
   "purchasing-success-modal": {
     "head-title": "Purchasing",
