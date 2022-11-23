@@ -347,8 +347,7 @@ async function init() {
       config.DEPLOY_ENVIRONMENT === 'production'
         ? platforms.find(i => i.id === 'polygon-pos')
         : platforms.find(i => i.id === 'ethereum')
-    await getPrice()
-    await getBalance()
+    await Promise.all([getPrice(), getBalance()])
   } catch (e) {
     ErrorHandler.processWithoutFeedback(e)
   }
