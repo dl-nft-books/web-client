@@ -129,6 +129,10 @@ export const useMetamask = (provider: ProviderInstance): ProviderWrapper => {
   const getAddressUrl = (explorerUrl: string, address: string) => {
     return getEthExplorerAddressUrl(explorerUrl, address)
   }
+  const getBalance = async (address: string) => {
+    const balance = await currentProvider.value.getBalance(address)
+    return balance.toString()
+  }
 
   return {
     currentProvider,
@@ -146,5 +150,6 @@ export const useMetamask = (provider: ProviderInstance): ProviderWrapper => {
     getHashFromTxResponse,
     getTxUrl,
     getAddressUrl,
+    getBalance,
   }
 }

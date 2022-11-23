@@ -1,243 +1,3 @@
-<script lang="ts" setup>
-import {
-  AppButton,
-  Modal,
-  Loader,
-  ErrorMessage,
-  Animation,
-  Icon,
-} from '@/common'
-import { InputField, TextareaField, SelectField, ReadonlyField } from '@/fields'
-
-import { useWeb3ProvidersStore } from '@/store'
-import { storeToRefs } from 'pinia'
-import { BookRecord } from '@/records'
-import {
-  ErrorHandler,
-  formatFiatAssetFromWei,
-  createNewTask,
-  getPlatformsList,
-  getPriceByPlatform,
-  getMintSignature,
-  untilTaskFinishedGeneration,
-} from '@/helpers'
-import { ref, reactive, computed, watch } from 'vue'
-import {
-  useForm,
-  useFormValidation,
-  useNftBookToken,
-  useErc20,
-} from '@/composables'
-import { required, requiredIf, address } from '@/validators'
-import { BN } from '@/utils/math.util'
-import { errors } from '@/api/json-api/errors'
-import { useI18n } from 'vue-i18n'
-import { ethers } from 'ethers'
-import { TokenPriceResponse } from '@/types'
-import { config } from '@config'
-
-import loaderAnimation from '@/assets/animations/loader.json'
-import disableChainAnimation from '@/assets/animations/disable-chain.json'
-
-enum TOKEN_TYPES {
-  native = 'Native',
-  erc20 = 'ERC-20',
-}
-
-const MAX_SIGNATURE_LENGTH = 64
-const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000'
-const TOKEN_AMOUNT_COEFFICIENT = 1.02
-
-const props = defineProps<{
-  isShown: boolean
-  book: BookRecord
-}>()
-
-const emit = defineEmits<{
-  (event: 'update:is-shown', value: boolean): void
-  (event: 'submit'): void
-}>()
-
-const { t } = useI18n()
-
-const isLoaded = ref(false)
-const isPriceLoaded = ref(true)
-const currentPlatform = ref()
-const tokenPrice = ref<TokenPriceResponse | null>(null)
-const isTokenAddressUnsupported = ref(false)
-const isPriceError = ref(false)
-
-const { provider } = storeToRefs(useWeb3ProvidersStore())
-const nftBookToken = useNftBookToken(provider.value, props.book.contractAddress)
-const erc20 = useErc20(provider.value)
-
-const form = reactive({
-  tokenAddress: '',
-  signature: '',
-  tokenType: TOKEN_TYPES.native,
-})
-
-const isTokenAddressRequired = computed(
-  () => form.tokenType !== TOKEN_TYPES.native,
-)
-const isValidChain = computed(
-  () => currentPlatform.value?.chain_identifier === provider.value.chainId,
-)
-
-const formattedTokenAmount = computed(() => {
-  if (!tokenPrice.value) return ''
-
-  // FIXME: fix decimals hardcode
-  return new BN(props.book.price, { decimals: tokenPrice.value.token.decimals })
-    .fromWei()
-    .div(tokenPrice.value.price)
-    .toFixed(tokenPrice.value.token.decimals)
-    .toString()
-})
-const { disableForm, enableForm, isFormDisabled } = useForm()
-const { getFieldErrorMessage, touchField, isFormValid } = useFormValidation(
-  form,
-  computed(() => ({
-    signature: { required },
-    tokenType: { required },
-    tokenAddress: {
-      requiredIf: requiredIf(isTokenAddressRequired),
-      ...(isTokenAddressRequired.value ? { address } : {}),
-    },
-  })),
-)
-
-const title = computed(() => {
-  if (!isValidChain.value) return t('purchasing-modal.wrong-network-title')
-  return isFormDisabled.value
-    ? t('purchasing-modal.generation-title')
-    : t('purchasing-modal.title')
-})
-const tokenTypesOptions = computed(() => [
-  TOKEN_TYPES.native,
-  TOKEN_TYPES.erc20,
-])
-
-const submit = async () => {
-  if (!isFormValid() || !provider.value.selectedAddress || !tokenPrice.value)
-    return
-
-  disableForm()
-
-  try {
-    const currentTask = await createNewTask({
-      signature: form.signature,
-      account: provider.value.selectedAddress,
-      bookId: props.book.id,
-    })
-    const generatedTask = await untilTaskFinishedGeneration(currentTask.id)
-
-    if (!generatedTask) return
-
-    const mintSignature = await getMintSignature(
-      currentPlatform.value.id,
-      generatedTask.id,
-      isTokenAddressRequired.value ? form.tokenAddress : '',
-    )
-
-    const nativeToken = isTokenAddressRequired.value
-      ? ''
-      : new BN(props.book.price, { decimals: tokenPrice.value.token.decimals })
-          .div(tokenPrice.value.price)
-          .mul(TOKEN_AMOUNT_COEFFICIENT)
-          .toFixed()
-          .toString()
-
-    if (isTokenAddressRequired.value) {
-      erc20.init(form.tokenAddress)
-      await erc20.getAllowance(
-        provider.value.selectedAddress,
-        props.book.contractAddress,
-      )
-      if (erc20.allowance) {
-        const allowanceBN = new BN(erc20.allowance.value)
-        const tokenPriceAmount = new BN(formattedTokenAmount.value).toFraction(
-          tokenPrice.value.token.decimals,
-        )
-
-        if (allowanceBN.compare(tokenPriceAmount) === -1) {
-          const maxAmount = new BN(2).pow(256).sub(1).toString()
-          const tx = await erc20.approve(props.book.contractAddress, maxAmount)
-          await tx?.wait()
-        }
-      }
-    }
-
-    await nftBookToken.mintToken(
-      isTokenAddressRequired.value ? form.tokenAddress : ZERO_ADDRESS,
-      mintSignature.price,
-      mintSignature.end_timestamp,
-      generatedTask.metadata_ipfs_hash,
-      mintSignature.signature.r,
-      mintSignature.signature.s,
-      mintSignature.signature.v,
-      nativeToken,
-    )
-
-    emit('submit')
-  } catch (e) {
-    ErrorHandler.process(e)
-  }
-  enableForm()
-}
-
-async function init() {
-  isLoaded.value = false
-  try {
-    const platforms = await getPlatformsList()
-
-    // FIXME: fix platforms hardcode
-    currentPlatform.value =
-      config.DEPLOY_ENVIRONMENT === 'production'
-        ? platforms.find(i => i.id === 'polygon-pos')
-        : platforms.find(i => i.id === 'ethereum')
-    await getPrice()
-  } catch (e) {
-    ErrorHandler.processWithoutFeedback(e)
-  }
-  isLoaded.value = true
-}
-
-async function getPrice() {
-  tokenPrice.value = null
-  if (
-    !currentPlatform.value ||
-    (isTokenAddressRequired.value && !ethers.utils.isAddress(form.tokenAddress))
-  )
-    return
-
-  isPriceLoaded.value = false
-  isPriceError.value = false
-  isTokenAddressUnsupported.value = false
-  try {
-    const contract = isTokenAddressRequired.value ? form.tokenAddress : ''
-    tokenPrice.value = await getPriceByPlatform(
-      currentPlatform.value.id,
-      contract,
-    )
-  } catch (e) {
-    if (e instanceof errors.NotFoundError) {
-      isTokenAddressUnsupported.value = true
-    }
-    isPriceError.value = true
-    ErrorHandler.processWithoutFeedback(e)
-  }
-  isPriceLoaded.value = true
-}
-
-watch(
-  () => [form.tokenType, form.tokenAddress],
-  () => getPrice(),
-)
-
-init()
-</script>
-
 <template>
   <modal
     :is-shown="isShown"
@@ -329,7 +89,7 @@ init()
               />
 
               <template v-if="isPriceLoaded">
-                <template v-if="isPriceError">
+                <template v-if="isLoadFailed">
                   <template v-if="isTokenAddressUnsupported">
                     <div class="purchasing-modal__address-error">
                       <icon
@@ -358,6 +118,12 @@ init()
                     :label="$t('purchasing-modal.token-amount-lbl')"
                     :value="formattedTokenAmount"
                   />
+                  <p
+                    v-if="!isEnoughBalanceForBuy"
+                    class="purchasing-modal__not-enough-balance-msg"
+                  >
+                    {{ $t('purchasing-modal.not-enough-balance-msg') }}
+                  </p>
                   <textarea-field
                     class="purchasing-modal__textarea"
                     v-model="form.signature"
@@ -371,7 +137,7 @@ init()
                     class="purchasing-modal__purchase-btn"
                     :text="$t('purchasing-modal.purchase-btn')"
                     size="small"
-                    :disabled="isFormDisabled"
+                    :disabled="isFormDisabled || !isEnoughBalanceForBuy"
                     @click="submit"
                   />
                 </template>
@@ -386,6 +152,270 @@ init()
     </template>
   </modal>
 </template>
+
+<script lang="ts" setup>
+import {
+  AppButton,
+  Modal,
+  Loader,
+  ErrorMessage,
+  Animation,
+  Icon,
+} from '@/common'
+import { InputField, TextareaField, SelectField, ReadonlyField } from '@/fields'
+
+import { useWeb3ProvidersStore } from '@/store'
+import { storeToRefs } from 'pinia'
+import { BookRecord } from '@/records'
+import {
+  ErrorHandler,
+  formatFiatAssetFromWei,
+  createNewTask,
+  getPlatformsList,
+  getPriceByPlatform,
+  getMintSignature,
+  untilTaskFinishedGeneration,
+} from '@/helpers'
+import { ref, reactive, computed, watch } from 'vue'
+import {
+  useForm,
+  useFormValidation,
+  useNftBookToken,
+  useErc20,
+} from '@/composables'
+import { required, requiredIf, address } from '@/validators'
+import { BN } from '@/utils/math.util'
+import { errors } from '@/api/json-api/errors'
+import { useI18n } from 'vue-i18n'
+import { ethers } from 'ethers'
+import { TokenPriceResponse } from '@/types'
+import { config } from '@config'
+
+import loaderAnimation from '@/assets/animations/loader.json'
+import disableChainAnimation from '@/assets/animations/disable-chain.json'
+
+enum TOKEN_TYPES {
+  native = 'Native',
+  erc20 = 'ERC-20',
+}
+
+const MAX_SIGNATURE_LENGTH = 64
+const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000'
+const TOKEN_AMOUNT_COEFFICIENT = 1.02
+
+const props = defineProps<{
+  isShown: boolean
+  book: BookRecord
+}>()
+
+const emit = defineEmits<{
+  (event: 'update:is-shown', value: boolean): void
+  (event: 'submit'): void
+}>()
+
+const { t } = useI18n()
+
+const isLoaded = ref(false)
+const isPriceLoaded = ref(false)
+const currentPlatform = ref()
+const tokenPrice = ref<TokenPriceResponse | null>(null)
+const isTokenAddressUnsupported = ref(false)
+const isLoadFailed = ref(false)
+const balance = ref('')
+
+const { provider } = storeToRefs(useWeb3ProvidersStore())
+const nftBookToken = useNftBookToken(provider.value, props.book.contractAddress)
+const erc20 = useErc20(provider.value)
+
+const form = reactive({
+  tokenAddress: '',
+  signature: '',
+  tokenType: TOKEN_TYPES.native,
+})
+
+const isTokenAddressRequired = computed(
+  () => form.tokenType !== TOKEN_TYPES.native,
+)
+const isValidChain = computed(
+  () => currentPlatform.value?.chain_identifier === provider.value.chainId,
+)
+const isEnoughBalanceForBuy = computed(
+  () => new BN(balance.value).compare(formattedTokenAmount.value) >= 0,
+)
+
+const formattedTokenAmount = computed(() => {
+  if (!tokenPrice.value) return ''
+
+  return new BN(props.book.price, { decimals: tokenPrice.value.token.decimals })
+    .fromFraction(tokenPrice.value.token.decimals)
+    .div(tokenPrice.value.price)
+    .toString()
+})
+
+const { disableForm, enableForm, isFormDisabled } = useForm()
+const { getFieldErrorMessage, touchField, isFormValid } = useFormValidation(
+  form,
+  computed(() => ({
+    signature: { required },
+    tokenType: { required },
+    tokenAddress: {
+      requiredIf: requiredIf(isTokenAddressRequired),
+      ...(isTokenAddressRequired.value ? { address } : {}),
+    },
+  })),
+)
+
+const title = computed(() => {
+  if (!isValidChain.value && isLoaded.value)
+    return t('purchasing-modal.wrong-network-title')
+  return isFormDisabled.value
+    ? t('purchasing-modal.generation-title')
+    : t('purchasing-modal.title')
+})
+const tokenTypesOptions = computed(() => [
+  TOKEN_TYPES.native,
+  TOKEN_TYPES.erc20,
+])
+
+const submit = async () => {
+  if (
+    !isFormValid() ||
+    !provider.value.selectedAddress ||
+    !tokenPrice.value ||
+    !isEnoughBalanceForBuy.value
+  )
+    return
+
+  disableForm()
+
+  try {
+    const currentTask = await createNewTask({
+      signature: form.signature,
+      account: provider.value.selectedAddress,
+      bookId: props.book.id,
+    })
+    const generatedTask = await untilTaskFinishedGeneration(currentTask.id)
+
+    if (!generatedTask) return
+
+    const mintSignature = await getMintSignature(
+      currentPlatform.value.id,
+      generatedTask.id,
+      isTokenAddressRequired.value ? form.tokenAddress : '',
+    )
+
+    const nativeTokenAmount = isTokenAddressRequired.value
+      ? ''
+      : new BN(props.book.price, { decimals: tokenPrice.value.token.decimals })
+          .div(tokenPrice.value.price)
+          .mul(TOKEN_AMOUNT_COEFFICIENT)
+          .toFixed()
+          .toString()
+
+    if (isTokenAddressRequired.value) {
+      erc20.init(form.tokenAddress)
+      await erc20.approveSpend(
+        provider.value.selectedAddress,
+        formattedTokenAmount.value,
+        props.book.contractAddress,
+      )
+    }
+
+    await nftBookToken.mintToken(
+      isTokenAddressRequired.value ? form.tokenAddress : ZERO_ADDRESS,
+      mintSignature.price,
+      mintSignature.end_timestamp,
+      generatedTask.metadata_ipfs_hash,
+      mintSignature.signature.r,
+      mintSignature.signature.s,
+      mintSignature.signature.v,
+      nativeTokenAmount,
+    )
+
+    emit('submit')
+  } catch (e) {
+    ErrorHandler.process(e)
+  }
+  enableForm()
+}
+
+async function init() {
+  isLoaded.value = false
+  try {
+    const platforms = await getPlatformsList()
+
+    // FIXME: fix platforms hardcode
+    currentPlatform.value =
+      config.DEPLOY_ENVIRONMENT === 'production'
+        ? platforms.find(i => i.id === 'polygon-pos')
+        : platforms.find(i => i.id === 'ethereum')
+    await getPrice()
+    await getBalance()
+  } catch (e) {
+    ErrorHandler.processWithoutFeedback(e)
+  }
+  isLoaded.value = true
+}
+
+async function getPrice() {
+  tokenPrice.value = null
+  if (
+    !currentPlatform.value ||
+    (isTokenAddressRequired.value && !ethers.utils.isAddress(form.tokenAddress))
+  )
+    return
+
+  isPriceLoaded.value = false
+  isLoadFailed.value = false
+  isTokenAddressUnsupported.value = false
+  try {
+    const contract = isTokenAddressRequired.value ? form.tokenAddress : ''
+    tokenPrice.value = await getPriceByPlatform(
+      currentPlatform.value.id,
+      contract,
+    )
+  } catch (e) {
+    if (e instanceof errors.NotFoundError) {
+      isTokenAddressUnsupported.value = true
+    }
+    isLoadFailed.value = true
+    ErrorHandler.processWithoutFeedback(e)
+  }
+  isPriceLoaded.value = true
+}
+
+const getBalance = async () => {
+  balance.value = ''
+
+  try {
+    if (isTokenAddressRequired.value) {
+      if (!ethers.utils.isAddress(form.tokenAddress)) return
+      erc20.init(form.tokenAddress)
+      await erc20.getDecimals()
+      const blnc = await erc20.getBalanceOf(provider.value.selectedAddress!)
+      balance.value = new BN(blnc).fromFraction(erc20.decimals.value).toString()
+    } else {
+      const blnc = await provider.value.getBalance(
+        provider.value.selectedAddress!,
+      )
+      balance.value = new BN(blnc).fromWei().toString()
+    }
+  } catch (e) {
+    isLoadFailed.value = true
+    ErrorHandler.processWithoutFeedback(e)
+  }
+}
+
+watch(
+  () => [form.tokenType, form.tokenAddress, provider.value.selectedAddress],
+  () => {
+    getPrice()
+    getBalance()
+  },
+)
+
+init()
+</script>
 
 <style lang="scss" scoped>
 .purchasing-modal__pane {
@@ -531,12 +561,15 @@ init()
   color: var(--error-main);
 }
 
-.purchasing-modal__readonly {
-  margin-bottom: toRem(16);
+.purchasing-modal__not-enough-balance-msg {
+  font-size: toRem(12);
+  text-align: left;
+  width: 100%;
+  color: var(--error-main);
 }
 
 .purchasing-modal__textarea {
-  margin-bottom: toRem(36);
+  margin: toRem(16) 0 toRem(36);
 }
 
 .purchasing-modal__purchase-btn {
