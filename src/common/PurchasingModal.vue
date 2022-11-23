@@ -296,11 +296,9 @@ const submit = async () => {
     })
     const generatedTask = await untilTaskFinishedGeneration(currentTask.id)
 
-    if (!generatedTask) return
-
     const mintSignature = await getMintSignature(
       currentPlatform.value.id,
-      generatedTask.id,
+      generatedTask!.id,
       isTokenAddressRequired.value ? form.tokenAddress : '',
     )
 
@@ -325,7 +323,7 @@ const submit = async () => {
       isTokenAddressRequired.value ? form.tokenAddress : ZERO_ADDRESS,
       mintSignature.price,
       mintSignature.end_timestamp,
-      generatedTask.metadata_ipfs_hash,
+      generatedTask!.metadata_ipfs_hash,
       mintSignature.signature.r,
       mintSignature.signature.s,
       mintSignature.signature.v,
