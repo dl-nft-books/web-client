@@ -386,6 +386,7 @@ const getBalance = async () => {
 const loadBalanceAndPrice = async () => {
   tokenPrice.value = null
   balance.value = ''
+  isLoadFailed.value = false
 
   if (
     !currentPlatform.value ||
@@ -394,7 +395,6 @@ const loadBalanceAndPrice = async () => {
     return
 
   isPriceAndBalanceLoaded.value = false
-  isLoadFailed.value = false
   isTokenAddressUnsupported.value = false
 
   try {
