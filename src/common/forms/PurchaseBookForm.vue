@@ -77,7 +77,7 @@
           />
         </template>
       </template>
-      <template v-else>
+      <template v-else-if="tokenPrice">
         <readonly-field
           class="purchase-book-form__readonly"
           :label="$t('purchase-book-form.token-amount-lbl')"
