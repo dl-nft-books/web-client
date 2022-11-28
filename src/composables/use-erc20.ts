@@ -185,6 +185,20 @@ export const useErc20 = (provider: UseUnrefProvider, address?: string) => {
     }
   }
 
+  const approveSpend = async (
+    owner: string,
+    amount: string,
+    spender: string,
+  ) => {
+    await Promise.all([getDecimals(), getAllowance(owner, spender)])
+    const amountInWei = new BN(amount).toFraction(decimals.value)
+
+    if (new BN(allowance.value).compare(amountInWei) === -1) {
+      const tx = await approve(spender, BN.MAX_UINT256.toString())
+      await tx?.wait()
+    }
+  }
+
   return {
     allowance,
     decimals,
@@ -213,5 +227,6 @@ export const useErc20 = (provider: UseUnrefProvider, address?: string) => {
     getOwner,
     getSymbol,
     getTotalSupply,
+    approveSpend,
   }
 }

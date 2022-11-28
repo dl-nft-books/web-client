@@ -118,6 +118,12 @@
   },
   "purchasing-modal": {
     "title": "Purchasing",
+    "loading-error-msg":"Oops... Something went wrong",
+    "wrong-network-message": "You are connected to the wrong network. To purchase NFT, please reconnect to another network",
+    "wrong-network-title": "Reconnecting to the network",
+    "generation-title": "Generation"
+  },
+  "purchase-book-form": {
     "token-address-lbl": "Enter Token Address",
     "signature-lbl": "Your Signature",
     "purchase-btn": "Buy",
@@ -128,9 +134,7 @@
     "unsupported-token-msg-2": "Please choose another token.",
     "submitting-title": "We are generating your NFT.",
     "submitting-message": "As soon as NFT book will be generated you need to pay",
-    "wrong-network-message": "You are connected to the wrong network. To purchase NFT, please reconnect to another network",
-    "wrong-network-title": "Reconnecting to the network",
-    "generation-title": "Generation"
+    "not-enough-balance-msg": "You don't have enough tokens to buy this NFT"
   },
   "purchasing-success-modal": {
     "head-title": "Purchasing",
@@ -162,5 +166,10 @@
     "marketplace-btn": "Go to Marketplace",
     "connect-metamask-btn": "Connect to MetaMask",
     "connect-metamask-message": "To see purchased NFTs, please connect your MetaMask Wallet"
+  },
+  "token-types": {
+    "erc20-lbl": "ERC-20",
+    "native-lbl": "Native",
+    "not-found-lbl": "Token type not found"
   }
 }
