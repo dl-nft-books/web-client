@@ -36,3 +36,17 @@ export type Token = JsonApiRecordBase<'tokens'> & {
   status: string
   payment: BookPayment
 }
+
+export type MintSignatureResponse = JsonApiRecordBase<'prices'> & {
+  price: string
+  end_timestamp: number
+  signature: {
+    id: string
+    type: 'signatures'
+    r: string
+    s: string
+    v: number
+  }
+}
+
+export type CreateTaskResponse = JsonApiRecordBase<'tasks'>

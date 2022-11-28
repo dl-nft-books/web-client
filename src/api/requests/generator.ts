@@ -1,4 +1,10 @@
-import { Token, Task, PageOrder } from '@/types'
+import {
+  Token,
+  Task,
+  PageOrder,
+  MintSignatureResponse,
+  CreateTaskResponse,
+} from '@/types'
 import { GENERATED_NFT_STATUSES } from '@/enums'
 import { api } from '@/api'
 
@@ -7,10 +13,7 @@ export function createNewTask(opts: {
   account: string
   bookId: string
 }) {
-  return api.post<{
-    id: string
-    type: string
-  }>('/integrations/generator/tasks', {
+  return api.post<CreateTaskResponse>('/integrations/generator/tasks', {
     data: {
       type: 'tasks',
       attributes: {
@@ -31,23 +34,14 @@ export function getMintSignature(
   taskId: string | number,
   tokenAddress?: string,
 ) {
-  return api.get<{
-    id: string
-    type: string
-    price: string
-    end_timestamp: number
-    signature: {
-      id: string
-      type: string
-      r: string
-      s: string
-      v: number
-    }
-  }>('/integrations/generator/signature/mint', {
-    platform,
-    task_id: taskId,
-    ...(tokenAddress ? { token_address: tokenAddress } : {}),
-  })
+  return api.get<MintSignatureResponse>(
+    '/integrations/generator/signature/mint',
+    {
+      platform,
+      task_id: taskId,
+      ...(tokenAddress ? { token_address: tokenAddress } : {}),
+    },
+  )
 }
 export function getGeneratedTokens(opts?: {
   account?: string[]
