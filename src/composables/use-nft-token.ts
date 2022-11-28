@@ -7,8 +7,10 @@ import {
   ChainId,
   TransactionResponse,
   TxRequestBody,
+  EthProviderRpcError,
 } from '@/types'
 import { PROVIDERS } from '@/enums'
+import { handleEthError } from '@/helpers'
 
 interface UseUnrefProvider {
   currentProvider: ethers.providers.Web3Provider | undefined
@@ -79,34 +81,26 @@ export const useNftBookToken = (
     v: number,
     value?: string,
   ) => {
-    const contractTransaction = value
-      ? await _instance_rw.value?.mintToken(
-          tokenAddress,
-          price,
-          endTimestamp,
-          tokenUri,
-          r,
-          s,
-          v,
-          { value },
-        )
-      : await _instance_rw.value?.mintToken(
-          tokenAddress,
-          price,
-          endTimestamp,
-          tokenUri,
-          r,
-          s,
-          v,
-        )
+    try {
+      const contractTransaction = await _instance_rw.value?.mintToken(
+        tokenAddress,
+        price,
+        endTimestamp,
+        tokenUri,
+        r,
+        s,
+        v,
+        ...(value ? [{ value }] : []),
+      )
 
-    return contractTransaction
+      return contractTransaction
+    } catch (error) {
+      handleEthError(error as EthProviderRpcError)
+    }
   }
 
-  const getUserTokenIDs = async (address: string) => {
-    const contractTransaction = await _instance.value?.getUserTokenIDs(address)
-
-    return contractTransaction
+  const getUserTokenIDs = (address: string) => {
+    return _instance.value?.getUserTokenIDs(address)
   }
 
   return {
