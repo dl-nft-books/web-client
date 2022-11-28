@@ -15,7 +15,7 @@ import { onClickOutside } from '@vueuse/core'
 const props = withDefaults(
   defineProps<{
     modelValue: string | number
-    valueOptions?: { name: string; value: number | string }[]
+    valueOptions?: { label: string; value: number | string }[]
     label?: string
     placeholder?: string
     errorMessage?: string
@@ -55,7 +55,7 @@ const isReadonly = computed(() =>
 )
 
 const title = computed(
-  () => props.valueOptions.find(i => i.value === props.modelValue)?.name,
+  () => props.valueOptions.find(i => i.value === props.modelValue)?.label,
 )
 
 const selectFieldClasses = computed(() => ({
@@ -182,7 +182,7 @@ watch(
               :key="`[${idx}] ${option.value}`"
               @click="select(option.value)"
             >
-              {{ option.name }}
+              {{ option.label }}
             </button>
           </template>
         </div>
