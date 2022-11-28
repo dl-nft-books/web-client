@@ -10,7 +10,7 @@
             {{ title }}
           </h3>
           <app-button
-            v-if="!isFormDisabled"
+            v-if="!isSubmitting"
             class="purchasing-modal__close-btn"
             :icon-right="$icons.x"
             color="default"
@@ -20,132 +20,37 @@
           />
         </div>
         <div class="purchasing-modal__body">
-          <template v-if="!isValidChain && isLoaded">
-            <div class="purchasing-modal__submitting-animation-wrp">
-              <animation
-                class="purchasing-modal__submitting-animation"
-                :animation-data="disableChainAnimation"
-                :loop="true"
-                :speed="1"
+          <template v-if="isLoaded">
+            <template v-if="isLoadFailed">
+              <error-message
+                :message="$t('purchasing-modal.loading-error-msg')"
               />
-            </div>
-            <span class="purchasing-modal__submitting-message">
-              {{ $t('purchasing-modal.wrong-network-message') }}
-            </span>
-          </template>
-          <template v-else>
-            <template v-if="isFormDisabled">
-              <div class="purchasing-modal__submitting-animation-wrp">
-                <animation
-                  class="purchasing-modal__submitting-animation"
-                  :animation-data="loaderAnimation"
-                  :loop="true"
-                  :speed="1"
-                />
-              </div>
-              <h4 class="purchasing-modal__submitting-title">
-                {{ $t('purchasing-modal.submitting-title') }}
-              </h4>
-              <span class="purchasing-modal__submitting-message">
-                {{ $t('purchasing-modal.submitting-message') }}
-              </span>
             </template>
             <template v-else>
-              <div class="purchasing-modal__body-preview">
-                <div class="purchasing-modal__body-preview-img-wrp">
-                  <img
-                    class="purchasing-modal__body-preview-img"
-                    :src="book.bannerUrl"
-                    :alt="book.title"
-                  />
-                </div>
-                <div class="purchasing-modal__body-preview-details">
-                  <h4 class="purchasing-modal__body-preview-title">
-                    {{ book.title }}
-                  </h4>
-                  <span class="purchasing-modal__body-preview-price">
-                    {{ formatFiatAssetFromWei(book.price, 'USD') }}
-                  </span>
-                </div>
-              </div>
-
-              <select-field
-                class="purchasing-modal__select"
-                v-model="form.tokenType"
-                :label="$t('purchasing-modal.token-type-lbl')"
-                :value-options="tokenTypesOptions"
-                :error-message="getFieldErrorMessage('tokenType')"
-                :disabled="isFormDisabled"
-                @blur="touchField('tokenType')"
-              />
-              <input-field
-                v-if="isTokenAddressRequired"
-                class="purchasing-modal__input"
-                v-model="form.tokenAddress"
-                :label="$t('purchasing-modal.token-address-lbl')"
-                :error-message="getFieldErrorMessage('tokenAddress')"
-                :disabled="isFormDisabled"
-                @blur="touchField('tokenAddress')"
-              />
-
-              <template v-if="isPriceAndBalanceLoaded">
-                <template v-if="isLoadFailed">
-                  <template v-if="isTokenAddressUnsupported">
-                    <div class="purchasing-modal__address-error">
-                      <icon
-                        class="purchasing-modal__address-error-icon"
-                        :name="$icons.exclamationCircle"
-                      />
-                      <div>
-                        <p class="purchasing-modal__address-error-message">
-                          {{ $t('purchasing-modal.unsupported-token-msg-1') }}
-                        </p>
-                        <p class="purchasing-modal__address-error-message">
-                          {{ $t('purchasing-modal.unsupported-token-msg-2') }}
-                        </p>
-                      </div>
-                    </div>
-                  </template>
-                  <template v-else>
-                    <error-message
-                      :message="$t('purchasing-modal.loading-error-msg')"
-                    />
-                  </template>
-                </template>
-                <template v-else-if="tokenPrice">
-                  <readonly-field
-                    class="purchasing-modal__readonly"
-                    :label="$t('purchasing-modal.token-amount-lbl')"
-                    :value="formattedTokenAmount"
-                  />
-                  <p
-                    v-if="!isEnoughBalanceForBuy"
-                    class="purchasing-modal__not-enough-balance-msg"
-                  >
-                    {{ $t('purchasing-modal.not-enough-balance-msg') }}
-                  </p>
-                  <textarea-field
-                    class="purchasing-modal__textarea"
-                    v-model="form.signature"
-                    :maxlength="MAX_SIGNATURE_LENGTH"
-                    :label="$t('purchasing-modal.signature-lbl')"
-                    :error-message="getFieldErrorMessage('signature')"
-                    :disabled="isFormDisabled"
-                    @blur="touchField('signature')"
-                  />
-                  <app-button
-                    class="purchasing-modal__purchase-btn"
-                    :text="$t('purchasing-modal.purchase-btn')"
-                    size="small"
-                    :disabled="isFormDisabled || !isEnoughBalanceForBuy"
-                    @click="submit"
-                  />
-                </template>
+              <template v-if="isValidChain">
+                <purchase-book-form
+                  :book="props.book"
+                  :current-platform="currentPlatform"
+                  @submitting="isSubmitting = $event"
+                  @submit="emit('submit')"
+                />
               </template>
               <template v-else>
-                <loader />
+                <div class="purchasing-modal__wrong-network-animation-wrp">
+                  <animation
+                    :animation-data="disableChainAnimation"
+                    :loop="true"
+                    :speed="1"
+                  />
+                </div>
+                <span class="purchasing-modal__wrong-network-message">
+                  {{ $t('purchasing-modal.wrong-network-message') }}
+                </span>
               </template>
             </template>
+          </template>
+          <template v-else>
+            <loader />
           </template>
         </div>
       </div>
@@ -154,54 +59,18 @@
 </template>
 
 <script lang="ts" setup>
-import {
-  AppButton,
-  Modal,
-  Loader,
-  ErrorMessage,
-  Animation,
-  Icon,
-} from '@/common'
-import { InputField, TextareaField, SelectField, ReadonlyField } from '@/fields'
+import { AppButton, Modal, Animation, Loader, ErrorMessage } from '@/common'
 
 import { useWeb3ProvidersStore } from '@/store'
 import { storeToRefs } from 'pinia'
 import { BookRecord } from '@/records'
-import {
-  ErrorHandler,
-  formatFiatAssetFromWei,
-  createNewTask,
-  getPlatformsList,
-  getPriceByPlatform,
-  getMintSignature,
-  untilTaskFinishedGeneration,
-} from '@/helpers'
-import { ref, reactive, computed, watch } from 'vue'
-import {
-  useForm,
-  useFormValidation,
-  useNftBookToken,
-  useErc20,
-} from '@/composables'
-import { required, requiredIf, address } from '@/validators'
-import { BN } from '@/utils/math.util'
-import { errors } from '@/api/json-api/errors'
+import { ErrorHandler, getPlatformsList } from '@/helpers'
+import { ref, computed } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { ethers } from 'ethers'
-import { TokenPriceResponse } from '@/types'
 import { config } from '@config'
+import PurchaseBookForm from '@/common/forms/PurchaseBookForm.vue'
 
-import loaderAnimation from '@/assets/animations/loader.json'
 import disableChainAnimation from '@/assets/animations/disable-chain.json'
-
-enum TOKEN_TYPES {
-  native = 'Native',
-  erc20 = 'ERC-20',
-}
-
-const MAX_SIGNATURE_LENGTH = 64
-const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000'
-const TOKEN_AMOUNT_COEFFICIENT = 1.02
 
 const props = defineProps<{
   isShown: boolean
@@ -216,126 +85,23 @@ const emit = defineEmits<{
 const { t } = useI18n()
 
 const isLoaded = ref(false)
-const isPriceAndBalanceLoaded = ref(false)
+const isSubmitting = ref(false)
 const currentPlatform = ref()
-const tokenPrice = ref<TokenPriceResponse | null>(null)
-const isTokenAddressUnsupported = ref(false)
 const isLoadFailed = ref(false)
-const balance = ref('')
 
 const { provider } = storeToRefs(useWeb3ProvidersStore())
-const nftBookToken = useNftBookToken(provider.value, props.book.contractAddress)
-const erc20 = useErc20(provider.value)
 
-const form = reactive({
-  tokenAddress: '',
-  signature: '',
-  tokenType: TOKEN_TYPES.native,
-})
-
-const isTokenAddressRequired = computed(
-  () => form.tokenType !== TOKEN_TYPES.native,
-)
 const isValidChain = computed(
   () => currentPlatform.value?.chain_identifier === provider.value.chainId,
-)
-const isEnoughBalanceForBuy = computed(
-  () => new BN(balance.value).compare(formattedTokenAmount.value) >= 0,
-)
-
-const formattedTokenAmount = computed(() => {
-  if (!tokenPrice.value) return ''
-
-  return new BN(props.book.price, { decimals: tokenPrice.value.token.decimals })
-    .fromFraction(tokenPrice.value.token.decimals)
-    .div(tokenPrice.value.price)
-    .toString()
-})
-
-const { disableForm, enableForm, isFormDisabled } = useForm()
-const { getFieldErrorMessage, touchField, isFormValid } = useFormValidation(
-  form,
-  computed(() => ({
-    signature: { required },
-    tokenType: { required },
-    tokenAddress: {
-      requiredIf: requiredIf(isTokenAddressRequired),
-      ...(isTokenAddressRequired.value ? { address } : {}),
-    },
-  })),
 )
 
 const title = computed(() => {
   if (!isValidChain.value && isLoaded.value)
     return t('purchasing-modal.wrong-network-title')
-  return isFormDisabled.value
+  return isSubmitting.value
     ? t('purchasing-modal.generation-title')
     : t('purchasing-modal.title')
 })
-const tokenTypesOptions = computed(() => [
-  TOKEN_TYPES.native,
-  TOKEN_TYPES.erc20,
-])
-
-const submit = async () => {
-  if (
-    !isFormValid() ||
-    !provider.value.selectedAddress ||
-    !tokenPrice.value ||
-    !isEnoughBalanceForBuy.value
-  )
-    return
-
-  disableForm()
-
-  try {
-    const currentTask = await createNewTask({
-      signature: form.signature,
-      account: provider.value.selectedAddress,
-      bookId: props.book.id,
-    })
-    const generatedTask = await untilTaskFinishedGeneration(currentTask.id)
-
-    const mintSignature = await getMintSignature(
-      currentPlatform.value.id,
-      generatedTask!.id,
-      isTokenAddressRequired.value ? form.tokenAddress : '',
-    )
-
-    const nativeTokenAmount = isTokenAddressRequired.value
-      ? ''
-      : new BN(props.book.price, { decimals: tokenPrice.value.token.decimals })
-          .div(tokenPrice.value.price)
-          .mul(TOKEN_AMOUNT_COEFFICIENT)
-          .toFixed()
-          .toString()
-
-    if (isTokenAddressRequired.value) {
-      erc20.init(form.tokenAddress)
-      await erc20.approveSpend(
-        provider.value.selectedAddress,
-        formattedTokenAmount.value,
-        props.book.contractAddress,
-      )
-    }
-
-    await nftBookToken.mintToken(
-      isTokenAddressRequired.value ? form.tokenAddress : ZERO_ADDRESS,
-      mintSignature.price,
-      mintSignature.end_timestamp,
-      generatedTask!.metadata_ipfs_hash,
-      mintSignature.signature.r,
-      mintSignature.signature.s,
-      mintSignature.signature.v,
-      nativeTokenAmount,
-    )
-
-    emit('submit')
-  } catch (e) {
-    ErrorHandler.process(e)
-  }
-  enableForm()
-}
 
 async function init() {
   isLoaded.value = false
@@ -347,70 +113,12 @@ async function init() {
       config.DEPLOY_ENVIRONMENT === 'production'
         ? platforms.find(i => i.id === 'polygon-pos')
         : platforms.find(i => i.id === 'ethereum')
-    await loadBalanceAndPrice()
-  } catch (e) {
-    ErrorHandler.processWithoutFeedback(e)
-  }
-  isLoaded.value = true
-}
-
-async function getPrice() {
-  try {
-    const contract = isTokenAddressRequired.value ? form.tokenAddress : ''
-    tokenPrice.value = await getPriceByPlatform(
-      currentPlatform.value.id,
-      contract,
-    )
-  } catch (e) {
-    if (e instanceof errors.NotFoundError) {
-      isTokenAddressUnsupported.value = true
-    }
-    throw e
-  }
-}
-
-const getBalance = async () => {
-  if (isTokenAddressRequired.value) {
-    erc20.init(form.tokenAddress)
-    await erc20.getDecimals()
-    const blnc = await erc20.getBalanceOf(provider.value.selectedAddress!)
-    balance.value = new BN(blnc).fromFraction(erc20.decimals.value).toString()
-  } else {
-    const blnc = await provider.value.getBalance(
-      provider.value.selectedAddress!,
-    )
-    balance.value = new BN(blnc).fromWei().toString()
-  }
-}
-
-const loadBalanceAndPrice = async () => {
-  tokenPrice.value = null
-  balance.value = ''
-  isLoadFailed.value = false
-
-  if (
-    !currentPlatform.value ||
-    (isTokenAddressRequired.value && !ethers.utils.isAddress(form.tokenAddress))
-  )
-    return
-
-  isPriceAndBalanceLoaded.value = false
-  isTokenAddressUnsupported.value = false
-
-  try {
-    await Promise.all([getPrice(), getBalance()])
   } catch (e) {
     isLoadFailed.value = true
     ErrorHandler.processWithoutFeedback(e)
   }
-
-  isPriceAndBalanceLoaded.value = true
+  isLoaded.value = true
 }
-
-watch(
-  () => [form.tokenType, form.tokenAddress, provider.value.selectedAddress],
-  () => loadBalanceAndPrice(),
-)
 
 init()
 </script>
@@ -455,123 +163,15 @@ init()
   overflow-y: auto;
 }
 
-.purchasing-modal__body-preview {
-  display: flex;
-  width: 100%;
-  gap: toRem(20);
-  padding-bottom: toRem(24);
-  margin-bottom: toRem(24);
-  border-bottom: toRem(1) solid var(--border-primary-main);
-
-  @include respond-to(small) {
-    padding-bottom: toRem(15);
-    margin-bottom: toRem(15);
-  }
-}
-
-.purchasing-modal__submitting-animation-wrp {
+.purchasing-modal__wrong-network-animation-wrp {
   margin: 0 auto toRem(30);
   max-width: toRem(240);
 }
 
-.purchasing-modal__submitting-title {
-  margin-bottom: toRem(16);
-  font-size: toRem(18);
-  line-height: 1.2;
-  font-weight: 600;
-  text-align: center;
-}
-
-.purchasing-modal__submitting-message {
+.purchasing-modal__wrong-network-message {
   max-width: toRem(310);
   font-size: toRem(18);
   line-height: 1.2;
   text-align: center;
-}
-
-.purchasing-modal__body-preview-img-wrp {
-  filter: drop-shadow(0 toRem(4) toRem(8) rgba(150, 150, 157, 0.25));
-  max-width: toRem(120);
-  max-height: toRem(120);
-}
-
-.purchasing-modal__body-preview-img {
-  object-fit: cover;
-  object-position: center;
-  width: 100%;
-  height: 100%;
-  filter: var(--cover-image-shadow-small);
-}
-
-.purchasing-modal__body-preview-details {
-  display: flex;
-  flex-direction: column;
-}
-
-.purchasing-modal__body-preview-over-title {
-  font-size: toRem(14);
-  line-height: 1.2;
-  margin-bottom: toRem(6);
-}
-
-.purchasing-modal__body-preview-title {
-  text-transform: uppercase;
-  font-size: toRem(18);
-  line-height: 1.2;
-  font-weight: 600;
-}
-
-.purchasing-modal__body-preview-price {
-  text-transform: uppercase;
-  margin-top: auto;
-  font-size: toRem(22);
-  line-height: 1.2;
-  font-weight: 900;
-  color: var(--primary-main);
-}
-
-.purchasing-modal__select {
-  margin-bottom: toRem(16);
-}
-
-.purchasing-modal__input {
-  margin-bottom: toRem(16);
-}
-
-.purchasing-modal__address-error {
-  display: flex;
-  gap: toRem(10);
-  width: 100%;
-  background: var(--background-error);
-  border-radius: toRem(4);
-  padding: toRem(12) toRem(10);
-}
-
-.purchasing-modal__address-error-icon {
-  width: toRem(15);
-  height: toRem(15);
-  color: var(--error-main);
-}
-
-.purchasing-modal__address-error-message {
-  font-size: toRem(14);
-  line-height: 1.2;
-  color: var(--error-main);
-}
-
-.purchasing-modal__not-enough-balance-msg {
-  font-size: toRem(12);
-  text-align: left;
-  width: 100%;
-  color: var(--error-main);
-}
-
-.purchasing-modal__textarea {
-  margin: toRem(16) 0 toRem(36);
-}
-
-.purchasing-modal__purchase-btn {
-  margin: 0 auto;
-  min-width: toRem(144);
 }
 </style>
