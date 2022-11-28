@@ -166,5 +166,10 @@
     "marketplace-btn": "Go to Marketplace",
     "connect-metamask-btn": "Connect to MetaMask",
     "connect-metamask-message": "To see purchased NFTs, please connect your MetaMask Wallet"
+  },
+  "token-types": {
+    "erc20-lbl": "ERC-20",
+    "native-lbl": "Native",
+    "not-found-lbl": "Token type not found"
   }
 }

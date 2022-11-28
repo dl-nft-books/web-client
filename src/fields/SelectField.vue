@@ -15,7 +15,7 @@ import { onClickOutside } from '@vueuse/core'
 const props = withDefaults(
   defineProps<{
     modelValue: string | number
-    valueOptions?: string[] | number[]
+    valueOptions?: { name: string; value: number | string }[]
     label?: string
     placeholder?: string
     errorMessage?: string
@@ -52,6 +52,10 @@ const isDisabled = computed(() =>
 
 const isReadonly = computed(() =>
   ['', 'readonly', true].includes(attrs.readonly as string | boolean),
+)
+
+const title = computed(
+  () => props.valueOptions.find(i => i.value === props.modelValue)?.name,
 )
 
 const selectFieldClasses = computed(() => ({
@@ -133,7 +137,7 @@ watch(
         </template>
         <template v-else>
           <template v-if="modelValue">
-            {{ modelValue }}
+            {{ title }}
           </template>
           <template v-else>
             <span class="select-field__placeholder">
@@ -170,15 +174,15 @@ watch(
                 'select-field__select-dropdown-item',
                 {
                   'select-field__select-dropdown-item--active':
-                    modelValue === option,
+                    modelValue === option.value,
                 },
               ]"
               type="button"
               v-for="(option, idx) in valueOptions"
-              :key="`[${idx}] ${option}`"
-              @click="select(option)"
+              :key="`[${idx}] ${option.value}`"
+              @click="select(option.value)"
             >
-              {{ option }}
+              {{ option.name }}
             </button>
           </template>
         </div>

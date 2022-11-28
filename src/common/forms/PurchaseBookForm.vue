@@ -92,7 +92,7 @@
         <textarea-field
           class="purchase-book-form__textarea"
           v-model="form.signature"
-          :maxlength="MAX_SIGNATURE_LENGTH"
+          :maxlength="MAX_FIELD_LENGTH.signature"
           :label="$t('purchase-book-form.signature-lbl')"
           :error-message="getFieldErrorMessage('signature')"
           :disabled="isFormDisabled"
@@ -127,6 +127,7 @@ import {
   getPriceByPlatform,
   getMintSignature,
   untilTaskFinishedGeneration,
+  globalizeTokenType,
 } from '@/helpers'
 import { ref, reactive, computed, watch } from 'vue'
 import {
@@ -140,16 +141,11 @@ import { BN } from '@/utils/math.util'
 import { errors } from '@/api/json-api/errors'
 import { ethers } from 'ethers'
 import { TokenPriceResponse, Platform } from '@/types'
+import { MAX_FIELD_LENGTH, NULL_ADDRESS } from '@/const'
+import { TOKEN_TYPES } from '@/enums'
 
 import loaderAnimation from '@/assets/animations/loader.json'
 
-enum TOKEN_TYPES {
-  native = 'Native',
-  erc20 = 'ERC-20',
-}
-
-const MAX_SIGNATURE_LENGTH = 64
-const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000'
 const TOKEN_AMOUNT_COEFFICIENT = 1.02
 
 const props = defineProps<{
@@ -208,8 +204,14 @@ const { getFieldErrorMessage, touchField, isFormValid } = useFormValidation(
 )
 
 const tokenTypesOptions = computed(() => [
-  TOKEN_TYPES.native,
-  TOKEN_TYPES.erc20,
+  {
+    name: globalizeTokenType(TOKEN_TYPES.native),
+    value: TOKEN_TYPES.native,
+  },
+  {
+    name: globalizeTokenType(TOKEN_TYPES.erc20),
+    value: TOKEN_TYPES.erc20,
+  },
 ])
 
 const submit = async () => {
@@ -255,7 +257,7 @@ const submit = async () => {
     }
 
     await nftBookToken.mintToken(
-      isTokenAddressRequired.value ? form.tokenAddress : ZERO_ADDRESS,
+      isTokenAddressRequired.value ? form.tokenAddress : NULL_ADDRESS,
       mintSignature.price,
       mintSignature.end_timestamp,
       generatedTask!.metadata_ipfs_hash,
