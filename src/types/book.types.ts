@@ -1,12 +1,3 @@
-export interface TokenPriceResponse {
-  price: string
-  token: {
-    decimals: number
-    symbol: string
-    name: string
-  }
-}
-
 export type BookPaymentResponse = {
   id: number | string
   type: string

@@ -124,7 +124,6 @@ import {
   ErrorHandler,
   formatFiatAssetFromWei,
   createNewTask,
-  getPriceByPlatform,
   getMintSignature,
   untilTaskFinishedGeneration,
   globalizeTokenType,
@@ -143,6 +142,7 @@ import { ethers } from 'ethers'
 import { TokenPriceResponse, Platform } from '@/types'
 import { MAX_FIELD_LENGTH, NULL_ADDRESS } from '@/const'
 import { TOKEN_TYPES } from '@/enums'
+import { getPriceByPlatform } from '@/api'
 
 import loaderAnimation from '@/assets/animations/loader.json'
 
@@ -277,10 +277,11 @@ const submit = async () => {
 async function getPrice() {
   try {
     const contract = isTokenAddressRequired.value ? form.tokenAddress : ''
-    tokenPrice.value = await getPriceByPlatform(
+    const { data } = await getPriceByPlatform(
       props.currentPlatform.id,
       contract,
     )
+    tokenPrice.value = data
   } catch (e) {
     if (e instanceof errors.NotFoundError) {
       isTokenAddressUnsupported.value = true

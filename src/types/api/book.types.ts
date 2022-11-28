@@ -1,6 +1,6 @@
-export interface BookFileResponse {
-  id: string
-  type: string
+import { JsonApiRecordBase } from '@/types/api'
+
+export type BookFileResponse = JsonApiRecordBase<'files'> & {
   attributes: {
     key: string
     mime_type: string
@@ -9,7 +9,7 @@ export interface BookFileResponse {
   }
 }
 
-export interface BookResponse {
+export type BookResponse = JsonApiRecordBase<'books'> & {
   banner: BookFileResponse
   contract_address: string
   contract_name: string
@@ -17,8 +17,6 @@ export interface BookResponse {
   created_at: string
   description: string
   file: BookFileResponse
-  id: string
   price: string
   title: string
-  type: string
 }

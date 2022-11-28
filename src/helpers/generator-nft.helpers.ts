@@ -1,10 +1,5 @@
 import { api } from '@/api'
-import {
-  BookResponse,
-  TokenPriceResponse,
-  GeneratedNFtResponse,
-  Platform,
-} from '@/types'
+import { BookResponse, GeneratedNFtResponse } from '@/types'
 import { GENERATED_NFT_STATUSES } from '@/enums'
 
 type Task = {
@@ -88,24 +83,6 @@ export async function untilTaskFinishedGeneration(
 
   await checkFinished()
   return response
-}
-
-export async function getPlatformsList() {
-  const { data } = await api.get<Platform[]>('/integrations/pricer/platforms')
-
-  return data
-}
-
-export async function getPriceByPlatform(platform: string, contract?: string) {
-  const { data } = await api.get<TokenPriceResponse>(
-    '/integrations/pricer/price',
-    {
-      platform,
-      ...(contract ? { contract } : {}),
-    },
-  )
-
-  return data
 }
 
 export async function getMintSignature(
