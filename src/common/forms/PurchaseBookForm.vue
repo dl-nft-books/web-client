@@ -205,11 +205,11 @@ const { getFieldErrorMessage, touchField, isFormValid } = useFormValidation(
 
 const tokenTypesOptions = computed(() => [
   {
-    name: globalizeTokenType(TOKEN_TYPES.native),
+    label: globalizeTokenType(TOKEN_TYPES.native),
     value: TOKEN_TYPES.native,
   },
   {
-    name: globalizeTokenType(TOKEN_TYPES.erc20),
+    label: globalizeTokenType(TOKEN_TYPES.erc20),
     value: TOKEN_TYPES.erc20,
   },
 ])
