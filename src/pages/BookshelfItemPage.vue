@@ -8,12 +8,13 @@ import {
   NftDescription,
 } from '@/common'
 
-import { ErrorHandler, getBookById } from '@/helpers'
+import { ErrorHandler } from '@/helpers'
 import { ref, watch } from 'vue'
 import { formatFiatAssetFromWei } from '@/helpers'
 import { BookRecord } from '@/records'
 import { useWeb3ProvidersStore } from '@/store'
 import { storeToRefs } from 'pinia'
+import { getBookById } from '@/api'
 
 const props = defineProps<{
   id: string
