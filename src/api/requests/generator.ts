@@ -7,6 +7,7 @@ import {
 } from '@/types'
 import { GENERATED_NFT_STATUSES } from '@/enums'
 import { api } from '@/api'
+import { config } from '@/config'
 
 export function createNewTask(opts: {
   signature: string
@@ -51,7 +52,7 @@ export function getGeneratedTokens(opts?: {
 }) {
   return api.get<Token[]>('/integrations/generator/tokens', {
     page: {
-      limit: opts?.pageLimit || 100, // FIXME: add pagination
+      limit: opts?.pageLimit || config.DEFAULT_PAGE_LIMIT,
       order: opts?.pageOrder || 'desc',
     },
     filter: {

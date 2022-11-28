@@ -1,6 +1,7 @@
 import { api } from '@/api'
 import { Book, PageOrder } from '@/types'
 import { BOOK_DEPLOY_STATUSES } from '@/enums'
+import { config } from '@/config'
 
 export function getBooks(opts: {
   deployStatus?: BOOK_DEPLOY_STATUSES[]
@@ -10,7 +11,7 @@ export function getBooks(opts: {
 }) {
   return api.get<Book[]>('/integrations/books', {
     page: {
-      limit: opts.pageLimit || 100, // FIXME: add pagination
+      limit: opts.pageLimit || config.DEFAULT_PAGE_LIMIT,
       order: opts.pageOrder || 'desc',
     },
     filter: {
