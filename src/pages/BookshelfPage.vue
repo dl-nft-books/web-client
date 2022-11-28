@@ -1,10 +1,11 @@
 <script lang="ts" setup>
 import { Loader, ErrorMessage, NoDataMessage, BookCard } from '@/common'
 
-import { ErrorHandler, getBooks } from '@/helpers'
+import { ErrorHandler } from '@/helpers'
 import { BookRecord } from '@/records'
 import { ref } from 'vue'
 import { BOOK_DEPLOY_STATUSES } from '@/enums'
+import { getBooks } from '@/api'
 
 const isLoaded = ref(false)
 const isLoadFailed = ref(false)
@@ -12,10 +13,10 @@ const books = ref<BookRecord[]>([])
 
 const init = async () => {
   try {
-    const booksResponse = await getBooks({
+    const { data } = await getBooks({
       deployStatus: [BOOK_DEPLOY_STATUSES.successful],
     })
-    books.value = booksResponse.map(book => new BookRecord(book))
+    books.value = data.map(book => new BookRecord(book))
   } catch (error) {
     ErrorHandler.processWithoutFeedback(error)
     isLoadFailed.value = true

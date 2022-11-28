@@ -37,8 +37,8 @@ const submit = async () => {
 
 const init = async () => {
   try {
-    const bookResponse = await getBookById(props.id)
-    book.value = new BookRecord(bookResponse)
+    const { data } = await getBookById(props.id)
+    book.value = new BookRecord(data)
   } catch (error) {
     ErrorHandler.processWithoutFeedback(error)
     isLoadFailed.value = true
