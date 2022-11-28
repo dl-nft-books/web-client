@@ -1,10 +1,11 @@
 <script lang="ts" setup>
 import { Loader, ErrorMessage, Tabs, NftDetails } from '@/common'
 
-import { ErrorHandler, getGeneratedTokensById } from '@/helpers'
+import { ErrorHandler } from '@/helpers'
 import { ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { GeneratedNFtRecord } from '@/records'
+import { getGeneratedTokensById } from '@/api'
 
 const { t } = useI18n({ useScope: 'global' })
 
@@ -30,8 +31,8 @@ const nftToken = ref<GeneratedNFtRecord | undefined>()
 
 const init = async () => {
   try {
-    const tokenResponse = await getGeneratedTokensById(props.id)
-    nftToken.value = new GeneratedNFtRecord(tokenResponse)
+    const { data } = await getGeneratedTokensById(props.id)
+    nftToken.value = new GeneratedNFtRecord(data)
   } catch (error) {
     ErrorHandler.processWithoutFeedback(error)
     isLoadFailed.value = true

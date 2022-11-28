@@ -1,4 +1,4 @@
-import { TokenPriceResponse, Platform } from '@/types'
+import { TokenPrice, Platform } from '@/types'
 import { api } from '@/api'
 
 export function getPlatformsList() {
@@ -6,7 +6,7 @@ export function getPlatformsList() {
 }
 
 export function getPriceByPlatform(platform: string, contract?: string) {
-  return api.get<TokenPriceResponse>('/integrations/pricer/price', {
+  return api.get<TokenPrice>('/integrations/pricer/price', {
     platform,
     ...(contract ? { contract } : {}),
   })

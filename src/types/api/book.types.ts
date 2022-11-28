@@ -1,6 +1,6 @@
-import { JsonApiRecordBase } from '@/types/api'
+import { JsonApiRecordBase } from '@/types'
 
-export type BookFileResponse = JsonApiRecordBase<'files'> & {
+export type BookFile = JsonApiRecordBase<'files'> & {
   attributes: {
     key: string
     mime_type: string
@@ -9,14 +9,14 @@ export type BookFileResponse = JsonApiRecordBase<'files'> & {
   }
 }
 
-export type BookResponse = JsonApiRecordBase<'books'> & {
-  banner: BookFileResponse
+export type Book = JsonApiRecordBase<'books'> & {
+  banner: BookFile
   contract_address: string
   contract_name: string
   contract_version: string
   created_at: string
   description: string
-  file: BookFileResponse
+  file: BookFile
   price: string
   title: string
 }

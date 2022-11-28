@@ -1,4 +1,4 @@
-import { JsonApiRecordBase } from '@/types/api'
+import { JsonApiRecordBase } from '@/types'
 
 export type Platform = JsonApiRecordBase<'platforms'> & {
   chain_identifier: number
@@ -6,7 +6,7 @@ export type Platform = JsonApiRecordBase<'platforms'> & {
   shortname: string
 }
 
-export type TokenPriceResponse = JsonApiRecordBase<'prices'> & {
+export type TokenPrice = JsonApiRecordBase<'prices'> & {
   price: string
   token: {
     decimals: number

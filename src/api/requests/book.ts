@@ -1,5 +1,5 @@
 import { api } from '@/api'
-import { BookResponse, PageOrder } from '@/types'
+import { Book, PageOrder } from '@/types'
 import { BOOK_DEPLOY_STATUSES } from '@/enums'
 
 export function getBooks(opts: {
@@ -8,7 +8,7 @@ export function getBooks(opts: {
   pageLimit?: number
   pageOrder?: PageOrder
 }) {
-  return api.get<BookResponse[]>('/integrations/books', {
+  return api.get<Book[]>('/integrations/books', {
     page: {
       limit: opts.pageLimit || 100, // FIXME: add pagination
       order: opts.pageOrder || 'desc',
@@ -23,5 +23,5 @@ export function getBooks(opts: {
 }
 
 export function getBookById(id: number | string) {
-  return api.get<BookResponse>(`/integrations/books/${id}`)
+  return api.get<Book>(`/integrations/books/${id}`)
 }

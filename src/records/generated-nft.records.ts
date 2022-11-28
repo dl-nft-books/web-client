@@ -1,4 +1,4 @@
-import { GeneratedNFtResponse } from '@/types'
+import { Token } from '@/types'
 import { BookPaymentRecord } from '@/records'
 
 export class GeneratedNFtRecord {
@@ -11,7 +11,7 @@ export class GeneratedNFtRecord {
   status: string
   payment: BookPaymentRecord
 
-  constructor(record: GeneratedNFtResponse) {
+  constructor(record: Token) {
     this.id = record.id
     this.tokenId = record.token_id
     this.name = record.name

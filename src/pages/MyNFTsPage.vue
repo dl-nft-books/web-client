@@ -2,12 +2,13 @@
 import { Loader, ErrorMessage, BookCard } from '@/common'
 import MyNftsNoData from '@/pages/my-nfts/MyNftsNoData.vue'
 
-import { ErrorHandler, getGeneratedTokens } from '@/helpers'
+import { ErrorHandler } from '@/helpers'
 import { ref, watch } from 'vue'
 import { GeneratedNFtRecord } from '@/records'
 import { useWeb3ProvidersStore } from '@/store'
 import { storeToRefs } from 'pinia'
 import { GENERATED_NFT_STATUSES } from '@/enums'
+import { getGeneratedTokens } from '@/api'
 
 const { provider } = storeToRefs(useWeb3ProvidersStore())
 
@@ -19,7 +20,7 @@ const init = async () => {
   isLoaded.value = false
   try {
     if (provider.value.selectedAddress) {
-      const data = await getGeneratedTokens({
+      const { data } = await getGeneratedTokens({
         account: [provider.value.selectedAddress],
         status: [GENERATED_NFT_STATUSES.finishedUploading],
       })
