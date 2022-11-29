@@ -18,7 +18,7 @@ import { Book } from '@/types'
 const isLoadFailed = ref(false)
 const books = ref<BookRecord[]>([])
 
-const { loadNextPage, isLoading, isCollectionFetched } = usePaginate(
+const { loadNextPage, isLoading, isLoadMoreBtnShown } = usePaginate(
   loadList,
   setList,
   concatList,
@@ -71,7 +71,7 @@ function onError(e: Error) {
       </template>
 
       <app-button
-        v-if="!isCollectionFetched && !isLoading"
+        v-if="isLoadMoreBtnShown"
         class="bookshelf-page__load-more-btn"
         size="small"
         scheme="flat"

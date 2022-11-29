@@ -17,7 +17,7 @@ const { provider } = storeToRefs(useWeb3ProvidersStore())
 const isLoadFailed = ref(false)
 const nftList = ref<GeneratedNFtRecord[]>([])
 
-const { loadFirstPage, loadNextPage, isLoading, isCollectionFetched } =
+const { loadFirstPage, loadNextPage, isLoading, isLoadMoreBtnShown } =
   usePaginate(loadList, setList, concatList, onError, {
     isLoadOnMounted: false,
   })
@@ -85,7 +85,7 @@ watch(
         </template>
 
         <app-button
-          v-if="!isCollectionFetched && !isLoading"
+          v-if="isLoadMoreBtnShown"
           class="my-nfts-page__load-more-btn"
           size="small"
           scheme="flat"
