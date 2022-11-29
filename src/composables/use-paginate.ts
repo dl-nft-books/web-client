@@ -9,7 +9,10 @@ export const usePaginate = <T>(
   onFirstPageLoad: (response: T) => void,
   onNextPageLoad: (response: T) => void,
   onError?: (e: Error) => void,
-  pageLimit?: number,
+  opts?: {
+    pageLimit?: number
+    isLoadOnMounted?: boolean
+  },
 ): {
   loadFirstPage(): Promise<void>
   loadNextPage(): Promise<void>
@@ -49,7 +52,8 @@ export const usePaginate = <T>(
       onLoad(response.data)
       nextPageLoader = () => response.fetchPage(JsonApiLinkFields.next)
 
-      const limit = pageLimit || response.pageLimit || config.DEFAULT_PAGE_LIMIT
+      const limit =
+        opts?.pageLimit || response.pageLimit || config.DEFAULT_PAGE_LIMIT
 
       isCollectionFetched.value =
         ((response.data as unknown as Array<unknown>)?.length || 0) < limit
@@ -65,7 +69,7 @@ export const usePaginate = <T>(
     watch(
       () => firstPageLoader,
       () => loadFirstPage(),
-      { immediate: true },
+      { immediate: opts?.isLoadOnMounted ?? true },
     )
   })
 

@@ -18,13 +18,16 @@ import { Book } from '@/types'
 const isLoadFailed = ref(false)
 const books = ref<BookRecord[]>([])
 
-const { loadFirstPage, loadNextPage, isLoading, isCollectionFetched } =
-  usePaginate(loadList, setList, concatList, onError, 1)
+const { loadNextPage, isLoading, isCollectionFetched } = usePaginate(
+  loadList,
+  setList,
+  concatList,
+  onError,
+)
 
 function loadList() {
   return getBooks({
     deployStatus: [BOOK_DEPLOY_STATUSES.successful],
-    pageLimit: 1,
   })
 }
 
@@ -42,8 +45,6 @@ function onError(e: Error) {
   ErrorHandler.processWithoutFeedback(e)
   isLoadFailed.value = true
 }
-
-loadFirstPage()
 </script>
 
 <template>
@@ -70,9 +71,11 @@ loadFirstPage()
       </template>
 
       <app-button
-        v-if="!isCollectionFetched"
-        :text="$t('bookshelf-page.load-more-btn')"
+        v-if="!isCollectionFetched && !isLoading"
+        class="bookshelf-page__load-more-btn"
         size="small"
+        scheme="flat"
+        :text="$t('bookshelf-page.load-more-btn')"
         @click="loadNextPage"
       />
     </template>
@@ -103,5 +106,9 @@ loadFirstPage()
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(toRem(292), 1fr));
   grid-gap: toRem(20);
+}
+
+.bookshelf-page__load-more-btn {
+  margin: toRem(20) auto 0;
 }
 </style>
