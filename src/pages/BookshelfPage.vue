@@ -1,69 +1,50 @@
 <script lang="ts" setup>
-import { Loader, ErrorMessage, NoDataMessage, BookCard } from '@/common'
+import {
+  Loader,
+  ErrorMessage,
+  NoDataMessage,
+  BookCard,
+  AppButton,
+} from '@/common'
 
 import { ErrorHandler } from '@/helpers'
-import { Book } from '@/types'
+import { BookRecord } from '@/records'
 import { ref } from 'vue'
+import { BOOK_DEPLOY_STATUSES } from '@/enums'
+import { getBooks } from '@/api'
+import { usePaginate } from '@/composables'
+import { Book } from '@/types'
 
-const isLoaded = ref(false)
 const isLoadFailed = ref(false)
-const books = ref<Book[]>([])
+const books = ref<BookRecord[]>([])
 
-const init = async () => {
-  try {
-    await loadBooks()
-  } catch (error) {
-    ErrorHandler.processWithoutFeedback(error)
-    isLoadFailed.value = true
-  }
-  isLoaded.value = true
+const { loadNextPage, isLoading, isLoadMoreBtnShown } = usePaginate(
+  loadList,
+  setList,
+  concatList,
+  onError,
+)
+
+function loadList() {
+  return getBooks({
+    deployStatus: [BOOK_DEPLOY_STATUSES.successful],
+  })
 }
 
-const loadBooks = async () => {
-  books.value = [
-    {
-      id: '1',
-      title: 'Blockchain and decentralized systems, Volume 1',
-      price: {
-        amount: 109,
-        assetCode: 'USD',
-      },
-      coverUrl:
-        'https://images.unsplash.com/photo-1629992101753-56d196c8aabb?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=990&q=80',
-    },
-    {
-      id: '2',
-      title: 'Blockchain and decentralized systems, Volume 1',
-      price: {
-        amount: 109,
-        assetCode: 'USD',
-      },
-      coverUrl:
-        'https://images.unsplash.com/photo-1629992101753-56d196c8aabb?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=990&q=80',
-    },
-    {
-      id: '3',
-      title: 'Blockchain and decentralized systems, Volume 1',
-      price: {
-        amount: 109,
-        assetCode: 'USD',
-      },
-      coverUrl:
-        'https://images.unsplash.com/photo-1629992101753-56d196c8aabb?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=990&q=80',
-    },
-    {
-      id: '4',
-      title: 'Blockchain and decentralized systems, Volume 1',
-      price: {
-        amount: 109,
-        assetCode: 'USD',
-      },
-      coverUrl:
-        'https://images.unsplash.com/photo-1629992101753-56d196c8aabb?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=990&q=80',
-    },
-  ]
+function setList(chunk: Book[]) {
+  books.value = chunk.map(book => new BookRecord(book)) ?? []
 }
-init()
+
+function concatList(chunk: Book[]) {
+  books.value = books.value.concat(
+    chunk.map(book => new BookRecord(book)) ?? [],
+  )
+}
+
+function onError(e: Error) {
+  ErrorHandler.processWithoutFeedback(e)
+  isLoadFailed.value = true
+}
 </script>
 
 <template>
@@ -71,11 +52,11 @@ init()
     <h2 class="bookshelf-page__title">
       {{ $t('bookshelf-page.title') }}
     </h2>
-    <template v-if="isLoaded">
-      <template v-if="isLoadFailed">
-        <error-message :message="$t('bookshelf-page.loading-error-msg')" />
-      </template>
-      <template v-else-if="books.length">
+    <template v-if="isLoadFailed">
+      <error-message :message="$t('bookshelf-page.loading-error-msg')" />
+    </template>
+    <template v-else-if="books.length || isLoading">
+      <template v-if="books.length">
         <div class="bookshelf-page__list">
           <book-card
             class="bookshelf-page__card"
@@ -85,12 +66,21 @@ init()
           />
         </div>
       </template>
-      <template v-else>
-        <no-data-message :message="$t('bookshelf-page.no-data-msg')" />
+      <template v-if="isLoading">
+        <loader />
       </template>
+
+      <app-button
+        v-if="isLoadMoreBtnShown"
+        class="bookshelf-page__load-more-btn"
+        size="small"
+        scheme="flat"
+        :text="$t('bookshelf-page.load-more-btn')"
+        @click="loadNextPage"
+      />
     </template>
     <template v-else>
-      <loader />
+      <no-data-message :message="$t('bookshelf-page.no-data-msg')" />
     </template>
   </div>
 </template>
@@ -114,7 +104,11 @@ init()
 
 .bookshelf-page__list {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(toRem(270), 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(toRem(292), 1fr));
   grid-gap: toRem(20);
+}
+
+.bookshelf-page__load-more-btn {
+  margin: toRem(20) auto 0;
 }
 </style>

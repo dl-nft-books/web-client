@@ -14,11 +14,6 @@ const routes: Array<RouteRecordRaw> = [
     redirect: { name: ROUTE_NAMES.home },
   },
   {
-    path: '/ui-kit',
-    name: ROUTE_NAMES.uiKit,
-    component: () => import('@/pages/UiKitPage.vue'),
-  },
-  {
     path: '/',
     name: ROUTE_NAMES.home,
     component: () => import('@/pages/HomePage.vue'),
@@ -31,6 +26,7 @@ const routes: Array<RouteRecordRaw> = [
   {
     path: '/bookshelf/:id',
     name: ROUTE_NAMES.bookshelfItem,
+    props: true,
     component: () => import('@/pages/BookshelfItemPage.vue'),
   },
   {
@@ -40,6 +36,7 @@ const routes: Array<RouteRecordRaw> = [
   },
   {
     path: '/my-nft/:id',
+    props: true,
     name: ROUTE_NAMES.myNftItem,
     component: () => import('@/pages/MyNftItemPage.vue'),
   },

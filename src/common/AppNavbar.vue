@@ -15,7 +15,6 @@ const openSidebar = () => {
 
 const handleProviderClick = () => {
   if (provider.value.selectedAddress) {
-    provider.value.disconnect()
     return
   }
   provider.value.connect()
@@ -59,10 +58,10 @@ const connectProviderButtonText = computed(() => {
     <div class="app-navbar__provider-button-wrapper">
       <app-button
         class="app-navbar__provider-btn"
-        type="button"
         :icon-left="$icons.metamask"
         scheme="flat"
         size="small"
+        :disabled="provider.selectedAddress"
         :text="connectProviderButtonText"
         @click="handleProviderClick"
       />
@@ -97,6 +96,10 @@ const connectProviderButtonText = computed(() => {
   font-family: var(--app-font-family);
   font-weight: 500;
   font-size: toRem(16);
+
+  &.router-link-active {
+    border-bottom: toRem(2) solid var(--primary-main);
+  }
 }
 
 .app-navbar__provider-btn {

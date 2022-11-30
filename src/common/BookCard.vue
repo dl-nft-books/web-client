@@ -1,27 +1,23 @@
 <script lang="ts" setup>
 import { AppButton } from '@/common'
 
-import { Book } from '@/types'
-import { formatFiatAsset } from '@/helpers'
+import { BookRecord, GeneratedNFtRecord } from '@/records'
+import { formatFiatAssetFromWei } from '@/helpers'
 import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { ROUTE_NAMES } from '@/enums'
 
 const props = withDefaults(
   defineProps<{
-    book: Book
-    scheme?: 'purchase' | 'link'
+    book: BookRecord | GeneratedNFtRecord
     modification?: 'centered' | 'default'
     backgroundColor?: 'primary' | 'secondary'
     actionBtnText?: string
-    isUserOwned?: boolean
   }>(),
   {
-    scheme: 'purchase',
     modification: 'default',
     backgroundColor: 'primary',
     actionBtnText: '',
-    isUserOwned: false,
   },
 )
 
@@ -30,7 +26,6 @@ const { t } = useI18n({ useScope: 'global' })
 const bookCardClasses = computed(() =>
   [
     'book-card',
-    `book-card--${props.scheme}`,
     `book-card--${props.modification}`,
     `book-card--${props.backgroundColor}`,
   ].join(' '),
@@ -39,22 +34,37 @@ const bookCardClasses = computed(() =>
 const actionButtonText = computed(
   () => props.actionBtnText || t('bookshelf-page.purchase-btn'),
 )
+
 const actionButtonLink = computed(() =>
-  props.isUserOwned
+  props.book instanceof GeneratedNFtRecord
     ? { name: ROUTE_NAMES.myNftItem, params: { id: props.book.id } }
     : { name: ROUTE_NAMES.bookshelfItem, params: { id: props.book.id } },
+)
+
+const bannerUrl = computed(() =>
+  props.book instanceof GeneratedNFtRecord
+    ? props.book.imageUrl
+    : props.book.bannerUrl,
+)
+
+const title = computed(() =>
+  props.book instanceof GeneratedNFtRecord ? props.book.name : props.book.title,
+)
+
+const price = computed(() =>
+  props.book instanceof BookRecord ? props.book.price : '',
 )
 </script>
 
 <template>
   <div :class="bookCardClasses">
     <div class="book-card__cover-wrp">
-      <img :src="book.coverUrl" :alt="book.title" class="book-card__cover" />
+      <img :src="bannerUrl" :alt="title" class="book-card__cover" />
     </div>
-    <span class="book-card__title">{{ book.title }}</span>
+    <span class="book-card__title">{{ title }}</span>
     <span class="book-card__price">
-      <template v-if="scheme === 'purchase'">
-        {{ formatFiatAsset(book.price.amount, book.price.assetCode) }}
+      <template v-if="price">
+        {{ formatFiatAssetFromWei(price, 'USD') }}
       </template>
     </span>
     <template v-if="$slots.actionButton">
@@ -81,7 +91,6 @@ const actionButtonLink = computed(() =>
   border: toRem(1) solid var(--border-primary-main);
   border-radius: toRem(12);
   padding: toRem(16) toRem(16) toRem(20);
-  min-width: toRem(270);
 
   &--primary {
     background: var(--background-tertiary);
@@ -99,8 +108,8 @@ const actionButtonLink = computed(() =>
 
 .book-card__cover {
   object-fit: cover;
-  object-position: center;
-  max-height: toRem(200);
+  object-position: top center;
+  max-height: toRem(280);
   width: 100%;
   height: 100%;
 }

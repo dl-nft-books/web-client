@@ -9,19 +9,23 @@ import {
 } from '@/common'
 
 import { ErrorHandler } from '@/helpers'
-import { Book } from '@/types'
-import { useRoute } from 'vue-router'
-import { ref } from 'vue'
-import { formatFiatAsset } from '@/helpers'
+import { ref, watch } from 'vue'
+import { formatFiatAssetFromWei } from '@/helpers'
+import { BookRecord } from '@/records'
+import { useWeb3ProvidersStore } from '@/store'
+import { storeToRefs } from 'pinia'
+import { getBookById } from '@/api'
 
+const props = defineProps<{
+  id: string
+}>()
+const { provider } = storeToRefs(useWeb3ProvidersStore())
 const isLoaded = ref(false)
 const isLoadFailed = ref(false)
 const isPurchaseModalShown = ref(false)
 const isPurchaseSuccessModalShown = ref(false)
 
-const book = ref<Book | undefined>()
-
-const route = useRoute()
+const book = ref<BookRecord | undefined>()
 
 const submit = async () => {
   try {
@@ -34,7 +38,8 @@ const submit = async () => {
 
 const init = async () => {
   try {
-    await loadBook()
+    const { data } = await getBookById(props.id)
+    book.value = new BookRecord(data)
   } catch (error) {
     ErrorHandler.processWithoutFeedback(error)
     isLoadFailed.value = true
@@ -42,25 +47,14 @@ const init = async () => {
   isLoaded.value = true
 }
 
-const loadBook = async () => {
-  book.value = {
-    id: route.params.id,
-    title: 'Blockchain and decentralized systems, Volume 1',
-    price: {
-      amount: 109,
-      assetCode: 'USD',
-    },
-    coverUrl:
-      'https://images.unsplash.com/photo-1629992101753-56d196c8aabb?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=990&q=80',
-    description:
-      'Lörem ipsum semiskop plaktig. Bent abvalens trera vipysamma. Rerade prer derade. Digisk nebelt fask. sdscqae \n' +
-      'Mack nitevis. Mikropp antelånas londe. Tism svenna sitt liv i preliga. Sögisk euroråse belig. \n' +
-      'Pögt ont puhet och supravinade. Dis vil gesåbelt och vaheten. Aning elektrogram eftersom miligen. Renyde korat. \n',
-    meta: {
-      volume: 'Volume 2',
-    },
-  } as Book
-}
+watch(
+  () => provider.value.isConnected,
+  value => {
+    if (!value) {
+      isPurchaseModalShown.value = false
+    }
+  },
+)
 
 init()
 </script>
@@ -71,10 +65,10 @@ init()
       <template v-if="isLoadFailed">
         <error-message :message="$t('bookshelf-item-page.loading-error-msg')" />
       </template>
-      <template v-else>
+      <template v-else-if="book">
         <div class="bookshelf-item-page__cover-wrp">
           <img
-            :src="book.coverUrl"
+            :src="book.bannerUrl"
             :alt="book.title"
             class="bookshelf-item-page__cover"
           />
@@ -85,17 +79,26 @@ init()
           </h2>
           <div class="bookshelf-item-page__actions">
             <div class="bookshelf-item-page__price">
-              {{ formatFiatAsset(book.price.amount, book.price.assetCode) }}
+              {{ formatFiatAssetFromWei(book.price, 'USD') }}
             </div>
-            <app-button
-              class="bookshelf-item-page__purchase-btn"
-              :text="$t('bookshelf-item-page.purchase-btn')"
-              @click="isPurchaseModalShown = true"
-            />
+            <template v-if="provider.isConnected">
+              <app-button
+                class="bookshelf-item-page__purchase-btn"
+                :text="$t('bookshelf-item-page.purchase-btn')"
+                @click="isPurchaseModalShown = true"
+              />
+            </template>
+            <template v-else>
+              <app-button
+                class="bookshelf-item-page__purchase-btn"
+                :text="$t('bookshelf-item-page.connect-btn')"
+                @click="provider.connect"
+              />
+            </template>
           </div>
           <nft-description :description="book.description" />
         </div>
-        <template v-if="book">
+        <template v-if="book && isPurchaseModalShown">
           <purchasing-modal
             v-model:is-shown="isPurchaseModalShown"
             :book="book"
@@ -146,6 +149,7 @@ init()
 .bookshelf-item-page__cover {
   width: 100%;
   height: auto;
+  filter: var(--cover-image-shadow);
 
   @include respond-to(medium) {
     display: block;

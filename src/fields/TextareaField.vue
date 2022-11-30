@@ -15,6 +15,9 @@ const props = withDefaults(
   },
 )
 
+const EMOJI_REGEX =
+  /([\u2700-\u27BF]|[\uE000-\uF8FF]|\uD83C[\uDC00-\uDFFF]|\uD83D[\uDC00-\uDFFF]|[\u2011-\u26FF]|\uD83E[\uDD10-\uDDFF])/g
+
 const emit = defineEmits<{
   (event: 'update:model-value', value: string | number): void
 }>()
@@ -35,9 +38,11 @@ const listeners = computed(() => ({
   input: (event: Event) => {
     const eventTarget = event.target as HTMLTextAreaElement
 
+    const valueEmojiReplace = eventTarget.value.replace(EMOJI_REGEX, '')
+
     if (props.modelValue === eventTarget.value) return
 
-    emit('update:model-value', eventTarget.value)
+    emit('update:model-value', valueEmojiReplace)
   },
 }))
 

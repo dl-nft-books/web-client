@@ -8,10 +8,12 @@ export const config = {
   YOUTUBE_LINK: '',
   LINKEDIN_LINK: '',
   TELEGRAM_LINK: '',
-  API_URL: import.meta.env.VITE_API_URL,
-  APP_NAME: import.meta.env.VITE_APP_NAME,
+  DEPLOY_ENVIRONMENT: import.meta.env.VITE_APP_DEPLOY_ENVIRONMENT,
+  API_URL: import.meta.env.VITE_APP_API_URL,
+  APP_NAME: import.meta.env.VITE_APP_APP_NAME,
   LOG_LEVEL: 'trace' as LogLevelDesc,
   BUILD_VERSION: packageJson.version || import.meta.env.VITE_APP_BUILD_VERSION,
+  DEFAULT_PAGE_LIMIT: 15,
 } as const
 
 Object.assign(config, _mapEnvCfg(import.meta.env))

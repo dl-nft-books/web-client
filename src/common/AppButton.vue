@@ -129,9 +129,8 @@ const buttonClasses = computed(() =>
   cursor: pointer;
   user-select: none;
   overflow: hidden;
-  display: grid;
-  width: min-content;
-  grid: auto / auto-flow max-content;
+  display: flex;
+  width: max-content;
   align-items: center;
   justify-content: center;
   transition: var(--button-transition-duration) ease-in;
@@ -206,6 +205,12 @@ const buttonClasses = computed(() =>
     --app-button-border: var(--app-button-flat-border);
     --app-button-border-hover: var(--app-button-flat-border-hover);
     --app-button-border-active: var(--app-button-flat-border-active);
+
+    &:disabled,
+    &--disabled & {
+      filter: none;
+      opacity: 1;
+    }
   }
 
   &--success {
