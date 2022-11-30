@@ -64,10 +64,11 @@ import { AppButton, Modal, Animation, Loader, ErrorMessage } from '@/common'
 import { useWeb3ProvidersStore } from '@/store'
 import { storeToRefs } from 'pinia'
 import { BookRecord } from '@/records'
-import { ErrorHandler, getPlatformsList } from '@/helpers'
+import { ErrorHandler } from '@/helpers'
 import { ref, computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { config } from '@config'
+import { getPlatformsList } from '@/api'
 import PurchaseBookForm from '@/common/forms/PurchaseBookForm.vue'
 
 import disableChainAnimation from '@/assets/animations/disable-chain.json'
@@ -106,7 +107,7 @@ const title = computed(() => {
 async function init() {
   isLoaded.value = false
   try {
-    const platforms = await getPlatformsList()
+    const { data: platforms } = await getPlatformsList()
 
     // FIXME: fix platforms hardcode
     currentPlatform.value =

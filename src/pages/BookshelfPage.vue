@@ -1,28 +1,50 @@
 <script lang="ts" setup>
-import { Loader, ErrorMessage, NoDataMessage, BookCard } from '@/common'
+import {
+  Loader,
+  ErrorMessage,
+  NoDataMessage,
+  BookCard,
+  AppButton,
+} from '@/common'
 
-import { ErrorHandler, getBooks } from '@/helpers'
+import { ErrorHandler } from '@/helpers'
 import { BookRecord } from '@/records'
 import { ref } from 'vue'
 import { BOOK_DEPLOY_STATUSES } from '@/enums'
+import { getBooks } from '@/api'
+import { usePaginate } from '@/composables'
+import { Book } from '@/types'
 
-const isLoaded = ref(false)
 const isLoadFailed = ref(false)
 const books = ref<BookRecord[]>([])
 
-const init = async () => {
-  try {
-    const booksResponse = await getBooks({
-      deployStatus: [BOOK_DEPLOY_STATUSES.successful],
-    })
-    books.value = booksResponse.map(book => new BookRecord(book))
-  } catch (error) {
-    ErrorHandler.processWithoutFeedback(error)
-    isLoadFailed.value = true
-  }
-  isLoaded.value = true
+const { loadNextPage, isLoading, isLoadMoreBtnShown } = usePaginate(
+  loadList,
+  setList,
+  concatList,
+  onError,
+)
+
+function loadList() {
+  return getBooks({
+    deployStatus: [BOOK_DEPLOY_STATUSES.successful],
+  })
 }
-init()
+
+function setList(chunk: Book[]) {
+  books.value = chunk.map(book => new BookRecord(book)) ?? []
+}
+
+function concatList(chunk: Book[]) {
+  books.value = books.value.concat(
+    chunk.map(book => new BookRecord(book)) ?? [],
+  )
+}
+
+function onError(e: Error) {
+  ErrorHandler.processWithoutFeedback(e)
+  isLoadFailed.value = true
+}
 </script>
 
 <template>
@@ -30,11 +52,11 @@ init()
     <h2 class="bookshelf-page__title">
       {{ $t('bookshelf-page.title') }}
     </h2>
-    <template v-if="isLoaded">
-      <template v-if="isLoadFailed">
-        <error-message :message="$t('bookshelf-page.loading-error-msg')" />
-      </template>
-      <template v-else-if="books.length">
+    <template v-if="isLoadFailed">
+      <error-message :message="$t('bookshelf-page.loading-error-msg')" />
+    </template>
+    <template v-else-if="books.length || isLoading">
+      <template v-if="books.length">
         <div class="bookshelf-page__list">
           <book-card
             class="bookshelf-page__card"
@@ -44,12 +66,21 @@ init()
           />
         </div>
       </template>
-      <template v-else>
-        <no-data-message :message="$t('bookshelf-page.no-data-msg')" />
+      <template v-if="isLoading">
+        <loader />
       </template>
+
+      <app-button
+        v-if="isLoadMoreBtnShown"
+        class="bookshelf-page__load-more-btn"
+        size="small"
+        scheme="flat"
+        :text="$t('bookshelf-page.load-more-btn')"
+        @click="loadNextPage"
+      />
     </template>
     <template v-else>
-      <loader />
+      <no-data-message :message="$t('bookshelf-page.no-data-msg')" />
     </template>
   </div>
 </template>
@@ -75,5 +106,9 @@ init()
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(toRem(292), 1fr));
   grid-gap: toRem(20);
+}
+
+.bookshelf-page__load-more-btn {
+  margin: toRem(20) auto 0;
 }
 </style>

@@ -123,9 +123,6 @@ import { BookRecord } from '@/records'
 import {
   ErrorHandler,
   formatFiatAssetFromWei,
-  createNewTask,
-  getPriceByPlatform,
-  getMintSignature,
   untilTaskFinishedGeneration,
   globalizeTokenType,
 } from '@/helpers'
@@ -140,9 +137,10 @@ import { required, requiredIf, address } from '@/validators'
 import { BN } from '@/utils/math.util'
 import { errors } from '@/api/json-api/errors'
 import { ethers } from 'ethers'
-import { TokenPriceResponse, Platform } from '@/types'
+import { TokenPrice, Platform } from '@/types'
 import { MAX_FIELD_LENGTH, NULL_ADDRESS } from '@/const'
 import { TOKEN_TYPES } from '@/enums'
+import { getPriceByPlatform, createNewTask, getMintSignature } from '@/api'
 
 import loaderAnimation from '@/assets/animations/loader.json'
 
@@ -159,7 +157,7 @@ const emit = defineEmits<{
 }>()
 
 const isPriceAndBalanceLoaded = ref(false)
-const tokenPrice = ref<TokenPriceResponse | null>(null)
+const tokenPrice = ref<TokenPrice | null>(null)
 const isTokenAddressUnsupported = ref(false)
 const isLoadFailed = ref(false)
 const balance = ref('')
@@ -226,14 +224,14 @@ const submit = async () => {
   disableForm()
   emit('submitting', true)
   try {
-    const currentTask = await createNewTask({
+    const { data: currentTask } = await createNewTask({
       signature: form.signature,
       account: provider.value.selectedAddress,
       bookId: props.book.id,
     })
     const generatedTask = await untilTaskFinishedGeneration(currentTask.id)
 
-    const mintSignature = await getMintSignature(
+    const { data: mintSignature } = await getMintSignature(
       props.currentPlatform.id,
       generatedTask!.id,
       isTokenAddressRequired.value ? form.tokenAddress : '',
@@ -277,10 +275,11 @@ const submit = async () => {
 async function getPrice() {
   try {
     const contract = isTokenAddressRequired.value ? form.tokenAddress : ''
-    tokenPrice.value = await getPriceByPlatform(
+    const { data } = await getPriceByPlatform(
       props.currentPlatform.id,
       contract,
     )
+    tokenPrice.value = data
   } catch (e) {
     if (e instanceof errors.NotFoundError) {
       isTokenAddressUnsupported.value = true

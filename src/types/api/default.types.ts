@@ -10,3 +10,5 @@ export type JsonApiRecordBase<T extends string> = {
   type: T
   relationship_names?: JsonApiRelationships
 }
+
+export type PageOrder = 'asc' | 'desc'

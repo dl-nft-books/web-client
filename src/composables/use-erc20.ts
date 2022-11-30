@@ -8,8 +8,10 @@ import {
   ChainId,
   TransactionResponse,
   TxRequestBody,
+  EthProviderRpcError,
 } from '@/types'
 import { PROVIDERS } from '@/enums'
+import { handleEthError } from '@/helpers'
 
 export interface UseUnrefProvider {
   currentProvider: ethers.providers.Web3Provider | undefined
@@ -190,12 +192,16 @@ export const useErc20 = (provider: UseUnrefProvider, address?: string) => {
     amount: string,
     spender: string,
   ) => {
-    await Promise.all([getDecimals(), getAllowance(owner, spender)])
-    const amountInWei = new BN(amount).toFraction(decimals.value)
+    try {
+      await Promise.all([getDecimals(), getAllowance(owner, spender)])
+      const amountInWei = new BN(amount).toFraction(decimals.value)
 
-    if (new BN(allowance.value).compare(amountInWei) === -1) {
-      const tx = await approve(spender, BN.MAX_UINT256.toString())
-      await tx?.wait()
+      if (new BN(allowance.value).compare(amountInWei) === -1) {
+        const tx = await approve(spender, BN.MAX_UINT256.toString())
+        await tx?.wait()
+      }
+    } catch (error) {
+      handleEthError(error as EthProviderRpcError)
     }
   }
 

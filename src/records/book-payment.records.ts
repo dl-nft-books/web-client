@@ -1,4 +1,4 @@
-import { BookPaymentResponse } from '@/types'
+import { BookPayment } from '@/types'
 
 export class BookPaymentRecord {
   id: number | string
@@ -13,7 +13,7 @@ export class BookPaymentRecord {
   erc20Decimals: number
   bookUrl: string
 
-  constructor(record: BookPaymentResponse) {
+  constructor(record: BookPayment) {
     this.id = record.id
     this.type = record.type
     this.payerAddress = record.payer_address
