@@ -2,14 +2,16 @@
 import { AppButton } from '@/common'
 import { useWeb3ProvidersStore } from '@/store'
 import { storeToRefs } from 'pinia'
+import { useMetaMaskConnect } from '@/composables'
 
 const { provider } = storeToRefs(useWeb3ProvidersStore())
-
+const { connect } = useMetaMaskConnect()
 const handleProviderClick = () => {
   if (provider.value.selectedAddress) {
     return
   }
-  provider.value.connect()
+
+  connect()
 }
 
 withDefaults(
