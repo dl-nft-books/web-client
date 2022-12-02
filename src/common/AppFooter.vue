@@ -10,20 +10,12 @@ const SOCIAL_LINKS = [
     link: config.FACEBOOK_LINK,
   },
   {
-    iconName: ICON_NAMES.instagramCircle,
-    link: config.INSTAGRAM_LINK,
-  },
-  {
     iconName: ICON_NAMES.youtubeCircle,
     link: config.YOUTUBE_LINK,
   },
   {
     iconName: ICON_NAMES.linkedinCircle,
     link: config.LINKEDIN_LINK,
-  },
-  {
-    iconName: ICON_NAMES.telegramCircle,
-    link: config.TELEGRAM_LINK,
   },
 ]
 </script>
@@ -34,15 +26,30 @@ const SOCIAL_LINKS = [
     <div class="app-footer__content">
       <app-logo scheme="light" />
       <div class="app-footer__links-wrapper">
-        <router-link class="app-footer__text-link" to="/">
+        <a
+          class="app-footer__text-link"
+          target="_blank"
+          rel="noopener"
+          :href="$config.FAQ_LINK"
+        >
           {{ $t('app-footer.faq-link') }}
-        </router-link>
-        <router-link class="app-footer__text-link" to="/">
+        </a>
+        <a
+          class="app-footer__text-link"
+          target="_blank"
+          rel="noopener"
+          :href="$config.HELP_LINK"
+        >
           {{ $t('app-footer.help-link') }}
-        </router-link>
-        <router-link class="app-footer__text-link" to="/">
+        </a>
+        <a
+          class="app-footer__text-link"
+          target="_blank"
+          rel="noopener"
+          :href="$config.BLOG_LINK"
+        >
           {{ $t('app-footer.blog-link') }}
-        </router-link>
+        </a>
       </div>
       <div class="app-footer__social-links">
         <a
