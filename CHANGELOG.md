@@ -5,6 +5,9 @@ Th format is based on [Keep a Changelog
 an this project adheres to [Semantic Versioning
 
 ## [Unreleased]
+#### Changed
+- About page redesign
+- Footer links
 
 ## [1.0.0] - 2022-11-30
 #### Added
