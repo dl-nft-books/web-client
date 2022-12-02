@@ -5,6 +5,8 @@ import { Bus, cropAddress } from '@/helpers'
 import { storeToRefs } from 'pinia'
 import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
+import { router } from '@/router'
+import { ROUTE_NAMES } from '@/enums'
 
 const { provider } = storeToRefs(useWeb3ProvidersStore())
 const { t } = useI18n({ useScope: 'global' })
@@ -25,10 +27,19 @@ const connectProviderButtonText = computed(() => {
     ? cropAddress(provider.value.selectedAddress)
     : t('app-navbar.connect-provider-button')
 })
+
+const isAboutPage = computed(() => {
+  return router.currentRoute.value.name === ROUTE_NAMES.aboutUs
+})
 </script>
 
 <template>
-  <nav class="app-navbar">
+  <nav
+    :class="{
+      'app-navbar': true,
+      'about-page': isAboutPage,
+    }"
+  >
     <app-logo />
     <button
       class="app-navbar__hamburger-button"
@@ -54,6 +65,12 @@ const connectProviderButtonText = computed(() => {
       <router-link class="app-navbar__text-link" :to="{ name: $routes.myNFTs }">
         {{ $t('app-navbar.my-nfts-link') }}
       </router-link>
+      <router-link
+        class="app-navbar__text-link"
+        :to="{ name: $routes.aboutUs }"
+      >
+        {{ $t('app-navbar.about-us-link') }}
+      </router-link>
     </div>
     <div class="app-navbar__provider-button-wrapper">
       <app-button
@@ -72,10 +89,21 @@ const connectProviderButtonText = computed(() => {
 
 <style lang="scss" scoped>
 .app-navbar {
+  --first: 1;
+
   display: flex;
   align-items: center;
+  z-index: var(--first);
   justify-content: space-between;
   padding: toRem(30) var(--app-padding-right) toRem(30) var(--app-padding-left);
+}
+
+.app-navbar.about-page {
+  background-color: var(--background-quinary);
+
+  &:deep(*) {
+    color: var(--text-primary-invert-light);
+  }
 }
 
 .app-navbar__links-wrapper {

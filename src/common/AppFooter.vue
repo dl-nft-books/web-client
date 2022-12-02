@@ -62,8 +62,11 @@ const SOCIAL_LINKS = [
 
 <style lang="scss" scoped>
 .app-footer {
+  --first: 1;
+
   padding: toRem(40) var(--app-padding-right) toRem(40) var(--app-padding-left);
   background: var(--background-secondary);
+  z-index: var(--first);
 }
 
 .app-footer__line {
@@ -96,7 +99,7 @@ const SOCIAL_LINKS = [
   text-decoration: none;
   font-family: var(--app-font-family);
   font-weight: 500;
-  font-size: toRem(14);
+  font-size: toRem(16);
 }
 
 .app-footer__social-links {
