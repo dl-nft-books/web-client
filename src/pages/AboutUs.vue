@@ -264,10 +264,7 @@ import blockchainAnimation from '@/assets/animations/blockchain-animation.json'
 }
 
 .about-us-page__cubes.right-back {
-  --zero: 0;
-
   right: 0;
-  z-index: var(--zero);
 }
 
 .about-us-page__cubes.left {

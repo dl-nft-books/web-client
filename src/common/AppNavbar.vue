@@ -89,11 +89,8 @@ const isAboutPage = computed(() => {
 
 <style lang="scss" scoped>
 .app-navbar {
-  --first: 1;
-
   display: flex;
   align-items: center;
-  z-index: var(--first);
   justify-content: space-between;
   padding: toRem(30) var(--app-padding-right) toRem(30) var(--app-padding-left);
 
