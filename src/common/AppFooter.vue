@@ -69,11 +69,11 @@ const SOCIAL_LINKS = [
 
 <style lang="scss" scoped>
 .app-footer {
-  --first: 1;
+  --footer-index: 1;
 
   padding: toRem(40) var(--app-padding-right) toRem(40) var(--app-padding-left);
   background: var(--background-secondary);
-  z-index: var(--first);
+  z-index: var(--footer-index);
 }
 
 .app-footer__line {

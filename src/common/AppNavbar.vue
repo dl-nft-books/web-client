@@ -37,7 +37,7 @@ const isAboutPage = computed(() => {
   <nav
     :class="{
       'app-navbar': true,
-      'about-page': isAboutPage,
+      'app-navbar--about-page': isAboutPage,
     }"
   >
     <app-logo />
@@ -96,13 +96,13 @@ const isAboutPage = computed(() => {
   z-index: var(--first);
   justify-content: space-between;
   padding: toRem(30) var(--app-padding-right) toRem(30) var(--app-padding-left);
-}
 
-.app-navbar.about-page {
-  background-color: var(--background-quinary);
+  &--about-page {
+    background-color: var(--background-quinary);
 
-  &:deep(*) {
-    color: var(--text-primary-invert-light);
+    &:deep(*) {
+      color: var(--text-primary-invert-light);
+    }
   }
 }
 

@@ -68,33 +68,83 @@ import blockchainAnimation from '@/assets/animations/blockchain-animation.json'
         />
       </div>
     </div>
-    <div class="about-us-page__founder black">
-      <div class="about-us-page__founder-background black">
-        <div class="about-us-page__founder-content-wrapper black">
+    <div
+      :class="{
+        'about-us-page__founder': true,
+        'about-us-page__founder--black': true,
+      }"
+    >
+      <div
+        :class="{
+          'about-us-page__founder-background': true,
+          'about-us-page__founder-background--black': true,
+        }"
+      >
+        <div
+          :class="{
+            'about-us-page__founder-content-wrapper': true,
+            'about-us-page__founder-content-wrapper--black': true,
+          }"
+        >
           <icon class="about-us-page__founder-quote" :name="$icons.leftQuote" />
-          <p class="about-us-page__founder-content-description black">
+          <p
+            :class="{
+              'about-us-page__founder-content-description': true,
+              'about-us-page__founder-content-description--black': true,
+            }"
+          >
             {{ $t('about-us-page.founder-description-2-abstract-1') }}
           </p>
-          <p class="about-us-page__founder-content-description black">
+          <p
+            :class="{
+              'about-us-page__founder-content-description': true,
+              'about-us-page__founder-content-description--black': true,
+            }"
+          >
             {{ $t('about-us-page.founder-description-2-abstract-2') }}
           </p>
-          <p class="about-us-page__founder-content-description black">
+          <p
+            :class="{
+              'about-us-page__founder-content-description': true,
+              'about-us-page__founder-content-description--black': true,
+            }"
+          >
             {{ $t('about-us-page.founder-description-2-abstract-3') }}
           </p>
-          <p class="about-us-page__founder-content-description black">
+          <p
+            :class="{
+              'about-us-page__founder-content-description': true,
+              'about-us-page__founder-content-description--black': true,
+            }"
+          >
             {{ $t('about-us-page.founder-description-2-abstract-4') }}
           </p>
         </div>
-        <div class="about-us-page__founder-image-wrapper black">
+        <div
+          :class="{
+            'about-us-page__founder-image-wrapper': true,
+            'about-us-page__founder-image-wrapper--black': true,
+          }"
+        >
           <img
             class="about-us-page__founder-image"
             src="/images/olexandr-kurbatov.png"
             alt="Founder image"
           />
-          <h4 class="about-us-page__founder-content-title black">
+          <h4
+            :class="{
+              'about-us-page__founder-content-title': true,
+              'about-us-page__founder-content-title--black': true,
+            }"
+          >
             {{ $t('about-us-page.founder-title-2') }}
           </h4>
-          <h5 class="about-us-page__founder-content-subtitle black">
+          <h5
+            :class="{
+              'about-us-page__founder-content-subtitle': true,
+              'about-us-page__founder-content-subtitle--black': true,
+            }"
+          >
             {{ $t('about-us-page.founder-subtitle-2') }}
           </h5>
         </div>
@@ -191,7 +241,7 @@ import blockchainAnimation from '@/assets/animations/blockchain-animation.json'
 }
 
 .about-us-page__about-us-content {
-  padding: toRem(100) 0;
+  margin-right: 5vw;
 
   @include respond-to(medium) {
     padding: toRem(50) 0 0;
@@ -243,13 +293,13 @@ import blockchainAnimation from '@/assets/animations/blockchain-animation.json'
   background-color: var(--background-primary);
   padding-top: toRem(140);
   padding-bottom: toRem(100);
-}
 
-.about-us-page__founder.black {
-  background: none;
-  background-image: url('/images/about-us-right-back.png');
-  background-repeat: no-repeat;
-  background-position: right bottom;
+  &--black {
+    background: none;
+    background-image: url('/images/about-us-right-back.png');
+    background-repeat: no-repeat;
+    background-position: right bottom;
+  }
 }
 
 .about-us-page__founder-content-wrapper {
@@ -260,14 +310,14 @@ import blockchainAnimation from '@/assets/animations/blockchain-animation.json'
   @include respond-to(medium) {
     transform: translate(0, 0);
   }
-}
 
-.about-us-page__founder-content-wrapper.black {
-  transform: translate(0, toRem(-75));
-  align-items: flex-end;
+  &--black {
+    transform: translate(0, toRem(-75));
+    align-items: flex-end;
 
-  @include respond-to(medium) {
-    transform: translate(0, 0);
+    @include respond-to(medium) {
+      transform: translate(0, 0);
+    }
   }
 }
 
@@ -282,15 +332,14 @@ import blockchainAnimation from '@/assets/animations/blockchain-animation.json'
   @include respond-to(medium) {
     align-self: center;
   }
-}
 
-.about-us-page__founder-content-title.black,
-.about-us-page__founder-content-subtitle.black {
-  color: var(--text-primary-invert-light);
-  align-self: flex-start;
+  &--black {
+    color: var(--text-primary-invert-light);
+    align-self: flex-start;
 
-  @include respond-to(medium) {
-    align-self: center;
+    @include respond-to(medium) {
+      align-self: center;
+    }
   }
 }
 
@@ -303,6 +352,15 @@ import blockchainAnimation from '@/assets/animations/blockchain-animation.json'
 
   @include respond-to(medium) {
     align-self: center;
+  }
+
+  &--black {
+    color: var(--text-primary-invert-light);
+    align-self: flex-start;
+
+    @include respond-to(medium) {
+      align-self: center;
+    }
   }
 }
 
@@ -323,12 +381,12 @@ import blockchainAnimation from '@/assets/animations/blockchain-animation.json'
     padding: 2vw;
     font-size: toRem(14);
   }
-}
 
-.about-us-page__founder-content-description.black {
-  color: var(--text-primary-invert-light);
-  padding-top: toRem(15);
-  padding-left: toRem(30);
+  &--black {
+    color: var(--text-primary-invert-light);
+    padding-top: toRem(15);
+    padding-left: toRem(30);
+  }
 }
 
 .about-us-page__founder-background {
@@ -343,13 +401,13 @@ import blockchainAnimation from '@/assets/animations/blockchain-animation.json'
     width: 80%;
     flex-direction: column;
   }
-}
 
-.about-us-page__founder-background.black {
-  background-color: var(--background-secondary);
+  &--black {
+    background-color: var(--background-secondary);
 
-  @include respond-to(medium) {
-    padding-bottom: 3vh;
+    @include respond-to(medium) {
+      padding-bottom: 3vh;
+    }
   }
 }
 
@@ -365,13 +423,13 @@ import blockchainAnimation from '@/assets/animations/blockchain-animation.json'
     margin-left: auto;
     margin-right: auto;
   }
-}
 
-.about-us-page__founder-image-wrapper.black {
-  transform: translate(toRem(60), toRem(-60));
+  &--black {
+    transform: translate(toRem(60), toRem(-60));
 
-  @include respond-to(medium) {
-    transform: translate(0, 0);
+    @include respond-to(medium) {
+      transform: translate(0, 0);
+    }
   }
 }
 
