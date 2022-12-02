@@ -5,6 +5,11 @@ Th format is based on [Keep a Changelog
 an this project adheres to [Semantic Versioning
 
 ## [Unreleased]
+#### Added
+- Network switcher component(doing nothing for now)
+
+#### Changed
+-Main page redesign
 
 ## [1.0.0] - 2022-11-30
 #### Added

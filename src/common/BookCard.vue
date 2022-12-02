@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { AppButton } from '@/common'
+import { AppButton, Icon } from '@/common'
 
 import { BookRecord, GeneratedNFtRecord } from '@/records'
 import { formatFiatAssetFromWei } from '@/helpers'
@@ -60,6 +60,13 @@ const price = computed(() =>
   <div :class="bookCardClasses">
     <div class="book-card__cover-wrp">
       <img :src="bannerUrl" :alt="title" class="book-card__cover" />
+      <!-- For now its hardcoded value. Will be changed in future updates -->
+      <div class="book-card__network">
+        <icon class="book-card__icon" :name="$icons.polygon" />
+        <p class="book-card__network-name">
+          {{ $t('networks.polygon') }}
+        </p>
+      </div>
     </div>
     <span class="book-card__title">{{ title }}</span>
     <span class="book-card__price">
@@ -88,12 +95,12 @@ const price = computed(() =>
   align-items: center;
   justify-content: space-between;
   row-gap: toRem(24);
-  border: toRem(1) solid var(--border-primary-main);
+  border: toRem(1) solid var(--border-black);
   border-radius: toRem(12);
   padding: toRem(16) toRem(16) toRem(20);
 
   &--primary {
-    background: var(--background-tertiary);
+    background: var(--background-secondary);
   }
 
   &--secondary {
@@ -104,12 +111,41 @@ const price = computed(() =>
 .book-card__cover-wrp {
   overflow: hidden;
   width: 100%;
+  position: relative;
+}
+
+.book-card__network {
+  background-color: var(--text-primary-main);
+  width: fit-content;
+  height: toRem(31);
+  padding: 0 toRem(10);
+  position: absolute;
+  bottom: toRem(4);
+  right: 0;
+  border-radius: toRem(12) 0 toRem(12) 0;
+  display: flex;
+  align-items: center;
+  gap: toRem(10);
+}
+
+.book-card__network-name {
+  font-weight: 400;
+  font-size: toRem(15);
+  line-height: toRem(16);
+  padding-top: toRem(2);
+  color: var(--white);
+}
+
+.book-card__icon {
+  width: toRem(18);
+  height: toRem(16);
 }
 
 .book-card__cover {
   object-fit: cover;
   object-position: top center;
   max-height: toRem(280);
+  border-radius: toRem(12);
   width: 100%;
   height: 100%;
 }
@@ -120,6 +156,7 @@ const price = computed(() =>
   line-height: 1.25;
   font-weight: 700;
   width: 100%;
+  color: var(--white);
 
   .book-card--centered & {
     text-align: center;
@@ -136,6 +173,7 @@ const price = computed(() =>
   line-height: 1.25;
   font-weight: 900;
   width: 45%;
+  color: var(--white);
 
   .book-card--secondary & {
     color: var(--text-primary-invert-main);

@@ -21,7 +21,7 @@ const routes: Array<RouteRecordRaw> = [
   {
     path: '/bookshelf',
     name: ROUTE_NAMES.bookshelf,
-    component: () => import('@/pages/BookshelfPage.vue'),
+    component: () => import('@/pages/Bookshelf/BookshelfPage.vue'),
   },
   {
     path: '/bookshelf/:id',

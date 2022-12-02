@@ -5,6 +5,7 @@ import {
   NoDataMessage,
   BookCard,
   AppButton,
+  NetworkSwitcher,
 } from '@/common'
 
 import { ErrorHandler } from '@/helpers'
@@ -14,6 +15,7 @@ import { BOOK_DEPLOY_STATUSES } from '@/enums'
 import { getBooks } from '@/api'
 import { usePaginate } from '@/composables'
 import { Book } from '@/types'
+import { BookshelfHeader } from '@/pages/Bookshelf'
 
 const isLoadFailed = ref(false)
 const books = ref<BookRecord[]>([])
@@ -49,21 +51,21 @@ function onError(e: Error) {
 
 <template>
   <div class="bookshelf-page">
-    <h2 class="bookshelf-page__title">
-      {{ $t('bookshelf-page.title') }}
-    </h2>
+    <bookshelf-header />
+    <section class="bookshelf-page__title-wrapper">
+      <h2 class="bookshelf-page__title">
+        {{ $t('bookshelf-page.title') }}
+      </h2>
+      <network-switcher />
+    </section>
+
     <template v-if="isLoadFailed">
       <error-message :message="$t('bookshelf-page.loading-error-msg')" />
     </template>
     <template v-else-if="books.length || isLoading">
       <template v-if="books.length">
         <div class="bookshelf-page__list">
-          <book-card
-            class="bookshelf-page__card"
-            v-for="book in books"
-            :key="book.id"
-            :book="book"
-          />
+          <book-card v-for="book in books" :key="book.id" :book="book" />
         </div>
       </template>
       <template v-if="isLoading">
@@ -75,6 +77,7 @@ function onError(e: Error) {
         class="bookshelf-page__load-more-btn"
         size="small"
         scheme="flat"
+        color="primary"
         :text="$t('bookshelf-page.load-more-btn')"
         @click="loadNextPage"
       />
@@ -90,16 +93,87 @@ function onError(e: Error) {
   display: flex;
   flex-direction: column;
   gap: toRem(34);
-  padding-top: toRem(70);
+  padding-top: toRem(200);
   padding-bottom: toRem(200);
-  background: url('/images/background-cubes.png') no-repeat right top / contain;
+  position: relative;
+  z-index: var(--page-index);
+  margin-top: toRem(-220);
+  background-color: var(--black);
+
+  /* Chain image */
+  &:before {
+    content: '';
+    position: absolute;
+    width: 100vw;
+    top: toRem(110);
+    left: 0;
+    z-index: var(--chain-index);
+    height: vh(100);
+    background: url('/images/cubes.png') no-repeat right top / contain;
+    background-size: 45%;
+
+    @include respond-to(medium) {
+      background-size: toRem(450);
+      top: toRem(150);
+    }
+
+    @include respond-to(small) {
+      display: none;
+    }
+  }
+
+  /* White bg under the header */
+  &:after {
+    content: '';
+    position: absolute;
+    top: toRem(-600);
+    left: toRem(-42);
+    transform: rotate(-10deg);
+    width: 120vw;
+    height: toRem(1100);
+    background-size: 45%;
+    background-color: var(--white);
+    border-radius: toRem(300);
+    z-index: var(--bg-index);
+
+    @include respond-to(small) {
+      top: toRem(-250);
+      left: toRem(-60);
+      width: 160vw;
+      border-radius: toRem(200);
+      height: 210vw;
+    }
+  }
+}
+
+.bookshelf-page__title-wrapper {
+  display: flex;
+  justify-content: space-between;
+
+  @include respond-to(medium) {
+    flex-direction: column;
+    align-items: center;
+    gap: toRem(15);
+  }
 }
 
 .bookshelf-page__title {
   text-transform: uppercase;
   font-size: toRem(40);
-  line-height: 1.2;
+  line-height: toRem(50);
   font-weight: 700;
+  color: var(--white);
+  position: relative;
+
+  &:after {
+    content: ' ';
+    position: absolute;
+    top: toRem(50);
+    left: 0;
+    width: toRem(220);
+    height: toRem(2);
+    background-color: var(--primary-main);
+  }
 }
 
 .bookshelf-page__list {
@@ -110,5 +184,11 @@ function onError(e: Error) {
 
 .bookshelf-page__load-more-btn {
   margin: toRem(20) auto 0;
+  width: toRem(240);
+  color: var(--white);
+  border: toRem(2) solid var(--white);
+
+  --app-button-flat-text-hover: var(--primary-light);
+  --app-button-flat-border: #{toRem(2)} solid var(--primary-light);
 }
 </style>

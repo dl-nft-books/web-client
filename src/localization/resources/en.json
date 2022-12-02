@@ -83,7 +83,10 @@
     "subtitle": "Meet our ",
     "subtitle-highlighted": "NFT book store",
     "small-subtitle": "Buy and Collect most powerful \nblockchain literature",
-    "book-description": "Every book with your \npersonal sign inside",
+    "book-description": {
+      "title": "Every book with your",
+      "subtitle": "personal sign inside"
+    },
     "most-popular-title": "Most Popular",
     "loading-error-msg": "Oops... Something went wrong",
     "no-data-msg": "Empty data, please add new",
@@ -102,7 +105,10 @@
     "no-data-msg": "Empty data, please add new",
     "title": "Bookshelf",
     "purchase-btn": "Buy",
-    "load-more-btn": "Load More"
+    "load-more-btn": "SHOW MORE"
+  },
+  "networks": {
+    "polygon": "Polygon Mainnet"
   },
   "my-nfts-page": {
     "loading-error-msg": "Oops... Something went wrong",

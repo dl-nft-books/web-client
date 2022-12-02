@@ -59,6 +59,7 @@
   --border-primary-main: #{$border-primary-main};
   --border-primary-dark: #{$border-primary-dark};
   --border-secondary-main: #{$border-secondary-main};
+  --border-black: #{$border-black};
 
   /* App variables */
   --app-txt: #{$text-primary-main};
@@ -121,4 +122,10 @@
     var(--field-padding-left);
 
   --field-error: var(--error-main);
+
+  /* z-indexes */
+  --chain-index: 1;
+  --page-index: 2;
+  --bg-index: -1;
+  --nav-bar-index: 3;
 }

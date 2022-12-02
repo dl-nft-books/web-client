@@ -59,7 +59,7 @@ const connectProviderButtonText = computed(() => {
       <app-button
         class="app-navbar__provider-btn"
         :icon-left="$icons.metamask"
-        scheme="flat"
+        color="secondary"
         size="small"
         :disabled="provider.selectedAddress"
         :text="connectProviderButtonText"
@@ -76,6 +76,8 @@ const connectProviderButtonText = computed(() => {
   align-items: center;
   justify-content: space-between;
   padding: toRem(30) var(--app-padding-right) toRem(30) var(--app-padding-left);
+  z-index: var(--nav-bar-index);
+  position: relative;
 }
 
 .app-navbar__links-wrapper {
@@ -109,6 +111,7 @@ const connectProviderButtonText = computed(() => {
   font-size: toRem(16);
   font-weight: 500;
   padding: toRem(9) toRem(16);
+  background-color: var(--white);
 
   &:deep(.app-button__icon-left) {
     width: toRem(30);
