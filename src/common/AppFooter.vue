@@ -1,6 +1,44 @@
+<template>
+  <footer class="app-footer">
+    <hr class="app-footer__line" />
+    <div class="app-footer__content">
+      <app-logo scheme="light" />
+      <div class="app-footer__links-wrapper">
+        <app-button
+          :href="$config.FAQ_LINK"
+          :text="$t('app-footer.faq-link')"
+          class="app-footer__text-link"
+        />
+
+        <app-button
+          :href="$config.HELP_LINK"
+          :text="$t('app-footer.help-link')"
+          class="app-footer__text-link"
+        />
+        <app-button
+          :href="$config.BLOG_LINK"
+          :text="$t('app-footer.blog-link')"
+          class="app-footer__text-link"
+        />
+      </div>
+      <div class="app-footer__social-links">
+        <a
+          class="app-footer__social-link"
+          target="_blank"
+          rel="noopener"
+          v-for="(social, idx) in SOCIAL_LINKS"
+          :key="idx"
+          :href="social.link"
+        >
+          <icon class="app-footer__social-link-icon" :name="social.iconName" />
+        </a>
+      </div>
+    </div>
+  </footer>
+</template>
+
 <script lang="ts" setup>
-import { Icon } from '@/common'
-import { AppLogo } from '@/common'
+import { Icon, AppLogo, AppButton } from '@/common'
 import { ICON_NAMES } from '@/enums'
 import { config } from '@config'
 
@@ -19,53 +57,6 @@ const SOCIAL_LINKS = [
   },
 ]
 </script>
-
-<template>
-  <footer class="app-footer">
-    <hr class="app-footer__line" />
-    <div class="app-footer__content">
-      <app-logo scheme="light" />
-      <div class="app-footer__links-wrapper">
-        <a
-          class="app-footer__text-link"
-          target="_blank"
-          rel="noopener"
-          :href="$config.FAQ_LINK"
-        >
-          {{ $t('app-footer.faq-link') }}
-        </a>
-        <a
-          class="app-footer__text-link"
-          target="_blank"
-          rel="noopener"
-          :href="$config.HELP_LINK"
-        >
-          {{ $t('app-footer.help-link') }}
-        </a>
-        <a
-          class="app-footer__text-link"
-          target="_blank"
-          rel="noopener"
-          :href="$config.BLOG_LINK"
-        >
-          {{ $t('app-footer.blog-link') }}
-        </a>
-      </div>
-      <div class="app-footer__social-links">
-        <a
-          class="app-footer__social-link"
-          target="_blank"
-          rel="noopener"
-          v-for="(social, idx) in SOCIAL_LINKS"
-          :key="idx"
-          :href="social.link"
-        >
-          <icon class="app-footer__social-link-icon" :name="social.iconName" />
-        </a>
-      </div>
-    </div>
-  </footer>
-</template>
 
 <style lang="scss" scoped>
 .app-footer {
@@ -107,6 +98,7 @@ const SOCIAL_LINKS = [
   font-family: var(--app-font-family);
   font-weight: 500;
   font-size: toRem(16);
+  background: none;
 }
 
 .app-footer__social-links {

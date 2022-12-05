@@ -1,164 +1,138 @@
 <template>
-  <div class="about-us-page">
-    <div class="about-us-page__head">
-      <div class="about-us-page__head-gradient">
-        <div class="about-us-page__head-wrapper">
-          <h1 class="about-us-page__title">
+  <div class="about-us">
+    <div class="about-us__head">
+      <div class="about-us__head-gradient">
+        <div class="about-us__head-wrapper">
+          <h1 class="about-us__title">
             {{ $t('about-us-page.title') }}
           </h1>
-          <h3 class="about-us-page__subtitle">
+          <h3 class="about-us__subtitle">
             {{ $t('about-us-page.subtitle') }}
           </h3>
         </div>
       </div>
     </div>
-    <div class="about-us-page__about-us">
-      <div class="about-us-page__about-us-animation-wrapper">
+    <div class="about-us__description">
+      <div class="about-us__description-animation-wrapper">
         <animation
-          class="about-us-page__about-us-animation"
+          class="about-us__description-animation"
           :animation-data="blockchainAnimation"
           :loop="true"
           :speed="0.75"
         />
       </div>
-      <div class="about-us-page__about-us-content">
-        <p class="about-us-page__about-us-text">
+      <div class="about-us__description-content">
+        <p class="about-us__description-text">
           {{ $t('about-us-page.about-us-text-1') }}
         </p>
-        <p class="about-us-page__about-us-text">
+        <p class="about-us__description-text">
           {{ $t('about-us-page.about-us-text-2') }}
         </p>
       </div>
       <img
-        :class="
-          ['about-us-page__cubes', 'about-us-page__cubes--right'].join(' ')
-        "
+        :class="['about-us__cubes', 'about-us__cubes--right']"
         :src="CUBES_IMAGES.RIGHT"
       />
     </div>
 
-    <div class="about-us-page__founder">
-      <div class="about-us-page__founder-background">
-        <div class="about-us-page__founder-image-wrapper">
+    <div class="about-us__founder">
+      <div class="about-us__founder-background">
+        <div class="about-us__founder-image-wrapper">
           <img
-            class="about-us-page__founder-image"
+            class="about-us__founder-image"
             :src="FOUNDERS_IMAGES.KRAVCHENKO"
             alt="Founder image"
           />
-          <h4 class="about-us-page__founder-content-title">
+          <h4 class="about-us__founder-content-title">
             {{ $t('about-us-page.founder-title') }}
           </h4>
-          <h5 class="about-us-page__founder-content-subtitle">
+          <h5 class="about-us__founder-content-subtitle">
             {{ $t('about-us-page.founder-subtitle') }}
           </h5>
         </div>
-        <div class="about-us-page__founder-content-wrapper">
-          <icon class="about-us-page__founder-quote" :name="$icons.leftQuote" />
-          <p class="about-us-page__founder-content-description">
+        <div class="about-us__founder-content-wrapper">
+          <icon class="about-us__founder-quote" :name="$icons.leftQuote" />
+          <p class="about-us__founder-content-description">
             {{ $t('about-us-page.founder-description') }}
           </p>
         </div>
         <img
-          :class="
-            ['about-us-page__cubes', 'about-us-page__cubes--left'].join(' ')
-          "
+          :class="['about-us__cubes', 'about-us__cubes--left']"
           :src="CUBES_IMAGES.LEFT"
         />
       </div>
     </div>
-    <div
-      :class="
-        ['about-us-page__founder', 'about-us-page__founder--black'].join(' ')
-      "
-    >
+    <div :class="['about-us__founder', 'about-us__founder--black']">
       <div
-        :class="
-          [
-            'about-us-page__founder-background',
-            'about-us-page__founder-background--black',
-          ].join(' ')
-        "
+        :class="[
+          'about-us__founder-background',
+          'about-us__founder-background--black',
+        ]"
       >
         <div
-          :class="
-            [
-              'about-us-page__founder-content-wrapper',
-              'about-us-page__founder-content-wrapper--black',
-            ].join(' ')
-          "
+          :class="[
+            'about-us__founder-content-wrapper',
+            'about-us__founder-content-wrapper--black',
+          ]"
         >
-          <icon class="about-us-page__founder-quote" :name="$icons.leftQuote" />
+          <icon class="about-us__founder-quote" :name="$icons.leftQuote" />
           <p
-            :class="
-              [
-                'about-us-page__founder-content-description',
-                'about-us-page__founder-content-description--black',
-              ].join(' ')
-            "
+            :class="[
+              'about-us__founder-content-description',
+              'about-us__founder-content-description--black',
+            ]"
           >
             {{ $t('about-us-page.founder-description-2-abstract-1') }}
           </p>
           <p
-            :class="
-              [
-                'about-us-page__founder-content-description',
-                'about-us-page__founder-content-description--black',
-              ].join(' ')
-            "
+            :class="[
+              'about-us__founder-content-description',
+              'about-us__founder-content-description--black',
+            ]"
           >
-            {{ $t('about-us-page.founder-description-2-abstract-2') }}
+            {{ $t('about-us.founder-description-2-abstract-2') }}
           </p>
           <p
-            :class="
-              [
-                'about-us-page__founder-content-description',
-                'about-us-page__founder-content-description--black',
-              ].join(' ')
-            "
+            :class="[
+              'about-us__founder-content-description',
+              'about-us__founder-content-description--black',
+            ]"
           >
             {{ $t('about-us-page.founder-description-2-abstract-3') }}
           </p>
           <p
-            :class="
-              [
-                'about-us-page__founder-content-description',
-                'about-us-page__founder-content-description--black',
-              ].join(' ')
-            "
+            :class="[
+              'about-us__founder-content-description',
+              'about-us__founder-content-description--black',
+            ]"
           >
             {{ $t('about-us-page.founder-description-2-abstract-4') }}
           </p>
         </div>
         <div
-          :class="
-            [
-              'about-us-page__founder-image-wrapper',
-              'about-us-page__founder-image-wrapper--black',
-            ].join(' ')
-          "
+          :class="[
+            'about-us__founder-image-wrapper',
+            'about-us__founder-image-wrapper--black',
+          ]"
         >
           <img
-            class="about-us-page__founder-image"
+            class="about-us__founder-image"
             :src="FOUNDERS_IMAGES.KURBATOV"
             alt="Founder image"
           />
           <h4
-            :class="
-              [
-                'about-us-page__founder-content-title',
-                'about-us-page__founder-content-title--black',
-              ].join(' ')
-            "
+            :class="[
+              'about-us__founder-content-title',
+              'about-us__founder-content-title--black',
+            ]"
           >
             {{ $t('about-us-page.founder-title-2') }}
           </h4>
           <h5
-            :class="
-              [
-                'about-us-page__founder-content-subtitle',
-                'about-us-page__founder-content-subtitle--black',
-              ].join(' ')
-            "
+            :class="[
+              'about-us__founder-content-subtitle',
+              'about-us__founder-content-subtitle--black',
+            ]"
           >
             {{ $t('about-us-page.founder-subtitle-2') }}
           </h5>
@@ -169,8 +143,7 @@
 </template>
 
 <script setup lang="ts">
-import { Icon } from '@/common'
-import { Animation } from '@/common'
+import { Icon, Animation } from '@/common'
 import blockchainAnimation from '@/assets/animations/blockchain-animation.json'
 const CUBES_IMAGES = {
   LEFT: '/images/about-us-left.png',
@@ -184,13 +157,13 @@ const FOUNDERS_IMAGES = {
 </script>
 
 <style lang="scss" scoped>
-.about-us-page {
+.about-us {
   max-width: 100%;
   padding: 0;
   background-color: var(--background-quinary);
 }
 
-.about-us-page__head {
+.about-us__head {
   background-image: url('/images/backround-about-us.png');
   background-repeat: no-repeat;
   background-size: cover;
@@ -205,7 +178,7 @@ const FOUNDERS_IMAGES = {
   }
 }
 
-.about-us-page__head-gradient {
+.about-us__head-gradient {
   width: 100%;
   background: linear-gradient(
     360deg,
@@ -215,12 +188,12 @@ const FOUNDERS_IMAGES = {
   );
 }
 
-.about-us-page__head-wrapper {
+.about-us__head-wrapper {
   padding: toRem(115) var(--app-padding-right) toRem(100)
     var(--app-padding-left); /* stylelint-disable-line max-line-length */
 }
 
-.about-us-page__title {
+.about-us__title {
   margin-bottom: toRem(70);
   font-weight: 700;
   font-size: toRem(40);
@@ -244,7 +217,7 @@ const FOUNDERS_IMAGES = {
   }
 }
 
-.about-us-page__subtitle {
+.about-us__subtitle {
   font-size: toRem(32);
   margin-bottom: toRem(15);
   text-transform: uppercase;
@@ -257,7 +230,7 @@ const FOUNDERS_IMAGES = {
   }
 }
 
-.about-us-page__about-us {
+.about-us__description {
   display: grid;
   padding: 0 toRem(100) 0 toRem(20);
   grid-template-columns: repeat(2, minmax(toRem(100), 1fr));
@@ -270,7 +243,7 @@ const FOUNDERS_IMAGES = {
   }
 }
 
-.about-us-page__about-us-content {
+.about-us__description-content {
   margin-right: 5vw;
 
   @include respond-to(medium) {
@@ -278,7 +251,7 @@ const FOUNDERS_IMAGES = {
   }
 }
 
-.about-us-page__cubes {
+.about-us__cubes {
   position: absolute;
   max-width: min-content;
   width: 40%;
@@ -298,7 +271,7 @@ const FOUNDERS_IMAGES = {
   }
 }
 
-.about-us-page__about-us-text {
+.about-us__description-text {
   font-size: toRem(18);
   color: var(--background-primary);
 
@@ -312,7 +285,7 @@ const FOUNDERS_IMAGES = {
   }
 }
 
-.about-us-page__founder {
+.about-us__founder {
   background-color: var(--background-primary);
   padding-top: toRem(140);
   padding-bottom: toRem(100);
@@ -325,7 +298,7 @@ const FOUNDERS_IMAGES = {
   }
 }
 
-.about-us-page__founder-content-wrapper {
+.about-us__founder-content-wrapper {
   display: flex;
   flex-direction: column;
   transform: translate(0, toRem(-140));
@@ -344,7 +317,7 @@ const FOUNDERS_IMAGES = {
   }
 }
 
-.about-us-page__founder-content-title {
+.about-us__founder-content-title {
   display: block;
   font-size: toRem(24);
   text-transform: uppercase;
@@ -366,7 +339,7 @@ const FOUNDERS_IMAGES = {
   }
 }
 
-.about-us-page__founder-content-subtitle {
+.about-us__founder-content-subtitle {
   color: var(--text-primary-main);
   font-size: toRem(14);
   text-transform: uppercase;
@@ -387,7 +360,7 @@ const FOUNDERS_IMAGES = {
   }
 }
 
-.about-us-page__founder-quote {
+.about-us__founder-quote {
   width: toRem(57);
 
   @include respond-to(medium) {
@@ -395,7 +368,7 @@ const FOUNDERS_IMAGES = {
   }
 }
 
-.about-us-page__founder-content-description {
+.about-us__founder-content-description {
   color: var(--text-primary-main);
   font-size: toRem(18);
   align-self: flex-start;
@@ -412,7 +385,7 @@ const FOUNDERS_IMAGES = {
   }
 }
 
-.about-us-page__founder-background {
+.about-us__founder-background {
   background-color: var(--background-tertiary);
   border-radius: toRem(11);
   display: flex;
@@ -434,7 +407,7 @@ const FOUNDERS_IMAGES = {
   }
 }
 
-.about-us-page__founder-image-wrapper {
+.about-us__founder-image-wrapper {
   display: flex;
   flex-direction: column;
   align-content: flex-end;
@@ -456,7 +429,7 @@ const FOUNDERS_IMAGES = {
   }
 }
 
-.about-us-page__founder-image {
+.about-us__founder-image {
   max-width: toRem(280);
   align-self: flex-end;
 
@@ -466,7 +439,7 @@ const FOUNDERS_IMAGES = {
   }
 }
 
-.about-us-page__about-us-animation-wrapper {
+.about-us__description-animation-wrapper {
   max-width: 60%;
   display: block;
   margin-left: auto;
