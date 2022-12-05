@@ -4,10 +4,11 @@ import { WINDOW_BREAKPOINTS } from '@/enums'
 
 export const useMetaMaskConnect = () => {
   const { provider } = storeToRefs(useWeb3ProvidersStore())
+  const APP_URL = `https://metamask.app.link/dapp/${window.location.host}`
 
   const redirect = () => {
     try {
-      window.open(`https://metamask.app.link/dapp/${window.location.host}`)
+      window.open(APP_URL)
     } catch (error) {
       window.location.reload()
     }
