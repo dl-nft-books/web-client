@@ -78,15 +78,15 @@
     "help-link": "Help & Support",
     "blog-link": "blog"
   },
-  "home-page": {
+  "bookshelf-header": {
     "title": "From Blockchain experts",
+    "small-subtitle": "Buy and Collect most powerful \nblockchain literature",
+    "book-description-title": "Every book with your",
+    "book-description-subtitle": "personal sign inside"
+  },
+  "home-page": {
     "subtitle": "Meet our ",
     "subtitle-highlighted": "NFT book store",
-    "small-subtitle": "Buy and Collect most powerful \nblockchain literature",
-    "book-description": {
-      "title": "Every book with your",
-      "subtitle": "personal sign inside"
-    },
     "most-popular-title": "Most Popular",
     "loading-error-msg": "Oops... Something went wrong",
     "no-data-msg": "Empty data, please add new",

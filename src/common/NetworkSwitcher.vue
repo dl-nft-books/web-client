@@ -1,32 +1,32 @@
 <template>
   <div class="network-switcher">
-    <div
+    <button
+      class="network-switcher__item"
       :class="{
-        'network-switcher__item': true,
         'network-switcher__item--picked': pickedNetwork === NETWORKS.POLYGON,
       }"
       @click="changeNetwork(NETWORKS.POLYGON)"
     >
       <icon :name="$icons.polygon" />
-    </div>
-    <div
+    </button>
+    <button
+      class="network-switcher__item"
       :class="{
-        'network-switcher__item': true,
         'network-switcher__item--picked': pickedNetwork === NETWORKS.ETHEREUM,
       }"
       @click="changeNetwork(NETWORKS.ETHEREUM)"
     >
       <icon :name="$icons.ethereum" />
-    </div>
-    <div
+    </button>
+    <button
+      class="network-switcher__item"
       :class="{
-        'network-switcher__item': true,
         'network-switcher__item--picked': pickedNetwork === NETWORKS.Q,
       }"
       @click="changeNetwork(NETWORKS.Q)"
     >
       <icon :name="$icons.q" />
-    </div>
+    </button>
   </div>
 </template>
 
@@ -49,7 +49,7 @@ const changeNetwork = (network: NETWORKS) => {
   display: flex;
   justify-content: space-between;
   border-radius: toRem(8);
-  border: toRem(1) solid rgba($color: var(--white-rgb), $alpha: 0.5);
+  border: toRem(1) solid rgba(var(--white-rgb), 0.5);
   background-color: var(--black);
   width: toRem(210);
   height: toRem(52);
@@ -58,7 +58,7 @@ const changeNetwork = (network: NETWORKS) => {
 }
 
 .network-switcher__item {
-  --bg-picked-color: #{rgba($color: var(--white-rgb), $alpha: 0.2)};
+  --bg-picked-color: #{rgba(var(--white-rgb), 0.2)};
 
   padding: toRem(10);
   transition: 0.2s ease-in-out;

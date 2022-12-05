@@ -2,16 +2,16 @@
   <header class="bookshelf-header">
     <bookshelf-cubes />
     <h1 class="bookshelf-header__title">
-      {{ $t('home-page.title') }}
+      {{ $t('bookshelf-header.title') }}
     </h1>
     <h4 class="bookshelf-header__subtitle">
-      {{ $t('home-page.small-subtitle') }}
+      {{ $t('bookshelf-header.small-subtitle') }}
     </h4>
     <div class="bookshelf-header__description">
       <icon class="bookshelf-header__icon" :name="$icons.bookWithFeather" />
       <div class="bookshelf-header__book-desctiption">
-        <p>{{ $t('home-page.book-description.title') }}</p>
-        <p>{{ $t('home-page.book-description.subtitle') }}</p>
+        <p>{{ $t('bookshelf-header.book-description-title') }}</p>
+        <p>{{ $t('bookshelf-header.book-description-subtitle') }}</p>
       </div>
     </div>
   </header>
@@ -33,7 +33,7 @@ import { Icon } from '@/common'
 
 .bookshelf-header__title {
   margin-bottom: toRem(5);
-  font-weight: 1000;
+  font-weight: 900;
   font-size: toRem(58);
   letter-spacing: toRem(3);
   text-transform: uppercase;

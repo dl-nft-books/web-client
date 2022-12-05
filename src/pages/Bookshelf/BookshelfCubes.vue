@@ -1,11 +1,13 @@
 <template>
-  <div class="bookshelf-cube bookshelf-cube--top" />
-  <div class="bookshelf-cube bookshelf-cube--left" />
-  <div class="bookshelf-cube bookshelf-cube--right" />
+  <div class="bookshelf-cubes">
+    <div class="bookshelf-cubes__item bookshelf-cubes__item--top" />
+    <div class="bookshelf-cubes__item bookshelf-cubes__item--left" />
+    <div class="bookshelf-cubes__item bookshelf-cubes__item--right" />
+  </div>
 </template>
 
 <style lang="scss" scoped>
-.bookshelf-cube {
+.bookshelf-cubes__item {
   width: 100%;
   height: vh(80);
   position: absolute;
