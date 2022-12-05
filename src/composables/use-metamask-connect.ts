@@ -1,6 +1,6 @@
 import { storeToRefs } from 'pinia'
 import { useWeb3ProvidersStore } from '@/store'
-import { WINDOW_BREAKPOINTS } from '@/enums'
+import { isMobile } from '@/helpers'
 
 export const useMetaMaskConnect = () => {
   const { provider } = storeToRefs(useWeb3ProvidersStore())
@@ -24,7 +24,7 @@ export const useMetaMaskConnect = () => {
   }
 
   const connect = () => {
-    if (window.innerWidth <= WINDOW_BREAKPOINTS.medium) {
+    if (isMobile()) {
       handleMobileVersion()
       return
     }
