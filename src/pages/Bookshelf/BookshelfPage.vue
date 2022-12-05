@@ -58,19 +58,16 @@ function onError(e: Error) {
       </h2>
       <network-switcher />
     </section>
-
-    <template v-if="isLoadFailed">
-      <error-message :message="$t('bookshelf-page.loading-error-msg')" />
-    </template>
+    <error-message
+      v-if="isLoadFailed"
+      :message="$t('bookshelf-page.loading-error-msg')"
+    />
     <template v-else-if="books.length || isLoading">
-      <template v-if="books.length">
-        <div class="bookshelf-page__list">
-          <book-card v-for="book in books" :key="book.id" :book="book" />
-        </div>
-      </template>
-      <template v-if="isLoading">
-        <loader />
-      </template>
+      <div v-if="books.length" class="bookshelf-page__list">
+        <book-card v-for="book in books" :key="book.id" :book="book" />
+      </div>
+
+      <loader v-if="isLoading" />
 
       <app-button
         v-if="isLoadMoreBtnShown"
@@ -82,9 +79,7 @@ function onError(e: Error) {
         @click="loadNextPage"
       />
     </template>
-    <template v-else>
-      <no-data-message :message="$t('bookshelf-page.no-data-msg')" />
-    </template>
+    <no-data-message v-else :message="$t('bookshelf-page.no-data-msg')" />
   </div>
 </template>
 

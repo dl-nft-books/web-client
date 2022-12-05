@@ -1,6 +1,6 @@
 <template>
   <div class="network-switcher">
-    <button
+    <!-- <button
       class="network-switcher__item"
       :class="{
         'network-switcher__item--picked': pickedNetwork === NETWORKS.POLYGON,
@@ -8,31 +8,43 @@
       @click="changeNetwork(NETWORKS.POLYGON)"
     >
       <icon class="network-switcher__icon" :name="$icons.polygon" />
-    </button>
-    <button
+    </button> -->
+    <app-button
+      modification="switcher"
+      class="network-switcher__item"
+      :class="{
+        'network-switcher__item--picked': pickedNetwork === NETWORKS.POLYGON,
+      }"
+      @click="changeNetwork(NETWORKS.POLYGON)"
+      :icon-left="$icons.polygon"
+      icon-size="large"
+    />
+    <app-button
+      modification="switcher"
       class="network-switcher__item"
       :class="{
         'network-switcher__item--picked': pickedNetwork === NETWORKS.ETHEREUM,
       }"
       @click="changeNetwork(NETWORKS.ETHEREUM)"
-    >
-      <icon :name="$icons.ethereum" />
-    </button>
-    <button
+      :icon-left="$icons.ethereum"
+      icon-size="large"
+    />
+    <app-button
+      modification="switcher"
       class="network-switcher__item"
       :class="{
         'network-switcher__item--picked': pickedNetwork === NETWORKS.Q,
       }"
       @click="changeNetwork(NETWORKS.Q)"
-    >
-      <icon :name="$icons.q" />
-    </button>
+      :icon-left="$icons.q"
+      icon-size="large"
+    />
   </div>
 </template>
 
 <script setup lang="ts">
 import { ref } from 'vue'
-import { Icon } from '@/common'
+import { AppButton } from '@/common'
 import { NETWORKS } from '@/enums'
 
 const pickedNetwork = ref<NETWORKS>(NETWORKS.POLYGON)
@@ -60,9 +72,9 @@ const changeNetwork = (network: NETWORKS) => {
 .network-switcher__item {
   --bg-picked-color: #{rgba(var(--white-rgb), 0.2)};
 
-  padding: toRem(10);
-  transition: 0.2s ease-in-out;
-  transition-property: opacity background-color;
+  padding: toRem(5);
+  color: var(--primary-main);
+  width: 100%;
 
   &:first-child {
     border-radius: toRem(8) 0 0 toRem(8);
@@ -72,17 +84,8 @@ const changeNetwork = (network: NETWORKS) => {
     border-radius: 0 toRem(8) toRem(8) 0;
   }
 
-  &:hover {
-    cursor: pointer;
-    background-color: var(--bg-picked-color);
-  }
-
   &--picked {
     background-color: var(--bg-picked-color);
   }
-}
-
-.network-switcher__icon {
-  color: var(--primary-main);
 }
 </style>

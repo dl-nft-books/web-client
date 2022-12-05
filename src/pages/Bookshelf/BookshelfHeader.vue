@@ -8,8 +8,11 @@
       {{ $t('bookshelf-header.small-subtitle') }}
     </h4>
     <div class="bookshelf-header__description">
-      <icon class="bookshelf-header__icon" :name="$icons.bookWithFeather" />
-      <div class="bookshelf-header__book-desctiption">
+      <icon
+        class="bookshelf-header__description-icon"
+        :name="$icons.bookWithFeather"
+      />
+      <div class="bookshelf-header__description-book">
         <p>{{ $t('bookshelf-header.book-description-title') }}</p>
         <p>{{ $t('bookshelf-header.book-description-subtitle') }}</p>
       </div>
@@ -86,7 +89,7 @@ import { Icon } from '@/common'
   }
 }
 
-.bookshelf-header__book-desctiption {
+.bookshelf-header__description-book {
   display: flex;
   flex-direction: column;
 
@@ -115,7 +118,7 @@ import { Icon } from '@/common'
   }
 }
 
-.bookshelf-header__icon {
+.bookshelf-header__description-icon {
   max-width: toRem(50);
   max-height: toRem(60);
 

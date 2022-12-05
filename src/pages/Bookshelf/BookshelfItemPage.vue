@@ -60,74 +60,73 @@ init()
 </script>
 
 <template>
-  <div class="bookshelf-item-page">
+  <div class="bookshelf-item">
     <template v-if="isLoaded">
-      <template v-if="isLoadFailed">
-        <error-message :message="$t('bookshelf-item-page.loading-error-msg')" />
-      </template>
+      <error-message
+        v-if="isLoadFailed"
+        :message="$t('bookshelf-item.loading-error-msg')"
+      />
       <template v-else-if="book">
-        <div class="bookshelf-item-page__cover-wrp">
+        <div class="bookshelf-item__cover-wrp">
           <img
             :src="book.bannerUrl"
             :alt="book.title"
-            class="bookshelf-item-page__cover"
+            class="bookshelf-item__cover"
           />
         </div>
-        <div class="bookshelf-item-page__details">
-          <h2 class="bookshelf-item-page__title">
+        <div class="bookshelf-item__details">
+          <h2 class="bookshelf-item__title">
             {{ book.title }}
           </h2>
-          <div class="bookshelf-item-page__actions">
-            <div class="bookshelf-item-page__price">
+          <div class="bookshelf-item__actions">
+            <div class="bookshelf-item__price">
               {{ formatFiatAssetFromWei(book.price, 'USD') }}
             </div>
-            <div class="bookshelf-item-page__info">
-              <p>{{ $t('bookshelf-item-page.badge-1') }}</p>
-              <p>{{ $t('bookshelf-item-page.badge-2') }}</p>
+            <div class="bookshelf-item__info">
+              <p>{{ $t('bookshelf-item.badge-1') }}</p>
+              <p>{{ $t('bookshelf-item.badge-2') }}</p>
             </div>
           </div>
 
           <bookshelf-network-info />
+          <app-button
+            v-if="provider.isConnected"
+            class="bookshelf-item__purchase-btn"
+            :text="$t('bookshelf-item.purchase-btn')"
+            @click="isPurchaseModalShown = true"
+          />
 
-          <template v-if="provider.isConnected">
-            <app-button
-              class="bookshelf-item-page__purchase-btn"
-              :text="$t('bookshelf-item-page.purchase-btn')"
-              @click="isPurchaseModalShown = true"
-            />
-          </template>
-          <template v-else>
-            <app-button
-              class="bookshelf-item-page__purchase-btn"
-              :text="$t('bookshelf-item-page.connect-btn')"
-              @click="provider.connect"
-            />
-          </template>
-          <hr class="bookshelf-item-page__devider" />
-          <p class="bookshelf-item-page__description">
+          <app-button
+            v-else
+            class="bookshelf-item__purchase-btn"
+            :text="$t('bookshelf-item.connect-btn')"
+            @click="provider.connect"
+          />
+
+          <hr class="bookshelf-item__devider" />
+          <p class="bookshelf-item__description">
             {{ book.description }}
           </p>
         </div>
-        <template v-if="book && isPurchaseModalShown">
-          <purchasing-modal
-            v-model:is-shown="isPurchaseModalShown"
-            :book="book"
-            @submit="submit"
-          />
-        </template>
+
+        <purchasing-modal
+          v-if="book && isPurchaseModalShown"
+          v-model:is-shown="isPurchaseModalShown"
+          :book="book"
+          @submit="submit"
+        />
+
         <purchasing-success-modal
           v-model:is-shown="isPurchaseSuccessModalShown"
         />
       </template>
     </template>
-    <template v-else>
-      <loader />
-    </template>
+    <loader v-else />
   </div>
 </template>
 
 <style lang="scss" scoped>
-.bookshelf-item-page {
+.bookshelf-item {
   $left-column: clamp(#{toRem(200)}, 40%, #{toRem(600)});
   $right-column: clamp(#{toRem(250)}, 55%, #{toRem(700)});
 
@@ -152,11 +151,11 @@ init()
   }
 }
 
-.bookshelf-item-page__cover-wrp {
+.bookshelf-item__cover-wrp {
   max-width: 100%;
 }
 
-.bookshelf-item-page__cover {
+.bookshelf-item__cover {
   width: 100%;
   height: auto;
   border-radius: toRem(8);
@@ -171,12 +170,12 @@ init()
   }
 }
 
-.bookshelf-item-page__details {
+.bookshelf-item__details {
   display: flex;
   flex-direction: column;
 }
 
-.bookshelf-item-page__title {
+.bookshelf-item__title {
   text-transform: uppercase;
   font-size: toRem(48);
   line-height: 1.2;
@@ -189,7 +188,7 @@ init()
   }
 }
 
-.bookshelf-item-page__actions {
+.bookshelf-item__actions {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -202,7 +201,7 @@ init()
   }
 }
 
-.bookshelf-item-page__info {
+.bookshelf-item__info {
   display: flex;
   flex-direction: column;
   text-align: right;
@@ -219,7 +218,7 @@ init()
   }
 }
 
-.bookshelf-item-page__price {
+.bookshelf-item__price {
   font-weight: 700;
   font-size: toRem(44);
   line-height: toRem(54);
@@ -231,12 +230,12 @@ init()
   }
 }
 
-.bookshelf-item-page__purchase-btn {
+.bookshelf-item__purchase-btn {
   width: 100%;
   font-size: toRem(22);
 }
 
-.bookshelf-item-page__devider {
+.bookshelf-item__devider {
   width: 100%;
   height: toRem(1);
   margin-top: toRem(45);
@@ -244,7 +243,7 @@ init()
   background-color: var(--border-secondary-main);
 }
 
-.bookshelf-item-page__description {
+.bookshelf-item__description {
   font-size: toRem(24);
   line-height: 1.2;
   font-weight: 400;

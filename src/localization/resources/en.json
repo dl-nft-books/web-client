@@ -117,7 +117,7 @@
     "details-btn": "Details",
     "load-more-btn": "Load More"
   },
-  "bookshelf-item-page": {
+  "bookshelf-item": {
     "loading-error-msg": "Oops.... Something went wrong",
     "purchase-btn": "Buy",
     "badge-1": "For any acceptable token",
