@@ -1,14 +1,5 @@
 <template>
   <div class="network-switcher">
-    <!-- <button
-      class="network-switcher__item"
-      :class="{
-        'network-switcher__item--picked': pickedNetwork === NETWORKS.POLYGON,
-      }"
-      @click="changeNetwork(NETWORKS.POLYGON)"
-    >
-      <icon class="network-switcher__icon" :name="$icons.polygon" />
-    </button> -->
     <app-button
       modification="switcher"
       class="network-switcher__item"
