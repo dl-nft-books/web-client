@@ -34,12 +34,7 @@ const isAboutPage = computed(() => {
 </script>
 
 <template>
-  <nav
-    :class="{
-      'app-navbar': true,
-      'app-navbar--about-page': isAboutPage,
-    }"
-  >
+  <nav class="app-navbar" :class="{ 'app-navbar--about-page': isAboutPage }">
     <app-logo />
     <button
       class="app-navbar__hamburger-button"

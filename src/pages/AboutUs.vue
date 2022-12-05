@@ -1,9 +1,3 @@
-<script setup lang="ts">
-import { Icon } from '@/common'
-import { Animation } from '@/common'
-import blockchainAnimation from '@/assets/animations/blockchain-animation.json'
-</script>
-
 <template>
   <div class="about-us-page">
     <div class="about-us-page__head">
@@ -36,8 +30,10 @@ import blockchainAnimation from '@/assets/animations/blockchain-animation.json'
         </p>
       </div>
       <img
-        class="about-us-page__cubes right"
-        src="/images/about-us-right.png"
+        :class="
+          ['about-us-page__cubes', 'about-us-page__cubes--right'].join(' ')
+        "
+        :src="CUBES_IMAGES.RIGHT"
       />
     </div>
 
@@ -46,7 +42,7 @@ import blockchainAnimation from '@/assets/animations/blockchain-animation.json'
         <div class="about-us-page__founder-image-wrapper">
           <img
             class="about-us-page__founder-image"
-            src="/images/pavlo-kravchenko.png"
+            :src="FOUNDERS_IMAGES.KRAVCHENKO"
             alt="Founder image"
           />
           <h4 class="about-us-page__founder-content-title">
@@ -63,87 +59,106 @@ import blockchainAnimation from '@/assets/animations/blockchain-animation.json'
           </p>
         </div>
         <img
-          class="about-us-page__cubes left"
-          src="/images/about-us-left.png"
+          :class="
+            ['about-us-page__cubes', 'about-us-page__cubes--left'].join(' ')
+          "
+          :src="CUBES_IMAGES.LEFT"
         />
       </div>
     </div>
     <div
-      :class="{
-        'about-us-page__founder': true,
-        'about-us-page__founder--black': true,
-      }"
+      :class="
+        ['about-us-page__founder', 'about-us-page__founder--black'].join(' ')
+      "
     >
       <div
-        :class="{
-          'about-us-page__founder-background': true,
-          'about-us-page__founder-background--black': true,
-        }"
+        :class="
+          [
+            'about-us-page__founder-background',
+            'about-us-page__founder-background--black',
+          ].join(' ')
+        "
       >
         <div
-          :class="{
-            'about-us-page__founder-content-wrapper': true,
-            'about-us-page__founder-content-wrapper--black': true,
-          }"
+          :class="
+            [
+              'about-us-page__founder-content-wrapper',
+              'about-us-page__founder-content-wrapper--black',
+            ].join(' ')
+          "
         >
           <icon class="about-us-page__founder-quote" :name="$icons.leftQuote" />
           <p
-            :class="{
-              'about-us-page__founder-content-description': true,
-              'about-us-page__founder-content-description--black': true,
-            }"
+            :class="
+              [
+                'about-us-page__founder-content-description',
+                'about-us-page__founder-content-description--black',
+              ].join(' ')
+            "
           >
             {{ $t('about-us-page.founder-description-2-abstract-1') }}
           </p>
           <p
-            :class="{
-              'about-us-page__founder-content-description': true,
-              'about-us-page__founder-content-description--black': true,
-            }"
+            :class="
+              [
+                'about-us-page__founder-content-description',
+                'about-us-page__founder-content-description--black',
+              ].join(' ')
+            "
           >
             {{ $t('about-us-page.founder-description-2-abstract-2') }}
           </p>
           <p
-            :class="{
-              'about-us-page__founder-content-description': true,
-              'about-us-page__founder-content-description--black': true,
-            }"
+            :class="
+              [
+                'about-us-page__founder-content-description',
+                'about-us-page__founder-content-description--black',
+              ].join(' ')
+            "
           >
             {{ $t('about-us-page.founder-description-2-abstract-3') }}
           </p>
           <p
-            :class="{
-              'about-us-page__founder-content-description': true,
-              'about-us-page__founder-content-description--black': true,
-            }"
+            :class="
+              [
+                'about-us-page__founder-content-description',
+                'about-us-page__founder-content-description--black',
+              ].join(' ')
+            "
           >
             {{ $t('about-us-page.founder-description-2-abstract-4') }}
           </p>
         </div>
         <div
-          :class="{
-            'about-us-page__founder-image-wrapper': true,
-            'about-us-page__founder-image-wrapper--black': true,
-          }"
+          :class="
+            [
+              'about-us-page__founder-image-wrapper',
+              'about-us-page__founder-image-wrapper--black',
+            ].join(' ')
+          "
         >
           <img
             class="about-us-page__founder-image"
-            src="/images/olexandr-kurbatov.png"
+            :src="FOUNDERS_IMAGES.KURBATOV"
             alt="Founder image"
           />
           <h4
-            :class="{
-              'about-us-page__founder-content-title': true,
-              'about-us-page__founder-content-title--black': true,
-            }"
+            :class="
+              [
+                'about-us-page__founder-content-title',
+                'about-us-page__founder-content-title--black',
+              ].join(' ')
+            "
           >
             {{ $t('about-us-page.founder-title-2') }}
           </h4>
           <h5
-            :class="{
-              'about-us-page__founder-content-subtitle': true,
-              'about-us-page__founder-content-subtitle--black': true,
-            }"
+            :class="
+              [
+                'about-us-page__founder-content-subtitle',
+                'about-us-page__founder-content-subtitle--black',
+              ].join(' ')
+            "
           >
             {{ $t('about-us-page.founder-subtitle-2') }}
           </h5>
@@ -152,6 +167,21 @@ import blockchainAnimation from '@/assets/animations/blockchain-animation.json'
     </div>
   </div>
 </template>
+
+<script setup lang="ts">
+import { Icon } from '@/common'
+import { Animation } from '@/common'
+import blockchainAnimation from '@/assets/animations/blockchain-animation.json'
+const CUBES_IMAGES = {
+  LEFT: '/images/about-us-left.png',
+  RIGHT: '/images/about-us-right.png',
+}
+
+const FOUNDERS_IMAGES = {
+  KURBATOV: '/images/olexandr-kurbatov.png',
+  KRAVCHENKO: '/images/pavlo-kravchenko.png',
+}
+</script>
 
 <style lang="scss" scoped>
 .about-us-page {
@@ -180,8 +210,8 @@ import blockchainAnimation from '@/assets/animations/blockchain-animation.json'
   background: linear-gradient(
     360deg,
     var(--background-quinary) 0.12%,
-    rgba(17, 16, 16, 0.9) 55.52%,
-    rgba(17, 16, 16, 0.5) 100%
+    rgba(var(--background-quinary-rgb), 0.9) 55.52%,
+    rgba(var(--background-quinary-rgb), 0.5) 100%
   );
 }
 
@@ -256,20 +286,16 @@ import blockchainAnimation from '@/assets/animations/blockchain-animation.json'
   @include respond-to(medium) {
     display: none;
   }
-}
 
-.about-us-page__cubes.right {
-  right: 0;
-  transform: translate(0, toRem(250));
-}
+  &--left {
+    left: 0;
+    transform: translate(0, toRem(150));
+  }
 
-.about-us-page__cubes.right-back {
-  right: 0;
-}
-
-.about-us-page__cubes.left {
-  left: 0;
-  transform: translate(0, toRem(150));
+  &--right {
+    right: 0;
+    transform: translate(0, toRem(250));
+  }
 }
 
 .about-us-page__about-us-text {
