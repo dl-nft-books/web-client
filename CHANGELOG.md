@@ -10,6 +10,7 @@ an this project adheres to [Semantic Versioning
 
 #### Changed
 -Main page redesign
+-Book page redesign
 
 ## [1.0.0] - 2022-11-30
 #### Added

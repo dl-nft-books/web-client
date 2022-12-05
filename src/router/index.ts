@@ -27,7 +27,7 @@ const routes: Array<RouteRecordRaw> = [
     path: '/bookshelf/:id',
     name: ROUTE_NAMES.bookshelfItem,
     props: true,
-    component: () => import('@/pages/BookshelfItemPage.vue'),
+    component: () => import('@/pages/Bookshelf/BookshelfItemPage.vue'),
   },
   {
     path: '/my-nfts',

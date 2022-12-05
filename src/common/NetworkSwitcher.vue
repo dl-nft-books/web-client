@@ -7,7 +7,7 @@
       }"
       @click="changeNetwork(NETWORKS.POLYGON)"
     >
-      <icon :name="$icons.polygon" />
+      <icon class="network-switcher__icon" :name="$icons.polygon" />
     </button>
     <button
       class="network-switcher__item"
@@ -80,5 +80,9 @@ const changeNetwork = (network: NETWORKS) => {
   &--picked {
     background-color: var(--bg-picked-color);
   }
+}
+
+.network-switcher__icon {
+  color: var(--primary-main);
 }
 </style>

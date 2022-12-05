@@ -113,6 +113,10 @@ const connectProviderButtonText = computed(() => {
   padding: toRem(9) toRem(16);
   background-color: var(--white);
 
+  &:disabled {
+    opacity: 1;
+  }
+
   &:deep(.app-button__icon-left) {
     width: toRem(30);
     height: toRem(30);

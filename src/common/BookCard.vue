@@ -139,6 +139,7 @@ const price = computed(() =>
 .book-card__icon {
   max-width: toRem(18);
   max-height: toRem(16);
+  color: var(--primary-main);
 }
 
 .book-card__cover {
