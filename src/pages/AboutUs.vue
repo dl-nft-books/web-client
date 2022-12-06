@@ -30,7 +30,7 @@
         </p>
       </div>
       <img
-        :class="['about-us__cubes', 'about-us__cubes--right']"
+        class="about-us__cubes about-us__cubes--right"
         :src="CUBES_IMAGES.RIGHT"
       />
     </div>
@@ -57,17 +57,14 @@
           </p>
         </div>
         <img
-          :class="['about-us__cubes', 'about-us__cubes--left']"
+          class="about-us__cubes about-us__cubes--left"
           :src="CUBES_IMAGES.LEFT"
         />
       </div>
     </div>
-    <div :class="['about-us__founder', 'about-us__founder--black']">
+    <div class="about-us__founder about-us__founder--black">
       <div
-        :class="[
-          'about-us__founder-background',
-          'about-us__founder-background--black',
-        ]"
+        class="about-us__founder-background about-us__founder-background--black"
       >
         <div
           :class="[
