@@ -55,6 +55,7 @@ const changeNetwork = (network: NETWORKS) => {
   border-radius: toRem(8);
   border: toRem(1) solid rgba(var(--white-rgb), 0.5);
   background-color: var(--black);
+
   /* width will be 210 */
   width: toRem(70);
   height: toRem(52);
