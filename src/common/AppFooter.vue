@@ -60,8 +60,7 @@ const SOCIAL_LINKS = [
 
 <style lang="scss" scoped>
 .app-footer {
-  --footer-index: 1;
-
+  width: 100%;
   padding: toRem(40) var(--app-padding-right) toRem(40) var(--app-padding-left);
   background: var(--background-secondary);
   z-index: var(--footer-index);
@@ -88,7 +87,7 @@ const SOCIAL_LINKS = [
   display: flex;
   margin: 0 auto;
   text-transform: uppercase;
-  column-gap: toRem(60);
+  column-gap: toRem(30);
   text-align: center;
 }
 

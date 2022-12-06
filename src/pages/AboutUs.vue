@@ -1,16 +1,12 @@
 <template>
   <div class="about-us">
     <div class="about-us__head">
-      <div class="about-us__head-gradient">
-        <div class="about-us__head-wrapper">
-          <h1 class="about-us__title">
-            {{ $t('about-us-page.title') }}
-          </h1>
-          <h3 class="about-us__subtitle">
-            {{ $t('about-us-page.subtitle') }}
-          </h3>
-        </div>
-      </div>
+      <h1 class="about-us__title">
+        {{ $t('about-us-page.title') }}
+      </h1>
+      <h3 class="about-us__subtitle">
+        {{ $t('about-us-page.subtitle') }}
+      </h3>
     </div>
     <div class="about-us__description">
       <div class="about-us__description-animation-wrapper">
@@ -23,10 +19,16 @@
       </div>
       <div class="about-us__description-content">
         <p class="about-us__description-text">
-          {{ $t('about-us-page.about-us-text-1') }}
+          {{ $t('about-us-page.description-abstract-1') }}
         </p>
         <p class="about-us__description-text">
-          {{ $t('about-us-page.about-us-text-2') }}
+          {{ $t('about-us-page.description-abstract-2') }}
+        </p>
+        <p class="about-us__description-text">
+          {{ $t('about-us-page.description-abstract-3') }}
+        </p>
+        <p class="about-us__description-text">
+          {{ $t('about-us-page.description-abstract-4') }}
         </p>
       </div>
       <img
@@ -41,7 +43,6 @@
           <img
             class="about-us__founder-image"
             :src="FOUNDERS_IMAGES.KRAVCHENKO"
-            alt="Founder image"
           />
           <h4 class="about-us__founder-content-title">
             {{ $t('about-us-page.founder-title') }}
@@ -62,21 +63,21 @@
         />
       </div>
     </div>
-    <div class="about-us__founder about-us__founder--black">
+    <div class="about-us__founder about-us__founder--dark">
       <div
-        class="about-us__founder-background about-us__founder-background--black"
+        class="about-us__founder-background about-us__founder-background--dark"
       >
         <div
           :class="[
             'about-us__founder-content-wrapper',
-            'about-us__founder-content-wrapper--black',
+            'about-us__founder-content-wrapper--dark',
           ]"
         >
           <icon class="about-us__founder-quote" :name="$icons.leftQuote" />
           <p
             :class="[
               'about-us__founder-content-description',
-              'about-us__founder-content-description--black',
+              'about-us__founder-content-description--dark',
             ]"
           >
             {{ $t('about-us-page.founder-description-2-abstract-1') }}
@@ -84,15 +85,15 @@
           <p
             :class="[
               'about-us__founder-content-description',
-              'about-us__founder-content-description--black',
+              'about-us__founder-content-description--dark',
             ]"
           >
-            {{ $t('about-us.founder-description-2-abstract-2') }}
+            {{ $t('about-us-page.founder-description-2-abstract-2') }}
           </p>
           <p
             :class="[
               'about-us__founder-content-description',
-              'about-us__founder-content-description--black',
+              'about-us__founder-content-description--dark',
             ]"
           >
             {{ $t('about-us-page.founder-description-2-abstract-3') }}
@@ -100,7 +101,7 @@
           <p
             :class="[
               'about-us__founder-content-description',
-              'about-us__founder-content-description--black',
+              'about-us__founder-content-description--dark',
             ]"
           >
             {{ $t('about-us-page.founder-description-2-abstract-4') }}
@@ -109,18 +110,17 @@
         <div
           :class="[
             'about-us__founder-image-wrapper',
-            'about-us__founder-image-wrapper--black',
+            'about-us__founder-image-wrapper--dark',
           ]"
         >
           <img
             class="about-us__founder-image"
             :src="FOUNDERS_IMAGES.KURBATOV"
-            alt="Founder image"
           />
           <h4
             :class="[
               'about-us__founder-content-title',
-              'about-us__founder-content-title--black',
+              'about-us__founder-content-title--dark',
             ]"
           >
             {{ $t('about-us-page.founder-title-2') }}
@@ -128,7 +128,7 @@
           <h5
             :class="[
               'about-us__founder-content-subtitle',
-              'about-us__founder-content-subtitle--black',
+              'about-us__founder-content-subtitle--dark',
             ]"
           >
             {{ $t('about-us-page.founder-subtitle-2') }}
@@ -160,35 +160,21 @@ const FOUNDERS_IMAGES = {
   background-color: var(--background-quinary);
 }
 
+/* stylelint-disable */
 .about-us__head {
-  background-image: url('/images/backround-about-us.png');
-  background-repeat: no-repeat;
-  background-size: cover;
   text-align: center;
-
-  @include respond-to(medium) {
-    background-size: toRem(550);
-  }
-
-  @include respond-to(small) {
-    background-size: 100%;
-  }
-}
-
-.about-us__head-gradient {
-  width: 100%;
-  background: linear-gradient(
-    360deg,
-    var(--background-quinary) 0.12%,
-    rgba(var(--background-quinary-rgb), 0.9) 55.52%,
-    rgba(var(--background-quinary-rgb), 0.5) 100%
-  );
-}
-
-.about-us__head-wrapper {
   padding: toRem(115) var(--app-padding-right) toRem(100)
-    var(--app-padding-left); /* stylelint-disable-line max-line-length */
+    var(--app-padding-left);
+  background-image: linear-gradient(
+      360deg,
+      var(--background-quinary) 0.12%,
+      rgba(var(--background-quinary-rgb), 0.9) 55.52%,
+      rgba(var(--background-quinary-rgb), 0.5) 100%
+    ),
+    url('/images/backround-about-us.png');
+  background-size: cover;
 }
+/* stylelint-enable */
 
 .about-us__title {
   margin-bottom: toRem(70);
@@ -242,6 +228,7 @@ const FOUNDERS_IMAGES = {
 
 .about-us__description-content {
   margin-right: 5vw;
+  padding-bottom: 5vh;
 
   @include respond-to(medium) {
     padding: toRem(50) 0 0;
@@ -287,7 +274,7 @@ const FOUNDERS_IMAGES = {
   padding-top: toRem(140);
   padding-bottom: toRem(100);
 
-  &--black {
+  &--dark {
     background: none;
     background-image: url('/images/about-us-right-back.png');
     background-repeat: no-repeat;
@@ -304,7 +291,7 @@ const FOUNDERS_IMAGES = {
     transform: translate(0, 0);
   }
 
-  &--black {
+  &--dark {
     transform: translate(0, toRem(-75));
     align-items: flex-end;
 
@@ -326,7 +313,7 @@ const FOUNDERS_IMAGES = {
     align-self: center;
   }
 
-  &--black {
+  &--dark {
     color: var(--text-primary-invert-light);
     align-self: flex-start;
 
@@ -347,7 +334,7 @@ const FOUNDERS_IMAGES = {
     align-self: center;
   }
 
-  &--black {
+  &--dark {
     color: var(--text-primary-invert-light);
     align-self: flex-start;
 
@@ -375,7 +362,7 @@ const FOUNDERS_IMAGES = {
     font-size: toRem(14);
   }
 
-  &--black {
+  &--dark {
     color: var(--text-primary-invert-light);
     padding-top: toRem(15);
     padding-left: toRem(30);
@@ -395,7 +382,7 @@ const FOUNDERS_IMAGES = {
     flex-direction: column;
   }
 
-  &--black {
+  &--dark {
     background-color: var(--background-secondary);
 
     @include respond-to(medium) {
@@ -417,7 +404,7 @@ const FOUNDERS_IMAGES = {
     margin-right: auto;
   }
 
-  &--black {
+  &--dark {
     transform: translate(toRem(60), toRem(-60));
 
     @include respond-to(medium) {

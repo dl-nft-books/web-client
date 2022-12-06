@@ -34,7 +34,7 @@ const isAboutPage = computed(() => {
 </script>
 
 <template>
-  <nav class="app-navbar" :class="{ 'app-navbar--about-page': isAboutPage }">
+  <nav class="app-navbar" :class="{ 'app-navbar--dark': isAboutPage }">
     <app-logo />
     <button
       class="app-navbar__hamburger-button"
@@ -89,7 +89,7 @@ const isAboutPage = computed(() => {
   justify-content: space-between;
   padding: toRem(30) var(--app-padding-right) toRem(30) var(--app-padding-left);
 
-  &--about-page {
+  &--dark {
     background-color: var(--background-quinary);
 
     &:deep(*) {
