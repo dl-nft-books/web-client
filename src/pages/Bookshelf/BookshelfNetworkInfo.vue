@@ -1,7 +1,7 @@
 <template>
   <section class="bookshelf-network-info">
     <p class="bookshelf-network-info__title">
-      {{ $t('bookshelf-item.network-title') }}
+      {{ $t('bookshelf-item-page.network-title') }}
     </p>
     <div class="bookshelf-network-info__wrapper">
       <!-- TODO make this dynamic when network changing will be done -->

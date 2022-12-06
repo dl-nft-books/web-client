@@ -62,51 +62,51 @@ init()
 </script>
 
 <template>
-  <div class="bookshelf-item">
+  <div class="bookshelf-item-page">
     <template v-if="isLoaded">
       <error-message
         v-if="isLoadFailed"
-        :message="$t('bookshelf-item.loading-error-msg')"
+        :message="$t('bookshelf-item-page.loading-error-msg')"
       />
       <template v-else-if="book">
-        <div class="bookshelf-item__cover-wrp">
+        <div class="bookshelf-item-page__cover-wrp">
           <img
             :src="book.bannerUrl"
             :alt="book.title"
-            class="bookshelf-item__cover"
+            class="bookshelf-item-page__cover"
           />
         </div>
-        <div class="bookshelf-item__details">
-          <h2 class="bookshelf-item__title">
+        <div class="bookshelf-item-page__details">
+          <h2 class="bookshelf-item-page__title">
             {{ book.title }}
           </h2>
-          <div class="bookshelf-item__actions">
-            <div class="bookshelf-item__price">
+          <div class="bookshelf-item-page__actions">
+            <div class="bookshelf-item-page__price">
               {{ formatFiatAssetFromWei(book.price, 'USD') }}
             </div>
-            <div class="bookshelf-item__info">
-              <p>{{ $t('bookshelf-item.badge-1') }}</p>
-              <p>{{ $t('bookshelf-item.badge-2') }}</p>
+            <div class="bookshelf-item-page__info">
+              <p>{{ $t('bookshelf-item-page.badge-1') }}</p>
+              <p>{{ $t('bookshelf-item-page.badge-2') }}</p>
             </div>
           </div>
 
           <bookshelf-network-info />
           <app-button
             v-if="provider.isConnected"
-            class="bookshelf-item__purchase-btn"
-            :text="$t('bookshelf-item.purchase-btn')"
+            class="bookshelf-item-page__purchase-btn"
+            :text="$t('bookshelf-item-page.purchase-btn')"
             @click="isPurchaseModalShown = true"
           />
 
           <app-button
             v-else
-            class="bookshelf-item__purchase-btn"
-            :text="$t('bookshelf-item.connect-btn')"
+            class="bookshelf-item-page__purchase-btn"
+            :text="$t('bookshelf-item-page.connect-btn')"
             @click="connect"
           />
 
-          <hr class="bookshelf-item__devider" />
-          <p class="bookshelf-item__description">
+          <hr class="bookshelf-item-page__devider" />
+          <p class="bookshelf-item-page__description">
             {{ book.description }}
           </p>
         </div>
@@ -128,7 +128,7 @@ init()
 </template>
 
 <style lang="scss" scoped>
-.bookshelf-item {
+.bookshelf-item-page {
   $left-column: clamp(#{toRem(200)}, 40%, #{toRem(600)});
   $right-column: clamp(#{toRem(250)}, 55%, #{toRem(700)});
 
@@ -153,11 +153,11 @@ init()
   }
 }
 
-.bookshelf-item__cover-wrp {
+.bookshelf-item-page__cover-wrp {
   max-width: 100%;
 }
 
-.bookshelf-item__cover {
+.bookshelf-item-page__cover {
   width: 100%;
   height: auto;
   border-radius: toRem(8);
@@ -172,12 +172,12 @@ init()
   }
 }
 
-.bookshelf-item__details {
+.bookshelf-item-page__details {
   display: flex;
   flex-direction: column;
 }
 
-.bookshelf-item__title {
+.bookshelf-item-page__title {
   text-transform: uppercase;
   font-size: toRem(48);
   line-height: 1.2;
@@ -190,7 +190,7 @@ init()
   }
 }
 
-.bookshelf-item__actions {
+.bookshelf-item-page__actions {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -203,7 +203,7 @@ init()
   }
 }
 
-.bookshelf-item__info {
+.bookshelf-item-page__info {
   display: flex;
   flex-direction: column;
   text-align: right;
@@ -220,7 +220,7 @@ init()
   }
 }
 
-.bookshelf-item__price {
+.bookshelf-item-page__price {
   font-weight: 700;
   font-size: toRem(44);
   line-height: toRem(54);
@@ -232,12 +232,12 @@ init()
   }
 }
 
-.bookshelf-item__purchase-btn {
+.bookshelf-item-page__purchase-btn {
   width: 100%;
   font-size: toRem(22);
 }
 
-.bookshelf-item__devider {
+.bookshelf-item-page__devider {
   width: 100%;
   height: toRem(1);
   margin-top: toRem(45);
@@ -245,7 +245,7 @@ init()
   background-color: var(--border-secondary-main);
 }
 
-.bookshelf-item__description {
+.bookshelf-item-page__description {
   font-size: toRem(24);
   line-height: 1.2;
   font-weight: 400;
