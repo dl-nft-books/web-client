@@ -5,6 +5,9 @@ Th format is based on [Keep a Changelog
 an this project adheres to [Semantic Versioning
 
 ## [Unreleased]
+#### Changed
+- Mobile version redirects to metamask browser or to the page of its app
+- Connecting to metamask logic moved to useMetaMaskConnect hook
 
 ## [1.0.0] - 2022-11-30
 #### Added
