@@ -11,12 +11,7 @@ import { ROUTE_NAMES } from '@/enums'
 const routes: Array<RouteRecordRaw> = [
   {
     path: '/:catchAll(.*)',
-    redirect: { name: ROUTE_NAMES.home },
-  },
-  {
-    path: '/',
-    name: ROUTE_NAMES.home,
-    component: () => import('@/pages/HomePage.vue'),
+    redirect: { name: ROUTE_NAMES.bookshelf },
   },
   {
     path: '/about-us',
