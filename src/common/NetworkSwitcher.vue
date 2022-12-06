@@ -10,7 +10,8 @@
       :icon-left="$icons.polygon"
       icon-size="large"
     />
-    <app-button
+    <!-- Will be uncommented with release of switching networks -->
+    <!-- <app-button
       modification="switcher"
       class="network-switcher__item"
       :class="{
@@ -29,7 +30,7 @@
       @click="changeNetwork(NETWORKS.Q)"
       :icon-left="$icons.q"
       icon-size="large"
-    />
+    /> -->
   </div>
 </template>
 
@@ -54,7 +55,8 @@ const changeNetwork = (network: NETWORKS) => {
   border-radius: toRem(8);
   border: toRem(1) solid rgba(var(--white-rgb), 0.5);
   background-color: var(--black);
-  width: toRem(210);
+  /* width will be 210 */
+  width: toRem(70);
   height: toRem(52);
   position: relative;
   z-index: var(--page-index);

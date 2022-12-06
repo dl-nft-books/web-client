@@ -13,6 +13,7 @@ import { ref, watch } from 'vue'
 import { formatFiatAssetFromWei } from '@/helpers'
 import { BookRecord } from '@/records'
 import { useWeb3ProvidersStore } from '@/store'
+import { useMetaMaskConnect } from '@/composables'
 import { storeToRefs } from 'pinia'
 import { getBookById } from '@/api'
 
@@ -20,6 +21,7 @@ const props = defineProps<{
   id: string
 }>()
 const { provider } = storeToRefs(useWeb3ProvidersStore())
+const { connect } = useMetaMaskConnect()
 const isLoaded = ref(false)
 const isLoadFailed = ref(false)
 const isPurchaseModalShown = ref(false)
@@ -100,7 +102,7 @@ init()
             v-else
             class="bookshelf-item__purchase-btn"
             :text="$t('bookshelf-item.connect-btn')"
-            @click="provider.connect"
+            @click="connect"
           />
 
           <hr class="bookshelf-item__devider" />
