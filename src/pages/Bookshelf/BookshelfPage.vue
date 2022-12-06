@@ -15,7 +15,7 @@ import { BOOK_DEPLOY_STATUSES } from '@/enums'
 import { getBooks } from '@/api'
 import { usePaginate } from '@/composables'
 import { Book } from '@/types'
-import { BookshelfHeader } from '@/pages/Bookshelf'
+import { BookshelfHeader, BookshelfCubes } from '@/pages/Bookshelf'
 
 const isLoadFailed = ref(false)
 const books = ref<BookRecord[]>([])
@@ -51,6 +51,7 @@ function onError(e: Error) {
 
 <template>
   <div class="bookshelf-page">
+    <bookshelf-cubes />
     <bookshelf-header />
     <section class="bookshelf-page__title-wrapper">
       <h2 class="bookshelf-page__title">
@@ -109,7 +110,7 @@ function onError(e: Error) {
 
     @include respond-to(medium) {
       background-size: toRem(450);
-      top: toRem(150);
+      top: toRem(280);
     }
 
     @include respond-to(small) {

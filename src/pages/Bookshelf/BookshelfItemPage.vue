@@ -110,7 +110,7 @@ init()
         </div>
 
         <purchasing-modal
-          v-if="book && isPurchaseModalShown"
+          v-if="book"
           v-model:is-shown="isPurchaseModalShown"
           :book="book"
           @submit="submit"

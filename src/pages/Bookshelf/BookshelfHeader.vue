@@ -1,6 +1,5 @@
 <template>
   <header class="bookshelf-header">
-    <bookshelf-cubes />
     <h1 class="bookshelf-header__title">
       {{ $t('bookshelf-header.title') }}
     </h1>
@@ -8,11 +7,8 @@
       {{ $t('bookshelf-header.small-subtitle') }}
     </h4>
     <div class="bookshelf-header__description">
-      <icon
-        class="bookshelf-header__description-icon"
-        :name="$icons.bookWithFeather"
-      />
-      <div class="bookshelf-header__description-book">
+      <icon class="bookshelf-header__icon" :name="$icons.bookWithFeather" />
+      <div class="bookshelf-header__book-desctiption">
         <p>{{ $t('bookshelf-header.book-description-title') }}</p>
         <p>{{ $t('bookshelf-header.book-description-subtitle') }}</p>
       </div>
@@ -21,13 +17,14 @@
 </template>
 
 <script setup lang="ts">
-import { BookshelfCubes } from '@/pages/Bookshelf'
 import { Icon } from '@/common'
 </script>
 
 <style lang="scss" scoped>
 .bookshelf-header {
   padding: toRem(80) 0;
+  position: relative;
+  z-index: var(--page-index);
 
   @include respond-to(small) {
     padding-top: toRem(20);
@@ -45,8 +42,6 @@ import { Icon } from '@/common'
     toRem(1) toRem(1) 0 var(--text-primary-main),
     toRem(1) toRem(-1) 0 var(--text-primary-main),
     toRem(-1) toRem(-1) 0 var(--text-primary-main);
-  position: relative;
-  z-index: var(--page-index);
 
   @include respond-to(medium) {
     font-size: toRem(40);
@@ -58,8 +53,6 @@ import { Icon } from '@/common'
   font-weight: 600;
   line-height: 120%;
   color: var(--primary-dark);
-  position: relative;
-  z-index: var(--page-index);
   text-shadow: toRem(-1) toRem(1) 0 var(--text-primary-invert-main),
     toRem(1) toRem(1) 0 var(--text-primary-invert-main),
     toRem(1) toRem(-1) 0 var(--text-primary-invert-main),
@@ -76,8 +69,6 @@ import { Icon } from '@/common'
   align-items: center;
   gap: toRem(20);
   margin: toRem(40) 0 toRem(80);
-  position: relative;
-  z-index: var(--page-index);
   width: fit-content;
 
   @include respond-to(xmedium) {
@@ -89,7 +80,7 @@ import { Icon } from '@/common'
   }
 }
 
-.bookshelf-header__description-book {
+.bookshelf-header__book-desctiption {
   display: flex;
   flex-direction: column;
 
@@ -118,7 +109,7 @@ import { Icon } from '@/common'
   }
 }
 
-.bookshelf-header__description-icon {
+.bookshelf-header__icon {
   max-width: toRem(50);
   max-height: toRem(60);
 
