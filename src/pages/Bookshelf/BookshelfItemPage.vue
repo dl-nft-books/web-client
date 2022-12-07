@@ -5,9 +5,9 @@ import {
   AppButton,
   PurchasingModal,
   PurchasingSuccessModal,
-  NftDescription,
 } from '@/common'
 
+import { BookshelfNetworkInfo } from '@/pages/Bookshelf'
 import { ErrorHandler } from '@/helpers'
 import { ref, watch } from 'vue'
 import { formatFiatAssetFromWei } from '@/helpers'
@@ -64,9 +64,10 @@ init()
 <template>
   <div class="bookshelf-item-page">
     <template v-if="isLoaded">
-      <template v-if="isLoadFailed">
-        <error-message :message="$t('bookshelf-item-page.loading-error-msg')" />
-      </template>
+      <error-message
+        v-if="isLoadFailed"
+        :message="$t('bookshelf-item-page.loading-error-msg')"
+      />
       <template v-else-if="book">
         <div class="bookshelf-item-page__cover-wrp">
           <img
@@ -83,38 +84,46 @@ init()
             <div class="bookshelf-item-page__price">
               {{ formatFiatAssetFromWei(book.price, 'USD') }}
             </div>
-            <template v-if="provider.isConnected">
-              <app-button
-                class="bookshelf-item-page__purchase-btn"
-                :text="$t('bookshelf-item-page.purchase-btn')"
-                @click="isPurchaseModalShown = true"
-              />
-            </template>
-            <template v-else>
-              <app-button
-                class="bookshelf-item-page__purchase-btn"
-                :text="$t('bookshelf-item-page.connect-btn')"
-                @click="connect"
-              />
-            </template>
+            <div class="bookshelf-item-page__info">
+              <p>{{ $t('bookshelf-item-page.badge-1') }}</p>
+              <p>{{ $t('bookshelf-item-page.badge-2') }}</p>
+            </div>
           </div>
-          <nft-description :description="book.description" />
-        </div>
-        <template v-if="book && isPurchaseModalShown">
-          <purchasing-modal
-            v-model:is-shown="isPurchaseModalShown"
-            :book="book"
-            @submit="submit"
+
+          <bookshelf-network-info />
+          <app-button
+            v-if="provider.isConnected"
+            class="bookshelf-item-page__purchase-btn"
+            :text="$t('bookshelf-item-page.purchase-btn')"
+            @click="isPurchaseModalShown = true"
           />
-        </template>
+
+          <app-button
+            v-else
+            class="bookshelf-item-page__purchase-btn"
+            :text="$t('bookshelf-item-page.connect-btn')"
+            @click="connect"
+          />
+
+          <hr class="bookshelf-item-page__devider" />
+          <p class="bookshelf-item-page__description">
+            {{ book.description }}
+          </p>
+        </div>
+
+        <purchasing-modal
+          v-if="book"
+          v-model:is-shown="isPurchaseModalShown"
+          :book="book"
+          @submit="submit"
+        />
+
         <purchasing-success-modal
           v-model:is-shown="isPurchaseSuccessModalShown"
         />
       </template>
     </template>
-    <template v-else>
-      <loader />
-    </template>
+    <loader v-else />
   </div>
 </template>
 
@@ -151,6 +160,7 @@ init()
 .bookshelf-item-page__cover {
   width: 100%;
   height: auto;
+  border-radius: toRem(8);
   filter: var(--cover-image-shadow);
 
   @include respond-to(medium) {
@@ -172,7 +182,7 @@ init()
   font-size: toRem(48);
   line-height: 1.2;
   font-weight: 900;
-  margin-bottom: toRem(65);
+  margin-bottom: toRem(40);
 
   @include respond-to(medium) {
     text-align: center;
@@ -183,21 +193,38 @@ init()
 .bookshelf-item-page__actions {
   display: flex;
   align-items: center;
+  justify-content: space-between;
   gap: toRem(20);
-  border-bottom: toRem(1) solid var(--border-primary-main);
   padding-bottom: toRem(36);
-  margin-bottom: toRem(40);
+  margin-bottom: toRem(20);
 
   @include respond-to(small) {
     flex-direction: column;
   }
 }
 
+.bookshelf-item-page__info {
+  display: flex;
+  flex-direction: column;
+  text-align: right;
+  user-select: none;
+  gap: toRem(5);
+
+  & > * {
+    font-style: italic;
+    letter-spacing: toRem(1);
+    font-weight: 400;
+    font-size: toRem(20);
+    line-height: 120%;
+    color: var(--text-secondary-main);
+  }
+}
+
 .bookshelf-item-page__price {
-  text-transform: uppercase;
-  font-size: toRem(48);
-  line-height: 1.2;
-  font-weight: 900;
+  font-weight: 700;
+  font-size: toRem(44);
+  line-height: toRem(54);
+  color: var(--primary-main);
 
   @include respond-to(medium) {
     text-align: center;
@@ -206,19 +233,24 @@ init()
 }
 
 .bookshelf-item-page__purchase-btn {
-  min-width: toRem(300);
-  margin-left: auto;
+  width: 100%;
+  font-size: toRem(22);
+}
 
-  @include respond-to(small) {
-    margin: 0 auto;
-    min-width: toRem(240);
-  }
+.bookshelf-item-page__devider {
+  width: 100%;
+  height: toRem(1);
+  margin-top: toRem(45);
+  border: none;
+  background-color: var(--border-secondary-main);
 }
 
 .bookshelf-item-page__description {
-  font-size: toRem(25);
+  font-size: toRem(24);
   line-height: 1.2;
   font-weight: 400;
+  color: var(--text-secondary-main);
+  margin-top: toRem(10);
 
   @include respond-to(medium) {
     font-size: toRem(18);

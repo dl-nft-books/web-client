@@ -71,7 +71,7 @@ const isAboutPage = computed(() => {
       <app-button
         class="app-navbar__provider-btn"
         :icon-left="$icons.metamask"
-        scheme="flat"
+        color="secondary"
         size="small"
         :disabled="provider.selectedAddress"
         :text="connectProviderButtonText"
@@ -88,6 +88,8 @@ const isAboutPage = computed(() => {
   align-items: center;
   justify-content: space-between;
   padding: toRem(30) var(--app-padding-right) toRem(30) var(--app-padding-left);
+  z-index: var(--nav-bar-index);
+  position: relative;
 
   &--dark {
     background-color: var(--background-quinary);
@@ -129,6 +131,11 @@ const isAboutPage = computed(() => {
   font-size: toRem(16);
   font-weight: 500;
   padding: toRem(9) toRem(16);
+  background-color: var(--white);
+
+  &:disabled {
+    opacity: 1;
+  }
 
   &:deep(.app-button__icon-left) {
     width: toRem(30);

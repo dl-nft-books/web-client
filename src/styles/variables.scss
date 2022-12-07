@@ -36,6 +36,7 @@
   /* brand colors */
   --primary-light: #{$primary-light};
   --primary-main: #{$primary-main};
+  --primary-main-rgb: #{$primary-main-rgb};
   --primary-dark: #{$primary-dark};
 
   /* typography colors */
@@ -60,6 +61,10 @@
   --border-primary-main: #{$border-primary-main};
   --border-primary-dark: #{$border-primary-dark};
   --border-secondary-main: #{$border-secondary-main};
+  --border-black: #{$border-black};
+
+  /* other colors */
+  --polygon-network: #{$polygon-network};
 
   /* App variables */
   --app-txt: #{$text-primary-main};
@@ -124,5 +129,9 @@
   --field-error: var(--error-main);
 
   /* z-indexes */
+  --chain-index: 1;
+  --page-index: 2;
+  --bg-index: -1;
+  --nav-bar-index: 3;
   --footer-index: 1;
 }
