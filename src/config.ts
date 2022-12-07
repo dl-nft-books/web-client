@@ -3,11 +3,12 @@ import { LogLevelDesc } from 'loglevel'
 import { pickBy, mapKeys } from 'lodash-es'
 
 export const config = {
-  FACEBOOK_LINK: '',
-  INSTAGRAM_LINK: '',
-  YOUTUBE_LINK: '',
-  LINKEDIN_LINK: '',
-  TELEGRAM_LINK: '',
+  FACEBOOK_LINK: import.meta.env.VITE_APP_FACEBOOK_LINK,
+  YOUTUBE_LINK: import.meta.env.VITE_APP_YOUTUBE_LINK,
+  LINKEDIN_LINK: import.meta.env.VITE_APP_LINKEDIN_LINK,
+  FAQ_LINK: import.meta.env.VITE_APP_FAQ_LINK,
+  HELP_LINK: import.meta.env.VITE_APP_HELP_LINK,
+  BLOG_LINK: import.meta.env.VITE_APP_BLOG_LINK,
   DEPLOY_ENVIRONMENT: import.meta.env.VITE_APP_DEPLOY_ENVIRONMENT,
   API_URL: import.meta.env.VITE_APP_API_URL,
   APP_NAME: import.meta.env.VITE_APP_APP_NAME,
