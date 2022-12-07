@@ -14,20 +14,12 @@ const SOCIAL_LINKS = [
     link: config.FACEBOOK_LINK,
   },
   {
-    iconName: ICON_NAMES.instagramCircle,
-    link: config.INSTAGRAM_LINK,
-  },
-  {
     iconName: ICON_NAMES.youtubeCircle,
     link: config.YOUTUBE_LINK,
   },
   {
     iconName: ICON_NAMES.linkedinCircle,
     link: config.LINKEDIN_LINK,
-  },
-  {
-    iconName: ICON_NAMES.telegramCircle,
-    link: config.TELEGRAM_LINK,
   },
 ]
 
@@ -69,7 +61,7 @@ const hideSidebar = () => {
     :class="{ 'app-navigation-mobile--open': isShowSidebar }"
   >
     <div class="app-navigation-mobile__header">
-      <app-logo scheme="light" />
+      <app-logo scheme="light" :on-click="hideSidebar" />
       <button
         class="app-navigation-mobile__close-btn"
         type="button"
@@ -89,19 +81,18 @@ const hideSidebar = () => {
           {{ $t('app-navigation-mobile.bookshelf-link') }}
         </router-link>
         <router-link
-          v-if="false"
-          class="app-navigation-mobile__text-link"
-          to="/"
-          @click="hideSidebar"
-        >
-          {{ $t('app-navigation-mobile.about-link') }}
-        </router-link>
-        <router-link
           class="app-navigation-mobile__text-link"
           :to="{ name: $routes.myNFTs }"
           @click="hideSidebar"
         >
           {{ $t('app-navigation-mobile.my-nfts-link') }}
+        </router-link>
+        <router-link
+          class="app-navigation-mobile__text-link"
+          :to="{ name: $routes.aboutUs }"
+          @click="hideSidebar"
+        >
+          {{ $t('app-navigation-mobile.about-link') }}
         </router-link>
       </div>
       <div class="app-navigation-mobile__provider-button-wrapper">

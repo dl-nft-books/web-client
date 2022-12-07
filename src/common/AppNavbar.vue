@@ -92,7 +92,7 @@ const isAboutPage = computed(() => {
   &--dark {
     background-color: var(--background-quinary);
 
-    &:deep(*) {
+    & > * {
       color: var(--text-primary-invert-light);
     }
   }

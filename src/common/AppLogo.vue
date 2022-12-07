@@ -6,9 +6,13 @@ type SCHEMES = 'dark' | 'light'
 const props = withDefaults(
   defineProps<{
     scheme?: SCHEMES
+    onClick?: () => void
   }>(),
   {
     scheme: 'dark',
+    onClick: () => {
+      return
+    },
   },
 )
 </script>
@@ -17,6 +21,7 @@ const props = withDefaults(
   <router-link
     :class="`app-logo app-logo--${props.scheme}`"
     :to="{ name: $routes.bookshelf }"
+    @click="onClick"
   >
     <icon class="app-logo__book-icon" :name="$icons.book" />
     <icon
