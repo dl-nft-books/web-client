@@ -132,6 +132,12 @@ function onError(e: Error) {
     border-radius: toRem(300);
     z-index: var(--bg-index);
 
+    @include respond-to(medium) {
+      left: toRem(-60);
+      width: 160vw;
+      top: toRem(-580);
+    }
+
     @include respond-to(small) {
       top: toRem(-250);
       left: toRem(-60);
@@ -160,6 +166,10 @@ function onError(e: Error) {
   font-weight: 700;
   color: var(--white);
   position: relative;
+  text-shadow: toRem(-1) toRem(1) 0 var(--text-primary-main),
+    toRem(1) toRem(1) 0 var(--text-primary-main),
+    toRem(1) toRem(-1) 0 var(--text-primary-main),
+    toRem(-1) toRem(-1) 0 var(--text-primary-main);
 
   &:after {
     content: ' ';
