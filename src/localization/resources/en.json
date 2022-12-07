@@ -62,6 +62,7 @@
     "bookshelf-link": "bookshelf",
     "about-link": "about project",
     "my-nfts-link": "my nfts",
+    "about-us-link": "about us",
     "connect-provider-button": "Connect to Metamask",
     "burger-button-label": "Burger open button "
   },
@@ -78,10 +79,9 @@
     "help-link": "Help & Support",
     "blog-link": "blog"
   },
-  "home-page": {
-    "title": "From Blockchain experts",
-    "subtitle": "Meet our ",
-    "subtitle-highlighted": "NFT book store",
+  "about-us-page": {
+    "title": "Distributed LAB",
+    "subtitle": "THE biggest blockchain R&D center in EMEA",
     "small-subtitle": "Buy and Collect most powerful \nblockchain literature",
     "book-description": "Every book with your \npersonal sign inside",
     "most-popular-title": "Most Popular",
@@ -89,13 +89,19 @@
     "no-data-msg": "Empty data, please add new",
     "view-all-link": "View All",
     "about-us-title": "About Us",
-    "about-us-text-1": "Distributed Lab is a team of cryptographers, computer engineers, researchers, and consultants focused on deep technical research and development since 2014.",
-    "about-us-text-2": "Our mission is to build the Financial Internet, which means flawless user experience between hundreds of financial accounting systems that use uniform API in order to be interoperable.",
-    "about-us-text-3": "Today we help businesses to implement latest cryptography and blockchain advancements in order to build next-generation  accounting systems that digitally transform the internal business processes from within.",
-    "about-us-text-4": "With community-building being the next big focus — holding non-profit events, conferences and courses, publishing free educational books for cyber security students all around the world — we aim to gather and teach the next generation of engineers who are ready and capable to transform all accounting systems in the world so that users could have a single e-wallet that connects to all of them.",
+    "description-abstract-1": "Distributed Lab is a team of cryptographers, computer engineers, researchers, and consultants focused on deep technical research and development since 2014.",
+    "description-abstract-2": "Our mission is to build the Financial Internet, which means flawless user experience between hundreds of financial accounting systems that use uniform API in order to be interoperable.",
+    "description-abstract-3": "Today we help businesses to implement latest cryptography and blockchain advancements in order to build next-generation accounting systems that digitally transform the internal business processes from within.",
+    "description-abstract-4": "With community-building being the next big focus — holding non-profit events, conferences and courses, publishing free educational books for cyber security students all around the world — we aim to gather and teach the next generation of engineers who are ready and capable to transform all accounting systems in the world so that users could have a single e-wallet that connects to all of them.",
     "founder-title": "DR. PAVLO KRAVCHENKO",
     "founder-subtitle": "Co‐Founder, CEO distributed lab",
-    "founder-description": "Neque quisque sollicitudin tempor vestibulum elit taciti. Sagittis tempor consequat turpis. Aenean curae elementum vestibulum dapibus vitae laoreet. Bibendum suspendisse himenaeos malesuada. Nisl taciti si platea dui. Euismod malesuada facilisis duis lobortis aliquet massa. Tincidunt vivamus ac consectetuer molestie pharetra. Sodales pulvinar non habitant."
+    "founder-description": "Amazon, charges ~65% for digital book sales, it didn't seem very fair to us. So we got the idea to tokenize books and sell them for any digital assets.",
+    "founder-title-2": "OLEKSANDR KURBATOV",
+    "founder-subtitle-2": "BA and Researcher",
+    "founder-description-2-abstract-1": "Well, firstly, the digital library is beautiful! Correctly digital, not traditional ebook stores that send the exact file clones for your money—no romance, just an attempt to make money by creating a miserable semblance of a platform. For them, books are sales fees; for the bookrypto team, they are true relations between the author and the reader.",
+    "founder-description-2-abstract-2": "Secondly, I like the personality and digital properties of these books. Should one question the value of the first printed copy of 'The Lord of the Rings' to its owner or a personal copy of 'The Hitchhiker's Guide to the Galaxy' autographed by Douglas Adams? Existing fake ebooks cannot create and convey the mentioned value. Bookrypto, I think, can.",
+    "founder-description-2-abstract-3": "Thirdly, the 'book metaverse' cannot be created by the current Amazon; they need the technology the guys developed.",
+    "founder-description-2-abstract-4": "P.S. The moment you enter your pixel guy for a creative evening with your favorite writer to chat with other fans and win the first edition of a new book as a result of the auction - remember how it all began."
   },
   "bookshelf-page": {
     "loading-error-msg": "Oops... Something went wrong",

@@ -1,48 +1,25 @@
-<script lang="ts" setup>
-import { Icon } from '@/common'
-import { AppLogo } from '@/common'
-import { ICON_NAMES } from '@/enums'
-import { config } from '@config'
-
-const SOCIAL_LINKS = [
-  {
-    iconName: ICON_NAMES.facebookCircle,
-    link: config.FACEBOOK_LINK,
-  },
-  {
-    iconName: ICON_NAMES.instagramCircle,
-    link: config.INSTAGRAM_LINK,
-  },
-  {
-    iconName: ICON_NAMES.youtubeCircle,
-    link: config.YOUTUBE_LINK,
-  },
-  {
-    iconName: ICON_NAMES.linkedinCircle,
-    link: config.LINKEDIN_LINK,
-  },
-  {
-    iconName: ICON_NAMES.telegramCircle,
-    link: config.TELEGRAM_LINK,
-  },
-]
-</script>
-
 <template>
   <footer class="app-footer">
     <hr class="app-footer__line" />
     <div class="app-footer__content">
       <app-logo scheme="light" />
       <div class="app-footer__links-wrapper">
-        <router-link class="app-footer__text-link" to="/">
-          {{ $t('app-footer.faq-link') }}
-        </router-link>
-        <router-link class="app-footer__text-link" to="/">
-          {{ $t('app-footer.help-link') }}
-        </router-link>
-        <router-link class="app-footer__text-link" to="/">
-          {{ $t('app-footer.blog-link') }}
-        </router-link>
+        <app-button
+          :href="$config.FAQ_LINK"
+          :text="$t('app-footer.faq-link')"
+          class="app-footer__text-link"
+        />
+
+        <app-button
+          :href="$config.HELP_LINK"
+          :text="$t('app-footer.help-link')"
+          class="app-footer__text-link"
+        />
+        <app-button
+          :href="$config.BLOG_LINK"
+          :text="$t('app-footer.blog-link')"
+          class="app-footer__text-link"
+        />
       </div>
       <div class="app-footer__social-links">
         <a
@@ -60,10 +37,33 @@ const SOCIAL_LINKS = [
   </footer>
 </template>
 
+<script lang="ts" setup>
+import { Icon, AppLogo, AppButton } from '@/common'
+import { ICON_NAMES } from '@/enums'
+import { config } from '@config'
+
+const SOCIAL_LINKS = [
+  {
+    iconName: ICON_NAMES.facebookCircle,
+    link: config.FACEBOOK_LINK,
+  },
+  {
+    iconName: ICON_NAMES.youtubeCircle,
+    link: config.YOUTUBE_LINK,
+  },
+  {
+    iconName: ICON_NAMES.linkedinCircle,
+    link: config.LINKEDIN_LINK,
+  },
+]
+</script>
+
 <style lang="scss" scoped>
 .app-footer {
+  width: 100%;
   padding: toRem(40) var(--app-padding-right) toRem(40) var(--app-padding-left);
   background: var(--background-secondary);
+  z-index: var(--footer-index);
 }
 
 .app-footer__line {
@@ -87,7 +87,7 @@ const SOCIAL_LINKS = [
   display: flex;
   margin: 0 auto;
   text-transform: uppercase;
-  column-gap: toRem(60);
+  column-gap: toRem(30);
   text-align: center;
 }
 
@@ -96,7 +96,8 @@ const SOCIAL_LINKS = [
   text-decoration: none;
   font-family: var(--app-font-family);
   font-weight: 500;
-  font-size: toRem(14);
+  font-size: toRem(16);
+  background: none;
 }
 
 .app-footer__social-links {
