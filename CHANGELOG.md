@@ -8,6 +8,8 @@ an this project adheres to [Semantic Versioning
 #### Changed
 - About page redesign
 - Footer links
+- Mobile version redirects to metamask browser or to the page of its app
+- Connecting to metamask logic moved to useMetaMaskConnect hook
 
 ## [1.0.0] - 2022-11-30
 #### Added

@@ -7,6 +7,7 @@ import { config } from '@config'
 import { storeToRefs } from 'pinia'
 import { useWeb3ProvidersStore } from '@/store'
 import { useI18n } from 'vue-i18n'
+import { useMetaMaskConnect } from '@/composables'
 
 const SOCIAL_LINKS = [
   {
@@ -26,6 +27,8 @@ const SOCIAL_LINKS = [
 const { provider } = storeToRefs(useWeb3ProvidersStore())
 const { t } = useI18n({ useScope: 'global' })
 
+const { connect } = useMetaMaskConnect()
+
 const isShowSidebar = ref(false)
 
 const handleProviderClick = () => {
@@ -33,7 +36,8 @@ const handleProviderClick = () => {
     provider.value.disconnect()
     return
   }
-  provider.value.connect()
+
+  connect()
 }
 
 const connectProviderButtonText = computed(() => {
