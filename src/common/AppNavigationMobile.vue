@@ -86,7 +86,7 @@ const hideSidebar = () => {
         </router-link>
         <router-link
           class="app-navigation-mobile__text-link"
-          :to="{ name: $routes.myNFTs }"
+          :to="{ name: $routes.myNfts }"
           @click="hideSidebar"
         >
           {{ $t('app-navigation-mobile.my-nfts-link') }}

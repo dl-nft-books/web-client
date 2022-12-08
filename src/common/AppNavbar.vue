@@ -57,7 +57,7 @@ const isAboutPage = computed(() => {
       <router-link v-if="false" class="app-navbar__text-link" to="/">
         {{ $t('app-navbar.about-link') }}
       </router-link>
-      <router-link class="app-navbar__text-link" :to="{ name: $routes.myNFTs }">
+      <router-link class="app-navbar__text-link" :to="{ name: $routes.myNfts }">
         {{ $t('app-navbar.my-nfts-link') }}
       </router-link>
       <router-link

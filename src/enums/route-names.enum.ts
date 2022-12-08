@@ -3,6 +3,6 @@ export enum ROUTE_NAMES {
   aboutUs = 'about-us',
   bookshelf = 'bookshelf',
   bookshelfItem = 'bookshelf-item',
-  myNFTs = 'my-NFTs',
+  myNfts = 'my-NFTs',
   myNftItem = 'my-NFT-item',
 }
