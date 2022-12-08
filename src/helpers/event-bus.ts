@@ -8,6 +8,7 @@ enum EVENTS {
   info = 'info',
   default = 'default',
   openSidebar = 'open-sidebar',
+  hideSidebar = 'hide-sidebar',
 }
 
 export class EventBus {

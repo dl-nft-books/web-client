@@ -1,27 +1,28 @@
 <script lang="ts" setup>
 import { Icon } from '@/common'
+import { Bus } from '@/helpers'
 
 type SCHEMES = 'dark' | 'light'
 
 const props = withDefaults(
   defineProps<{
     scheme?: SCHEMES
-    onClick?: () => void
   }>(),
   {
     scheme: 'dark',
-    onClick: () => {
-      return
-    },
   },
 )
+
+const hideSidebar = () => {
+  Bus.emit(Bus.eventList.hideSidebar)
+}
 </script>
 
 <template>
   <router-link
     :class="`app-logo app-logo--${props.scheme}`"
     :to="{ name: $routes.bookshelf }"
-    @click="onClick"
+    @click="hideSidebar"
   >
     <icon class="app-logo__book-icon" :name="$icons.book" />
     <icon
