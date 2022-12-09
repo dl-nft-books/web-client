@@ -15,13 +15,17 @@ const props = withDefaults(
 const emit = defineEmits<{
   (event: 'hideSidebar'): void
 }>()
+
+const hideSidebar = () => {
+  emit('hideSidebar')
+}
 </script>
 
 <template>
   <router-link
     :class="`app-logo app-logo--${props.scheme}`"
     :to="{ name: $routes.bookshelf }"
-    @click="emit('hideSidebar')"
+    @click="hideSidebar"
   >
     <icon class="app-logo__book-icon" :name="$icons.book" />
     <icon
