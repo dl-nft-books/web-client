@@ -31,7 +31,7 @@ const routes: Array<RouteRecordRaw> = [
   },
   {
     path: '/my-nfts',
-    name: ROUTE_NAMES.myNFTs,
+    name: ROUTE_NAMES.myNfts,
     component: () => import('@/pages/MyNFTsPage.vue'),
   },
   {

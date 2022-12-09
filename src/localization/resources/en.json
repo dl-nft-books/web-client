@@ -68,7 +68,7 @@
   },
   "app-navigation-mobile": {
     "bookshelf-link": "bookshelf",
-    "about-link": "about project",
+    "about-link": "about us",
     "my-nfts-link": "my nfts",
     "connect-provider-button": "Connect to Metamask",
     "burger-button-label": "Burger open button ",
