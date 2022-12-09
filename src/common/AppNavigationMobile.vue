@@ -54,10 +54,6 @@ const showSidebar = () => {
   isShowSidebar.value = true
 }
 
-Bus.on(Bus.eventList.hideSidebar, () => {
-  hideSidebar()
-})
-
 const hideSidebar = () => {
   isShowSidebar.value = false
 }
@@ -69,7 +65,7 @@ const hideSidebar = () => {
     :class="{ 'app-navigation-mobile--open': isShowSidebar }"
   >
     <div class="app-navigation-mobile__header">
-      <app-logo scheme="light" />
+      <app-logo scheme="light" @hide-sidebar="hideSidebar" />
       <button
         class="app-navigation-mobile__close-btn"
         type="button"
