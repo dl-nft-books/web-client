@@ -89,6 +89,11 @@ const SOCIAL_LINKS = [
   text-transform: uppercase;
   column-gap: toRem(30);
   text-align: center;
+
+  @include respond-to(small) {
+    flex-direction: column;
+    align-items: center;
+  }
 }
 
 .app-footer__text-link {

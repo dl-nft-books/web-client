@@ -202,7 +202,7 @@ init()
   padding-bottom: toRem(36);
   margin-bottom: toRem(20);
 
-  @include respond-to(small) {
+  @include respond-to(medium) {
     flex-direction: column;
   }
 }
