@@ -392,6 +392,13 @@ watch(
   font-size: toRem(18);
   line-height: 1.2;
   font-weight: 600;
+  max-width: toRem(300);
+
+  @include text-ellipsis;
+
+  @include respond-to(medium) {
+    max-width: toRem(200);
+  }
 }
 
 .purchase-book-form__body-preview-price {

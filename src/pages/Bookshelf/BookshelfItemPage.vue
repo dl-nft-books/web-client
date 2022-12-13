@@ -183,10 +183,14 @@ init()
   line-height: 1.2;
   font-weight: 900;
   margin-bottom: toRem(40);
+  max-width: 40vw;
+
+  @include text-ellipsis;
 
   @include respond-to(medium) {
     text-align: center;
     font-size: toRem(30);
+    max-width: 90vw;
   }
 }
 

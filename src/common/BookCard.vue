@@ -159,6 +159,8 @@ const price = computed(() =>
   width: 100%;
   color: var(--white);
 
+  @include text-ellipsis;
+
   .book-card--centered & {
     text-align: center;
   }

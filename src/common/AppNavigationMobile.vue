@@ -31,15 +31,6 @@ const { connect } = useMetaMaskConnect()
 
 const isShowSidebar = ref(false)
 
-const handleProviderClick = () => {
-  if (provider.value.selectedAddress) {
-    provider.value.disconnect()
-    return
-  }
-
-  connect()
-}
-
 const connectProviderButtonText = computed(() => {
   return provider.value.selectedAddress
     ? cropAddress(provider.value.selectedAddress)
@@ -105,8 +96,9 @@ const hideSidebar = () => {
           type="button"
           :icon-left="$icons.metamask"
           size="small"
+          :disabled="provider.selectedAddress"
           :text="connectProviderButtonText"
-          @click="handleProviderClick"
+          @click="connect"
         />
       </div>
       <div class="app-navigation-mobile__social">
