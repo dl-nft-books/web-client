@@ -453,5 +453,6 @@ watch(
 .purchase-book-form__purchase-btn {
   margin: 0 auto;
   min-width: toRem(144);
+  min-height: toRem(48);
 }
 </style>
