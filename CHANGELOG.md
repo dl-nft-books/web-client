@@ -15,12 +15,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Connecting to metamask logic moved to useMetaMaskConnect hook
 - Main page redesign
 - Book page redesign
+- Switcher disabled for a while
 
 #### Removed
 - Metamask disconnect feature
 
 #### Fixed
 - Too large book title now displays correct on all pages
+- Mobile adaptive problems
 
 ## [1.0.0] - 2022-11-30
 #### Added
