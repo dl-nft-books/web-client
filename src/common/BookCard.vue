@@ -99,6 +99,8 @@ const price = computed(() =>
   border-radius: toRem(12);
   padding: toRem(16) toRem(16) toRem(20);
 
+  --text-color: var(--white);
+
   &--primary {
     background: var(--background-secondary);
   }
@@ -110,6 +112,7 @@ const price = computed(() =>
   &--tertiary {
     background: var(--background-tertiary);
     border: toRem(1) solid var(--border-primary-main);
+    --text-color: var(--black);
   }
 }
 
@@ -162,7 +165,7 @@ const price = computed(() =>
   line-height: 1.25;
   font-weight: 700;
   width: 100%;
-  color: var(--white);
+  color: var(--text-color);
 
   @include text-ellipsis;
 
