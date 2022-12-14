@@ -92,7 +92,7 @@ const isAboutPage = computed(() => {
   position: relative;
 
   @include respond-to(small) {
-    width: 100vw;
+    width: 100%;
   }
 
   &--dark {
