@@ -118,6 +118,7 @@ init()
 .my-nft-item-page__cover {
   width: 100%;
   height: auto;
+  border-radius: toRem(8);
   filter: var(--cover-image-shadow);
 
   @include respond-to(medium) {

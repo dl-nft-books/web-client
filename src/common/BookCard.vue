@@ -11,7 +11,7 @@ const props = withDefaults(
   defineProps<{
     book: BookRecord | GeneratedNFtRecord
     modification?: 'centered' | 'default'
-    backgroundColor?: 'primary' | 'secondary'
+    backgroundColor?: 'primary' | 'secondary' | 'tertiary'
     actionBtnText?: string
   }>(),
   {
@@ -105,6 +105,11 @@ const price = computed(() =>
 
   &--secondary {
     background: var(--background-quaternary);
+  }
+
+  &--tertiary {
+    background: var(--background-tertiary);
+    border: toRem(1) solid var(--border-primary-main);
   }
 }
 

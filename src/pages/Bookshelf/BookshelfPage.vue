@@ -186,6 +186,8 @@ function onError(e: Error) {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(toRem(292), 1fr));
   grid-gap: toRem(20);
+  position: relative;
+  z-index: var(--page-index);
 }
 
 .bookshelf-page__load-more-btn {

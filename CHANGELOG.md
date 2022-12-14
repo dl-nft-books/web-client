@@ -16,6 +16,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Main page redesign
 - Book page redesign
 - Switcher disabled for a while
+- My nfts page color
 
 #### Removed
 - Metamask disconnect feature
@@ -23,6 +24,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 #### Fixed
 - Too large book title now displays correct on all pages
 - Mobile adaptive problems
+- Z-index at book list
 
 ## [1.0.0] - 2022-11-30
 #### Added
