@@ -73,6 +73,7 @@ watch(
               class="my-nfts-page__card"
               v-for="book in nftList"
               :key="book.id"
+              background-color="tertiary"
               :book="book"
               scheme="link"
               :action-btn-text="$t('my-nfts-page.details-btn')"

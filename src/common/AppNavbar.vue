@@ -91,6 +91,10 @@ const isAboutPage = computed(() => {
   z-index: var(--nav-bar-index);
   position: relative;
 
+  @include respond-to(small) {
+    width: 100%;
+  }
+
   &--dark {
     background-color: var(--background-quinary);
 

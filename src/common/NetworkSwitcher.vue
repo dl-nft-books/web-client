@@ -9,6 +9,7 @@
       @click="changeNetwork(NETWORKS.POLYGON)"
       :icon-left="$icons.polygon"
       icon-size="large"
+      disabled
     />
     <!-- Will be uncommented with release of switching networks -->
     <!-- <app-button

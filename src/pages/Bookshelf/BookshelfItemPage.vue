@@ -183,6 +183,9 @@ init()
   line-height: 1.2;
   font-weight: 900;
   margin-bottom: toRem(40);
+  max-width: 100%;
+
+  @include text-ellipsis;
 
   @include respond-to(medium) {
     text-align: center;
@@ -198,7 +201,7 @@ init()
   padding-bottom: toRem(36);
   margin-bottom: toRem(20);
 
-  @include respond-to(small) {
+  @include respond-to(medium) {
     flex-direction: column;
   }
 }
