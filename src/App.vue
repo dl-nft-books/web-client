@@ -50,13 +50,6 @@ init()
 <style lang="scss" scoped>
 .app__container {
   overflow: hidden;
-  display: grid;
-  grid-template-rows: auto 1fr max-content;
-  flex: 1;
-
-  @include respond-to(small) {
-    grid-template-rows: max-content 1fr max-content;
-  }
 }
 
 .app__main {

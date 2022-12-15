@@ -99,8 +99,6 @@ const price = computed(() =>
   border-radius: toRem(12);
   padding: toRem(16) toRem(16) toRem(20);
 
-  --text-color: var(--white);
-
   &--primary {
     background: var(--background-secondary);
   }
@@ -112,7 +110,6 @@ const price = computed(() =>
   &--tertiary {
     background: var(--background-tertiary);
     border: toRem(1) solid var(--border-primary-main);
-    --text-color: var(--black);
   }
 }
 
@@ -141,7 +138,7 @@ const price = computed(() =>
   font-size: toRem(15);
   line-height: toRem(16);
   padding-top: toRem(2);
-  color: var(--white);
+  color: var(--text-primary-invert-light);
 }
 
 .book-card__icon {
@@ -165,12 +162,15 @@ const price = computed(() =>
   line-height: 1.25;
   font-weight: 700;
   width: 100%;
-  color: var(--text-color);
 
   @include text-ellipsis;
 
   .book-card--centered & {
     text-align: center;
+  }
+
+  .book-card--primary & {
+    color: var(--text-primary-invert-light);
   }
 
   .book-card--secondary & {
@@ -184,7 +184,10 @@ const price = computed(() =>
   line-height: 1.25;
   font-weight: 900;
   width: 45%;
-  color: var(--white);
+
+  .book-card--primary & {
+    color: var(--text-primary-invert-light);
+  }
 
   .book-card--secondary & {
     color: var(--text-primary-invert-main);
