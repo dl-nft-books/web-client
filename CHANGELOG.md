@@ -17,6 +17,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Book page redesign
 - Switcher disabled for a while
 - My nfts page color
+- OG image
 
 #### Removed
 - Metamask disconnect feature
