@@ -5,7 +5,7 @@ import {
   NoDataMessage,
   BookCard,
   AppButton,
-  NetworkSwitcher,
+  BookshelfNetworkSwitcher,
 } from '@/common'
 
 import { ErrorHandler } from '@/helpers'
@@ -57,7 +57,7 @@ function onError(e: Error) {
       <h2 class="bookshelf-page__title">
         {{ $t('bookshelf-page.title') }}
       </h2>
-      <network-switcher />
+      <bookshelf-network-switcher />
     </section>
     <error-message
       v-if="isLoadFailed"

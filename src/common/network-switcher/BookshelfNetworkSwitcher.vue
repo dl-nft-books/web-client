@@ -1,10 +1,11 @@
 <template>
-  <div class="network-switcher">
+  <div class="bookshelft-network-switcher">
     <app-button
       modification="switcher"
-      class="network-switcher__item"
+      class="bookshelft-network-switcher__item"
       :class="{
-        'network-switcher__item--picked': pickedNetwork === NETWORKS.POLYGON,
+        'bookshelft-network-switcher__item--picked':
+          pickedNetwork === NETWORKS.POLYGON,
       }"
       @click="changeNetwork(NETWORKS.POLYGON)"
       :icon-left="$icons.polygon"
@@ -14,9 +15,10 @@
     <!-- Will be uncommented with release of switching networks -->
     <!-- <app-button
       modification="switcher"
-      class="network-switcher__item"
+      class="bookshelft-network-switcher__item"
       :class="{
-        'network-switcher__item--picked': pickedNetwork === NETWORKS.ETHEREUM,
+        'bookshelft-network-switcher__item--picked':
+          pickedNetwork === NETWORKS.ETHEREUM,
       }"
       @click="changeNetwork(NETWORKS.ETHEREUM)"
       :icon-left="$icons.ethereum"
@@ -24,9 +26,10 @@
     />
     <app-button
       modification="switcher"
-      class="network-switcher__item"
+      class="bookshelft-network-switcher__item"
       :class="{
-        'network-switcher__item--picked': pickedNetwork === NETWORKS.Q,
+        'bookshelft-network-switcher__item--picked':
+          pickedNetwork === NETWORKS.Q,
       }"
       @click="changeNetwork(NETWORKS.Q)"
       :icon-left="$icons.q"
@@ -50,7 +53,7 @@ const changeNetwork = (network: NETWORKS) => {
 </script>
 
 <style lang="scss" scoped>
-.network-switcher {
+.bookshelft-network-switcher {
   display: flex;
   justify-content: space-between;
   border-radius: toRem(8);
@@ -64,7 +67,7 @@ const changeNetwork = (network: NETWORKS) => {
   z-index: var(--page-index);
 }
 
-.network-switcher__item {
+.bookshelft-network-switcher__item {
   --bg-picked-color: #{rgba(var(--white-rgb), 0.2)};
 
   padding: toRem(5);

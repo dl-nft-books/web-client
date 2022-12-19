@@ -64,7 +64,8 @@
     "my-nfts-link": "my nfts",
     "about-us-link": "about us",
     "connect-provider-button": "Connect to Metamask",
-    "burger-button-label": "Burger open button "
+    "burger-button-label": "Burger open button ",
+    "copy-address": "Copy address"
   },
   "app-navigation-mobile": {
     "bookshelf-link": "bookshelf",
@@ -117,7 +118,9 @@
     "load-more-btn": "SHOW MORE"
   },
   "networks": {
-    "polygon": "Polygon Mainnet"
+    "polygon": "Polygon Mainnet",
+    "ethereum": "Ethereum Mainnet",
+    "q": "Q Mainnet"
   },
   "my-nfts-page": {
     "loading-error-msg": "Oops... Something went wrong",
