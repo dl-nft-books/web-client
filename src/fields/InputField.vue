@@ -46,7 +46,8 @@
 <script lang="ts">
 import { Icon } from '@/common'
 
-import { BN } from '@/utils/math.util'
+import { BN } from '@distributedlab/utils'
+
 import {
   computed,
   defineComponent,

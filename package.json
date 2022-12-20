@@ -21,6 +21,7 @@
     "generate-ether-types": "typechain --target=ethers-v5 'src/abi/**/*.json' --out-dir src/types/contracts"
   },
   "dependencies": {
+    "@distributedlab/utils": "^2.0.0",
     "@invisiburu/vue-picker": "^2.1.0",
     "@solana/web3.js": "1.52.0",
     "@vuelidate/core": "^2.0.0-alpha.44",

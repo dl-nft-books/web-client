@@ -6,8 +6,7 @@ import { ICON_NAMES } from '@/enums'
 import { config } from '@config'
 import { storeToRefs } from 'pinia'
 import { useWeb3ProvidersStore } from '@/store'
-import { useI18n } from 'vue-i18n'
-import { useMetaMaskConnect } from '@/composables'
+import { useMetaMaskConnect, useContext } from '@/composables'
 
 const SOCIAL_LINKS = [
   {
@@ -25,7 +24,7 @@ const SOCIAL_LINKS = [
 ]
 
 const { provider } = storeToRefs(useWeb3ProvidersStore())
-const { t } = useI18n({ useScope: 'global' })
+const { $t } = useContext()
 
 const { connect } = useMetaMaskConnect()
 
@@ -34,7 +33,7 @@ const isShowSidebar = ref(false)
 const connectProviderButtonText = computed(() => {
   return provider.value.selectedAddress
     ? cropAddress(provider.value.selectedAddress)
-    : t('app-navbar.connect-provider-button')
+    : $t('app-navbar.connect-provider-button')
 })
 
 Bus.on(Bus.eventList.openSidebar, () => {

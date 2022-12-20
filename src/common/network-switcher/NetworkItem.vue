@@ -11,11 +11,10 @@
 
 <script setup lang="ts">
 import { Icon } from '@/common'
+import { useContext } from '@/composables'
 import { computed } from 'vue'
-import { useI18n } from 'vue-i18n'
 
-const { t } = useI18n({ useScope: 'global' })
-
+const { $t } = useContext()
 //same as ICON_NAMES thats why we can pass scheme directly to the icon component
 type SCHEMES = 'polygon' | 'ethereum' | 'q'
 
@@ -48,11 +47,11 @@ const wrapperClasses = computed(() => [
 const getTitle = () => {
   switch (props.scheme) {
     case 'polygon':
-      return t('networks.polygon')
+      return $t('networks.polygon')
     case 'ethereum':
-      return t('networks.ethereum')
+      return $t('networks.ethereum')
     case 'q':
-      return t('networks.q')
+      return $t('networks.q')
     default:
       return ''
   }

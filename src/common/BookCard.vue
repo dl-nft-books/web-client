@@ -4,7 +4,7 @@ import { AppButton, Icon } from '@/common'
 import { BookRecord, GeneratedNFtRecord } from '@/records'
 import { formatFiatAssetFromWei } from '@/helpers'
 import { computed } from 'vue'
-import { useI18n } from 'vue-i18n'
+import { useContext } from '@/composables'
 import { ROUTE_NAMES } from '@/enums'
 
 const props = withDefaults(
@@ -21,7 +21,7 @@ const props = withDefaults(
   },
 )
 
-const { t } = useI18n({ useScope: 'global' })
+const { $t } = useContext()
 
 const bookCardClasses = computed(() =>
   [
@@ -32,7 +32,7 @@ const bookCardClasses = computed(() =>
 )
 
 const actionButtonText = computed(
-  () => props.actionBtnText || t('bookshelf-page.purchase-btn'),
+  () => props.actionBtnText || $t('bookshelf-page.purchase-btn'),
 )
 
 const actionButtonLink = computed(() =>

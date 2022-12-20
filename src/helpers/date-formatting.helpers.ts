@@ -1,6 +1,6 @@
-import { DateUtil } from '@/utils/date.util'
+import { DateUtil } from '@distributedlab/utils'
 import { ConfigType } from 'dayjs'
 
 export function formatMDY(date: ConfigType) {
-  return DateUtil._instance(date).format('MMMM D, YYYY')
+  return DateUtil.format(date, 'MMMM D, YYYY')
 }

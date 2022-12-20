@@ -66,10 +66,10 @@ import { storeToRefs } from 'pinia'
 import { BookRecord } from '@/records'
 import { ErrorHandler } from '@/helpers'
 import { ref, computed } from 'vue'
-import { useI18n } from 'vue-i18n'
+import { useContext } from '@/composables'
 import { config } from '@config'
 import { getPlatformsList } from '@/api'
-import PurchaseBookForm from '@/common/forms/PurchaseBookForm.vue'
+import { PurchaseBookForm } from '@/forms'
 
 import disableChainAnimation from '@/assets/animations/disable-chain.json'
 
@@ -83,7 +83,7 @@ const emit = defineEmits<{
   (event: 'submit'): void
 }>()
 
-const { t } = useI18n()
+const { $t } = useContext()
 
 const isLoaded = ref(false)
 const isSubmitting = ref(false)
@@ -98,10 +98,10 @@ const isValidChain = computed(
 
 const title = computed(() => {
   if (!isValidChain.value && isLoaded.value)
-    return t('purchasing-modal.wrong-network-title')
+    return $t('purchasing-modal.wrong-network-title')
   return isSubmitting.value
-    ? t('purchasing-modal.generation-title')
-    : t('purchasing-modal.title')
+    ? $t('purchasing-modal.generation-title')
+    : $t('purchasing-modal.title')
 })
 
 async function init() {

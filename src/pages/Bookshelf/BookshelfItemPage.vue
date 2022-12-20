@@ -8,9 +8,8 @@ import {
 } from '@/common'
 
 import { BookshelfNetworkInfo } from '@/pages/Bookshelf'
-import { ErrorHandler } from '@/helpers'
 import { ref, watch } from 'vue'
-import { formatFiatAssetFromWei } from '@/helpers'
+import { formatFiatAssetFromWei, ErrorHandler } from '@/helpers'
 import { BookRecord } from '@/records'
 import { useWeb3ProvidersStore } from '@/store'
 import { useMetaMaskConnect } from '@/composables'

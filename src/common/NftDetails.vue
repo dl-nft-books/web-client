@@ -1,8 +1,11 @@
 <!-- TODO: refactor component -->
 <script lang="ts" setup>
 import { Icon } from '@/common'
-import { formatFiatAssetFromWei, formatAssetFromWei } from '@/helpers'
-import { formatMDY } from '@/helpers'
+import {
+  formatFiatAssetFromWei,
+  formatAssetFromWei,
+  formatMDY,
+} from '@/helpers'
 import { GeneratedNFtRecord } from '@/records'
 
 defineProps<{ nftToken: GeneratedNFtRecord }>()

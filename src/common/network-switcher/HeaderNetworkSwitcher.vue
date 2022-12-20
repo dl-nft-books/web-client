@@ -1,5 +1,5 @@
 <template>
-  <drop-down v-if="provider.selectedAddress" :right="80">
+  <drop-down v-if="provider.selectedAddress" :right="81">
     <template #head="{ menu }">
       <section class="header-network-switcher" @click="menu.open">
         <network-item modification="non-active" :scheme="pickedNetwork" />
