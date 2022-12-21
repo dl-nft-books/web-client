@@ -16,23 +16,7 @@
     </span>
   </template>
   <template v-else>
-    <div class="purchase-book-form__body-preview">
-      <div class="purchase-book-form__body-preview-img-wrp">
-        <img
-          class="purchase-book-form__body-preview-img"
-          :src="book.bannerUrl"
-          :alt="book.title"
-        />
-      </div>
-      <div class="purchase-book-form__body-preview-details">
-        <h4 class="purchase-book-form__body-preview-title">
-          {{ book.title }}
-        </h4>
-        <span class="purchase-book-form__body-preview-price">
-          {{ formatFiatAssetFromWei(book.price, 'USD') }}
-        </span>
-      </div>
-    </div>
+    <book-preview :book="book" />
 
     <select-field
       class="purchase-book-form__select"
@@ -55,27 +39,16 @@
 
     <template v-if="isPriceAndBalanceLoaded">
       <template v-if="isLoadFailed">
-        <template v-if="isTokenAddressUnsupported">
-          <div class="purchase-book-form__address-error">
-            <icon
-              class="purchase-book-form__address-error-icon"
-              :name="$icons.exclamationCircle"
-            />
-            <div>
-              <p class="purchase-book-form__address-error-message">
-                {{ $t('purchase-book-form.unsupported-token-msg-1') }}
-              </p>
-              <p class="purchase-book-form__address-error-message">
-                {{ $t('purchase-book-form.unsupported-token-msg-2') }}
-              </p>
-            </div>
-          </div>
-        </template>
-        <template v-else>
-          <error-message
-            :message="$t('purchase-book-form.loading-error-msg')"
-          />
-        </template>
+        <message-field
+          v-if="isTokenAddressUnsupported"
+          :title="$t('purchase-book-form.unsupported-token-msg-1')"
+          :subtitle="$t('purchase-book-form.unsupported-token-msg-2')"
+        />
+
+        <error-message
+          v-else
+          :message="$t('purchase-book-form.loading-error-msg')"
+        />
       </template>
       <template v-else-if="tokenPrice">
         <readonly-field
@@ -92,37 +65,74 @@
         <textarea-field
           class="purchase-book-form__textarea"
           v-model="form.signature"
+          :placeholder="$t('purchase-book-form.signature-placeholder')"
           :maxlength="MAX_FIELD_LENGTH.signature"
           :label="$t('purchase-book-form.signature-lbl')"
           :error-message="getFieldErrorMessage('signature')"
           :disabled="isFormDisabled"
           @blur="touchField('signature')"
         />
+
+        <input-field
+          class="purchase-book-form__input"
+          v-model="form.promocode"
+          :label="$t('purchase-book-form.promocode-lbl')"
+          :placeholder="$t('purchase-book-form.promocode-placeholder')"
+          :error-message="getFieldErrorMessage('promocode')"
+          :disabled="isFormDisabled"
+          @blur="touchField('promocode')"
+          @update:model-value="handlePromocodeInput"
+        />
+
+        <message-field
+          v-if="promocodeInfo.isLoaded"
+          scheme="success"
+          :icon="$icons.percentCircle"
+          :title="
+            $t('purchase-book-form.promocode-applied-msg', {
+              amount: Number(promocodeInfo.promocode.discount) * 100,
+            })
+          "
+        />
+        <message-field
+          v-if="promocodeInfo.error"
+          :title="promocodeInfo.error"
+        />
+
         <app-button
           class="purchase-book-form__purchase-btn"
-          :text="$t('purchase-book-form.purchase-btn')"
+          :text="$t('purchase-book-form.generate-btn')"
           size="small"
           :disabled="isFormDisabled || !isEnoughBalanceForBuy"
           @click="submit"
         />
       </template>
     </template>
-    <template v-else>
-      <loader />
-    </template>
+    <loader v-else />
   </template>
 </template>
 
 <script lang="ts" setup>
-import { AppButton, Loader, ErrorMessage, Animation, Icon } from '@/common'
-import { InputField, TextareaField, SelectField, ReadonlyField } from '@/fields'
+import {
+  AppButton,
+  Loader,
+  ErrorMessage,
+  Animation,
+  BookPreview,
+} from '@/common'
+import {
+  InputField,
+  TextareaField,
+  SelectField,
+  ReadonlyField,
+  MessageField,
+} from '@/fields'
 
 import { useWeb3ProvidersStore } from '@/store'
 import { storeToRefs } from 'pinia'
 import { BookRecord } from '@/records'
 import {
   ErrorHandler,
-  formatFiatAssetFromWei,
   untilTaskFinishedGeneration,
   globalizeTokenType,
 } from '@/helpers'
@@ -132,15 +142,24 @@ import {
   useFormValidation,
   useNftBookToken,
   useErc20,
+  usePromocode,
 } from '@/composables'
-import { required, requiredIf, address } from '@/validators'
+import {
+  required,
+  requiredIf,
+  address,
+  minLength,
+  maxLength,
+} from '@/validators'
 import { BN } from '@/utils/math.util'
 import { errors } from '@/api/json-api/errors'
 import { ethers } from 'ethers'
 import { TokenPrice, Platform } from '@/types'
-import { MAX_FIELD_LENGTH, NULL_ADDRESS } from '@/const'
+import { MAX_FIELD_LENGTH, NULL_ADDRESS, PROMOCODE_LENGTH } from '@/const'
 import { TOKEN_TYPES } from '@/enums'
 import { getPriceByPlatform, createNewTask, getMintSignature } from '@/api'
+
+import { debounce } from 'lodash'
 
 import loaderAnimation from '@/assets/animations/loader.json'
 
@@ -159,8 +178,10 @@ const emit = defineEmits<{
 const isPriceAndBalanceLoaded = ref(false)
 const tokenPrice = ref<TokenPrice | null>(null)
 const isTokenAddressUnsupported = ref(false)
-const isLoadFailed = ref(false)
+const isLoadFailed = ref<boolean>(false)
 const balance = ref('')
+
+const { promocodeInfo, validatePromocode } = usePromocode()
 
 const { provider } = storeToRefs(useWeb3ProvidersStore())
 const nftBookToken = useNftBookToken(provider.value, props.book.contractAddress)
@@ -170,6 +191,7 @@ const form = reactive({
   tokenAddress: '',
   signature: '',
   tokenType: TOKEN_TYPES.native,
+  promocode: '',
 })
 
 const isTokenAddressRequired = computed(
@@ -197,6 +219,10 @@ const { getFieldErrorMessage, touchField, isFormValid } = useFormValidation(
     tokenAddress: {
       requiredIf: requiredIf(isTokenAddressRequired),
       ...(isTokenAddressRequired.value ? { address } : {}),
+    },
+    promocode: {
+      minLength: minLength(PROMOCODE_LENGTH),
+      maxLength: maxLength(PROMOCODE_LENGTH),
     },
   })),
 )
@@ -302,7 +328,7 @@ const getBalance = async () => {
   }
 }
 
-const loadBalanceAndPrice = async () => {
+const _loadBalanceAndPrice = async () => {
   tokenPrice.value = null
   balance.value = ''
   isLoadFailed.value = false
@@ -326,6 +352,26 @@ const loadBalanceAndPrice = async () => {
   isPriceAndBalanceLoaded.value = true
 }
 
+const onPromocodeInput = async () => {
+  await validatePromocode(form.promocode)
+
+  //in order to always calculate new price based on initial price
+  await getPrice()
+
+  if (!tokenPrice.value?.price || !promocodeInfo.isLoaded) return
+
+  const newPrice = new BN(tokenPrice.value.price as string, {
+    decimals: tokenPrice.value.token.decimals,
+  })
+    .div(promocodeInfo.promocode.discount)
+    .toString()
+
+  tokenPrice.value.price = newPrice
+}
+
+const handlePromocodeInput = debounce(onPromocodeInput, 400)
+const loadBalanceAndPrice = debounce(_loadBalanceAndPrice, 400)
+
 watch(
   () => [form.tokenType, form.tokenAddress, provider.value.selectedAddress],
   () => loadBalanceAndPrice(),
@@ -334,20 +380,6 @@ watch(
 </script>
 
 <style lang="scss" scoped>
-.purchase-book-form__body-preview {
-  display: flex;
-  width: 100%;
-  gap: toRem(20);
-  padding-bottom: toRem(24);
-  margin-bottom: toRem(24);
-  border-bottom: toRem(1) solid var(--border-primary-main);
-
-  @include respond-to(small) {
-    padding-bottom: toRem(15);
-    margin-bottom: toRem(15);
-  }
-}
-
 .purchase-book-form__submitting-animation-wrp {
   margin: 0 auto toRem(30);
   max-width: toRem(240);
@@ -368,86 +400,11 @@ watch(
   text-align: center;
 }
 
-.purchase-book-form__body-preview-img-wrp {
-  filter: drop-shadow(0 toRem(4) toRem(8) rgba(150, 150, 157, 0.25));
-  max-width: toRem(120);
-  max-height: toRem(120);
-}
-
-.purchase-book-form__body-preview-img {
-  object-fit: cover;
-  object-position: center;
-  width: 100%;
-  height: 100%;
-  filter: var(--cover-image-shadow-small);
-}
-
-.purchase-book-form__body-preview-details {
-  display: flex;
-  flex-direction: column;
-}
-
-.purchase-book-form__body-preview-title {
-  text-transform: uppercase;
-  font-size: toRem(18);
-  line-height: 1.2;
-  font-weight: 600;
-  max-width: toRem(300);
-
-  @include text-ellipsis;
-
-  @include respond-to(medium) {
-    max-width: toRem(200);
-  }
-}
-
-.purchase-book-form__body-preview-price {
-  text-transform: uppercase;
-  margin-top: auto;
-  font-size: toRem(22);
-  line-height: 1.2;
-  font-weight: 900;
-  color: var(--primary-main);
-}
-
-.purchase-book-form__select {
-  margin-bottom: toRem(16);
-}
-
-.purchase-book-form__input {
-  margin-bottom: toRem(16);
-}
-
-.purchase-book-form__address-error {
-  display: flex;
-  gap: toRem(10);
-  width: 100%;
-  background: var(--background-error);
-  border-radius: toRem(4);
-  padding: toRem(12) toRem(10);
-}
-
-.purchase-book-form__address-error-icon {
-  width: toRem(15);
-  height: toRem(15);
-  color: var(--error-main);
-}
-
-.purchase-book-form__address-error-message {
-  font-size: toRem(14);
-  line-height: 1.2;
-  color: var(--error-main);
-}
-
 .purchase-book-form__not-enough-balance-msg {
   font-size: toRem(12);
   text-align: left;
   width: 100%;
   color: var(--error-main);
-}
-
-.purchase-book-form__textarea {
-  margin: toRem(16) 0 toRem(36);
 }
 
 .purchase-book-form__purchase-btn {

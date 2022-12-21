@@ -154,6 +154,7 @@ export enum ICON_NAMES {
   pause = 'pause',
   pencilAlt = 'pencil-alt',
   pencil = 'pencil',
+  percentCircle = 'percent-circle',
   phoneIncoming = 'phone-incoming',
   phoneMissedCall = 'phone-missed-call',
   phoneOutgoing = 'phone-outgoing',
