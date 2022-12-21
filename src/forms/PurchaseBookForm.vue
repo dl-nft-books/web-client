@@ -113,6 +113,19 @@
 </template>
 
 <script lang="ts" setup>
+import { reactive, computed, watch } from 'vue'
+import { debounce } from 'lodash'
+import { storeToRefs } from 'pinia'
+import { useWeb3ProvidersStore } from '@/store'
+import { BN } from '@/utils/math.util'
+
+import { createNewTask, getMintSignature } from '@/api'
+
+import { MAX_FIELD_LENGTH, NULL_ADDRESS, PROMOCODE_LENGTH } from '@/const'
+import { Platform } from '@/types'
+import { TOKEN_TYPES } from '@/enums'
+import { BookRecord } from '@/records'
+
 import {
   AppButton,
   Loader,
@@ -120,6 +133,16 @@ import {
   Animation,
   BookPreview,
 } from '@/common'
+
+import {
+  useForm,
+  useFormValidation,
+  useNftBookToken,
+  useErc20,
+  usePromocode,
+  useBalance,
+} from '@/composables'
+
 import {
   InputField,
   TextareaField,
@@ -127,23 +150,12 @@ import {
   ReadonlyField,
   MessageField,
 } from '@/fields'
-
-import { useWeb3ProvidersStore } from '@/store'
-import { storeToRefs } from 'pinia'
-import { BookRecord } from '@/records'
 import {
   ErrorHandler,
   untilTaskFinishedGeneration,
   globalizeTokenType,
 } from '@/helpers'
-import { ref, reactive, computed, watch } from 'vue'
-import {
-  useForm,
-  useFormValidation,
-  useNftBookToken,
-  useErc20,
-  usePromocode,
-} from '@/composables'
+
 import {
   required,
   requiredIf,
@@ -151,15 +163,6 @@ import {
   minLength,
   maxLength,
 } from '@/validators'
-import { BN } from '@/utils/math.util'
-import { errors } from '@/api/json-api/errors'
-import { ethers } from 'ethers'
-import { TokenPrice, Platform } from '@/types'
-import { MAX_FIELD_LENGTH, NULL_ADDRESS, PROMOCODE_LENGTH } from '@/const'
-import { TOKEN_TYPES } from '@/enums'
-import { getPriceByPlatform, createNewTask, getMintSignature } from '@/api'
-
-import { debounce } from 'lodash'
 
 import loaderAnimation from '@/assets/animations/loader.json'
 
@@ -175,11 +178,15 @@ const emit = defineEmits<{
   (event: 'submitting', value: boolean): void
 }>()
 
-const isPriceAndBalanceLoaded = ref(false)
-const tokenPrice = ref<TokenPrice | null>(null)
-const isTokenAddressUnsupported = ref(false)
-const isLoadFailed = ref<boolean>(false)
-const balance = ref('')
+const {
+  isPriceAndBalanceLoaded,
+  tokenPrice,
+  isTokenAddressUnsupported,
+  isLoadFailed,
+  balance,
+  getPrice,
+  loadBalanceAndPrice,
+} = useBalance(props.currentPlatform)
 
 const { promocodeInfo, validatePromocode } = usePromocode()
 
@@ -298,65 +305,11 @@ const submit = async () => {
   enableForm()
 }
 
-async function getPrice() {
-  try {
-    const contract = isTokenAddressRequired.value ? form.tokenAddress : ''
-    const { data } = await getPriceByPlatform(
-      props.currentPlatform.id,
-      contract,
-    )
-    tokenPrice.value = data
-  } catch (e) {
-    if (e instanceof errors.NotFoundError) {
-      isTokenAddressUnsupported.value = true
-    }
-    throw e
-  }
-}
-
-const getBalance = async () => {
-  if (isTokenAddressRequired.value) {
-    erc20.init(form.tokenAddress)
-    await erc20.getDecimals()
-    const blnc = await erc20.getBalanceOf(provider.value.selectedAddress!)
-    balance.value = new BN(blnc).fromFraction(erc20.decimals.value).toString()
-  } else {
-    const blnc = await provider.value.getBalance(
-      provider.value.selectedAddress!,
-    )
-    balance.value = new BN(blnc).fromWei().toString()
-  }
-}
-
-const _loadBalanceAndPrice = async () => {
-  tokenPrice.value = null
-  balance.value = ''
-  isLoadFailed.value = false
-
-  if (
-    isTokenAddressRequired.value &&
-    !ethers.utils.isAddress(form.tokenAddress)
-  )
-    return
-
-  isPriceAndBalanceLoaded.value = false
-  isTokenAddressUnsupported.value = false
-
-  try {
-    await Promise.all([getPrice(), getBalance()])
-  } catch (e) {
-    isLoadFailed.value = true
-    ErrorHandler.processWithoutFeedback(e)
-  }
-
-  isPriceAndBalanceLoaded.value = true
-}
-
 const onPromocodeInput = async () => {
   await validatePromocode(form.promocode)
 
   //in order to always calculate new price based on initial price
-  await getPrice()
+  await getPrice(isTokenAddressRequired.value, form.tokenAddress)
 
   if (!tokenPrice.value?.price || !promocodeInfo.isLoaded) return
 
@@ -370,11 +323,10 @@ const onPromocodeInput = async () => {
 }
 
 const handlePromocodeInput = debounce(onPromocodeInput, 400)
-const loadBalanceAndPrice = debounce(_loadBalanceAndPrice, 400)
 
 watch(
   () => [form.tokenType, form.tokenAddress, provider.value.selectedAddress],
-  () => loadBalanceAndPrice(),
+  () => loadBalanceAndPrice(isTokenAddressRequired.value, form.tokenAddress),
   { immediate: true },
 )
 </script>

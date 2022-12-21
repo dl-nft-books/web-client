@@ -43,6 +43,23 @@ export function usePromocode() {
     }
   }
 
+  const handlePromocodeError = (error: Error) => {
+    switch (error.constructor) {
+      case errors.NotFoundError:
+        promocodeInfo.error = t('purchase-book-form.promocode-invalid-msg')
+        promocodeInfo.isLoaded = false
+        return
+      case ExpiredError:
+        promocodeInfo.error = t('purchase-book-form.promocode-expired-msg')
+        return
+      case FullyUsedError:
+        promocodeInfo.error = t('purchase-book-form.promocode-used-msg')
+        return
+      default:
+        break
+    }
+  }
+
   const validatePromocode = async (promocode: string) => {
     try {
       if (promocode.length !== PROMOCODE_LENGTH) {
@@ -60,20 +77,8 @@ export function usePromocode() {
       promocodeInfo.error = ''
     } catch (error) {
       if (error instanceof Error) {
-        switch (error.constructor) {
-          case errors.NotFoundError:
-            promocodeInfo.error = t('purchase-book-form.promocode-invalid-msg')
-            promocodeInfo.isLoaded = false
-            return
-          case ExpiredError:
-            promocodeInfo.error = t('purchase-book-form.promocode-expired-msg')
-            return
-          case FullyUsedError:
-            promocodeInfo.error = t('purchase-book-form.promocode-used-msg')
-            return
-          default:
-            break
-        }
+        handlePromocodeError(error)
+        return
       }
       ErrorHandler.process(error)
     }
