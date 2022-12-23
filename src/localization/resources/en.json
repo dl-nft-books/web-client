@@ -151,7 +151,7 @@
     "unsupported-token-msg-1": "This token unsupported.",
     "unsupported-token-msg-2": "Please choose another token.",
     "submitting-title": "We are generating your NFT.",
-    "submitting-message": "As soon as NFT book will be generated you need to pay",
+    "submitting-message": "As soon as NFT book generates you will need to pay",
     "not-enough-balance-msg": "You don't have enough tokens to buy this NFT"
   },
   "purchasing-success-modal": {
