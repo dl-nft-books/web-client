@@ -318,7 +318,7 @@ const onPromocodeInput = async () => {
   const newPrice = new BN(tokenPrice.value.price as string, {
     decimals: tokenPrice.value.token.decimals,
   })
-    .div(promocodeInfo.promocode.discount)
+    .div(1 - promocodeInfo.promocode.discount)
     .toString()
 
   tokenPrice.value.price = newPrice
