@@ -22,6 +22,7 @@ class FullyUsedError extends Error {
 export function usePromocode() {
   const promocodeInfo = reactive({
     isLoaded: false,
+    isLoading: false,
     promocode: {} as Promocode,
     error: '',
   })
@@ -68,14 +69,17 @@ export function usePromocode() {
         return
       }
 
+      promocodeInfo.isLoading = true
       const { data } = await _validatePromocode(promocode)
 
       checkStatus(data.state)
 
       promocodeInfo.promocode = data.promocode
       promocodeInfo.isLoaded = true
+      promocodeInfo.isLoading = false
       promocodeInfo.error = ''
     } catch (error) {
+      promocodeInfo.isLoading = false
       if (error instanceof Error) {
         handlePromocodeError(error)
         return

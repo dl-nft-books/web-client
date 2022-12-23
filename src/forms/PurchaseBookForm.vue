@@ -84,21 +84,23 @@
           @update:model-value="handlePromocodeInput"
         />
 
-        <message-field
-          v-if="promocodeInfo.isLoaded"
-          scheme="success"
-          :icon="$icons.percentCircle"
-          :title="
-            $t('purchase-book-form.promocode-applied-msg', {
-              amount: Number(promocodeInfo.promocode.discount) * 100,
-            })
-          "
-        />
-        <message-field
-          v-if="promocodeInfo.error"
-          :title="promocodeInfo.error"
-        />
-
+        <loader v-if="promocodeInfo.isLoading" />
+        <template v-else>
+          <message-field
+            v-if="promocodeInfo.isLoaded"
+            scheme="success"
+            :icon="$icons.percentCircle"
+            :title="
+              $t('purchase-book-form.promocode-applied-msg', {
+                amount: Number(promocodeInfo.promocode.discount) * 100,
+              })
+            "
+          />
+          <message-field
+            v-if="promocodeInfo.error"
+            :title="promocodeInfo.error"
+          />
+        </template>
         <app-button
           class="purchase-book-form__purchase-btn"
           :text="$t('purchase-book-form.generate-btn')"
