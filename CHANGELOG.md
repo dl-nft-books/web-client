@@ -19,6 +19,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - My nfts page color
 - OG image
 
+#### Fixed
+- Footer on My-NFTs page
+
 #### Removed
 - Metamask disconnect feature
 

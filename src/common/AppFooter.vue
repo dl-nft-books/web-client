@@ -64,6 +64,8 @@ const SOCIAL_LINKS = [
   padding: toRem(40) var(--app-padding-right) toRem(40) var(--app-padding-left);
   background: var(--background-secondary);
   z-index: var(--footer-index);
+  position: sticky;
+  bottom: 0;
 }
 
 .app-footer__line {
