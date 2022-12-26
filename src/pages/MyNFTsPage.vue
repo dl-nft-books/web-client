@@ -111,6 +111,7 @@ watch(
   gap: toRem(34);
   padding-top: toRem(70);
   padding-bottom: toRem(200);
+  min-height: vh(80);
   background: url('/images/background-cubes.png') no-repeat right / contain;
 }
 
