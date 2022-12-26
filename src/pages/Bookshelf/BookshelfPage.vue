@@ -143,7 +143,7 @@ function onError(e: Error) {
       left: toRem(-60);
       width: 160vw;
       border-radius: toRem(200);
-      height: 195vw;
+      height: toRem(700);
     }
   }
 }
