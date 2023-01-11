@@ -8,9 +8,9 @@ export type PromocodeValidation = JsonApiRecordBase<'validate-promocode'> & {
 
 export type Promocode = JsonApiRecordBase<'promocode'> & {
   discount: number
-  expiratinon_date: string
+  expiration_date: string
   promocode: string
   state: PROMOCODE_STATUSES
-  left_usages: number
+  usages: number
   initial_usages: number
 }

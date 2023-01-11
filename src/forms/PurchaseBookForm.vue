@@ -19,8 +19,8 @@
     <book-preview :book="book" />
 
     <select-field
-      class="purchase-book-form__select"
       v-model="form.tokenType"
+      class="purchase-book-form__select"
       :label="$t('purchase-book-form.token-type-lbl')"
       :value-options="tokenTypesOptions"
       :error-message="getFieldErrorMessage('tokenType')"
@@ -29,8 +29,8 @@
     />
     <input-field
       v-if="isTokenAddressRequired"
-      class="purchase-book-form__input"
       v-model="form.tokenAddress"
+      class="purchase-book-form__input"
       :label="$t('purchase-book-form.token-address-lbl')"
       :error-message="getFieldErrorMessage('tokenAddress')"
       :disabled="isFormDisabled"
@@ -63,8 +63,8 @@
           {{ $t('purchase-book-form.not-enough-balance-msg') }}
         </p>
         <textarea-field
-          class="purchase-book-form__textarea"
           v-model="form.signature"
+          class="purchase-book-form__textarea"
           :placeholder="$t('purchase-book-form.signature-placeholder')"
           :maxlength="MAX_FIELD_LENGTH.signature"
           :label="$t('purchase-book-form.signature-lbl')"
@@ -74,8 +74,8 @@
         />
 
         <input-field
-          class="purchase-book-form__input"
           v-model="form.promocode"
+          class="purchase-book-form__input"
           :label="$t('purchase-book-form.promocode-lbl')"
           :placeholder="$t('purchase-book-form.promocode-placeholder')"
           :error-message="getFieldErrorMessage('promocode')"
@@ -103,8 +103,8 @@
         </template>
         <app-button
           class="purchase-book-form__purchase-btn"
-          :text="$t('purchase-book-form.generate-btn')"
           size="small"
+          :text="$t('purchase-book-form.generate-btn')"
           :disabled="isFormDisabled || !isEnoughBalanceForBuy"
           @click="submit"
         />

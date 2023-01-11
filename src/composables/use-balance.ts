@@ -13,10 +13,10 @@ import { ErrorHandler } from '@/helpers'
 
 export function useBalance(currentPlatform: Platform) {
   const tokenPrice = ref<TokenPrice | null>(null)
-  const isTokenAddressUnsupported = ref<boolean>(false)
+  const isTokenAddressUnsupported = ref(false)
   const balance = ref('')
-  const isLoadFailed = ref<boolean>(false)
-  const isPriceAndBalanceLoaded = ref<boolean>(false)
+  const isLoadFailed = ref(false)
+  const isPriceAndBalanceLoaded = ref(false)
 
   const { provider } = storeToRefs(useWeb3ProvidersStore())
   const erc20 = useErc20(provider.value)
