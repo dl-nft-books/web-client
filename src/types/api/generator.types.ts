@@ -39,6 +39,7 @@ export type Token = JsonApiRecordBase<'tokens'> & {
 
 export type MintSignatureResponse = JsonApiRecordBase<'prices'> & {
   price: string
+  discount: string
   end_timestamp: number
   signature: {
     id: string

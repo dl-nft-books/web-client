@@ -270,6 +270,7 @@ const submit = async () => {
       props.currentPlatform.id,
       generatedTask!.id,
       isTokenAddressRequired.value ? form.tokenAddress : '',
+      promocodeInfo.isLoaded ? promocodeInfo.promocode.id : undefined,
     )
 
     const nativeTokenAmount = isTokenAddressRequired.value
@@ -292,6 +293,7 @@ const submit = async () => {
     await nftBookToken.mintToken(
       isTokenAddressRequired.value ? form.tokenAddress : NULL_ADDRESS,
       mintSignature.price,
+      mintSignature.discount,
       mintSignature.end_timestamp,
       generatedTask!.metadata_ipfs_hash,
       mintSignature.signature.r,
