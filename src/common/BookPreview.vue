@@ -8,7 +8,7 @@
         {{ book.title }}
       </h4>
       <span class="book-preview__price">
-        {{ formatFiatAssetFromWei(book.price, 'USD') }}
+        {{ price }}
       </span>
     </div>
   </div>
@@ -18,9 +18,11 @@
 import { BookRecord } from '@/records'
 import { formatFiatAssetFromWei } from '@/helpers'
 
-defineProps<{
+const props = defineProps<{
   book: BookRecord
 }>()
+
+const price = formatFiatAssetFromWei(props.book.price, 'USD')
 </script>
 
 <style lang="scss" scoped>
@@ -34,7 +36,7 @@ defineProps<{
 }
 
 .book-preview__img-wrapper {
-  filter: drop-shadow(0 toRem(4) toRem(8) rgba(150, 150, 157, 0.25));
+  filter: drop-shadow(0 toRem(4) toRem(8) rgba(var(--shadow-color), 0.25));
   max-width: toRem(120);
   max-height: toRem(120);
 }

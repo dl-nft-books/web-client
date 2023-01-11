@@ -137,7 +137,7 @@ init()
   grid-template-columns: $left-column $right-column;
   grid-column-gap: clamp(#{toRem(10)}, 5%, #{toRem(80)});
   padding-top: toRem(40);
-  padding-bottom: toRem(100);
+  padding-bottom: toRem(150);
   justify-content: center;
   background: url('/images/background-cubes.png') no-repeat left bottom /
     contain;

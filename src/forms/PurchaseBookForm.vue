@@ -87,7 +87,7 @@
         <loader v-if="promocodeInfo.isLoading" />
         <template v-else>
           <message-field
-            v-if="promocodeInfo.isLoaded"
+            v-if="promocodeInfo.promocode"
             scheme="success"
             :icon="$icons.percentCircle"
             :title="
@@ -270,7 +270,7 @@ const submit = async () => {
       props.currentPlatform.id,
       generatedTask!.id,
       isTokenAddressRequired.value ? form.tokenAddress : '',
-      promocodeInfo.isLoaded ? promocodeInfo.promocode.id : undefined,
+      promocodeInfo.promocode ? promocodeInfo.promocode.id : undefined,
     )
 
     const nativeTokenAmount = isTokenAddressRequired.value
@@ -315,9 +315,9 @@ const onPromocodeInput = async () => {
   //in order to always calculate new price based on initial price
   await getPrice(isTokenAddressRequired.value, form.tokenAddress)
 
-  if (!tokenPrice.value?.price || !promocodeInfo.isLoaded) return
+  if (!tokenPrice.value?.price || !promocodeInfo.promocode) return
 
-  const newPrice = new BN(tokenPrice.value.price as string, {
+  const newPrice = new BN(tokenPrice.value.price, {
     decimals: tokenPrice.value.token.decimals,
   })
     .div(1 - promocodeInfo.promocode.discount)

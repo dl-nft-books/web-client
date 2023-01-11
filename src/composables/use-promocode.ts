@@ -21,9 +21,8 @@ class FullyUsedError extends Error {
 
 export function usePromocode() {
   const promocodeInfo = reactive({
-    isLoaded: false,
     isLoading: false,
-    promocode: {} as Promocode,
+    promocode: null as Promocode | null,
     error: '',
   })
 
@@ -31,7 +30,7 @@ export function usePromocode() {
 
   const checkStatus = (state: PROMOCODE_STATUSES) => {
     if (state !== PROMOCODE_STATUSES.ACTIVE) {
-      promocodeInfo.isLoaded = false
+      promocodeInfo.promocode = null
     }
 
     switch (state) {
@@ -48,7 +47,7 @@ export function usePromocode() {
     switch (error.constructor) {
       case errors.NotFoundError:
         promocodeInfo.error = t('purchase-book-form.promocode-invalid-msg')
-        promocodeInfo.isLoaded = false
+        promocodeInfo.promocode = null
         return
       case ExpiredError:
         promocodeInfo.error = t('purchase-book-form.promocode-expired-msg')
@@ -64,7 +63,7 @@ export function usePromocode() {
   const validatePromocode = async (promocode: string) => {
     try {
       if (promocode.length !== PROMOCODE_LENGTH) {
-        promocodeInfo.isLoaded = false
+        promocodeInfo.promocode = null
         promocodeInfo.error = ''
         return
       }
@@ -75,7 +74,6 @@ export function usePromocode() {
       checkStatus(data.state)
 
       promocodeInfo.promocode = data.promocode
-      promocodeInfo.isLoaded = true
       promocodeInfo.isLoading = false
       promocodeInfo.error = ''
     } catch (error) {

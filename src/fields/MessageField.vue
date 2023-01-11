@@ -19,18 +19,19 @@ import { computed } from 'vue'
 
 type SCHEMES = 'error' | 'success'
 
-interface Props {
-  scheme?: SCHEMES
-  icon?: ICON_NAMES
-  title: string
-  subtitle?: string | null
-}
-
-const props = withDefaults(defineProps<Props>(), {
-  scheme: 'error',
-  icon: ICON_NAMES.exclamationCircle,
-  subtitle: null,
-})
+const props = withDefaults(
+  defineProps<{
+    scheme?: SCHEMES
+    icon?: ICON_NAMES
+    title: string
+    subtitle?: string | null
+  }>(),
+  {
+    scheme: 'error',
+    icon: ICON_NAMES.exclamationCircle,
+    subtitle: null,
+  },
+)
 
 const messageClasses = computed(() => [
   'message-field',

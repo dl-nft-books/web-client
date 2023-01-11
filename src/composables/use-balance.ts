@@ -29,11 +29,11 @@ export function useBalance(currentPlatform: Platform) {
       const contract = isTokenAddressRequired ? tokenAddress : ''
       const { data } = await getPriceByPlatform(currentPlatform.id, contract)
       tokenPrice.value = data
-    } catch (e) {
-      if (e instanceof errors.NotFoundError) {
+    } catch (error) {
+      if (error instanceof errors.NotFoundError) {
         isTokenAddressUnsupported.value = true
       }
-      throw e
+      throw error
     }
   }
 
@@ -44,13 +44,17 @@ export function useBalance(currentPlatform: Platform) {
     if (isTokenAddressRequired) {
       erc20.init(tokenAddress)
       await erc20.getDecimals()
-      const blnc = await erc20.getBalanceOf(provider.value.selectedAddress!)
-      balance.value = new BN(blnc).fromFraction(erc20.decimals.value).toString()
-    } else {
-      const blnc = await provider.value.getBalance(
+      const accountBalance = await erc20.getBalanceOf(
         provider.value.selectedAddress!,
       )
-      balance.value = new BN(blnc).fromWei().toString()
+      balance.value = new BN(accountBalance)
+        .fromFraction(erc20.decimals.value)
+        .toString()
+    } else {
+      const accountBalance = await provider.value.getBalance(
+        provider.value.selectedAddress!,
+      )
+      balance.value = new BN(accountBalance).fromWei().toString()
     }
   }
 
