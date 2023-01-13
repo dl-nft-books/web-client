@@ -1,4 +1,5 @@
 <template>
+  <!-- While NFT is being generated -->
   <template v-if="isFormDisabled">
     <div class="purchase-book-form__submitting-animation-wrp">
       <animation
@@ -15,6 +16,8 @@
       {{ $t('purchase-book-form.submitting-message') }}
     </span>
   </template>
+
+  <!-- Before generation stuff -->
   <template v-else>
     <book-preview :book="book" />
 
@@ -27,6 +30,8 @@
       :disabled="isFormDisabled"
       @blur="touchField('tokenType')"
     />
+
+    <!-- ERC20 input -->
     <input-field
       v-if="isTokenAddressRequired"
       v-model="form.tokenAddress"
@@ -37,6 +42,7 @@
       @blur="touchField('tokenAddress')"
     />
 
+    <!-- First loading balance and price -->
     <template v-if="isPriceAndBalanceLoaded">
       <template v-if="isLoadFailed">
         <message-field
@@ -51,17 +57,34 @@
         />
       </template>
       <template v-else-if="tokenPrice">
-        <readonly-field
-          class="purchase-book-form__readonly"
-          :label="$t('purchase-book-form.token-amount-lbl')"
-          :value="formattedTokenAmount"
-        />
-        <p
-          v-if="!isEnoughBalanceForBuy"
-          class="purchase-book-form__not-enough-balance-msg"
-        >
-          {{ $t('purchase-book-form.not-enough-balance-msg') }}
-        </p>
+        <!-- Then showing balance and price if it`s not a voucher-->
+        <template v-if="!isVoucherToken">
+          <readonly-field
+            class="purchase-book-form__readonly"
+            :label="$t('purchase-book-form.token-amount-lbl')"
+            :value="formattedTokenAmount"
+          />
+          <p
+            v-if="!isEnoughBalanceForBuy"
+            class="purchase-book-form__not-enough-balance-msg"
+          >
+            {{ $t('purchase-book-form.not-enough-balance-msg') }}
+          </p>
+        </template>
+
+        <!-- If voucher - showing voucher info -->
+        <template v-else>
+          <readonly-field
+            :label="$t('purchase-book-form.voucher-token-lbl')"
+            :value="book.voucherToken"
+          />
+          <readonly-field
+            :label="$t('purchase-book-form.voucher-token-amount-lbl')"
+            :value="formattedVoucherTokenAmount"
+          />
+        </template>
+
+        <!-- Signature field must be in any case -->
         <textarea-field
           v-model="form.signature"
           class="purchase-book-form__textarea"
@@ -73,39 +96,46 @@
           @blur="touchField('signature')"
         />
 
-        <input-field
-          v-model="form.promocode"
-          class="purchase-book-form__input"
-          :label="$t('purchase-book-form.promocode-lbl')"
-          :placeholder="$t('purchase-book-form.promocode-placeholder')"
-          :error-message="getFieldErrorMessage('promocode')"
-          :disabled="isFormDisabled"
-          @blur="touchField('promocode')"
-          @update:model-value="handlePromocodeInput"
-        />
+        <!-- Promocodes cannot be applied along with vouchers -->
+        <template v-if="!isVoucherToken">
+          <input-field
+            v-model="form.promocode"
+            class="purchase-book-form__input"
+            :label="$t('purchase-book-form.promocode-lbl')"
+            :placeholder="$t('purchase-book-form.promocode-placeholder')"
+            :error-message="getFieldErrorMessage('promocode')"
+            :disabled="isFormDisabled"
+            @blur="touchField('promocode')"
+            @update:model-value="handlePromocodeInput"
+          />
 
-        <loader v-if="promocodeInfo.isLoading" />
-        <template v-else>
-          <message-field
-            v-if="promocodeInfo.promocode"
-            scheme="success"
-            :icon="$icons.percentCircle"
-            :title="
-              $t('purchase-book-form.promocode-applied-msg', {
-                amount: Number(promocodeInfo.promocode.discount) * 100,
-              })
-            "
-          />
-          <message-field
-            v-if="promocodeInfo.error"
-            :title="promocodeInfo.error"
-          />
+          <loader v-if="promocodeInfo.isLoading" />
+          <template v-else>
+            <message-field
+              v-if="promocodeInfo.promocode"
+              scheme="success"
+              :icon="$icons.percentCircle"
+              :title="
+                $t('purchase-book-form.promocode-applied-msg', {
+                  amount: Number(promocodeInfo.promocode.discount) * 100,
+                })
+              "
+            />
+            <message-field
+              v-if="promocodeInfo.error"
+              :title="promocodeInfo.error"
+            />
+          </template>
         </template>
+
+        <!-- Starting NFT generation -->
         <app-button
           class="purchase-book-form__purchase-btn"
           size="small"
           :text="$t('purchase-book-form.generate-btn')"
-          :disabled="isFormDisabled || !isEnoughBalanceForBuy"
+          :disabled="
+            isFormDisabled || (!isEnoughBalanceForBuy && !isVoucherToken)
+          "
           @click="submit"
         />
       </template>
@@ -156,6 +186,7 @@ import {
   ErrorHandler,
   untilTaskFinishedGeneration,
   globalizeTokenType,
+  formatAssetFromWei,
 } from '@/helpers'
 
 import {
@@ -204,8 +235,9 @@ const form = reactive({
 })
 
 const isTokenAddressRequired = computed(
-  () => form.tokenType !== TOKEN_TYPES.native,
+  () => form.tokenType === TOKEN_TYPES.erc20,
 )
+const isVoucherToken = computed(() => form.tokenType === TOKEN_TYPES.voucher)
 const isEnoughBalanceForBuy = computed(
   () => new BN(balance.value).compare(formattedTokenAmount.value) >= 0,
 )
@@ -218,6 +250,12 @@ const formattedTokenAmount = computed(() => {
     .div(tokenPrice.value.price)
     .toString()
 })
+
+const formattedVoucherTokenAmount = computed(() =>
+  props.book.voucherTokenAmount
+    ? formatAssetFromWei(props.book.voucherTokenAmount, 2)
+    : '',
+)
 
 const { disableForm, enableForm, isFormDisabled } = useForm()
 const { getFieldErrorMessage, touchField, isFormValid } = useFormValidation(
@@ -245,7 +283,18 @@ const tokenTypesOptions = computed(() => [
     label: globalizeTokenType(TOKEN_TYPES.erc20),
     value: TOKEN_TYPES.erc20,
   },
+  {
+    label: globalizeTokenType(TOKEN_TYPES.voucher),
+    value: TOKEN_TYPES.voucher,
+  },
 ])
+
+const getTokenAddress = () => {
+  if (isTokenAddressRequired.value) return form.tokenAddress
+  if (isVoucherToken.value) return props.book.voucherToken
+
+  return ''
+}
 
 const submit = async () => {
   if (
@@ -269,17 +318,24 @@ const submit = async () => {
     const { data: mintSignature } = await getMintSignature(
       props.currentPlatform.id,
       generatedTask!.id,
-      isTokenAddressRequired.value ? form.tokenAddress : '',
-      promocodeInfo.promocode ? promocodeInfo.promocode.id : undefined,
+      getTokenAddress(),
+      !isVoucherToken.value && promocodeInfo.promocode
+        ? promocodeInfo.promocode.id
+        : undefined,
     )
 
-    const nativeTokenAmount = isTokenAddressRequired.value
-      ? ''
-      : new BN(props.book.price, { decimals: tokenPrice.value.token.decimals })
-          .div(tokenPrice.value.price)
-          .mul(TOKEN_AMOUNT_COEFFICIENT)
-          .toFixed()
-          .toString()
+    // console.log(mintSignature)
+
+    const nativeTokenAmount =
+      isTokenAddressRequired.value || isVoucherToken.value
+        ? ''
+        : new BN(props.book.price, {
+            decimals: tokenPrice.value.token.decimals,
+          })
+            .div(tokenPrice.value.price)
+            .mul(TOKEN_AMOUNT_COEFFICIENT)
+            .toFixed()
+            .toString()
 
     if (isTokenAddressRequired.value) {
       erc20.init(form.tokenAddress)
@@ -290,8 +346,23 @@ const submit = async () => {
       )
     }
 
+    // console.log('approving', {
+    //   owner: provider.value.selectedAddress,
+    //   amount: props.book.voucherTokenAmount,
+    //   spender: props.book.contractAddress,
+    // })
+
+    if (isVoucherToken.value) {
+      erc20.init(props.book.voucherToken)
+      await erc20.approveSpend(
+        provider.value.selectedAddress,
+        props.book.voucherTokenAmount,
+        props.book.contractAddress,
+      )
+    }
+
     await nftBookToken.mintToken(
-      isTokenAddressRequired.value ? form.tokenAddress : NULL_ADDRESS,
+      getTokenAddress() || NULL_ADDRESS,
       mintSignature.price,
       mintSignature.discount,
       mintSignature.end_timestamp,

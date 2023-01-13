@@ -149,6 +149,8 @@
     "generate-btn": "GENERATE NFT",
     "token-type-lbl": "Token Type",
     "token-amount-lbl": "Amount of Your Token",
+    "voucher-token-lbl": "Voucher Token Address",
+    "voucher-token-amount-lbl": "Amount of Vaucher Token",
     "promocode-lbl": "Promocode",
     "promocode-placeholder": "Enter Promocode",
     "promocode-applied-msg": "{amount}% discount applied",
@@ -196,6 +198,7 @@
   "token-types": {
     "erc20-lbl": "ERC-20",
     "native-lbl": "Native",
+    "voucher-lbl": "Voucher Token",
     "not-found-lbl": "Token type not found"
   }
 }
