@@ -16,6 +16,7 @@ import { useWeb3ProvidersStore } from '@/store'
 import { useMetaMaskConnect } from '@/composables'
 import { storeToRefs } from 'pinia'
 import { getBookById } from '@/api'
+import { NULL_ADDRESS } from '@/const'
 
 const props = defineProps<{
   id: string
@@ -47,6 +48,11 @@ const init = async () => {
     isLoadFailed.value = true
   }
   isLoaded.value = true
+}
+
+// TODO dynamic link
+const getEtherscanLink = (token: string) => {
+  return `https://goerli.etherscan.io/token/${token}`
 }
 
 watch(
@@ -85,11 +91,15 @@ init()
               {{ formatFiatAssetFromWei(book.price, 'USD') }}
             </div>
             <div class="bookshelf-item-page__info">
-              <p>{{ $t('bookshelf-item-page.badge-1') }}</p>
-              <p>{{ $t('bookshelf-item-page.badge-2') }}</p>
+              <app-button
+                v-if="book.voucherToken !== NULL_ADDRESS"
+                :icon-right="$icons.voucher"
+                scheme="default"
+                icon-size="large"
+                :href="getEtherscanLink(book.voucherToken)"
+              />
             </div>
           </div>
-
           <bookshelf-network-info />
           <app-button
             v-if="provider.isConnected"
@@ -202,7 +212,7 @@ init()
   margin-bottom: toRem(20);
 
   @include respond-to(medium) {
-    flex-direction: column;
+    justify-content: center;
   }
 }
 
@@ -212,15 +222,6 @@ init()
   text-align: right;
   user-select: none;
   gap: toRem(5);
-
-  & > * {
-    font-style: italic;
-    letter-spacing: toRem(1);
-    font-weight: 400;
-    font-size: toRem(20);
-    line-height: 120%;
-    color: var(--text-secondary-main);
-  }
 }
 
 .bookshelf-item-page__price {

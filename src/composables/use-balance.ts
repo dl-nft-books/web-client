@@ -21,13 +21,12 @@ export function useBalance(currentPlatform: Platform) {
   const { provider } = storeToRefs(useWeb3ProvidersStore())
   const erc20 = useErc20(provider.value)
 
-  const getPrice = async (
-    isTokenAddressRequired: boolean,
-    tokenAddress: string,
-  ) => {
+  const getPrice = async (tokenAddress: string) => {
     try {
-      const contract = isTokenAddressRequired ? tokenAddress : ''
-      const { data } = await getPriceByPlatform(currentPlatform.id, contract)
+      const { data } = await getPriceByPlatform(
+        currentPlatform.id,
+        tokenAddress,
+      )
       tokenPrice.value = data
     } catch (error) {
       if (error instanceof errors.NotFoundError) {
@@ -37,11 +36,8 @@ export function useBalance(currentPlatform: Platform) {
     }
   }
 
-  const getBalance = async (
-    isTokenAddressRequired: boolean,
-    tokenAddress: string,
-  ) => {
-    if (isTokenAddressRequired) {
+  const getBalance = async (tokenAddress: string) => {
+    if (tokenAddress) {
       erc20.init(tokenAddress)
       await erc20.getDecimals()
       const accountBalance = await erc20.getBalanceOf(
@@ -50,12 +46,13 @@ export function useBalance(currentPlatform: Platform) {
       balance.value = new BN(accountBalance)
         .fromFraction(erc20.decimals.value)
         .toString()
-    } else {
-      const accountBalance = await provider.value.getBalance(
-        provider.value.selectedAddress!,
-      )
-      balance.value = new BN(accountBalance).fromWei().toString()
+      return
     }
+
+    const accountBalance = await provider.value.getBalance(
+      provider.value.selectedAddress!,
+    )
+    balance.value = new BN(accountBalance).fromWei().toString()
   }
 
   const _loadBalanceAndPrice = async (
@@ -72,10 +69,7 @@ export function useBalance(currentPlatform: Platform) {
     isTokenAddressUnsupported.value = false
 
     try {
-      await Promise.all([
-        getPrice(isTokenAddressRequired, tokenAddress),
-        getBalance(isTokenAddressRequired, tokenAddress),
-      ])
+      await Promise.all([getPrice(tokenAddress), getBalance(tokenAddress)])
     } catch (e) {
       isLoadFailed.value = true
       ErrorHandler.processWithoutFeedback(e)

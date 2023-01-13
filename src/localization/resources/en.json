@@ -150,7 +150,7 @@
     "token-type-lbl": "Token Type",
     "token-amount-lbl": "Amount of Your Token",
     "voucher-token-lbl": "Voucher Token Address",
-    "voucher-token-amount-lbl": "Amount of Vaucher Token",
+    "voucher-token-amount-lbl": "Amount of Voucher Token",
     "promocode-lbl": "Promocode",
     "promocode-placeholder": "Enter Promocode",
     "promocode-applied-msg": "{amount}% discount applied",
@@ -162,7 +162,8 @@
     "unsupported-token-msg-2": "Please choose another token.",
     "submitting-title": "We are generating your NFT.",
     "submitting-message": "As soon as NFT book generates you will need to pay",
-    "not-enough-balance-msg": "You don't have enough tokens to buy this NFT"
+    "not-enough-balance-msg": "You don't have enough tokens to buy this NFT",
+    "voucher-token-unsupported-msg": "This payment method is not supported for the purchase of this book" 
   },
   "purchasing-success-modal": {
     "head-title": "Purchasing",
