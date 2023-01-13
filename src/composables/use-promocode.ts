@@ -2,10 +2,9 @@ import { Promocode } from '@/types'
 import { reactive } from 'vue'
 import { validatePromocode as _validatePromocode } from '@/api'
 import {
-  ErrorHandler,
   handlePromocodeError,
-  ExpiredError,
-  FullyUsedError,
+  PromocodeExpiredError,
+  PromocodeFullyUsedError,
 } from '@/helpers'
 import { PROMOCODE_LENGTH } from '@/const'
 import { PROMOCODE_STATUSES } from '@/enums'
@@ -24,39 +23,34 @@ export function usePromocode() {
 
     switch (state) {
       case PROMOCODE_STATUSES.EXPIRED:
-        throw new ExpiredError()
+        throw new PromocodeExpiredError()
       case PROMOCODE_STATUSES.FULLY_USED:
-        throw new FullyUsedError()
+        throw new PromocodeFullyUsedError()
       default:
         break
     }
   }
 
   const validatePromocode = async (promocode: string) => {
-    try {
-      if (promocode.length !== PROMOCODE_LENGTH) {
-        promocodeInfo.promocode = null
-        promocodeInfo.error = ''
-        return
-      }
+    if (promocode.length !== PROMOCODE_LENGTH) {
+      promocodeInfo.promocode = null
+      promocodeInfo.error = ''
+      return
+    }
+    promocodeInfo.isLoading = true
 
-      promocodeInfo.isLoading = true
+    try {
       const { data } = await _validatePromocode(promocode)
 
       checkStatus(data.state)
 
       promocodeInfo.promocode = data.promocode
-      promocodeInfo.isLoading = false
       promocodeInfo.error = ''
     } catch (error) {
-      promocodeInfo.isLoading = false
-      if (error instanceof Error) {
-        promocodeInfo.error = handlePromocodeError(error)
-        promocodeInfo.promocode = null
-        return
-      }
-      ErrorHandler.process(error)
+      promocodeInfo.error = handlePromocodeError(error as Error)
+      promocodeInfo.promocode = null
     }
+    promocodeInfo.isLoading = false
   }
 
   return {

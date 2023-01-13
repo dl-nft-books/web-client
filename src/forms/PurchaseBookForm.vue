@@ -41,8 +41,8 @@
       <template v-if="isLoadFailed">
         <message-field
           v-if="isTokenAddressUnsupported"
-          :title="$t('purchase-book-form.unsupported-token-msg-1')"
-          :subtitle="$t('purchase-book-form.unsupported-token-msg-2')"
+          :title="$t('purchase-book-form.unsupported-token-title')"
+          :subtitle="$t('purchase-book-form.unsupported-token-subtitle')"
         />
 
         <error-message
@@ -187,8 +187,10 @@ const {
   isLoadFailed,
   balance,
   getPrice,
-  loadBalanceAndPrice,
+  loadBalanceAndPrice: _loadBalanceAndPrice,
 } = useBalance(props.currentPlatform)
+
+const loadBalanceAndPrice = debounce(_loadBalanceAndPrice, 400)
 
 const { promocodeInfo, validatePromocode } = usePromocode()
 
@@ -313,7 +315,7 @@ const onPromocodeInput = async () => {
   await validatePromocode(form.promocode)
 
   //in order to always calculate new price based on initial price
-  await getPrice(form.tokenAddress)
+  await getPrice(isTokenAddressRequired.value, form.tokenAddress)
 
   if (!tokenPrice.value?.price || !promocodeInfo.promocode) return
 
