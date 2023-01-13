@@ -313,7 +313,7 @@ const onPromocodeInput = async () => {
   await validatePromocode(form.promocode)
 
   //in order to always calculate new price based on initial price
-  await getPrice(isTokenAddressRequired.value, form.tokenAddress)
+  await getPrice(form.tokenAddress)
 
   if (!tokenPrice.value?.price || !promocodeInfo.promocode) return
 
