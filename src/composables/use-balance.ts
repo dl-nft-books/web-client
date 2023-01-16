@@ -1,7 +1,5 @@
 import { ref } from 'vue'
-import { debounce } from 'lodash'
 import { ethers } from 'ethers'
-import { storeToRefs } from 'pinia'
 import { errors } from '@/api/json-api'
 
 import { getPriceByPlatform } from '@/api'
@@ -18,15 +16,16 @@ export function useBalance(currentPlatform: Platform) {
   const isLoadFailed = ref(false)
   const isPriceAndBalanceLoaded = ref(false)
 
-  const { provider } = storeToRefs(useWeb3ProvidersStore())
-  const erc20 = useErc20(provider.value)
+  const { provider } = useWeb3ProvidersStore()
+  const erc20 = useErc20(provider)
 
-  const getPrice = async (tokenAddress: string) => {
+  const getPrice = async (
+    isTokenAddressRequired: boolean,
+    tokenAddress: string,
+  ) => {
     try {
-      const { data } = await getPriceByPlatform(
-        currentPlatform.id,
-        tokenAddress,
-      )
+      const contract = isTokenAddressRequired ? tokenAddress : ''
+      const { data } = await getPriceByPlatform(currentPlatform.id, contract)
       tokenPrice.value = data
     } catch (error) {
       if (error instanceof errors.NotFoundError) {
@@ -36,26 +35,26 @@ export function useBalance(currentPlatform: Platform) {
     }
   }
 
-  const getBalance = async (tokenAddress: string) => {
-    if (tokenAddress) {
+  const getBalance = async (
+    isTokenAddressRequired: boolean,
+    tokenAddress: string,
+  ) => {
+    if (isTokenAddressRequired) {
       erc20.init(tokenAddress)
       await erc20.getDecimals()
-      const accountBalance = await erc20.getBalanceOf(
-        provider.value.selectedAddress!,
-      )
+      const accountBalance = await erc20.getBalanceOf(provider.selectedAddress!)
       balance.value = new BN(accountBalance)
         .fromFraction(erc20.decimals.value)
         .toString()
-      return
+    } else {
+      const accountBalance = await provider.getBalance(
+        provider.selectedAddress!,
+      )
+      balance.value = new BN(accountBalance).fromWei().toString()
     }
-
-    const accountBalance = await provider.value.getBalance(
-      provider.value.selectedAddress!,
-    )
-    balance.value = new BN(accountBalance).fromWei().toString()
   }
 
-  const _loadBalanceAndPrice = async (
+  const loadBalanceAndPrice = async (
     isTokenAddressRequired: boolean,
     tokenAddress: string,
   ) => {
@@ -69,7 +68,10 @@ export function useBalance(currentPlatform: Platform) {
     isTokenAddressUnsupported.value = false
 
     try {
-      await Promise.all([getPrice(tokenAddress), getBalance(tokenAddress)])
+      await Promise.all([
+        getPrice(isTokenAddressRequired, tokenAddress),
+        getBalance(isTokenAddressRequired, tokenAddress),
+      ])
     } catch (e) {
       isLoadFailed.value = true
       ErrorHandler.processWithoutFeedback(e)
@@ -77,8 +79,6 @@ export function useBalance(currentPlatform: Platform) {
 
     isPriceAndBalanceLoaded.value = true
   }
-
-  const loadBalanceAndPrice = debounce(_loadBalanceAndPrice, 400)
 
   return {
     getPrice,

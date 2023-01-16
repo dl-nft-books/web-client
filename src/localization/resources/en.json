@@ -148,7 +148,7 @@
     "signature-placeholder": "Write the signature you would like to see in your book",
     "generate-btn": "GENERATE NFT",
     "token-type-lbl": "Token Type",
-    "token-amount-lbl": "Amount of Your Token",
+    "token-amount-lbl": "Amount to spend",
     "voucher-token-lbl": "Voucher Token Address",
     "voucher-token-amount-lbl": "Amount of Voucher Token",
     "promocode-lbl": "Promocode",
@@ -163,7 +163,8 @@
     "submitting-title": "We are generating your NFT.",
     "submitting-message": "As soon as NFT book generates you will need to pay",
     "not-enough-balance-msg": "You don't have enough tokens to buy this NFT",
-    "voucher-token-unsupported-msg": "This payment method is not supported for the purchase of this book" 
+    "voucher-token-unsupported-msg": "This payment method is not supported for the purchase of this book",
+    "not-enough-voucher-tokens-msg": "You don't have enough voucher tokens to buy this NFT. Required amount: {amount}." 
   },
   "purchasing-success-modal": {
     "head-title": "Purchasing",

@@ -56,7 +56,9 @@
           :message="$t('purchase-book-form.loading-error-msg')"
         />
       </template>
-      <template v-else-if="tokenPrice">
+
+      <!-- No token price available when paying with voucher -->
+      <template v-else-if="tokenPrice || isVoucherToken">
         <!-- Then showing balance and price if it`s not a voucher-->
         <template v-if="!isVoucherToken">
           <readonly-field
@@ -77,6 +79,14 @@
           <message-field
             v-if="!isVoucherSupported"
             :title="$t('purchase-book-form.voucher-token-unsupported-msg')"
+          />
+          <message-field
+            v-else-if="!isEnoughVoucherTokensForBuy"
+            :title="
+              $t('purchase-book-form.not-enough-voucher-tokens-msg', {
+                amount: formattedVoucherTokenAmount,
+              })
+            "
           />
           <template v-else>
             <readonly-field
@@ -122,8 +132,18 @@
           </template>
         </template>
 
-        <!-- Signature field won't be shown if voucher is not supported -->
-        <template v-if="!(isVoucherToken && !isVoucherSupported)">
+        <!--
+            Signature field won't be shown if voucher is not supported
+            or user have not enough voucher tokens on his balance
+        -->
+        <template
+          v-if="
+            !(
+              isVoucherToken &&
+              (!isVoucherSupported || !isEnoughVoucherTokensForBuy)
+            )
+          "
+        >
           <textarea-field
             v-model="form.signature"
             class="purchase-book-form__textarea"
@@ -250,6 +270,9 @@ const isVoucherSupported = computed(
 )
 const isEnoughBalanceForBuy = computed(
   () => new BN(balance.value).compare(formattedTokenAmount.value) >= 0,
+)
+const isEnoughVoucherTokensForBuy = computed(
+  () => new BN(balance.value).compare(formattedVoucherTokenAmount.value) >= 0,
 )
 
 const formattedTokenAmount = computed(() => {
@@ -386,7 +409,7 @@ const onPromocodeInput = async () => {
   await validatePromocode(form.promocode)
 
   //in order to always calculate new price based on initial price
-  await getPrice(form.tokenAddress)
+  await getPrice(isTokenAddressRequired.value, form.tokenAddress)
 
   if (!tokenPrice.value?.price || !promocodeInfo.promocode) return
 
@@ -410,7 +433,9 @@ watch(
         form.tokenAddress,
       )
 
-    if (isVoucherSupported.value) getBalance(props.book.voucherToken)
+    if (isVoucherSupported.value) {
+      getBalance(true, props.book.voucherToken)
+    }
   },
   { immediate: true },
 )
