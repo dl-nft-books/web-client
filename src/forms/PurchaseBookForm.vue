@@ -28,7 +28,7 @@
       @blur="touchField('tokenType')"
     />
     <input-field
-      v-if="isTokenAddressRequired"
+      v-if="isERC20Token"
       v-model="form.tokenAddress"
       class="purchase-book-form__input"
       :label="$t('purchase-book-form.token-address-lbl')"
@@ -205,9 +205,7 @@ const form = reactive({
   promocode: '',
 })
 
-const isTokenAddressRequired = computed(
-  () => form.tokenType !== TOKEN_TYPES.native,
-)
+const isERC20Token = computed(() => form.tokenType === TOKEN_TYPES.erc20)
 const isEnoughBalanceForBuy = computed(
   () => new BN(balance.value).compare(formattedTokenAmount.value) >= 0,
 )
@@ -228,8 +226,8 @@ const { getFieldErrorMessage, touchField, isFormValid } = useFormValidation(
     signature: { required },
     tokenType: { required },
     tokenAddress: {
-      requiredIf: requiredIf(isTokenAddressRequired),
-      ...(isTokenAddressRequired.value ? { address } : {}),
+      requiredIf: requiredIf(isERC20Token),
+      ...(isERC20Token.value ? { address } : {}),
     },
     promocode: {
       minLength: minLength(PROMOCODE_LENGTH),
@@ -271,11 +269,11 @@ const submit = async () => {
     const { data: mintSignature } = await getMintSignature(
       props.currentPlatform.id,
       generatedTask!.id,
-      isTokenAddressRequired.value ? form.tokenAddress : '',
+      isERC20Token.value ? form.tokenAddress : '',
       promocodeInfo.promocode ? promocodeInfo.promocode.id : undefined,
     )
 
-    const nativeTokenAmount = isTokenAddressRequired.value
+    const nativeTokenAmount = isERC20Token.value
       ? ''
       : new BN(props.book.price, { decimals: tokenPrice.value.token.decimals })
           .div(tokenPrice.value.price)
@@ -283,7 +281,7 @@ const submit = async () => {
           .toFixed()
           .toString()
 
-    if (isTokenAddressRequired.value) {
+    if (isERC20Token.value) {
       erc20.init(form.tokenAddress)
       await erc20.approveSpend(
         provider.value.selectedAddress,
@@ -293,7 +291,7 @@ const submit = async () => {
     }
 
     await nftBookToken.mintToken(
-      isTokenAddressRequired.value ? form.tokenAddress : NULL_ADDRESS,
+      isERC20Token.value ? form.tokenAddress : NULL_ADDRESS,
       mintSignature.price,
       mintSignature.discount,
       mintSignature.end_timestamp,
@@ -315,7 +313,7 @@ const onPromocodeInput = async () => {
   await validatePromocode(form.promocode)
 
   //in order to always calculate new price based on initial price
-  await getPrice(isTokenAddressRequired.value, form.tokenAddress)
+  await getPrice(form.tokenAddress, isERC20Token.value)
 
   if (!tokenPrice.value?.price || !promocodeInfo.promocode) return
 
@@ -332,7 +330,7 @@ const handlePromocodeInput = debounce(onPromocodeInput, 400)
 
 watch(
   () => [form.tokenType, form.tokenAddress, provider.value.selectedAddress],
-  () => loadBalanceAndPrice(isTokenAddressRequired.value, form.tokenAddress),
+  () => loadBalanceAndPrice(form.tokenAddress, isERC20Token.value),
   { immediate: true },
 )
 </script>
