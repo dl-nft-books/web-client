@@ -3,9 +3,6 @@
     <h1 class="bookshelf-header__title">
       {{ $t('bookshelf-header.title') }}
     </h1>
-    <h4 class="bookshelf-header__subtitle">
-      {{ $t('bookshelf-header.small-subtitle') }}
-    </h4>
     <div class="bookshelf-header__description">
       <icon class="bookshelf-header__icon" :name="$icons.bookWithFeather" />
       <div class="bookshelf-header__book-desctiption">
@@ -45,22 +42,6 @@ import { Icon } from '@/common'
 
   @include respond-to(medium) {
     font-size: toRem(40);
-  }
-}
-
-.bookshelf-header__subtitle {
-  font-size: toRem(24);
-  font-weight: 600;
-  line-height: 120%;
-  color: var(--primary-dark);
-  text-shadow: toRem(-1) toRem(1) 0 var(--text-primary-invert-main),
-    toRem(1) toRem(1) 0 var(--text-primary-invert-main),
-    toRem(1) toRem(-1) 0 var(--text-primary-invert-main),
-    toRem(-1) toRem(-1) 0 var(--text-primary-invert-main);
-
-  @include respond-to(medium) {
-    font-size: toRem(20);
-    text-align: left;
   }
 }
 

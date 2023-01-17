@@ -10,6 +10,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Network switcher component in header
 - User drop-down menu
 - useContext hook instead of calling useI18n every time and specifying scope
+- Promocodes logic
+- Vouchers logic
+
+#### Changed
+- Contract updated to the newest version
+- Metamask redirects you to the page where you clicked connect button
+
+## [1.1.0] - 2022-12-26
+#### Added
+- Network switcher component(doing nothing for now)
 
 #### Changed
 - About page redesign
@@ -20,6 +30,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Book page redesign
 - Switcher disabled for a while
 - My nfts page color
+- OG image
+
+#### Fixed
+- Footer on My-NFTs page
 
 #### Removed
 - Metamask disconnect feature
@@ -41,5 +55,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 #### Under the hood changes
 - merged from https://gitlab.com/distributed_lab/frontend/vue-template
 
-[Unreleased]: https://gitlab.com/tokend/nft-books/web-client-nft-books/compare/v1.0.0...main
+[Unreleased]: https://gitlab.com/tokend/nft-books/web-client-nft-books/compare/v1.2.0...main
+[1.1.0]: https://gitlab.com/tokend/nft-books/web-client-nft-books/compare/v1.0.0...v1.1.0
 [1.0.0]: https://gitlab.com/tokend/nft-books/web-client-nft-books/tags/v1.0.0

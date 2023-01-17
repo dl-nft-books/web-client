@@ -10,6 +10,7 @@ $background-quaternary: #313131;
 $background-quinary: #111010;
 $background-quinary-rgb: hexToRGB($background-quinary);
 $background-error: #ffedf3;
+$background-success: #F2FFED;
 
 /* status colors */
 
@@ -53,6 +54,8 @@ $text-secondary-invert-light: #ffffff;
 $text-secondary-invert-main: #ffffff;
 $text-secondary-invert-dark: #ffffff;
 
+$text-success: #4E975A;
+
 /* border colors */
 
 $border-primary-light: #feffff;
@@ -71,3 +74,4 @@ $q-network: #0B2545;
 $q-network-stroke: #87FF65;
 $drop-down-shadow: #b6b6b7;
 $drop-down-shadow-rgb: hexToRGB($drop-down-shadow);
+$shadow-color: #96969d;

@@ -92,6 +92,7 @@ init()
 
   display: grid;
   width: 100%;
+  min-height: vh(80);
   grid-template-columns: $left-column $right-column;
   grid-column-gap: clamp(#{toRem(10)}, 5%, #{toRem(80)});
   padding-top: toRem(40);

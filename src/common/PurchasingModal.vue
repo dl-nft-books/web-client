@@ -10,7 +10,6 @@
             {{ title }}
           </h3>
           <app-button
-            v-if="!isSubmitting"
             class="purchasing-modal__close-btn"
             :icon-right="$icons.x"
             color="default"
@@ -21,20 +20,18 @@
         </div>
         <div class="purchasing-modal__body">
           <template v-if="isLoaded">
-            <template v-if="isLoadFailed">
-              <error-message
-                :message="$t('purchasing-modal.loading-error-msg')"
-              />
-            </template>
+            <error-message
+              v-if="isLoadFailed"
+              :message="$t('purchasing-modal.loading-error-msg')"
+            />
             <template v-else>
-              <template v-if="isValidChain">
-                <purchase-book-form
-                  :book="props.book"
-                  :current-platform="currentPlatform"
-                  @submitting="isSubmitting = $event"
-                  @submit="emit('submit')"
-                />
-              </template>
+              <purchase-book-form
+                v-if="isValidChain"
+                :book="props.book"
+                :current-platform="currentPlatform"
+                @submitting="isSubmitting = $event"
+                @submit="emit('submit')"
+              />
               <template v-else>
                 <div class="purchasing-modal__wrong-network-animation-wrp">
                   <animation
@@ -49,9 +46,7 @@
               </template>
             </template>
           </template>
-          <template v-else>
-            <loader />
-          </template>
+          <loader v-else />
         </div>
       </div>
     </template>
@@ -161,6 +156,8 @@ init()
   display: flex;
   flex-direction: column;
   align-items: center;
+  padding: toRem(20);
+  gap: toRem(20);
   overflow-y: auto;
 }
 

@@ -15,6 +15,8 @@ export class BookRecord {
   fileName: string
   fileUrl: string
   bannerUrl: string
+  voucherToken: string
+  voucherTokenAmount: string
 
   constructor(record: Book) {
     this.contractAddress = record.contract_address
@@ -32,5 +34,7 @@ export class BookRecord {
     this.fileUrl = record.file.attributes.url
     this.bannerKey = record.banner.attributes.key
     this.bannerUrl = record.banner.attributes.url
+    this.voucherToken = record.voucher_token
+    this.voucherTokenAmount = record.voucher_token_amount
   }
 }
