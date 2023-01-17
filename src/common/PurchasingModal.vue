@@ -103,19 +103,11 @@ async function init() {
   isLoaded.value = false
   try {
     const { data: platforms } = await getPlatformsList()
-    console.log(platforms)
-
-    console.log('book', props.book)
-
     // FIXME: fix platforms hardcode
     currentPlatform.value =
       config.DEPLOY_ENVIRONMENT === 'production'
         ? platforms.find(i => i.id === 'polygon-pos')
         : platforms.find(i => i.id === 'ethereum')
-    console.log(
-      currentPlatform.value,
-      platforms.find(i => i.id === 'polygon-pos'),
-    )
   } catch (e) {
     isLoadFailed.value = true
     ErrorHandler.processWithoutFeedback(e)
