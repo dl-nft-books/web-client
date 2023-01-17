@@ -121,7 +121,8 @@
   "networks": {
     "polygon": "Polygon Mainnet",
     "ethereum": "Ethereum Mainnet",
-    "q": "Q Mainnet"
+    "q": "Q Mainnet",
+    "unsupported": "Unknown network"
   },
   "my-nfts-page": {
     "loading-error-msg": "Oops... Something went wrong",

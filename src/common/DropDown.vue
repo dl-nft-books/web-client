@@ -1,5 +1,5 @@
 <template>
-  <div ref="rootEl" :style="cssVars">
+  <div ref="rootEl" :class="classes" :style="cssVars">
     <slot name="head" :menu="exposedMenuObject" />
     <transition
       name="drop-down_transition"
@@ -14,19 +14,20 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, useAttrs } from 'vue'
 import { onClickOutside } from '@vueuse/core'
 import { ref, onMounted } from 'vue'
 
-interface Props {
-  top?: number
-  right?: number
-}
-
-const props = withDefaults(defineProps<Props>(), {
-  top: 60,
-  right: -10,
-})
+const props = withDefaults(
+  defineProps<{
+    top?: number
+    right?: number
+  }>(),
+  {
+    top: 60,
+    right: -10,
+  },
+)
 
 const cssVars = computed(() => ({
   '--dropdown-top': `${props.top}px`,
@@ -63,9 +64,30 @@ const setHeightCSSVar = (element: HTMLElement) => {
     `${element.scrollHeight}px`,
   )
 }
+
+const attrs = useAttrs()
+
+const isDisabled = computed(() =>
+  ['', 'disabled', true].includes(attrs.disabled as string | boolean),
+)
+
+const classes = computed(() => {
+  const defaultClasses = ['drop-down']
+
+  if (isDisabled.value) defaultClasses.push('drop-down--disabled')
+
+  return defaultClasses
+})
 </script>
 
 <style lang="scss" scoped>
+.drop-down {
+  &--disabled {
+    opacity: 0.7;
+    pointer-events: none;
+  }
+}
+
 .drop-down__body {
   position: absolute;
   top: var(--dropdown-top);

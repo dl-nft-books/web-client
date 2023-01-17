@@ -1,7 +1,7 @@
 <template>
   <div :class="classes" @click="emit('networkChange')">
     <div :class="wrapperClasses">
-      <icon class="network-item__icon" :name="scheme" />
+      <icon class="network-item__icon" :name="getIconName(scheme)" />
     </div>
     <p class="network-item__title">
       {{ title }}
@@ -14,21 +14,35 @@ import { Icon } from '@/common'
 import { useContext } from '@/composables'
 import { computed } from 'vue'
 
-const { $t } = useContext()
-//same as ICON_NAMES thats why we can pass scheme directly to the icon component
-type SCHEMES = 'polygon' | 'ethereum' | 'q'
+const { $t, $icons } = useContext()
+
+type SCHEMES = 'polygon' | 'ethereum' | 'q' | 'unsupported'
+
+const getIconName = (scheme: SCHEMES) => {
+  switch (scheme) {
+    case 'polygon':
+      return $icons.polygon
+    case 'ethereum':
+      return $icons.ethereum
+    case 'q':
+      return $icons.q
+    case 'unsupported':
+      return $icons.ban
+  }
+}
 
 type MODIFICATIONS = 'non-active' | 'default'
 
-interface Props {
-  scheme?: SCHEMES
-  modification?: MODIFICATIONS
-}
-
-const props = withDefaults(defineProps<Props>(), {
-  scheme: 'polygon',
-  modification: 'default',
-})
+const props = withDefaults(
+  defineProps<{
+    scheme?: SCHEMES
+    modification?: MODIFICATIONS
+  }>(),
+  {
+    scheme: 'polygon',
+    modification: 'default',
+  },
+)
 
 const emit = defineEmits<{
   (event: 'networkChange'): void
@@ -52,6 +66,8 @@ const getTitle = () => {
       return $t('networks.ethereum')
     case 'q':
       return $t('networks.q')
+    case 'unsupported':
+      return $t('networks.unsupported')
     default:
       return ''
   }
@@ -92,6 +108,7 @@ const title = computed(getTitle)
   border-radius: 100%;
   display: grid;
   place-content: center;
+  aspect-ratio: 1 / 1;
 
   &--polygon {
     background-color: var(--polygon-network);
@@ -103,6 +120,10 @@ const title = computed(getTitle)
 
   &--q {
     background-color: var(--q-network);
+  }
+
+  &--unsupported {
+    background-color: var(--primary-main);
   }
 }
 

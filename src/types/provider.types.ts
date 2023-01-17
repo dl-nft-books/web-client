@@ -8,7 +8,7 @@ import {
 import { ethers } from 'ethers'
 
 import { PROVIDERS } from '@/enums'
-import { EthereumProvider } from '@/types/ethereum.types'
+import { EthereumProvider, NativeCurrency } from '@/types'
 import { PhantomProvider } from '@/types/solana.types'
 
 /**
@@ -66,6 +66,8 @@ export interface ProviderWrapper {
     chainId: ChainId,
     chainName: string,
     chainRpcUrl: string,
+    nativeCurrency: NativeCurrency,
+    blockExplorerUrl: string,
   ) => Promise<void>
   signAndSendTransaction: (
     txRequestBody: TxRequestBody,
