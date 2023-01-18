@@ -34,12 +34,14 @@ export function getMintSignature(
   platform: string,
   taskId: string | number,
   tokenAddress?: string,
+  promocodeId?: string,
 ) {
   return api.get<MintSignatureResponse>(
     '/integrations/generator/signature/mint',
     {
       platform,
       task_id: taskId,
+      ...(promocodeId ? { promocode_id: promocodeId } : {}),
       ...(tokenAddress ? { token_address: tokenAddress } : {}),
     },
   )

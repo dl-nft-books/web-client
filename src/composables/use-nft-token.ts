@@ -74,6 +74,7 @@ export const useNftBookToken = (
   const mintToken = async (
     tokenAddress: string,
     price: string,
+    discount: string,
     endTimestamp: number,
     tokenUri: string,
     r: string,
@@ -85,6 +86,7 @@ export const useNftBookToken = (
       const contractTransaction = await _instance_rw.value?.mintToken(
         tokenAddress,
         price,
+        discount,
         endTimestamp,
         tokenUri,
         r,

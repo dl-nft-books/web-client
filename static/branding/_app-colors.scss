@@ -10,6 +10,7 @@ $background-quaternary: #313131;
 $background-quinary: #111010;
 $background-quinary-rgb: hexToRGB($background-quinary);
 $background-error: #ffedf3;
+$background-success: #F2FFED;
 
 /* status colors */
 
@@ -53,6 +54,8 @@ $text-secondary-invert-light: #ffffff;
 $text-secondary-invert-main: #ffffff;
 $text-secondary-invert-dark: #ffffff;
 
+$text-success: #4E975A;
+
 /* border colors */
 
 $border-primary-light: #feffff;
@@ -66,3 +69,4 @@ $border-black: #3E3E3E;
 /* other colors */
 
 $polygon-network: #8247E5;
+$shadow-color: #96969d;

@@ -8,9 +8,9 @@ import {
 } from '@/common'
 
 import { BookshelfNetworkInfo } from '@/pages/Bookshelf'
-import { ErrorHandler } from '@/helpers'
+import { ErrorHandler, formatFiatAssetFromWei } from '@/helpers'
 import { ref, watch } from 'vue'
-import { formatFiatAssetFromWei } from '@/helpers'
+import { CURRENCY } from '@/enums'
 import { BookRecord } from '@/records'
 import { useWeb3ProvidersStore } from '@/store'
 import { useMetaMaskConnect } from '@/composables'
@@ -82,7 +82,7 @@ init()
           </h2>
           <div class="bookshelf-item-page__actions">
             <div class="bookshelf-item-page__price">
-              {{ formatFiatAssetFromWei(book.price, 'USD') }}
+              {{ formatFiatAssetFromWei(book.price, CURRENCY.USD) }}
             </div>
             <div class="bookshelf-item-page__info">
               <p>{{ $t('bookshelf-item-page.badge-1') }}</p>
@@ -137,7 +137,7 @@ init()
   grid-template-columns: $left-column $right-column;
   grid-column-gap: clamp(#{toRem(10)}, 5%, #{toRem(80)});
   padding-top: toRem(40);
-  padding-bottom: toRem(100);
+  padding-bottom: toRem(150);
   justify-content: center;
   background: url('/images/background-cubes.png') no-repeat left bottom /
     contain;

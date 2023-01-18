@@ -15,6 +15,7 @@
   --background-quinary: #{$background-quinary};
   --background-quinary-rgb: #{$background-quinary-rgb};
   --background-error: #{$background-error};
+  --background-success: #{$background-success};
 
   /* status colors */
   --success-light: #{$success-light};
@@ -56,6 +57,8 @@
   --text-secondary-invert-main: #{$text-secondary-invert-main};
   --text-secondary-invert-dark: #{$text-secondary-invert-dark};
 
+  --text-success: #{$text-success};
+
   /* border colors */
   --border-primary-light: #{$border-primary-light};
   --border-primary-main: #{$border-primary-main};
@@ -65,6 +68,7 @@
 
   /* other colors */
   --polygon-network: #{$polygon-network};
+  --shadow-color: #{$shadow-color};
 
   /* App variables */
   --app-txt: #{$text-primary-main};

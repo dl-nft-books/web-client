@@ -3,7 +3,9 @@
     "field-error_required": "Please fill out this field",
     "field-error_requiredIf": "Please fill out this field",
     "field-error_email": "Field must be a valid email",
-    "field-error_address": "Field must be a valid address"
+    "field-error_address": "Field must be a valid address",
+    "field-error_minLength": "Value must be at least {min} chars",
+    "field-error_maxLength": "Value can't be greater than {max} chars"
   },
   "errors": {
     "default": "Oops... Something went wrong",
@@ -127,7 +129,7 @@
   },
   "bookshelf-item-page": {
     "loading-error-msg": "Oops.... Something went wrong",
-    "purchase-btn": "Buy",
+    "purchase-btn": "BUY",
     "badge-1": "For any acceptable token",
     "badge-2": "Add your personal sign",
     "network-title": "Supported by",
@@ -143,12 +145,19 @@
   "purchase-book-form": {
     "token-address-lbl": "Enter Token Address",
     "signature-lbl": "Your Signature",
-    "purchase-btn": "Buy",
+    "signature-placeholder": "Write the signature you would like to see in your book",
+    "generate-btn": "GENERATE NFT",
     "token-type-lbl": "Token Type",
     "token-amount-lbl": "Amount of Your Token",
+    "promocode-lbl": "Promocode",
+    "promocode-placeholder": "Enter Promocode",
+    "promocode-applied-msg": "{amount}% discount applied",
+    "promocode-invalid-msg": "This promocode is invalid",
+    "promocode-expired-msg": "This promocode is expired",
+    "promocode-used-msg": "This promocode is used maximum amount of times",
     "loading-error-msg":"Oops... Something went wrong",
-    "unsupported-token-msg-1": "This token unsupported.",
-    "unsupported-token-msg-2": "Please choose another token.",
+    "unsupported-token-title": "This token unsupported.",
+    "unsupported-token-subtitle": "Please choose another token.",
     "submitting-title": "We are generating your NFT.",
     "submitting-message": "As soon as NFT book generates you will need to pay",
     "not-enough-balance-msg": "You don't have enough tokens to buy this NFT"
