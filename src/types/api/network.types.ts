@@ -6,5 +6,6 @@ export type Network = JsonApiRecordBase<'networks'> & {
   name: string
   token_name: string
   token_symbol: string
+  decimals: number
   rpc_url: string
 }

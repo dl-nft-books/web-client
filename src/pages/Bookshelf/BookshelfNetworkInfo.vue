@@ -5,11 +5,14 @@
     </p>
     <div class="bookshelf-network-info__wrapper">
       <!-- TODO make this dynamic when network changing will be done -->
-      <div class="bookshelf-network-info__item">
-        <icon class="bookshelf-network-info__icon" :name="$icons.polygon" />
+      <div :class="networkClasses">
+        <icon
+          class="bookshelf-network-info__icon"
+          :name="getIconByScheme(scheme)"
+        />
       </div>
       <p class="bookshelf-network-info__subtitle">
-        {{ $t('networks.polygon') }}
+        {{ $t('networks.title', { network: name }) }}
       </p>
     </div>
   </section>
@@ -17,6 +20,25 @@
 
 <script setup lang="ts">
 import { Icon } from '@/common'
+import { NETWORKS } from '@/enums'
+import { getIconByScheme } from '@/helpers'
+import { computed } from 'vue'
+
+const props = withDefaults(
+  defineProps<{
+    name: string
+    scheme?: NETWORKS
+  }>(),
+  {
+    scheme: NETWORKS.ETHEREUM,
+  },
+)
+
+const networkClasses = computed(() => {
+  const defaultClasses = ['bookshelf-network-info__item']
+
+  return defaultClasses.concat(`bookshelf-network-info__item--${props.scheme}`)
+})
 </script>
 
 <style lang="scss" scoped>
@@ -52,14 +74,29 @@ import { Icon } from '@/common'
   width: var(--size);
   height: var(--size);
   border-radius: 100%;
-  background-color: var(--polygon-network);
   display: grid;
   place-content: center;
+
+  &--polygon {
+    background-color: var(--polygon-network);
+  }
+
+  &--ethereum {
+    background-color: var(--ethereum-network);
+  }
+
+  &--q {
+    background-color: var(--q-network);
+  }
 }
 
 .bookshelf-network-info__icon {
   max-width: toRem(26);
   max-height: toRem(22);
   color: var(--white);
+
+  .bookshelf-network-info__item--q & {
+    color: var(--q-network-stroke);
+  }
 }
 </style>

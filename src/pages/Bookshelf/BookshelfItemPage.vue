@@ -1,3 +1,77 @@
+<template>
+  <div class="bookshelf-item-page">
+    <template v-if="isLoaded">
+      <error-message
+        v-if="isLoadFailed"
+        :message="$t('bookshelf-item-page.loading-error-msg')"
+      />
+      <template v-else-if="book">
+        <div class="bookshelf-item-page__cover-wrp">
+          <img
+            :src="book.bannerUrl"
+            :alt="book.title"
+            class="bookshelf-item-page__cover"
+          />
+        </div>
+        <div class="bookshelf-item-page__details">
+          <h2 class="bookshelf-item-page__title">
+            {{ book.title }}
+          </h2>
+          <div class="bookshelf-item-page__actions">
+            <div class="bookshelf-item-page__price">
+              {{ formatFiatAssetFromWei(book.price, 'USD') }}
+            </div>
+            <div class="bookshelf-item-page__info">
+              <app-button
+                v-if="book.voucherToken !== ethers.constants.AddressZero"
+                :icon-right="$icons.voucher"
+                scheme="default"
+                icon-size="large"
+                :href="getEtherscanLink(book.voucherToken)"
+              />
+            </div>
+          </div>
+          <bookshelf-network-info
+            v-if="bookNetwork"
+            :name="bookNetwork.name"
+            :scheme="getNetworkScheme(bookNetwork.chain_id.toString())"
+          />
+          <app-button
+            v-if="provider.isConnected"
+            class="bookshelf-item-page__purchase-btn"
+            :text="$t('bookshelf-item-page.purchase-btn')"
+            @click="isPurchaseModalShown = true"
+          />
+
+          <app-button
+            v-else
+            class="bookshelf-item-page__purchase-btn"
+            :text="$t('bookshelf-item-page.connect-btn')"
+            @click="connect"
+          />
+
+          <hr class="bookshelf-item-page__devider" />
+          <p class="bookshelf-item-page__description">
+            {{ book.description }}
+          </p>
+        </div>
+
+        <purchasing-modal
+          v-if="book"
+          v-model:is-shown="isPurchaseModalShown"
+          :book="book"
+          @submit="submit"
+        />
+
+        <purchasing-success-modal
+          v-model:is-shown="isPurchaseSuccessModalShown"
+        />
+      </template>
+    </template>
+    <loader v-else />
+  </div>
+</template>
+
 <script lang="ts" setup>
 import {
   Loader,
@@ -8,24 +82,34 @@ import {
 } from '@/common'
 
 import { BookshelfNetworkInfo } from '@/pages/Bookshelf'
-import { ref, watch } from 'vue'
-import { formatFiatAssetFromWei, ErrorHandler } from '@/helpers'
+import { ref, watch, computed } from 'vue'
+import {
+  formatFiatAssetFromWei,
+  ErrorHandler,
+  getNetworkScheme,
+} from '@/helpers'
 import { BookRecord } from '@/records'
-import { useWeb3ProvidersStore } from '@/store'
+import { useWeb3ProvidersStore, useNetworksStore } from '@/store'
 import { useMetaMaskConnect } from '@/composables'
 import { storeToRefs } from 'pinia'
 import { getBookById } from '@/api'
-import { NULL_ADDRESS } from '@/const'
+import { ethers } from 'ethers'
 
 const props = defineProps<{
   id: string
 }>()
 const { provider } = storeToRefs(useWeb3ProvidersStore())
 const { connect } = useMetaMaskConnect()
+
 const isLoaded = ref(false)
 const isLoadFailed = ref(false)
 const isPurchaseModalShown = ref(false)
 const isPurchaseSuccessModalShown = ref(false)
+
+const networkStore = useNetworksStore()
+const bookNetwork = computed(() =>
+  networkStore.getNetworkByID(book.value?.chainID),
+)
 
 const book = ref<BookRecord | undefined>()
 
@@ -65,76 +149,6 @@ watch(
 
 init()
 </script>
-
-<template>
-  <div class="bookshelf-item-page">
-    <template v-if="isLoaded">
-      <error-message
-        v-if="isLoadFailed"
-        :message="$t('bookshelf-item-page.loading-error-msg')"
-      />
-      <template v-else-if="book">
-        <div class="bookshelf-item-page__cover-wrp">
-          <img
-            :src="book.bannerUrl"
-            :alt="book.title"
-            class="bookshelf-item-page__cover"
-          />
-        </div>
-        <div class="bookshelf-item-page__details">
-          <h2 class="bookshelf-item-page__title">
-            {{ book.title }}
-          </h2>
-          <div class="bookshelf-item-page__actions">
-            <div class="bookshelf-item-page__price">
-              {{ formatFiatAssetFromWei(book.price, 'USD') }}
-            </div>
-            <div class="bookshelf-item-page__info">
-              <app-button
-                v-if="book.voucherToken !== NULL_ADDRESS"
-                :icon-right="$icons.voucher"
-                scheme="default"
-                icon-size="large"
-                :href="getEtherscanLink(book.voucherToken)"
-              />
-            </div>
-          </div>
-          <bookshelf-network-info />
-          <app-button
-            v-if="provider.isConnected"
-            class="bookshelf-item-page__purchase-btn"
-            :text="$t('bookshelf-item-page.purchase-btn')"
-            @click="isPurchaseModalShown = true"
-          />
-
-          <app-button
-            v-else
-            class="bookshelf-item-page__purchase-btn"
-            :text="$t('bookshelf-item-page.connect-btn')"
-            @click="connect"
-          />
-
-          <hr class="bookshelf-item-page__devider" />
-          <p class="bookshelf-item-page__description">
-            {{ book.description }}
-          </p>
-        </div>
-
-        <purchasing-modal
-          v-if="book"
-          v-model:is-shown="isPurchaseModalShown"
-          :book="book"
-          @submit="submit"
-        />
-
-        <purchasing-success-modal
-          v-model:is-shown="isPurchaseSuccessModalShown"
-        />
-      </template>
-    </template>
-    <loader v-else />
-  </div>
-</template>
 
 <style lang="scss" scoped>
 .bookshelf-item-page {

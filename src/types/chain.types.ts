@@ -8,10 +8,7 @@ export type NativeCurrency = {
 
 export type ChainID = POLYGON_CHAINS | ETHEREUM_CHAINS | Q_CHAINS
 
-export type ChainInfo = {
-  name: string
+export type ChainUrlInfo = {
   rpcUrl: string
-  chainId: ChainID
-  nativeCurrency: NativeCurrency
   blockExplorerUrl: string
 }

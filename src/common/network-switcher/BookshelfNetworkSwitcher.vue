@@ -1,73 +1,61 @@
 <template>
-  <div class="bookshelft-network-switcher">
+  <div class="bookshelf-network-switcher">
     <app-button
+      v-for="network in networkStore.list"
+      :key="network.id"
       modification="switcher"
-      class="bookshelft-network-switcher__item"
-      :class="{
-        'bookshelft-network-switcher__item--picked':
-          pickedNetwork === NETWORKS.POLYGON,
-      }"
-      @click="changeNetwork(NETWORKS.POLYGON)"
-      :icon-left="$icons.polygon"
       icon-size="large"
-      disabled
+      class="bookshelf-network-switcher__item"
+      :class="{
+        'bookshelf-network-switcher__item--picked':
+          chainId === network.chain_id,
+      }"
+      :icon-left="getIconByScheme(getNetworkScheme(network.chain_id))"
+      @click="changeNetwork(getNetworkScheme(network.chain_id))"
     />
-    <!-- Will be uncommented with release of switching networks -->
-    <!-- <app-button
-      modification="switcher"
-      class="bookshelft-network-switcher__item"
-      :class="{
-        'bookshelft-network-switcher__item--picked':
-          pickedNetwork === NETWORKS.ETHEREUM,
-      }"
-      @click="changeNetwork(NETWORKS.ETHEREUM)"
-      :icon-left="$icons.ethereum"
-      icon-size="large"
-    />
-    <app-button
-      modification="switcher"
-      class="bookshelft-network-switcher__item"
-      :class="{
-        'bookshelft-network-switcher__item--picked':
-          pickedNetwork === NETWORKS.Q,
-      }"
-      @click="changeNetwork(NETWORKS.Q)"
-      :icon-left="$icons.q"
-      icon-size="large"
-    /> -->
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
 import { AppButton } from '@/common'
 import { NETWORKS } from '@/enums'
+import { ChainId } from '@/types'
+import {
+  getChainFromNetwork,
+  getNetworkScheme,
+  getIconByScheme,
+} from '@/helpers'
+import { useNetworksStore } from '@/store'
 
-const pickedNetwork = ref<NETWORKS>(NETWORKS.POLYGON)
+const networkStore = useNetworksStore()
 
-//TODO network changing
+const emit = defineEmits<{
+  (event: 'update:chain-id', value: ChainId): void
+}>()
+
+defineProps<{
+  chainId: ChainId
+}>()
 
 const changeNetwork = (network: NETWORKS) => {
-  pickedNetwork.value = network
+  emit('update:chain-id', Number(getChainFromNetwork(network)))
 }
 </script>
 
 <style lang="scss" scoped>
-.bookshelft-network-switcher {
+.bookshelf-network-switcher {
   display: flex;
   justify-content: space-between;
   border-radius: toRem(8);
   border: toRem(1) solid rgba(var(--white-rgb), 0.5);
   background-color: var(--black);
-
-  /* width will be 210 */
-  width: toRem(70);
+  width: toRem(210);
   height: toRem(52);
   position: relative;
   z-index: var(--page-index);
 }
 
-.bookshelft-network-switcher__item {
+.bookshelf-network-switcher__item {
   --bg-picked-color: #{rgba(var(--white-rgb), 0.2)};
 
   padding: toRem(5);

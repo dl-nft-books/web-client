@@ -119,10 +119,12 @@
     "load-more-btn": "SHOW MORE"
   },
   "networks": {
+    "title": "{network} Mainnet",
     "polygon": "Polygon Mainnet",
     "ethereum": "Ethereum Mainnet",
     "q": "Q Mainnet",
-    "unsupported": "Unknown network"
+    "unsupported": "Unknown network",
+    "switch-btn-lbl": "Switch Network"
   },
   "my-nfts-page": {
     "loading-error-msg": "Oops... Something went wrong",

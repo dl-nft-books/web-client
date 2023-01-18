@@ -43,6 +43,11 @@
                 <span class="purchasing-modal__wrong-network-message">
                   {{ $t('purchasing-modal.wrong-network-message') }}
                 </span>
+                <app-button
+                  :text="$t('networks.switch-btn-lbl')"
+                  :icon-left="$icons.refresh"
+                  @click="networkStore.switchNetwork(provider, book.chainID)"
+                />
               </template>
             </template>
           </template>
@@ -56,17 +61,17 @@
 <script lang="ts" setup>
 import { AppButton, Modal, Animation, Loader, ErrorMessage } from '@/common'
 
-import { useWeb3ProvidersStore } from '@/store'
+import { useWeb3ProvidersStore, useNetworksStore } from '@/store'
 import { storeToRefs } from 'pinia'
 import { BookRecord } from '@/records'
 import { ErrorHandler } from '@/helpers'
 import { ref, computed } from 'vue'
 import { useContext } from '@/composables'
-import { config } from '@config'
 import { getPlatformsList } from '@/api'
 import { PurchaseBookForm } from '@/forms'
 
 import disableChainAnimation from '@/assets/animations/disable-chain.json'
+import { ETHEREUM_CHAINS, POLYGON_CHAINS, Q_CHAINS } from '@/enums'
 
 const props = defineProps<{
   isShown: boolean
@@ -86,9 +91,10 @@ const currentPlatform = ref()
 const isLoadFailed = ref(false)
 
 const { provider } = storeToRefs(useWeb3ProvidersStore())
+const networkStore = useNetworksStore()
 
 const isValidChain = computed(
-  () => currentPlatform.value?.chain_identifier === provider.value.chainId,
+  () => props.book.chainID === Number(provider.value.chainId),
 )
 
 const title = computed(() => {
@@ -99,15 +105,35 @@ const title = computed(() => {
     : $t('purchasing-modal.title')
 })
 
+// Pricer returns price only for not test networks, for debug need to convert
+function formatChain(chainId: number): string {
+  switch (chainId.toString()) {
+    case POLYGON_CHAINS.mumbai:
+    case POLYGON_CHAINS.mainnet:
+      return POLYGON_CHAINS.mainnet
+    case ETHEREUM_CHAINS.goerli:
+    case ETHEREUM_CHAINS.ethereum:
+      return ETHEREUM_CHAINS.ethereum
+    case Q_CHAINS.testnet:
+    case Q_CHAINS.mainet:
+      return Q_CHAINS.mainet
+    default:
+      return POLYGON_CHAINS.mainnet
+  }
+}
+
 async function init() {
   isLoaded.value = false
   try {
     const { data: platforms } = await getPlatformsList()
-    // FIXME: fix platforms hardcode
-    currentPlatform.value =
-      config.DEPLOY_ENVIRONMENT === 'production'
-        ? platforms.find(i => i.id === 'polygon-pos')
-        : platforms.find(i => i.id === 'ethereum')
+    // TODO: Q
+
+    currentPlatform.value = platforms.find(
+      platform =>
+        platform.chain_identifier === Number(formatChain(props.book.chainID)),
+    )
+
+    // console.log(currentPlatform.value)
   } catch (e) {
     isLoadFailed.value = true
     ErrorHandler.processWithoutFeedback(e)
