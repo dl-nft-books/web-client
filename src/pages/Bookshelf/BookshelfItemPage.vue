@@ -93,9 +93,9 @@ init()
             <div class="bookshelf-item-page__info">
               <app-button
                 v-if="book.voucherToken !== ethers.constants.AddressZero"
-                :icon-right="$icons.voucher"
                 scheme="default"
                 icon-size="large"
+                :icon-right="$icons.voucher"
                 :href="getEtherscanLink(book.voucherToken)"
               />
             </div>

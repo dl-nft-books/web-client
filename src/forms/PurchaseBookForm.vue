@@ -18,7 +18,7 @@
   </template>
 
   <!-- Before generation stuff -->
-  <template v-else>
+  <form v-else class="purchase-book-form" @submit.prevent="submit">
     <book-preview :book="book" />
 
     <select-field
@@ -77,16 +77,8 @@
         <!-- If voucher - showing voucher info -->
         <template v-else>
           <message-field
-            v-if="!isVoucherSupported"
-            :title="$t('purchase-book-form.voucher-token-unsupported-msg')"
-          />
-          <message-field
-            v-else-if="!isEnoughVoucherTokensForBuy"
-            :title="
-              $t('purchase-book-form.not-enough-voucher-tokens-msg', {
-                amount: formattedVoucherTokenAmount,
-              })
-            "
+            v-if="!isVoucherSupported || !isEnoughVoucherTokensForBuy"
+            :title="voucherErrorTitle"
           />
           <template v-else>
             <readonly-field
@@ -136,14 +128,7 @@
             Signature field won't be shown if voucher is not supported
             or user have not enough voucher tokens on his balance
         -->
-        <template
-          v-if="
-            !(
-              isVoucherToken &&
-              (!isVoucherSupported || !isEnoughVoucherTokensForBuy)
-            )
-          "
-        >
+        <template v-if="isSignatureFieldShown">
           <textarea-field
             v-model="form.signature"
             class="purchase-book-form__textarea"
@@ -159,15 +144,15 @@
           <app-button
             class="purchase-book-form__purchase-btn"
             size="small"
+            type="submit"
             :text="$t('purchase-book-form.generate-btn')"
             :disabled="isFormDisabled || !isEnoughBalanceForBuy"
-            @click="submit"
           />
         </template>
       </template>
     </template>
     <loader v-else />
-  </template>
+  </form>
 </template>
 
 <script lang="ts" setup>
@@ -225,8 +210,11 @@ import {
 
 import loaderAnimation from '@/assets/animations/loader.json'
 import { ethers } from 'ethers'
+import { useI18n } from 'vue-i18n'
 
 const TOKEN_AMOUNT_COEFFICIENT = 1.02
+
+const { t } = useI18n({ useScope: 'global' })
 
 const props = defineProps<{
   book: BookRecord
@@ -263,6 +251,22 @@ const form = reactive({
   tokenType: TOKEN_TYPES.native,
   promocode: '',
 })
+
+const voucherErrorTitle = computed(() =>
+  !isVoucherSupported.value
+    ? t('purchase-book-form.voucher-token-unsupported-msg')
+    : t('purchase-book-form.not-enough-voucher-tokens-msg', {
+        amount: formattedVoucherTokenAmount.value,
+      }),
+)
+
+const isSignatureFieldShown = computed(
+  () =>
+    !(
+      isVoucherToken.value &&
+      (!isVoucherSupported.value || !isEnoughVoucherTokensForBuy.value)
+    ),
+)
 
 const isVoucherToken = computed(() => form.tokenType === TOKEN_TYPES.voucher)
 const isVoucherSupported = computed(
@@ -369,7 +373,7 @@ const submit = async () => {
             .div(tokenPrice.value.price)
             .mul(TOKEN_AMOUNT_COEFFICIENT)
             .toFixed()
-            .toString()
+
     if (isERC20Token.value) {
       erc20.init(form.tokenAddress)
       await erc20.approveSpend(
@@ -441,6 +445,13 @@ watch(
 </script>
 
 <style lang="scss" scoped>
+.purchase-book-form {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: toRem(20);
+}
+
 .purchase-book-form__submitting-animation-wrp {
   margin: 0 auto toRem(30);
   max-width: toRem(240);
