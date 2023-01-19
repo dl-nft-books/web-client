@@ -8,15 +8,15 @@ import {
 } from '@/common'
 
 import { BookshelfNetworkInfo } from '@/pages/Bookshelf'
-import { ErrorHandler } from '@/helpers'
+import { ErrorHandler, formatFiatAssetFromWei } from '@/helpers'
 import { ref, watch } from 'vue'
-import { formatFiatAssetFromWei } from '@/helpers'
+import { CURRENCY } from '@/enums'
 import { BookRecord } from '@/records'
 import { useWeb3ProvidersStore } from '@/store'
 import { useMetaMaskConnect } from '@/composables'
 import { storeToRefs } from 'pinia'
 import { getBookById } from '@/api'
-import { NULL_ADDRESS } from '@/const'
+import { ethers } from 'ethers'
 
 const props = defineProps<{
   id: string
@@ -88,11 +88,11 @@ init()
           </h2>
           <div class="bookshelf-item-page__actions">
             <div class="bookshelf-item-page__price">
-              {{ formatFiatAssetFromWei(book.price, 'USD') }}
+              {{ formatFiatAssetFromWei(book.price, CURRENCY.USD) }}
             </div>
             <div class="bookshelf-item-page__info">
               <app-button
-                v-if="book.voucherToken !== NULL_ADDRESS"
+                v-if="book.voucherToken !== ethers.constants.AddressZero"
                 :icon-right="$icons.voucher"
                 scheme="default"
                 icon-size="large"

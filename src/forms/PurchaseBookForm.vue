@@ -33,7 +33,7 @@
 
     <!-- ERC20 input -->
     <input-field
-      v-if="isTokenAddressRequired"
+      v-if="isERC20Token"
       v-model="form.tokenAddress"
       class="purchase-book-form__input"
       :label="$t('purchase-book-form.token-address-lbl')"
@@ -47,8 +47,8 @@
       <template v-if="isLoadFailed">
         <message-field
           v-if="isTokenAddressUnsupported"
-          :title="$t('purchase-book-form.unsupported-token-msg-1')"
-          :subtitle="$t('purchase-book-form.unsupported-token-msg-2')"
+          :title="$t('purchase-book-form.unsupported-token-title')"
+          :subtitle="$t('purchase-book-form.unsupported-token-subtitle')"
         />
 
         <error-message
@@ -179,7 +179,7 @@ import { BN } from '@/utils/math.util'
 
 import { createNewTask, getMintSignature } from '@/api'
 
-import { MAX_FIELD_LENGTH, NULL_ADDRESS, PROMOCODE_LENGTH } from '@/const'
+import { MAX_FIELD_LENGTH, PROMOCODE_LENGTH } from '@/const'
 import { Platform } from '@/types'
 import { TOKEN_TYPES } from '@/enums'
 import { BookRecord } from '@/records'
@@ -224,6 +224,7 @@ import {
 } from '@/validators'
 
 import loaderAnimation from '@/assets/animations/loader.json'
+import { ethers } from 'ethers'
 
 const TOKEN_AMOUNT_COEFFICIENT = 1.02
 
@@ -245,8 +246,10 @@ const {
   balance,
   getPrice,
   getBalance,
-  loadBalanceAndPrice,
+  loadBalanceAndPrice: _loadBalanceAndPrice,
 } = useBalance(props.currentPlatform)
+
+const loadBalanceAndPrice = debounce(_loadBalanceAndPrice, 400)
 
 const { promocodeInfo, validatePromocode } = usePromocode()
 
@@ -261,13 +264,13 @@ const form = reactive({
   promocode: '',
 })
 
-const isTokenAddressRequired = computed(
-  () => form.tokenType === TOKEN_TYPES.erc20,
-)
 const isVoucherToken = computed(() => form.tokenType === TOKEN_TYPES.voucher)
 const isVoucherSupported = computed(
-  () => props.book.voucherToken !== NULL_ADDRESS,
+  () => props.book.voucherToken !== ethers.constants.AddressZero,
 )
+
+const isERC20Token = computed(() => form.tokenType === TOKEN_TYPES.erc20)
+
 const isEnoughBalanceForBuy = computed(
   () => new BN(balance.value).compare(formattedTokenAmount.value) >= 0,
 )
@@ -297,8 +300,8 @@ const { getFieldErrorMessage, touchField, isFormValid } = useFormValidation(
     signature: { required },
     tokenType: { required },
     tokenAddress: {
-      requiredIf: requiredIf(isTokenAddressRequired),
-      ...(isTokenAddressRequired.value ? { address } : {}),
+      requiredIf: requiredIf(isERC20Token),
+      ...(isERC20Token.value ? { address } : {}),
     },
     promocode: {
       minLength: minLength(PROMOCODE_LENGTH),
@@ -323,7 +326,7 @@ const tokenTypesOptions = computed(() => [
 ])
 
 const getTokenAddress = () => {
-  if (isTokenAddressRequired.value) return form.tokenAddress
+  if (isERC20Token.value) return form.tokenAddress
   if (isVoucherToken.value) return props.book.voucherToken
 
   return ''
@@ -358,7 +361,7 @@ const submit = async () => {
     )
 
     const nativeTokenAmount =
-      isTokenAddressRequired.value || isVoucherToken.value
+      isERC20Token.value || isVoucherToken.value
         ? ''
         : new BN(props.book.price, {
             decimals: tokenPrice.value.token.decimals,
@@ -367,8 +370,7 @@ const submit = async () => {
             .mul(TOKEN_AMOUNT_COEFFICIENT)
             .toFixed()
             .toString()
-
-    if (isTokenAddressRequired.value) {
+    if (isERC20Token.value) {
       erc20.init(form.tokenAddress)
       await erc20.approveSpend(
         provider.value.selectedAddress,
@@ -387,7 +389,7 @@ const submit = async () => {
     }
 
     await nftBookToken.mintToken(
-      getTokenAddress() || NULL_ADDRESS,
+      getTokenAddress() || ethers.constants.AddressZero,
       mintSignature.price,
       mintSignature.discount,
       mintSignature.end_timestamp,
@@ -409,7 +411,7 @@ const onPromocodeInput = async () => {
   await validatePromocode(form.promocode)
 
   //in order to always calculate new price based on initial price
-  await getPrice(isTokenAddressRequired.value, form.tokenAddress)
+  await getPrice(form.tokenAddress, isERC20Token.value)
 
   if (!tokenPrice.value?.price || !promocodeInfo.promocode) return
 
@@ -428,13 +430,10 @@ watch(
   () => [form.tokenType, form.tokenAddress, provider.value.selectedAddress],
   () => {
     if (form.tokenType !== TOKEN_TYPES.voucher)
-      return loadBalanceAndPrice(
-        isTokenAddressRequired.value,
-        form.tokenAddress,
-      )
+      return loadBalanceAndPrice(form.tokenAddress, isERC20Token.value)
 
     if (isVoucherSupported.value) {
-      getBalance(true, props.book.voucherToken)
+      getBalance(props.book.voucherToken, true)
     }
   },
   { immediate: true },

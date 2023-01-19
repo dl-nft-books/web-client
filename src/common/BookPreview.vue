@@ -17,12 +17,13 @@
 <script setup lang="ts">
 import { BookRecord } from '@/records'
 import { formatFiatAssetFromWei } from '@/helpers'
+import { CURRENCY } from '@/enums'
 
 const props = defineProps<{
   book: BookRecord
 }>()
 
-const price = formatFiatAssetFromWei(props.book.price, 'USD')
+const price = formatFiatAssetFromWei(props.book.price, CURRENCY.USD)
 </script>
 
 <style lang="scss" scoped>
