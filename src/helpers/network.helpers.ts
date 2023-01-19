@@ -65,3 +65,23 @@ export function getChainFromNetwork(network: NETWORKS): string {
       return ''
   }
 }
+
+export function getBlockExplorerLink(chainId: ChainId, token: string): string {
+  switch (chainId?.toString()) {
+    case POLYGON_CHAINS.mumbai:
+      return `https://mumbai.polygonscan.com/token/${token}`
+    case POLYGON_CHAINS.mainnet:
+      return `https://polygonscan.com/token/${token}`
+    case ETHEREUM_CHAINS.goerli:
+      return `https://goerli.etherscan.io/token/${token}`
+    case ETHEREUM_CHAINS.ethereum:
+      return `https://etherscan.io/token/${token}`
+    // Not sure that it works
+    case Q_CHAINS.testnet:
+      return `https://explorer.qtestnet.org/token/${token}`
+    case Q_CHAINS.mainet:
+      return `https://explorer.q.org/token/${token}`
+    default:
+      return `https://etherscan.io/token/${token}`
+  }
+}

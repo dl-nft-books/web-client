@@ -6,7 +6,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 #### Added
-- Network switcher component in bookshelft(doing nothing for now)
+- Network switcher component in bookshelf
 - Network switcher component in header
 - User drop-down menu
 - useContext hook instead of calling useI18n every time and specifying scope

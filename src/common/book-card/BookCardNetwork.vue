@@ -1,8 +1,8 @@
 <template>
   <div class="book-card-network">
-    <icon class="book-card-network__icon" :name="getIconName(scheme)" />
+    <icon class="book-card-network__icon" :name="getIconByScheme(scheme)" />
     <p class="book-card-network__name">
-      {{ name }}
+      {{ $t('networks.title', { network: name }) }}
     </p>
   </div>
 </template>
@@ -10,9 +10,7 @@
 <script lang="ts" setup>
 import { Icon } from '@/common'
 import { NETWORKS } from '@/enums'
-import { useContext } from '@/composables'
-
-const { $icons } = useContext()
+import { getIconByScheme } from '@/helpers'
 
 withDefaults(
   defineProps<{
@@ -23,19 +21,6 @@ withDefaults(
     scheme: NETWORKS.ETHEREUM,
   },
 )
-
-const getIconName = (scheme: NETWORKS) => {
-  switch (scheme) {
-    case 'polygon':
-      return $icons.polygon
-    case 'ethereum':
-      return $icons.ethereum
-    case 'q':
-      return $icons.q
-    default:
-      return $icons.ban
-  }
-}
 </script>
 
 <style lang="scss" scoped>

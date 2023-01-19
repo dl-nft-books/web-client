@@ -160,7 +160,9 @@
             class="purchase-book-form__purchase-btn"
             size="small"
             :text="$t('purchase-book-form.generate-btn')"
-            :disabled="isFormDisabled || !isEnoughBalanceForBuy"
+            :disabled="
+              isFormDisabled || (!isEnoughBalanceForBuy && !isVoucherToken)
+            "
             @click="submit"
           />
         </template>
@@ -337,7 +339,8 @@ const submit = async () => {
     !isFormValid() ||
     !provider.value.selectedAddress ||
     !tokenPrice.value ||
-    !isEnoughBalanceForBuy.value
+    // Balance only matters when you paying not with voucher
+    (!isEnoughBalanceForBuy.value && !isVoucherToken.value)
   )
     return
 
@@ -370,6 +373,7 @@ const submit = async () => {
             .mul(TOKEN_AMOUNT_COEFFICIENT)
             .toFixed()
             .toString()
+
     if (isERC20Token.value) {
       erc20.init(form.tokenAddress)
       await erc20.approveSpend(

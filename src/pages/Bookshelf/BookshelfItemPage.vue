@@ -27,7 +27,7 @@
                 :icon-right="$icons.voucher"
                 scheme="default"
                 icon-size="large"
-                :href="getEtherscanLink(book.voucherToken)"
+                :href="getBlockExplorerLink(book.chainID, book.voucherToken)"
               />
             </div>
           </div>
@@ -87,6 +87,7 @@ import {
   formatFiatAssetFromWei,
   ErrorHandler,
   getNetworkScheme,
+  getBlockExplorerLink,
 } from '@/helpers'
 import { CURRENCY } from '@/enums'
 import { BookRecord } from '@/records'
@@ -132,11 +133,6 @@ const init = async () => {
     isLoadFailed.value = true
   }
   isLoaded.value = true
-}
-
-// TODO dynamic link
-const getEtherscanLink = (token: string) => {
-  return `https://goerli.etherscan.io/token/${token}`
 }
 
 watch(
