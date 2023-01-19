@@ -11,7 +11,7 @@
     <span class="book-card__title">{{ title }}</span>
     <span class="book-card__price">
       <template v-if="price">
-        {{ formatFiatAssetFromWei(price, 'USD') }}
+        {{ formatFiatAssetFromWei(price, CURRENCY.USD) }}
       </template>
     </span>
     <template v-if="$slots.actionButton">
@@ -34,8 +34,8 @@ import { BookRecord, GeneratedNFtRecord } from '@/records'
 import { formatFiatAssetFromWei, getNetworkScheme } from '@/helpers'
 import { computed } from 'vue'
 import { useContext } from '@/composables'
-import { ROUTE_NAMES } from '@/enums'
 import { Network } from '@/types'
+import { ROUTE_NAMES, CURRENCY } from '@/enums'
 
 const props = withDefaults(
   defineProps<{

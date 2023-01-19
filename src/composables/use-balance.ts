@@ -19,12 +19,9 @@ export function useBalance(currentPlatform: Platform) {
   const { provider } = useWeb3ProvidersStore()
   const erc20 = useErc20(provider)
 
-  const getPrice = async (
-    isTokenAddressRequired: boolean,
-    tokenAddress: string,
-  ) => {
+  const getPrice = async (tokenAddress: string, isERC20Token: boolean) => {
     try {
-      const contract = isTokenAddressRequired ? tokenAddress : ''
+      const contract = isERC20Token ? tokenAddress : ''
       const { data } = await getPriceByPlatform(currentPlatform.id, contract)
       tokenPrice.value = data
     } catch (error) {
@@ -35,11 +32,8 @@ export function useBalance(currentPlatform: Platform) {
     }
   }
 
-  const getBalance = async (
-    isTokenAddressRequired: boolean,
-    tokenAddress: string,
-  ) => {
-    if (isTokenAddressRequired) {
+  const getBalance = async (tokenAddress: string, isERC20Token: boolean) => {
+    if (isERC20Token) {
       erc20.init(tokenAddress)
       await erc20.getDecimals()
       const accountBalance = await erc20.getBalanceOf(provider.selectedAddress!)
@@ -54,23 +48,38 @@ export function useBalance(currentPlatform: Platform) {
     }
   }
 
+  /* 
+    boolean variable isERC20Token appears here to understand whether user trying
+    to pay for the book with ERC20 or not
+
+    using only tokenAddress variable it isn't possible to determine what token
+    type is picked by user in this moment
+
+    Example: user picks ERC20, inputs some data, then switching back to Native.
+    In that case tokenAddress is not equal to empty string, but it doesn`t mean
+    that we need load balance for ERC20 token.
+  */
   const loadBalanceAndPrice = async (
-    isTokenAddressRequired: boolean,
     tokenAddress: string,
+    isERC20Token: boolean,
   ) => {
     tokenPrice.value = null
     balance.value = ''
     isLoadFailed.value = false
 
-    if (isTokenAddressRequired && !ethers.utils.isAddress(tokenAddress)) return
+    /* 
+      if paying with ERC20, we don't need to load balance until 
+      user finishes input to tokenAddress field
+    */
+    if (isERC20Token && !ethers.utils.isAddress(tokenAddress)) return
 
     isPriceAndBalanceLoaded.value = false
     isTokenAddressUnsupported.value = false
 
     try {
       await Promise.all([
-        getPrice(isTokenAddressRequired, tokenAddress),
-        getBalance(isTokenAddressRequired, tokenAddress),
+        getPrice(tokenAddress, isERC20Token),
+        getBalance(tokenAddress, isERC20Token),
       ])
     } catch (e) {
       isLoadFailed.value = true

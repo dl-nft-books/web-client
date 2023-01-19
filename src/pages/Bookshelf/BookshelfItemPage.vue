@@ -19,7 +19,7 @@
           </h2>
           <div class="bookshelf-item-page__actions">
             <div class="bookshelf-item-page__price">
-              {{ formatFiatAssetFromWei(book.price, 'USD') }}
+              {{ formatFiatAssetFromWei(book.price, CURRENCY.USD) }}
             </div>
             <div class="bookshelf-item-page__info">
               <app-button
@@ -88,6 +88,7 @@ import {
   ErrorHandler,
   getNetworkScheme,
 } from '@/helpers'
+import { CURRENCY } from '@/enums'
 import { BookRecord } from '@/records'
 import { useWeb3ProvidersStore, useNetworksStore } from '@/store'
 import { useMetaMaskConnect } from '@/composables'
