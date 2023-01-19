@@ -2,10 +2,10 @@ import { Promocode } from '@/types'
 import { reactive } from 'vue'
 import { validatePromocode as _validatePromocode } from '@/api'
 import { errors } from '@/api/json-api'
-import { useI18n } from 'vue-i18n'
 import { ErrorHandler } from '@/helpers'
 import { PROMOCODE_LENGTH } from '@/const'
 import { PROMOCODE_STATUSES } from '@/enums'
+import { useContext } from '@/composables'
 
 class ExpiredError extends Error {
   constructor(errorMessage = '') {
@@ -26,7 +26,7 @@ export function usePromocode() {
     error: '',
   })
 
-  const { t } = useI18n({ useScope: 'global' })
+  const { $t } = useContext()
 
   const checkStatus = (state: PROMOCODE_STATUSES) => {
     if (state !== PROMOCODE_STATUSES.ACTIVE) {
@@ -46,14 +46,14 @@ export function usePromocode() {
   const handlePromocodeError = (error: Error) => {
     switch (error.constructor) {
       case errors.NotFoundError:
-        promocodeInfo.error = t('purchase-book-form.promocode-invalid-msg')
+        promocodeInfo.error = $t('purchase-book-form.promocode-invalid-msg')
         promocodeInfo.promocode = null
         return
       case ExpiredError:
-        promocodeInfo.error = t('purchase-book-form.promocode-expired-msg')
+        promocodeInfo.error = $t('purchase-book-form.promocode-expired-msg')
         return
       case FullyUsedError:
-        promocodeInfo.error = t('purchase-book-form.promocode-used-msg')
+        promocodeInfo.error = $t('purchase-book-form.promocode-used-msg')
         return
       default:
         break
