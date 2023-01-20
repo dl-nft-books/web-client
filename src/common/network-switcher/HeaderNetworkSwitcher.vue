@@ -1,8 +1,7 @@
 <template>
-  <!-- TODO: mobile version -->
   <drop-down
     v-if="provider.selectedAddress"
-    :right="81"
+    :right="dropDownShift"
     :disabled="isSwitchingChain"
   >
     <template #head="{ menu }">
@@ -42,13 +41,20 @@ import { useWeb3ProvidersStore, useNetworksStore } from '@/store'
 import { storeToRefs } from 'pinia'
 import { getNetworkScheme } from '@/helpers'
 import { ChainId } from '@/types'
+import { useWindowSize } from '@vueuse/core'
+import { WINDOW_BREAKPOINTS } from '@/enums'
 
 const { provider } = storeToRefs(useWeb3ProvidersStore())
+const { width } = useWindowSize()
 
 const networksStore = useNetworksStore()
 networksStore.loadNetworks()
 
 const isSwitchingChain = ref(false)
+
+const dropDownShift = computed(() =>
+  width.value <= WINDOW_BREAKPOINTS.medium ? 0 : 81,
+)
 
 const pickedNetwork = computed(() =>
   networksStore.list.find(
@@ -79,6 +85,11 @@ const changeNetwork = async (chainID: ChainId, closeDropDown: () => void) => {
   transition-property: background-color;
   min-width: toRem(210);
 
+  .app-navigation-mobile__network & {
+    background-color: transparent;
+    border: toRem(1) solid var(--white);
+  }
+
   &:hover {
     cursor: pointer;
     background-color: var(--background-tertiary);
@@ -93,6 +104,10 @@ const changeNetwork = async (chainID: ChainId, closeDropDown: () => void) => {
 .header-network-switcher__body {
   width: toRem(206);
   background-color: var(--background-primary);
+
+  .app-navigation-mobile__network & {
+    background-color: var(--background-quaternary);
+  }
 
   .account--dark-mode & {
     background-color: var(--background-quaternary);
