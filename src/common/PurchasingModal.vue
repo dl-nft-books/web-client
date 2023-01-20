@@ -72,6 +72,7 @@ import { PurchaseBookForm } from '@/forms'
 
 import disableChainAnimation from '@/assets/animations/disable-chain.json'
 import { ETHEREUM_CHAINS, POLYGON_CHAINS, Q_CHAINS } from '@/enums'
+import { Platform } from '@/types'
 
 const props = defineProps<{
   isShown: boolean
@@ -87,7 +88,7 @@ const { $t } = useContext()
 
 const isLoaded = ref(false)
 const isSubmitting = ref(false)
-const currentPlatform = ref()
+const currentPlatform = ref<Platform>()
 const isLoadFailed = ref(false)
 
 const { provider } = storeToRefs(useWeb3ProvidersStore())
@@ -132,8 +133,6 @@ async function init() {
       platform =>
         platform.chain_identifier === Number(formatChain(props.book.chainID)),
     )
-
-    // console.log(currentPlatform.value)
   } catch (e) {
     isLoadFailed.value = true
     ErrorHandler.processWithoutFeedback(e)

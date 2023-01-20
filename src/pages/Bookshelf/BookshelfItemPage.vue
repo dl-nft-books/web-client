@@ -24,10 +24,10 @@
             <div class="bookshelf-item-page__info">
               <app-button
                 v-if="book.voucherToken !== ethers.constants.AddressZero"
-                :icon-right="$icons.voucher"
                 scheme="default"
                 icon-size="large"
                 :href="getBlockExplorerLink(book.chainID, book.voucherToken)"
+                :icon-right="$icons.voucher"
               />
             </div>
           </div>
