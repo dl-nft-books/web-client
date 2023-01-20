@@ -122,6 +122,7 @@
     "title": "{network} Mainnet",
     "polygon": "Polygon Mainnet",
     "ethereum": "Ethereum Mainnet",
+    "all-tokens-lbl": "All tokens",
     "q": "Q Mainnet",
     "unsupported": "Unknown network",
     "switch-btn-lbl": "Switch Network"
@@ -132,6 +133,14 @@
     "title": "MY NFTs",
     "details-btn": "Details",
     "load-more-btn": "Load More"
+  },
+  "faq-page": {
+    "title": "Want to buy a book from Distributed Lab as an NFT?",
+    "overview-title": "What is an NFT-book?",
+    "overview-abstract-1": "Technically aside, an NFT book is similar to a normal e-book in terms of interaction, but instead of existing as a file that can be downloaded and shared by anyone, it contains digital ownership and acts as an undeniable digital document between creator and buyer.",
+    "overview-abstract-2": "Now you can own your digital books, and we have made it possible to sign your copy and make it truly unique",
+    "overview-abstract-3": "If you have never dealt with crypto wallets and buying NFTs before, on this page you will find recommendations that will help you do this",
+    "overview-disclaimer": "All recommendations below are not advertising and are one of the ways to get the desired result"
   },
   "bookshelf-item-page": {
     "loading-error-msg": "Oops.... Something went wrong",
