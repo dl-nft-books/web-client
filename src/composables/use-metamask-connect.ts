@@ -1,10 +1,11 @@
 import { storeToRefs } from 'pinia'
 import { useWeb3ProvidersStore } from '@/store'
 import { isMobile } from '@/helpers'
+import { router } from '@/router'
 
 export const useMetaMaskConnect = () => {
   const { provider } = storeToRefs(useWeb3ProvidersStore())
-  const APP_URL = `https://metamask.app.link/dapp/${window.location.host}`
+  const APP_URL = `https://metamask.app.link/dapp/${window.location.host}${router.currentRoute.value.fullPath}`
 
   const redirect = () => {
     try {

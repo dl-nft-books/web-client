@@ -10,7 +10,6 @@
             {{ title }}
           </h3>
           <app-button
-            v-if="!isSubmitting"
             class="purchasing-modal__close-btn"
             :icon-right="$icons.x"
             color="default"

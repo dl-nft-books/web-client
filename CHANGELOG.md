@@ -7,9 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 #### Added
 - Promocodes logic
+- Vouchers logic
 
 #### Changed
 - Contract updated to the newest version
+- Metamask redirects you to the page where you clicked connect button
 
 ## [1.1.0] - 2022-12-26
 #### Added

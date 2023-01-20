@@ -230,6 +230,7 @@ export enum ICON_NAMES {
   viewList = 'view-list',
   volumeOff = 'volume-off',
   volumeUp = 'volume-up',
+  voucher = 'voucher',
   wifi = 'wifi',
   xCircle = 'x-circle',
   x = 'x',
