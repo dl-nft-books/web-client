@@ -1,5 +1,5 @@
 <template>
-  <div :class="classes" @click="emit('networkChange')">
+  <button :class="classes">
     <div :class="wrapperClasses">
       <icon class="network-item__icon" :name="getIconByScheme(scheme)" />
     </div>
@@ -10,7 +10,7 @@
           : $t('networks.unsupported')
       }}
     </p>
-  </div>
+  </button>
 </template>
 
 <script setup lang="ts">
@@ -33,10 +33,6 @@ const props = withDefaults(
     name: '',
   },
 )
-
-const emit = defineEmits<{
-  (event: 'networkChange'): void
-}>()
 
 const classes = computed(() => [
   'network-item',

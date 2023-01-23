@@ -15,10 +15,10 @@
               :name="$icons.avatarPlaceholder"
             />
             <p class="account__address">
-              {{ address }}
+              {{ cropAddress(provider.selectedAddress) }}
             </p>
           </div>
-          <div class="account__action" @click="copyAddress(menu.close)">
+          <div class="account__action" @click="copyAddress(), menu.close()">
             <icon class="account__action-icon" :name="$icons.copy" />
             <p class="account__action-info">
               {{ $t('app-navbar.copy-address') }}
@@ -34,36 +34,32 @@
 import { computed } from 'vue'
 import { cropAddress, copyToClipboard, ErrorHandler } from '@/helpers'
 import { useWeb3ProvidersStore } from '@/store'
-import { storeToRefs } from 'pinia'
 import { Icon, DropDown, HeaderNetworkSwitcher } from '@/common'
 
 type MODIFICATIONS = 'dark-mode' | 'default'
 
-interface Props {
-  modification?: MODIFICATIONS
-}
-
-const props = withDefaults(defineProps<Props>(), { modification: 'default' })
+const props = withDefaults(
+  defineProps<{
+    modification?: MODIFICATIONS
+  }>(),
+  { modification: 'default' },
+)
 
 const accountClasses = computed(() => [
   'account',
   `account--${props.modification}`,
 ])
 
-const { provider } = storeToRefs(useWeb3ProvidersStore())
+const { provider } = useWeb3ProvidersStore()
 
-const address = computed(() => cropAddress(provider.value.selectedAddress))
-
-const copyAddress = async (closeDropDown: () => void) => {
-  if (!provider.value.selectedAddress) return
+const copyAddress = async () => {
+  if (!provider.selectedAddress) return
 
   try {
-    await copyToClipboard(provider.value.selectedAddress)
+    await copyToClipboard(provider.selectedAddress)
   } catch (error) {
     ErrorHandler.process(error)
   }
-
-  closeDropDown()
 }
 </script>
 
