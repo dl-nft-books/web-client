@@ -41,6 +41,8 @@ const pickGuide = (guideTitle: string) => {
 }
 
 .faq-guides-switcher__item {
+  --bg-picked-color: #{rgba(var(--background-switcher-picked-rgb), 0.14)};
+
   height: var(--button-size);
   width: var(--button-size);
   border: toRem(1) solid var(--text-secondary-main);
@@ -52,12 +54,12 @@ const pickGuide = (guideTitle: string) => {
 
   &:hover {
     border: toRem(1) solid var(--primary-main);
-    background-color: rgba(var(--background-switcher-picked-rgb), 0.14);
+    background-color: var(--bg-picked-color);
   }
 
   &--picked {
     border: toRem(1) solid var(--primary-main);
-    background-color: rgba(var(--background-switcher-picked-rgb), 0.14);
+    background-color: var(--bg-picked-color);
   }
 }
 
