@@ -76,7 +76,6 @@ export function getBlockExplorerLink(chainId: ChainId, token: string): string {
       return `https://goerli.etherscan.io/token/${token}`
     case ETHEREUM_CHAINS.ethereum:
       return `https://etherscan.io/token/${token}`
-    // Not sure that it works
     case Q_CHAINS.testnet:
       return `https://explorer.qtestnet.org/token/${token}`
     case Q_CHAINS.mainet:

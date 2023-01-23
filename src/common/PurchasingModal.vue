@@ -127,7 +127,6 @@ async function init() {
   isLoaded.value = false
   try {
     const { data: platforms } = await getPlatformsList()
-    // TODO: Q
 
     currentPlatform.value = platforms.find(
       platform =>
