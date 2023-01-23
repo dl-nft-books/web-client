@@ -20,7 +20,7 @@
           <p class="faq-page__overview-point">
             {{ $t('faq-page.overview-abstract-3') }}
           </p>
-          <p class="faq-page__overview-point">
+          <p class="faq-page__disclaimer">
             {{ $t('faq-page.overview-disclaimer') }}
           </p>
         </section>
@@ -31,10 +31,13 @@
         alt="fancy-image"
       />
     </section>
+    <f-a-q-guides />
   </div>
 </template>
 
-<script setup lang="ts"></script>
+<script setup lang="ts">
+import { FAQGuides } from '@/pages/FAQ'
+</script>
 
 <style scoped lang="scss">
 .faq-page {
@@ -84,6 +87,11 @@
     ),
     url('/images/faq-background.png');
   background-size: contain;
+
+  @include respond-to(medium) {
+    padding-top: toRem(40);
+    padding-bottom: 0;
+  }
 }
 /* stylelint-enable */
 
@@ -91,7 +99,12 @@
   display: flex;
   justify-content: space-between;
   gap: toRem(90);
-  padding: toRem(10) toRem(100);
+  padding: toRem(40) toRem(100);
+
+  @include respond-to(medium) {
+    flex-direction: column;
+    padding: 0 toRem(60);
+  }
 }
 
 .faq-page__overview-title {
@@ -101,17 +114,50 @@
   color: var(--primary-main);
   margin-bottom: toRem(20);
   margin-top: toRem(60);
+
+  @include respond-to(medium) {
+    margin-top: toRem(20);
+  }
 }
 
 .faq-page__overview-info {
   display: flex;
   flex-direction: column;
   gap: toRem(15);
+  position: relative;
+
+  &:before {
+    position: absolute;
+    left: toRem(-145);
+    top: toRem(115);
+    content: '';
+    height: toRem(2);
+    background: var(--background-primary);
+    width: toRem(235);
+    transform: rotate(90deg);
+  }
 }
 
 .faq-page__overview-point {
   font-weight: 400;
   line-height: 120%;
   color: var(--text-primary-invert-main);
+}
+
+.faq-page__disclaimer {
+  font-weight: 400;
+  line-height: 120%;
+  color: var(--text-diclaimer);
+  font-style: italic;
+
+  &:before {
+    content: '•';
+    padding: toRem(10);
+  }
+}
+
+.faq-page__overview-image {
+  max-width: toRem(400);
+  margin: 0 auto;
 }
 </style>

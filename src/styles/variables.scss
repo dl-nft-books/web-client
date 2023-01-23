@@ -16,6 +16,9 @@
   --background-quinary-rgb: #{$background-quinary-rgb};
   --background-error: #{$background-error};
   --background-success: #{$background-success};
+  --background-switcher: #{$background-switcher};
+  --background-switcher-picked: #{$background-switcher-picked};
+  --background-switcher-picked-rgb: #{$background-switcher-picked-rgb};
 
   /* status colors */
   --success-light: #{$success-light};
@@ -58,6 +61,8 @@
   --text-secondary-invert-dark: #{$text-secondary-invert-dark};
 
   --text-success: #{$text-success};
+  --text-diclaimer: #{$text-diclaimer};
+  --text-guides: #{$text-guides};
 
   /* border colors */
   --border-primary-light: #{$border-primary-light};

@@ -140,7 +140,24 @@
     "overview-abstract-1": "Technically aside, an NFT book is similar to a normal e-book in terms of interaction, but instead of existing as a file that can be downloaded and shared by anyone, it contains digital ownership and acts as an undeniable digital document between creator and buyer.",
     "overview-abstract-2": "Now you can own your digital books, and we have made it possible to sign your copy and make it truly unique",
     "overview-abstract-3": "If you have never dealt with crypto wallets and buying NFTs before, on this page you will find recommendations that will help you do this",
-    "overview-disclaimer": "All recommendations below are not advertising and are one of the ways to get the desired result"
+    "overview-disclaimer": "All recommendations below are not advertising and are one of the ways to get the desired result",
+    "guide-1": {
+      "title": "Work with Metamask",
+      "abstract-1": "Install the MetaMask crypto wallet (this is a non-custodial wallet that supports interaction with any EVM system)",
+      "abstract-2": "Follow the setup instructions step by step. If this is your first time doing this, be sure to save your passphrase from restoring access and importing your wallet to other devices",
+      "abstract-3": "To complete an NFT book purchase operation, your balance must be more than zero :)",
+      "subtitle-abstract-3": "Where can you get MATIC tokens?"
+    },
+    "guide-2": {
+      "title": "How to buy a book"
+    },
+    "guide-3": {
+      "title": "How to buy a book"
+    },
+    "guide-4": {
+      "title": "Solve your problems"
+    }
+   
   },
   "bookshelf-item-page": {
     "loading-error-msg": "Oops.... Something went wrong",
