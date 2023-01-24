@@ -8,7 +8,7 @@
       class="bookshelf-network-switcher__item"
       :class="{
         'bookshelf-network-switcher__item--picked':
-          chainId === network.chain_id,
+          currentChainId === network.chain_id,
       }"
       :icon-left="getIconByScheme(getNetworkScheme(network.chain_id))"
       @click="changeNetwork(getNetworkScheme(network.chain_id))"
@@ -30,15 +30,15 @@ import { useNetworksStore } from '@/store'
 const networkStore = useNetworksStore()
 
 const emit = defineEmits<{
-  (event: 'update:chain-id', value: ChainId): void
+  (event: 'update:current-chain-id', value: ChainId): void
 }>()
 
 defineProps<{
-  chainId: ChainId
+  currentChainId: ChainId
 }>()
 
 const changeNetwork = (network: NETWORKS) => {
-  emit('update:chain-id', Number(getChainFromNetwork(network)))
+  emit('update:current-chain-id', Number(getChainFromNetwork(network)))
 }
 </script>
 

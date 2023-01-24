@@ -6,7 +6,9 @@
       <h2 class="bookshelf-page__title">
         {{ $t('bookshelf-page.title') }}
       </h2>
-      <bookshelf-network-switcher v-model:chain-id="currentNetworkChainId" />
+      <bookshelf-network-switcher
+        v-model:current-chain-id="currentNetworkChainId"
+      />
     </section>
     <error-message
       v-if="isLoadFailed"
@@ -61,7 +63,6 @@ import { useNetworksStore } from '@/store'
 const isLoadFailed = ref(false)
 const books = ref<BookRecord[]>([])
 
-//TODO switcher works weird
 const networkStore = useNetworksStore()
 const currentNetworkChainId = ref<ChainId>(
   networkStore.isLoaded ? networkStore.list[0].chain_id : 0,

@@ -5,7 +5,7 @@
       <book-card-network
         v-if="network"
         :name="network.name"
-        :scheme="getNetworkScheme(network.chain_id.toString())"
+        :scheme="getNetworkScheme(network.chain_id)"
       />
     </div>
     <span class="book-card__title">{{ title }}</span>

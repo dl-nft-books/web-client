@@ -4,11 +4,7 @@
       <icon class="network-item__icon" :name="getIconByScheme(scheme)" />
     </div>
     <p class="network-item__title">
-      {{
-        scheme != 'unsupported'
-          ? $t('networks.title', { network: name })
-          : $t('networks.unsupported')
-      }}
+      {{ title }}
     </p>
   </button>
 </template>
@@ -18,8 +14,11 @@ import { Icon } from '@/common'
 import { computed } from 'vue'
 import { NETWORKS } from '@/enums'
 import { getIconByScheme } from '@/helpers'
+import { useContext } from '@/composables'
 
 type MODIFICATIONS = 'non-active' | 'default'
+
+const { $t } = useContext()
 
 const props = withDefaults(
   defineProps<{
@@ -32,6 +31,12 @@ const props = withDefaults(
     modification: 'default',
     name: '',
   },
+)
+
+const title = computed(() =>
+  props.scheme !== NETWORKS.UNSUPPORTED
+    ? $t('networks.title', { network: props.name })
+    : $t('networks.unsupported'),
 )
 
 const classes = computed(() => [

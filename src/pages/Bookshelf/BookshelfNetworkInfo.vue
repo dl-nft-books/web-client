@@ -34,11 +34,10 @@ const props = withDefaults(
   },
 )
 
-const networkClasses = computed(() => {
-  const defaultClasses = ['bookshelf-network-info__item']
-
-  return defaultClasses.concat(`bookshelf-network-info__item--${props.scheme}`)
-})
+const networkClasses = computed(() => [
+  'bookshelf-network-info__item',
+  `bookshelf-network-info__item--${props.scheme}`,
+])
 </script>
 
 <style lang="scss" scoped>

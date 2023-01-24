@@ -8,7 +8,7 @@ import { ICON_NAMES } from '@/enums'
 type SCHEMES = 'filled' | 'flat' | 'default'
 
 type MODIFICATIONS = 'border-circle' | 'border-rounded' | 'switcher' | 'default'
-type ICON_SIZE = 'large' | 'medium'
+type ICON_SIZE = 'large' | 'medium' | 'x-medium'
 
 type COLORS =
   | 'primary'
@@ -319,6 +319,11 @@ const buttonClasses = computed(() =>
   &--medium {
     height: 1.2em;
     width: 1.2em;
+  }
+
+  &--x-medium {
+    height: toRem(28);
+    width: toRem(28);
   }
 
   &--large {
