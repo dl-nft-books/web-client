@@ -54,5 +54,12 @@ const guideTitle = ref(variants[0])
   justify-content: center;
   gap: toRem(40);
   padding: 0 toRem(100);
+
+  @include respond-to(medium) {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 0 toRem(20);
+  }
 }
 </style>

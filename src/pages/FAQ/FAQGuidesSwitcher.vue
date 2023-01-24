@@ -31,19 +31,26 @@ const pickGuide = (guideTitle: string) => {
 
 <style scoped lang="scss">
 .faq-guides-switcher {
-  --button-size: #{toRem(173)};
+  --button-size: #{toRem(150)};
 
   display: grid;
   position: sticky;
+  width: 100%;
   top: 0;
   grid-template-columns: repeat(2, var(--button-size));
+  grid-template-rows: var(--button-size);
   gap: toRem(20);
+
+  @include respond-to(medium) {
+    grid-template-columns: repeat(auto-fit, minmax(var(--button-size), 1fr));
+  }
 }
 
 .faq-guides-switcher__item {
   --bg-picked-color: #{rgba(var(--background-switcher-picked-rgb), 0.14)};
 
   height: var(--button-size);
+  justify-self: center;
   width: var(--button-size);
   border: toRem(1) solid var(--text-secondary-main);
   border-radius: toRem(5);
