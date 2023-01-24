@@ -45,7 +45,6 @@ const { provider } = useWeb3ProvidersStore()
 const { width } = useWindowSize()
 
 const networksStore = useNetworksStore()
-networksStore.loadNetworks()
 
 const isSwitchingChain = ref(false)
 
@@ -64,6 +63,8 @@ const changeNetwork = async (chainID: ChainId) => {
   await networksStore.switchNetwork(provider, chainID)
   isSwitchingChain.value = false
 }
+
+networksStore.loadNetworks()
 </script>
 
 <style lang="scss" scoped>
