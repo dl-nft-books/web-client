@@ -36,7 +36,7 @@
 import { ref, computed } from 'vue'
 import { DropDown, NetworkItem, Loader } from '@/common'
 import { useWeb3ProvidersStore, useNetworksStore } from '@/store'
-import { getNetworkScheme } from '@/helpers'
+import { getNetworkScheme, switchNetwork } from '@/helpers'
 import { ChainId } from '@/types'
 import { useWindowSize } from '@vueuse/core'
 import { WINDOW_BREAKPOINTS } from '@/enums'
@@ -53,14 +53,12 @@ const dropDownShift = computed(() =>
 )
 
 const pickedNetwork = computed(() =>
-  networksStore.list.find(
-    network => network.chain_id === Number(provider.chainId),
-  ),
+  networksStore.getNetworkByID(Number(provider.chainId)),
 )
 
 const changeNetwork = async (chainID: ChainId) => {
   isSwitchingChain.value = true
-  await networksStore.switchNetwork(provider, chainID)
+  await switchNetwork(provider, chainID)
   isSwitchingChain.value = false
 }
 

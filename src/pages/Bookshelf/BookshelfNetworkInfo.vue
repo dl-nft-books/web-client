@@ -77,15 +77,15 @@ const networkClasses = computed(() => [
   place-content: center;
 
   &--polygon {
-    background-color: var(--polygon-network);
+    background-color: var(--network-purple-dark);
   }
 
   &--ethereum {
-    background-color: var(--ethereum-network);
+    background-color: var(--network-purple-light);
   }
 
   &--q {
-    background-color: var(--q-network);
+    background-color: var(--network-black);
   }
 }
 
@@ -95,7 +95,7 @@ const networkClasses = computed(() => [
   color: var(--white);
 
   .bookshelf-network-info__item--q & {
-    color: var(--q-network-stroke);
+    color: var(--network-green);
   }
 }
 </style>

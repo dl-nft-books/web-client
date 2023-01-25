@@ -85,15 +85,15 @@ const wrapperClasses = computed(() => [
   aspect-ratio: 1 / 1;
 
   &--polygon {
-    background-color: var(--polygon-network);
+    background-color: var(--network-purple-dark);
   }
 
   &--ethereum {
-    background-color: var(--ethereum-network);
+    background-color: var(--network-purple-light);
   }
 
   &--q {
-    background-color: var(--q-network);
+    background-color: var(--network-black);
   }
 
   &--unsupported {
@@ -109,7 +109,7 @@ const wrapperClasses = computed(() => [
   .network-item__wrapper--q & {
     max-width: toRem(14);
     max-height: toRem(13);
-    color: var(--q-network-stroke);
+    color: var(--network-green);
   }
 }
 

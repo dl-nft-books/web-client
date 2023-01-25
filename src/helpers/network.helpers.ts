@@ -6,8 +6,16 @@ import {
   POLYGON_CHAINS,
   Q_CHAINS,
   ICON_NAMES,
+  EIP1193,
 } from '@/enums'
-import { ChainId, ChainUrlInfo } from '@/types'
+import {
+  ChainId,
+  ChainUrlInfo,
+  EthProviderRpcError,
+  UseProvider,
+} from '@/types'
+import { ErrorHandler } from '@/helpers'
+import { useNetworksStore } from '@/store'
 
 export function getNetworkScheme(chainID: ChainId): string {
   switch (chainID?.toString()) {
@@ -82,5 +90,44 @@ export function getBlockExplorerLink(chainId: ChainId, token: string): string {
       return `https://explorer.q.org/token/${token}`
     default:
       return `https://etherscan.io/token/${token}`
+  }
+}
+
+export async function switchNetwork(provider: UseProvider, chainID: ChainId) {
+  try {
+    await provider.switchChain(chainID)
+  } catch (error) {
+    const ethError = error as EthProviderRpcError
+
+    // if wallet has no chain added we need to add it and switch to it
+    if (ethError?.code === EIP1193.walletMissingChain) {
+      await addNetwork(provider, chainID)
+    }
+
+    ErrorHandler.processWithoutFeedback(error)
+  }
+}
+
+export async function addNetwork(provider: UseProvider, chainID: ChainId) {
+  try {
+    const networkURLs = getNetworkInfo(chainID)
+    const networkStore = useNetworksStore()
+    const networkInfo = networkStore.getNetworkByID(Number(chainID))
+
+    if (!networkInfo || !networkURLs) throw new Error('Unsupported network')
+
+    await provider.addChain(
+      chainID,
+      networkInfo.name,
+      networkURLs.rpcUrl,
+      {
+        name: networkInfo.token_name,
+        symbol: networkInfo.token_symbol,
+        decimals: networkInfo.decimals,
+      },
+      networkURLs.blockExplorerUrl,
+    )
+  } catch (error) {
+    ErrorHandler.processWithoutFeedback(error)
   }
 }
