@@ -1,5 +1,8 @@
 <template>
-  <div class="faq-card-info">
+  <div
+    class="faq-card-info"
+    :class="{ 'faq-card-info--col-span': modification === 'col-span' }"
+  >
     <header class="faq-card-info__header">
       <div class="faq-card-info__number">
         <p class="faq-card-info__number-content">
@@ -13,9 +16,15 @@
 </template>
 
 <script setup lang="ts">
-defineProps<{
-  orderNumber: number
-}>()
+type MODIFICATIONS = 'col-span' | 'default'
+
+withDefaults(
+  defineProps<{
+    orderNumber: number
+    modification?: MODIFICATIONS
+  }>(),
+  { modification: 'default' },
+)
 </script>
 
 <style scoped lang="scss">
@@ -24,12 +33,17 @@ defineProps<{
 
   display: flex;
   flex-direction: column;
-  justify-content: center;
   gap: toRem(15);
   width: 100%;
+  max-width: toRem(800);
   border-radius: toRem(12);
   background-color: var(--background-color);
   padding: toRem(20);
+
+  &--col-span {
+    grid-column: span 2;
+    max-width: unset;
+  }
 }
 
 .faq-card-info__header {

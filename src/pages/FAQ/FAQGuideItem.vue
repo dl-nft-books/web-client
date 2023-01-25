@@ -4,32 +4,23 @@
       {{ title }}
     </h3>
     <f-a-q-metamask v-if="title === $t('faq-page.guide-1.title')" />
+    <f-a-q-buy-book v-if="title === $t('faq-page.guide-2.title')" />
+    <f-a-q-mobile-version v-if="title === $t('faq-page.guide-3.title')" />
+    <f-a-q-solve-problems v-if="title === $t('faq-page.guide-4.title')" />
   </div>
 </template>
 
 <script setup lang="ts">
-// import { useContext } from '@/composables'
-import { FAQMetamask } from '@/pages/FAQ'
+import {
+  FAQMetamask,
+  FAQBuyBook,
+  FAQMobileVersion,
+  FAQSolveProblems,
+} from '@/pages/FAQ'
 
 defineProps<{
   title: string
 }>()
-
-// const { $t } = useContext()
-
-// const getGuideAssetFromTitle = (title: string): string[] => {
-//   switch (title) {
-//     case $t('faq-page.guide-1.title'):
-//       return [
-//         $t('faq-page.guide-1.abstract-1'),
-//         $t('faq-page.guide-1.abstract-2'),
-//         $t('faq-page.guide-1.abstract-2-acsent-word'),
-//         $t('faq-page.guide-1.abstract-2-end'),
-//       ]
-//     default:
-//       return []
-//   }
-// }
 </script>
 
 <style scoped lang="scss">

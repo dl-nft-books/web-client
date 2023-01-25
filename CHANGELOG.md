@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - useContext hook instead of calling useI18n every time and specifying scope
 - Promocodes logic
 - Vouchers logic
+- FAQ page
 
 #### Changed
 - Contract updated to the newest version

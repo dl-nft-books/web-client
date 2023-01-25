@@ -1,5 +1,5 @@
 <template>
-  <div class="faq-guides-switcher">
+  <aside class="faq-guides-switcher">
     <button
       v-for="(variant, i) in variants"
       :key="i"
@@ -11,7 +11,7 @@
         {{ variant }}
       </p>
     </button>
-  </div>
+  </aside>
 </template>
 
 <script setup lang="ts">
@@ -36,6 +36,7 @@ const pickGuide = (guideTitle: string) => {
   display: grid;
   position: sticky;
   width: 100%;
+  height: fit-content;
   top: 0;
   grid-template-columns: repeat(2, var(--button-size));
   grid-template-rows: var(--button-size);

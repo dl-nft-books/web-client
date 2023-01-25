@@ -86,7 +86,8 @@ import { FAQGuides } from '@/pages/FAQ'
       rgba(var(--background-quinary-rgb), 0.5) 100%
     ),
     url('/images/faq-background.png');
-  background-size: contain;
+  background-size: cover;
+  background-repeat: no-repeat;
 
   @include respond-to(medium) {
     padding-top: toRem(40);

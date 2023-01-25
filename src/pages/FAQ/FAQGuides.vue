@@ -48,10 +48,12 @@ const guideTitle = ref(variants[0])
 
 .faq-guides__content {
   position: relative;
+  height: fit-content;
   z-index: var(--page-index);
   display: grid;
   grid-template-columns: 30% 70%;
   justify-content: center;
+  align-items: start;
   gap: toRem(40);
   padding: 0 toRem(100);
 

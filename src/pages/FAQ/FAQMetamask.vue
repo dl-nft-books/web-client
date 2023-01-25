@@ -134,20 +134,11 @@ import { FAQCardInfo } from '@/pages/FAQ'
   align-items: center;
   text-align: center;
   gap: toRem(10);
-  position: relative;
   width: fit-content;
 }
 
 .faq-metamask__image {
-  background-size: contain;
-
-  &--small {
-    width: clamp(toRem(50), 60%, toRem(200));
-  }
-
-  &--medium {
-    width: clamp(toRem(200), 100%, toRem(500));
-  }
+  @include guide-image;
 }
 
 .faq-metamask__image-lbl {
@@ -157,19 +148,7 @@ import { FAQCardInfo } from '@/pages/FAQ'
 }
 
 .faq-metamask__phrase {
-  line-height: 130%;
-
-  &--bold {
-    font-weight: 600;
-  }
-
-  &--italic {
-    font-style: italic;
-  }
-
-  &--color-dark {
-    color: var(--primary-dark);
-  }
+  @include guide-phrase;
 }
 
 .faq-metamask__list {
