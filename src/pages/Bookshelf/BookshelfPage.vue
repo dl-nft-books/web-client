@@ -6,9 +6,7 @@
       <h2 class="bookshelf-page__title">
         {{ $t('bookshelf-page.title') }}
       </h2>
-      <bookshelf-network-switcher
-        v-model:current-chain-id="currentNetworkChainId"
-      />
+      <bookshelf-network-switcher v-model="currentNetworkChainId" />
     </section>
     <error-message
       v-if="isLoadFailed"
