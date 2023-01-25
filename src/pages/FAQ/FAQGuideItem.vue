@@ -3,48 +3,13 @@
     <h3 class="faq-guide-item__title">
       {{ title }}
     </h3>
-    <f-a-q-card-info :order-number="1">
-      <template #header>
-        <p class="faq-guide-item__phrase">
-          {{ $t('faq-page.guide-1.abstract-1') }}
-        </p>
-      </template>
-      <div class="faq-guide-item__image-wrapper">
-        <img
-          src="/images/metamask-desktop.png"
-          class="faq-guide-item__image faq-guide-item__image--medium"
-          alt="metamask-example"
-        />
-        <p class="faq-guide-item__image-lbl">
-          {{ $t('faq-page.guide-1.abstract-1-desktop-lbl') }}
-        </p>
-        <a :href="$t('faq-page.guide-1.abstract-1-link')" target="_blank">
-          {{ $t('faq-page.guide-1.abstract-1-link') }}
-        </a>
-        <div
-          :class="[
-            'faq-guide-item__image-wrapper',
-            'faq-guide-item__image-wrapper--shifted',
-          ]"
-        >
-          <img
-            src="/images/metamask-mobile.png"
-            class="faq-guide-item__image faq-guide-item__image--small"
-            alt="metamask-example"
-            :data-desktop-lbl="$t('faq-page.guide-1.abstract-1-desktop-lbl')"
-          />
-          <p class="faq-guide-item__image-lbl">
-            {{ $t('faq-page.guide-1.abstract-1-mobile-lbl') }}
-          </p>
-        </div>
-      </div>
-    </f-a-q-card-info>
+    <f-a-q-metamask v-if="title === $t('faq-page.guide-1.title')" />
   </div>
 </template>
 
 <script setup lang="ts">
 // import { useContext } from '@/composables'
-import { FAQCardInfo } from '@/pages/FAQ'
+import { FAQMetamask } from '@/pages/FAQ'
 
 defineProps<{
   title: string
@@ -80,36 +45,6 @@ defineProps<{
   }
 }
 
-.faq-guide-item__image-wrapper {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: toRem(10);
-  position: relative;
-
-  &--shifted {
-    position: absolute;
-    left: 0;
-    bottom: 0;
-  }
-}
-
-.faq-guide-item__image {
-  &--small {
-    max-width: 40%;
-  }
-
-  &--medium {
-    max-width: 70%;
-  }
-}
-
-.faq-guide-item__image-lbl {
-  font-style: italic;
-  font-size: toRem(14);
-  line-height: 120%;
-}
-
 .faq-guide-item__title {
   font-weight: 700;
   font-size: toRem(24);
@@ -135,9 +70,5 @@ defineProps<{
   @include respond-to(medium) {
     font-size: toRem(20);
   }
-}
-
-.faq-guide-item__phrase {
-  line-height: 130%;
 }
 </style>

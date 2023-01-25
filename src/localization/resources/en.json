@@ -147,11 +147,18 @@
       "abstract-1-mobile-lbl": "Mobile application",
       "abstract-1-desktop-lbl": "or browser extension",
       "abstract-1-link": "https://metamask.io/",
-      "abstract-2": "Follow the setup instructions step by step. If this is your first time doing this, be sure to save your",
-      "abstract-2-acsent-word": "passphrase",
+      "abstract-2": "Follow the setup instructions step by step. If this is your first time doing this, be sure to save your ",
+      "abstract-2-acsent-word": "passphrase ",
       "abstract-2-end": "from restoring access and importing your wallet to other devices",
       "abstract-3": "To complete an NFT book purchase operation, your balance must be more than zero :)",
-      "subtitle-abstract-3": "Where can you get MATIC tokens?"
+      "subtitle-abstract-3": "Where can you get tokens?",
+      "abstract-3-point-1": "Ask friends to transfer to your address :)",
+      "abstract-3-point-2": "Buy tokens using the MetaMask functionality",
+      "abstract-3-point-2-subtitle": "Such operations are performed on exchanges, they may also require registration and operations may take a long time",
+      "abstract-3-point-3": "Use an application that allows you to perform such operations and transfer money from a bank card directly to the address of the desired wallet",
+      "abstract-3-point-3-subtitle": "We cannot give recommendations on individual applications, but we recommend using only applications that you trust",
+      "abstract-4": "After updating the balance go to ",
+      "abstract-4-acsent-word": "Portfolio"
     },
     "guide-2": {
       "title": "How to buy a book"
