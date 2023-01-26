@@ -45,6 +45,12 @@ const pickGuide = (guideTitle: string) => {
   @include respond-to(medium) {
     grid-template-columns: repeat(auto-fit, minmax(var(--button-size), 1fr));
   }
+
+  @include respond-to(small) {
+    grid-template-columns: repeat(2, var(--button-size));
+    grid-template-rows: toRem(45);
+    width: unset;
+  }
 }
 
 .faq-guides-switcher__item {
@@ -69,12 +75,20 @@ const pickGuide = (guideTitle: string) => {
     border: toRem(1) solid var(--primary-main);
     background-color: var(--bg-picked-color);
   }
+
+  @include respond-to(small) {
+    height: toRem(45);
+  }
 }
 
 .faq-guides-switcher__item-title {
   font-weight: 600;
   font-size: toRem(22);
   line-height: 120%;
+
+  @include respond-to(small) {
+    font-size: toRem(14);
+  }
 
   .faq-guides-switcher__item--picked & {
     color: var(--text-guides);

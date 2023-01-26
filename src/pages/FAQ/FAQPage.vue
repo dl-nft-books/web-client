@@ -158,7 +158,10 @@ import { FAQGuides } from '@/pages/FAQ'
 }
 
 .faq-page__overview-image {
-  max-width: toRem(400);
+  width: clamp(toRem(50), 70%, toRem(400));
   margin: 0 auto;
+  padding-bottom: toRem(40);
+  object-fit: contain;
+  background-size: contain;
 }
 </style>

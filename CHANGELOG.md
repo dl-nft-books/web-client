@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Promocodes logic
 - Vouchers logic
 - FAQ page
+- Technical work page
 
 #### Changed
 - Contract updated to the newest version

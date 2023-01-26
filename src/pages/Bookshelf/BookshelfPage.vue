@@ -187,7 +187,7 @@ function onError(e: Error) {
     height: toRem(2);
     background-color: var(--primary-main);
 
-    @include respond-to(small) {
+    @include respond-to(medium) {
       width: toRem(60);
       top: toRem(40);
     }

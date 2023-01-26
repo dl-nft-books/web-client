@@ -6,4 +6,5 @@ export enum ROUTE_NAMES {
   myNfts = 'my-nfts',
   myNftItem = 'my-nft-item',
   faq = 'faq',
+  technicalWork = 'technical-work',
 }

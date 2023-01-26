@@ -217,7 +217,10 @@
       "abstract-3": "field by at least 10% of the initial deal with which the transaction failed",
       "abstract-3-acsent-word": "Increase the value of the Max priority fee "
     }
-   
+  },
+  "technical-work-page": {
+    "title": "Ooooops...",
+    "subtitle": "Now we are carrying out technical work to make our site better, and the purchase of books is even more convenient! We'll be waiting for you here a little later."
   },
   "bookshelf-item-page": {
     "loading-error-msg": "Oops.... Something went wrong",

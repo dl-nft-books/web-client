@@ -7,6 +7,7 @@ import {
 } from 'vue-router'
 
 import { ROUTE_NAMES } from '@/enums'
+import { config } from '@/config'
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -45,12 +46,34 @@ const routes: Array<RouteRecordRaw> = [
     name: ROUTE_NAMES.faq,
     component: () => import('@/pages/FAQ/FAQPage.vue'),
   },
+  {
+    path: '/technical-work',
+    name: ROUTE_NAMES.technicalWork,
+    component: () => import('@/pages/TechnicalWork.vue'),
+  },
 ]
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes,
   scrollBehavior: () => ({ top: 0, left: 0 }),
+})
+
+const restrictedRoutes = [
+  ROUTE_NAMES.bookshelf,
+  ROUTE_NAMES.bookshelfItem,
+  ROUTE_NAMES.myNftItem,
+  ROUTE_NAMES.myNfts,
+]
+
+router.beforeEach(async (to, from, next) => {
+  if (
+    config.TECHNICAL_STATE === 'updating' &&
+    restrictedRoutes.some(route => route === to.name)
+  ) {
+    return next({ name: ROUTE_NAMES.technicalWork })
+  }
+  next()
 })
 
 export { router, useRouter, useRoute }

@@ -113,5 +113,7 @@ watch(chainIdValue, () => {
   position: relative;
   z-index: var(--nav-bar-index);
   color: var(--text-primary-invert-main);
+  background-color: var(--black);
+  max-width: toRem(250);
 }
 </style>
