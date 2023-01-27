@@ -265,6 +265,7 @@ init()
   font-weight: 400;
   color: var(--text-secondary-main);
   margin-top: toRem(10);
+  word-wrap: break-word;
 
   @include respond-to(medium) {
     font-size: toRem(18);

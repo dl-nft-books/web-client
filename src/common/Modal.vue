@@ -11,8 +11,9 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, onMounted, ref } from 'vue'
+import { defineComponent, onMounted, ref, watch } from 'vue'
 import { onClickOutside } from '@vueuse/core'
+import { Bus } from '@/helpers'
 
 const EVENTS = {
   updateIsShown: 'update:is-shown',
@@ -46,6 +47,11 @@ export default defineComponent({
     const closeModal = () => {
       emit(EVENTS.updateIsShown, false)
     }
+
+    watch(
+      () => props.isShown,
+      () => Bus.emit(Bus.eventList.toggleScroll),
+    )
 
     return {
       modalPane,

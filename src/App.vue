@@ -7,6 +7,7 @@ import { useNotifications } from '@/composables'
 import { config } from '@config'
 import { useWeb3ProvidersStore } from '@/store'
 import { PROVIDERS } from '@/enums'
+import { Bus } from '@/helpers'
 
 const isAppInitialized = ref(false)
 const web3Store = useWeb3ProvidersStore()
@@ -33,10 +34,20 @@ const init = async () => {
 }
 
 init()
+
+const isScrollEnabled = ref(true)
+Bus.on(
+  Bus.eventList.toggleScroll,
+  () => (isScrollEnabled.value = !isScrollEnabled.value),
+)
 </script>
 
 <template>
-  <div v-if="isAppInitialized" class="app__container">
+  <div
+    v-if="isAppInitialized"
+    class="app__container"
+    :class="{ 'app__container--scroll-disabled': !isScrollEnabled }"
+  >
     <app-navbar />
     <router-view v-slot="{ Component, route }">
       <transition :name="route.meta.transition || 'fade'" mode="out-in">
@@ -50,6 +61,10 @@ init()
 <style lang="scss" scoped>
 .app__container {
   overflow: hidden;
+
+  &--scroll-disabled {
+    height: vh(100);
+  }
 }
 
 .app__main {

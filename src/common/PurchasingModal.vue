@@ -181,6 +181,10 @@ init()
   padding: toRem(20);
   gap: toRem(20);
   overflow-y: auto;
+
+  @include respond-to(small) {
+    padding: 0;
+  }
 }
 
 .purchasing-modal__wrong-network-animation-wrp {
