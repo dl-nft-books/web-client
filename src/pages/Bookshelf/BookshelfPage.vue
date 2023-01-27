@@ -58,19 +58,12 @@ import { Book, ChainId } from '@/types'
 import { BookshelfHeader, BookshelfCubes } from '@/pages/Bookshelf'
 import { useNetworksStore } from '@/store'
 
+const networkStore = useNetworksStore()
+
 const isLoadFailed = ref(false)
 const books = ref<BookRecord[]>([])
-
-const networkStore = useNetworksStore()
 const currentNetworkChainId = ref<ChainId>(
   networkStore.isLoaded ? networkStore.list[0].chain_id : 0,
-)
-
-watch(
-  () => networkStore.isLoaded,
-  () => {
-    currentNetworkChainId.value = networkStore.list[0].chain_id
-  },
 )
 
 const loadList = computed(
@@ -102,6 +95,13 @@ function onError(e: Error) {
   ErrorHandler.processWithoutFeedback(e)
   isLoadFailed.value = true
 }
+
+watch(
+  () => networkStore.isLoaded,
+  () => {
+    currentNetworkChainId.value = networkStore.list[0].chain_id
+  },
+)
 </script>
 
 <style lang="scss" scoped>
