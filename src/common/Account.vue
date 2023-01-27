@@ -23,11 +23,11 @@
             </p>
           </div>
           <app-button
-            :icon-left="$icons.copy"
-            :text="$t('app-navbar.copy-address')"
             class="account__action"
             scheme="default"
             modification="default"
+            :icon-left="$icons.copy"
+            :text="$t('app-navbar.copy-address')"
             @click="copyAddress(), menu.close()"
           />
         </div>
