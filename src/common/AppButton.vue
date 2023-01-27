@@ -196,6 +196,11 @@ const buttonClasses = computed(() =>
     --app-button-border-active: 0;
 
     filter: drop-shadow(0 toRem(4) toRem(10) rgba(157, 161, 166, 0.5));
+
+    // on mobile device it leads to problems
+    @include respond-to(small) {
+      filter: unset;
+    }
   }
 
   &--flat {
