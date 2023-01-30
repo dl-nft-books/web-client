@@ -1,8 +1,7 @@
 <template>
-  <!-- TODO: mobile version -->
   <drop-down
     v-if="provider.selectedAddress"
-    :right="81"
+    :right="dropDownShift"
     :disabled="isSwitchingChain"
   >
     <template #head="{ menu }">
@@ -24,11 +23,9 @@
         <network-item
           v-for="network in networksStore.list"
           :key="network.id"
-          :scheme="getNetworkScheme(network.chain_id.toString())"
+          :scheme="getNetworkScheme(network.chain_id)"
           :name="network.name"
-          @network-change="
-            changeNetwork(network.chain_id.toString(), menu.close)
-          "
+          @click="changeNetwork(network.chain_id), menu.close()"
         />
       </div>
     </template>
@@ -39,30 +36,33 @@
 import { ref, computed } from 'vue'
 import { DropDown, NetworkItem, Loader } from '@/common'
 import { useWeb3ProvidersStore, useNetworksStore } from '@/store'
-import { storeToRefs } from 'pinia'
-import { getNetworkScheme } from '@/helpers'
+import { getNetworkScheme, switchNetwork } from '@/helpers'
 import { ChainId } from '@/types'
+import { useWindowSize } from '@vueuse/core'
+import { WINDOW_BREAKPOINTS } from '@/enums'
 
-const { provider } = storeToRefs(useWeb3ProvidersStore())
+const { provider } = useWeb3ProvidersStore()
+const { width } = useWindowSize()
 
 const networksStore = useNetworksStore()
-networksStore.loadNetworks()
 
 const isSwitchingChain = ref(false)
 
-const pickedNetwork = computed(() =>
-  networksStore.list.find(
-    network => network.chain_id === Number(provider.value.chainId),
-  ),
+const dropDownShift = computed(() =>
+  width.value <= WINDOW_BREAKPOINTS.medium ? 0 : 81,
 )
 
-const changeNetwork = async (chainID: ChainId, closeDropDown: () => void) => {
-  isSwitchingChain.value = true
-  await networksStore.switchNetwork(provider.value, chainID)
-  isSwitchingChain.value = false
+const pickedNetwork = computed(() =>
+  networksStore.getNetworkByID(Number(provider.chainId)),
+)
 
-  closeDropDown()
+const changeNetwork = async (chainID: ChainId) => {
+  isSwitchingChain.value = true
+  await switchNetwork(chainID)
+  isSwitchingChain.value = false
 }
+
+networksStore.loadNetworks()
 </script>
 
 <style lang="scss" scoped>
@@ -79,6 +79,11 @@ const changeNetwork = async (chainID: ChainId, closeDropDown: () => void) => {
   transition-property: background-color;
   min-width: toRem(210);
 
+  .app-navigation-mobile__network & {
+    background-color: transparent;
+    border: toRem(1) solid var(--white);
+  }
+
   &:hover {
     cursor: pointer;
     background-color: var(--background-tertiary);
@@ -93,6 +98,10 @@ const changeNetwork = async (chainID: ChainId, closeDropDown: () => void) => {
 .header-network-switcher__body {
   width: toRem(206);
   background-color: var(--background-primary);
+
+  .app-navigation-mobile__network & {
+    background-color: var(--background-quaternary);
+  }
 
   .account--dark-mode & {
     background-color: var(--background-quaternary);

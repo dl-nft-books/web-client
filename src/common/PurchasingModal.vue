@@ -46,7 +46,7 @@
                 <app-button
                   :text="$t('networks.switch-btn-lbl')"
                   :icon-left="$icons.refresh"
-                  @click="networkStore.switchNetwork(provider, book.chainID)"
+                  @click="switchNetwork(book.chainID)"
                 />
               </template>
             </template>
@@ -61,10 +61,10 @@
 <script lang="ts" setup>
 import { AppButton, Modal, Animation, Loader, ErrorMessage } from '@/common'
 
-import { useWeb3ProvidersStore, useNetworksStore } from '@/store'
+import { useWeb3ProvidersStore } from '@/store'
 import { storeToRefs } from 'pinia'
 import { BookRecord } from '@/records'
-import { ErrorHandler } from '@/helpers'
+import { ErrorHandler, switchNetwork } from '@/helpers'
 import { ref, computed } from 'vue'
 import { useContext } from '@/composables'
 import { getPlatformsList } from '@/api'
@@ -92,7 +92,6 @@ const currentPlatform = ref<Platform>()
 const isLoadFailed = ref(false)
 
 const { provider } = storeToRefs(useWeb3ProvidersStore())
-const networkStore = useNetworksStore()
 
 const isValidChain = computed(
   () => props.book.chainID === Number(provider.value.chainId),
@@ -127,7 +126,6 @@ async function init() {
   isLoaded.value = false
   try {
     const { data: platforms } = await getPlatformsList()
-    // TODO: Q
 
     currentPlatform.value = platforms.find(
       platform =>

@@ -1,16 +1,10 @@
 <template>
-  <div :class="classes" @click="emit('networkChange')">
+  <span :class="classes">
     <div :class="wrapperClasses">
       <icon class="network-item__icon" :name="getIconByScheme(scheme)" />
     </div>
-    <p class="network-item__title">
-      {{
-        scheme != 'unsupported'
-          ? $t('networks.title', { network: name })
-          : $t('networks.unsupported')
-      }}
-    </p>
-  </div>
+    {{ title }}
+  </span>
 </template>
 
 <script setup lang="ts">
@@ -18,8 +12,11 @@ import { Icon } from '@/common'
 import { computed } from 'vue'
 import { NETWORKS } from '@/enums'
 import { getIconByScheme } from '@/helpers'
+import { useContext } from '@/composables'
 
 type MODIFICATIONS = 'non-active' | 'default'
+
+const { $t } = useContext()
 
 const props = withDefaults(
   defineProps<{
@@ -34,9 +31,11 @@ const props = withDefaults(
   },
 )
 
-const emit = defineEmits<{
-  (event: 'networkChange'): void
-}>()
+const title = computed(() =>
+  props.scheme !== NETWORKS.UNSUPPORTED
+    ? $t('networks.title', { network: props.name })
+    : $t('networks.unsupported'),
+)
 
 const classes = computed(() => [
   'network-item',
@@ -58,8 +57,15 @@ const wrapperClasses = computed(() => [
   gap: toRem(12);
   padding: toRem(15);
   width: 100%;
+  line-height: toRem(19);
+  color: var(--text-secondary-main);
+  user-select: none;
   transition: 0.2s ease-in-out;
   transition-property: background-color;
+
+  .account--dark-mode & {
+    color: var(--text-secondary-invert-main);
+  }
 
   &--default {
     &:hover {
@@ -70,6 +76,7 @@ const wrapperClasses = computed(() => [
 
   &--non-active {
     padding: 0;
+    font-weight: 500;
   }
 }
 
@@ -84,15 +91,15 @@ const wrapperClasses = computed(() => [
   aspect-ratio: 1 / 1;
 
   &--polygon {
-    background-color: var(--polygon-network);
+    background-color: var(--network-purple-dark);
   }
 
   &--ethereum {
-    background-color: var(--ethereum-network);
+    background-color: var(--network-purple-light);
   }
 
   &--q {
-    background-color: var(--q-network);
+    background-color: var(--network-black);
   }
 
   &--unsupported {
@@ -108,23 +115,7 @@ const wrapperClasses = computed(() => [
   .network-item__wrapper--q & {
     max-width: toRem(14);
     max-height: toRem(13);
-    color: var(--q-network-stroke);
-  }
-}
-
-.network-item__title {
-  font-weight: 400;
-  font-size: toRem(16);
-  line-height: toRem(19);
-  color: var(--text-secondary-main);
-  user-select: none;
-
-  .account--dark-mode & {
-    color: var(--text-secondary-invert-main);
-  }
-
-  .network-item--non-active & {
-    font-weight: 500;
+    color: var(--network-green);
   }
 }
 </style>

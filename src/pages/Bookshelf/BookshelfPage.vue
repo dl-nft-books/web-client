@@ -6,7 +6,7 @@
       <h2 class="bookshelf-page__title">
         {{ $t('bookshelf-page.title') }}
       </h2>
-      <bookshelf-network-switcher v-model:chain-id="currentNetworkChainId" />
+      <bookshelf-network-switcher v-model="currentNetworkChainId" />
     </section>
     <error-message
       v-if="isLoadFailed"
@@ -58,10 +58,10 @@ import { Book, ChainId } from '@/types'
 import { BookshelfHeader, BookshelfCubes } from '@/pages/Bookshelf'
 import { useNetworksStore } from '@/store'
 
+const networkStore = useNetworksStore()
+
 const isLoadFailed = ref(false)
 const books = ref<BookRecord[]>([])
-
-const networkStore = useNetworksStore()
 const currentNetworkChainId = ref<ChainId>(0)
 
 const loadList = computed(

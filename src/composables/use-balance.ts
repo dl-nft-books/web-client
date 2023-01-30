@@ -22,7 +22,11 @@ export function useBalance(currentPlatform: Platform) {
   const getPrice = async (tokenAddress: string, isERC20Token: boolean) => {
     try {
       const contract = isERC20Token ? tokenAddress : ''
-      const { data } = await getPriceByPlatform(currentPlatform.id, contract)
+      const { data } = await getPriceByPlatform(
+        currentPlatform.id,
+        contract,
+        Number(provider.chainId),
+      )
       tokenPrice.value = data
     } catch (error) {
       if (error instanceof errors.NotFoundError) {

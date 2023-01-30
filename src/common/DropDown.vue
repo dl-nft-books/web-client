@@ -1,5 +1,10 @@
 <template>
-  <div ref="rootEl" :class="classes" :style="cssVars">
+  <div
+    ref="rootEl"
+    class="'drop-down"
+    :classes="{ 'drop-down--disabled': isDisabled }"
+    :style="cssVars"
+  >
     <slot name="head" :menu="exposedMenuObject" />
     <transition
       name="drop-down_transition"
@@ -29,13 +34,10 @@ const props = withDefaults(
   },
 )
 
-const cssVars = computed(() => ({
-  '--dropdown-top': `${props.top}px`,
-  '--dropdown-right': `${props.right}px`,
-}))
+const attrs = useAttrs()
 
 const rootEl = ref<HTMLElement | null>(null)
-const isOpen = ref<boolean>(false)
+const isOpen = ref(false)
 
 const exposedMenuObject = {
   isOpen,
@@ -50,13 +52,14 @@ const exposedMenuObject = {
   },
 }
 
-onMounted(() => {
-  if (rootEl.value) {
-    onClickOutside(rootEl, () => {
-      isOpen.value = false
-    })
-  }
-})
+const cssVars = computed(() => ({
+  '--dropdown-top': `${props.top}px`,
+  '--dropdown-right': `${props.right}px`,
+}))
+
+const isDisabled = computed(() =>
+  ['', 'disabled', true].includes(attrs.disabled as string | boolean),
+)
 
 const setHeightCSSVar = (element: HTMLElement) => {
   element.style.setProperty(
@@ -65,23 +68,19 @@ const setHeightCSSVar = (element: HTMLElement) => {
   )
 }
 
-const attrs = useAttrs()
-
-const isDisabled = computed(() =>
-  ['', 'disabled', true].includes(attrs.disabled as string | boolean),
-)
-
-const classes = computed(() => {
-  const defaultClasses = ['drop-down']
-
-  if (isDisabled.value) defaultClasses.push('drop-down--disabled')
-
-  return defaultClasses
+onMounted(() => {
+  if (rootEl.value) {
+    onClickOutside(rootEl, () => {
+      isOpen.value = false
+    })
+  }
 })
 </script>
 
 <style lang="scss" scoped>
 .drop-down {
+  z-index: var(--drop-down-index);
+
   &--disabled {
     opacity: 0.7;
     pointer-events: none;

@@ -6,8 +6,11 @@ import {
   POLYGON_CHAINS,
   Q_CHAINS,
   ICON_NAMES,
+  EIP1193,
 } from '@/enums'
-import { ChainId, ChainUrlInfo } from '@/types'
+import { ChainId, ChainUrlInfo, EthProviderRpcError } from '@/types'
+import { ErrorHandler } from '@/helpers'
+import { useWeb3ProvidersStore } from '@/store'
 
 export function getNetworkScheme(chainID: ChainId): string {
   switch (chainID?.toString()) {
@@ -27,13 +30,13 @@ export function getNetworkScheme(chainID: ChainId): string {
 
 export function getIconByScheme(scheme: NETWORKS): ICON_NAMES {
   switch (scheme) {
-    case 'polygon':
+    case NETWORKS.POLYGON:
       return ICON_NAMES.polygon
-    case 'ethereum':
+    case NETWORKS.ETHEREUM:
       return ICON_NAMES.ethereum
-    case 'q':
+    case NETWORKS.Q:
       return ICON_NAMES.q
-    case 'unsupported':
+    case NETWORKS.UNSUPPORTED:
     default:
       return ICON_NAMES.ban
   }
@@ -76,12 +79,27 @@ export function getBlockExplorerLink(chainId: ChainId, token: string): string {
       return `https://goerli.etherscan.io/token/${token}`
     case ETHEREUM_CHAINS.ethereum:
       return `https://etherscan.io/token/${token}`
-    // Not sure that it works
     case Q_CHAINS.testnet:
       return `https://explorer.qtestnet.org/token/${token}`
     case Q_CHAINS.mainet:
       return `https://explorer.q.org/token/${token}`
     default:
       return `https://etherscan.io/token/${token}`
+  }
+}
+
+export async function switchNetwork(chainID: ChainId) {
+  const { provider } = useWeb3ProvidersStore()
+  try {
+    await provider.switchChain(chainID)
+  } catch (error) {
+    const ethError = error as EthProviderRpcError
+
+    // if wallet has no chain added we need to add it and switch to it
+    if (ethError?.code === EIP1193.walletMissingChain) {
+      await provider.addNetwork(chainID)
+    }
+
+    ErrorHandler.processWithoutFeedback(error)
   }
 }

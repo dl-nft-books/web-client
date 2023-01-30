@@ -332,8 +332,9 @@ const tokenTypesOptions = computed(() => {
     Temporary solution because of missing price for Q on backend
     Will be fixed in future updates
   */
+  const qNetworkIdentifier = 'q'
 
-  if (props.currentPlatform.id !== 'q') {
+  if (props.currentPlatform.id !== qNetworkIdentifier) {
     defaultOptions.push({
       label: globalizeTokenType(TOKEN_TYPES.erc20),
       value: TOKEN_TYPES.erc20,

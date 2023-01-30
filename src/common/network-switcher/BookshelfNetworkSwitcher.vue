@@ -8,7 +8,7 @@
       class="bookshelf-network-switcher__item"
       :class="{
         'bookshelf-network-switcher__item--picked':
-          chainId === network.chain_id,
+          modelValue === network.chain_id,
       }"
       :icon-left="getIconByScheme(getNetworkScheme(network.chain_id))"
       @click="changeNetwork(getNetworkScheme(network.chain_id))"
@@ -43,14 +43,14 @@ const { width } = useWindowSize()
 const { $t } = useContext()
 
 const emit = defineEmits<{
-  (event: 'update:chain-id', value: ChainId): void
+  (event: 'update:modelValue', value: ChainId): void
 }>()
 
 const props = defineProps<{
-  chainId: ChainId
+  modelValue: ChainId
 }>()
 
-const chainIdValue = ref<ChainId>(props.chainId.toString())
+const chainIdValue = ref<ChainId>(props.modelValue.toString())
 
 const isSmallScreen = computed(() => width.value <= WINDOW_BREAKPOINTS.medium)
 
@@ -66,11 +66,11 @@ const selectOptions = computed(() => [
 ])
 
 const changeNetwork = (network: NETWORKS) => {
-  emit('update:chain-id', Number(getChainFromNetwork(network)))
+  emit('update:modelValue', Number(getChainFromNetwork(network)))
 }
 
 watch(chainIdValue, () => {
-  emit('update:chain-id', Number(chainIdValue.value))
+  emit('update:modelValue', Number(chainIdValue.value))
 })
 </script>
 
