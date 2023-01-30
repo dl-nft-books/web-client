@@ -127,7 +127,7 @@
     "switch-btn-lbl": "Switch Network"
   },
   "my-nfts-page": {
-    "loading-error-msg": "Oops... Something went wrong",
+    "loading-error-msg": "This page is currently unavailable due to connection problems with IPFS. Please, try again later.",
     "no-data-msg": "Empty data, please add new",
     "title": "MY NFTs",
     "details-btn": "Details",
@@ -267,7 +267,7 @@
     "ok-btn": "Ok"
   },
   "my-nft-item-page": {
-    "loading-error-msg": "Oops... Something went wrong",
+    "loading-error-msg": "This page is currently unavailable due to connection problems with IPFS. Please, try again later.",
     "purchase-btn": "Buy",
     "my-purchase-tab": "My Purchase",
     "book-description-tab": "Book Description"
