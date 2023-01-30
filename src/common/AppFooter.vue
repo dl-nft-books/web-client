@@ -5,7 +5,7 @@
       <app-logo scheme="light" />
       <div class="app-footer__links-wrapper">
         <app-button
-          :href="$config.FAQ_LINK"
+          :route="{ name: $routes.faq }"
           :text="$t('app-footer.faq-link')"
           class="app-footer__text-link"
         />

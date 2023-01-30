@@ -1,0 +1,8 @@
+export { default as FAQGuides } from '@/pages/FAQ/FAQGuides.vue'
+export { default as FAQGuidesSwitcher } from '@/pages/FAQ/FAQGuidesSwitcher.vue'
+export { default as FAQGuideItem } from '@/pages/FAQ/FAQGuideItem.vue'
+export { default as FAQCardInfo } from '@/pages/FAQ/FAQCardInfo.vue'
+export { default as FAQMetamask } from '@/pages/FAQ/FAQMetamask.vue'
+export { default as FAQBuyBook } from '@/pages/FAQ/FAQBuyBook.vue'
+export { default as FAQMobileVersion } from '@/pages/FAQ/FAQMobileVersion.vue'
+export { default as FAQSolveProblems } from '@/pages/FAQ/FAQSolveProblems.vue'

@@ -15,6 +15,7 @@ export const config = {
   LOG_LEVEL: 'trace' as LogLevelDesc,
   BUILD_VERSION: packageJson.version || import.meta.env.VITE_APP_BUILD_VERSION,
   DEFAULT_PAGE_LIMIT: 15,
+  TECHNICAL_STATE: import.meta.env.VITE_APP_TECHNICAL_STATE,
 } as const
 
 Object.assign(config, _mapEnvCfg(import.meta.env))

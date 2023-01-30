@@ -26,13 +26,16 @@ const handleProviderClick = () => {
   provider.value.connect()
 }
 
-const isAboutPage = computed(() => {
-  return router.currentRoute.value.name === ROUTE_NAMES.aboutUs
+const isDarkMode = computed(() => {
+  return (
+    router.currentRoute.value.name === ROUTE_NAMES.aboutUs ||
+    router.currentRoute.value.name === ROUTE_NAMES.faq
+  )
 })
 </script>
 
 <template>
-  <nav class="app-navbar" :class="{ 'app-navbar--dark': isAboutPage }">
+  <nav class="app-navbar" :class="{ 'app-navbar--dark': isDarkMode }">
     <app-logo />
     <button
       class="app-navbar__hamburger-button"
@@ -76,7 +79,7 @@ const isAboutPage = computed(() => {
         :text="$t('app-navbar.connect-provider-button')"
         @click="handleProviderClick"
       />
-      <account v-else :modification="isAboutPage ? 'dark-mode' : 'default'" />
+      <account v-else :modification="isDarkMode ? 'dark-mode' : 'default'" />
     </div>
     <app-navigation-mobile />
   </nav>
