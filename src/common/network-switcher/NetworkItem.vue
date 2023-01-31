@@ -1,10 +1,12 @@
 <template>
-  <span :class="classes">
-    <div :class="wrapperClasses">
+  <button :class="classes">
+    <span :class="wrapperClasses">
       <icon class="network-item__icon" :name="getIconByScheme(scheme)" />
-    </div>
-    {{ title }}
-  </span>
+    </span>
+    <p class="network-item__title">
+      {{ title }}
+    </p>
+  </button>
 </template>
 
 <script setup lang="ts">
@@ -116,6 +118,22 @@ const wrapperClasses = computed(() => [
     max-width: toRem(14);
     max-height: toRem(13);
     color: var(--network-green);
+  }
+}
+
+.network-item__title {
+  font-weight: 400;
+  font-size: toRem(16);
+  line-height: toRem(19);
+  color: var(--text-secondary-main);
+  user-select: none;
+
+  .account--dark-mode & {
+    color: var(--text-secondary-invert-main);
+  }
+
+  .network-item--non-active & {
+    font-weight: 500;
   }
 }
 </style>

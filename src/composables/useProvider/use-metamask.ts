@@ -131,7 +131,7 @@ export const useMetamask = (provider: ProviderInstance): ProviderWrapper => {
         networkURLs.blockExplorerUrl,
       )
     } catch (error) {
-      ErrorHandler.processWithoutFeedback(error)
+      ErrorHandler.process(error)
     }
   }
 

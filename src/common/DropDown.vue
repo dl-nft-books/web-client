@@ -7,7 +7,7 @@
   >
     <slot name="head" :menu="exposedMenuObject" />
     <transition
-      name="drop-down_transition"
+      name="drop-down"
       @enter="setHeightCSSVar"
       @before-leave="setHeightCSSVar"
     >
@@ -25,11 +25,9 @@ import { ref, onMounted } from 'vue'
 
 const props = withDefaults(
   defineProps<{
-    top?: number
     right?: number
   }>(),
   {
-    top: 60,
     right: -10,
   },
 )
@@ -53,7 +51,6 @@ const exposedMenuObject = {
 }
 
 const cssVars = computed(() => ({
-  '--dropdown-top': `${props.top}px`,
   '--dropdown-right': `${props.right}px`,
 }))
 
@@ -89,7 +86,7 @@ onMounted(() => {
 
 .drop-down__body {
   position: absolute;
-  top: var(--dropdown-top);
+  top: toRem(60);
   right: var(--dropdown-right);
   border-radius: toRem(8);
   width: fit-content;
@@ -97,11 +94,11 @@ onMounted(() => {
   overflow: hidden;
 }
 
-.drop-down_transition-enter-active {
+.drop-down-enter-active {
   animation: appear-animation 0.3s ease-in-out;
 }
 
-.drop-down_transition-leave-active {
+.drop-down-leave-active {
   animation: appear-animation 0.3s ease-in-out reverse;
 }
 
