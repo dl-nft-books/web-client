@@ -146,7 +146,9 @@
             size="small"
             type="submit"
             :text="$t('purchase-book-form.generate-btn')"
-            :disabled="isFormDisabled || !isEnoughBalanceForBuy"
+            :disabled="
+              isFormDisabled || (!isEnoughBalanceForBuy && !isVoucherToken)
+            "
           />
         </template>
       </template>
@@ -314,20 +316,33 @@ const { getFieldErrorMessage, touchField, isFormValid } = useFormValidation(
   })),
 )
 
-const tokenTypesOptions = computed(() => [
-  {
-    label: globalizeTokenType(TOKEN_TYPES.native),
-    value: TOKEN_TYPES.native,
-  },
-  {
-    label: globalizeTokenType(TOKEN_TYPES.erc20),
-    value: TOKEN_TYPES.erc20,
-  },
-  {
-    label: globalizeTokenType(TOKEN_TYPES.voucher),
-    value: TOKEN_TYPES.voucher,
-  },
-])
+const tokenTypesOptions = computed(() => {
+  const defaultOptions = [
+    {
+      label: globalizeTokenType(TOKEN_TYPES.native),
+      value: TOKEN_TYPES.native,
+    },
+    {
+      label: globalizeTokenType(TOKEN_TYPES.voucher),
+      value: TOKEN_TYPES.voucher,
+    },
+  ]
+
+  /* 
+    Temporary solution because of missing price for Q on backend
+    Will be fixed in future updates
+  */
+  const qNetworkIdentifier = 'q'
+
+  if (props.currentPlatform.id !== qNetworkIdentifier) {
+    defaultOptions.push({
+      label: globalizeTokenType(TOKEN_TYPES.erc20),
+      value: TOKEN_TYPES.erc20,
+    })
+  }
+
+  return defaultOptions
+})
 
 const getTokenAddress = () => {
   if (isERC20Token.value) return form.tokenAddress
@@ -341,7 +356,8 @@ const submit = async () => {
     !isFormValid() ||
     !provider.value.selectedAddress ||
     !tokenPrice.value ||
-    !isEnoughBalanceForBuy.value
+    // Balance only matters when you paying not with voucher
+    (!isEnoughBalanceForBuy.value && !isVoucherToken.value)
   )
     return
 

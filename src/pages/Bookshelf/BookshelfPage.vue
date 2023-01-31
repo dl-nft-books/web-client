@@ -1,54 +1,3 @@
-<script lang="ts" setup>
-import {
-  Loader,
-  ErrorMessage,
-  NoDataMessage,
-  BookCard,
-  AppButton,
-  NetworkSwitcher,
-} from '@/common'
-
-import { ErrorHandler } from '@/helpers'
-import { BookRecord } from '@/records'
-import { ref } from 'vue'
-import { BOOK_DEPLOY_STATUSES } from '@/enums'
-import { getBooks } from '@/api'
-import { usePaginate } from '@/composables'
-import { Book } from '@/types'
-import { BookshelfHeader, BookshelfCubes } from '@/pages/Bookshelf'
-
-const isLoadFailed = ref(false)
-const books = ref<BookRecord[]>([])
-
-const { loadNextPage, isLoading, isLoadMoreBtnShown } = usePaginate(
-  loadList,
-  setList,
-  concatList,
-  onError,
-)
-
-function loadList() {
-  return getBooks({
-    deployStatus: [BOOK_DEPLOY_STATUSES.successful],
-  })
-}
-
-function setList(chunk: Book[]) {
-  books.value = chunk.map(book => new BookRecord(book)) ?? []
-}
-
-function concatList(chunk: Book[]) {
-  books.value = books.value.concat(
-    chunk.map(book => new BookRecord(book)) ?? [],
-  )
-}
-
-function onError(e: Error) {
-  ErrorHandler.processWithoutFeedback(e)
-  isLoadFailed.value = true
-}
-</script>
-
 <template>
   <div class="bookshelf-page">
     <bookshelf-cubes />
@@ -57,7 +6,7 @@ function onError(e: Error) {
       <h2 class="bookshelf-page__title">
         {{ $t('bookshelf-page.title') }}
       </h2>
-      <network-switcher />
+      <bookshelf-network-switcher v-model="currentNetworkChainId" />
     </section>
     <error-message
       v-if="isLoadFailed"
@@ -65,7 +14,12 @@ function onError(e: Error) {
     />
     <template v-else-if="books.length || isLoading">
       <div v-if="books.length" class="bookshelf-page__list">
-        <book-card v-for="book in books" :key="book.id" :book="book" />
+        <book-card
+          v-for="book in books"
+          :key="book.id"
+          :book="book"
+          :network="networkStore.getNetworkByID(book.chainID)"
+        />
       </div>
 
       <loader v-if="isLoading" />
@@ -83,6 +37,72 @@ function onError(e: Error) {
     <no-data-message v-else :message="$t('bookshelf-page.no-data-msg')" />
   </div>
 </template>
+
+<script lang="ts" setup>
+import {
+  Loader,
+  ErrorMessage,
+  NoDataMessage,
+  BookCard,
+  AppButton,
+  BookshelfNetworkSwitcher,
+} from '@/common'
+
+import { ErrorHandler } from '@/helpers'
+import { BookRecord } from '@/records'
+import { ref, computed, watch } from 'vue'
+import { BOOK_DEPLOY_STATUSES } from '@/enums'
+import { getBooks } from '@/api'
+import { usePaginate } from '@/composables'
+import { Book, ChainId } from '@/types'
+import { BookshelfHeader, BookshelfCubes } from '@/pages/Bookshelf'
+import { useNetworksStore } from '@/store'
+
+const networkStore = useNetworksStore()
+
+const isLoadFailed = ref(false)
+const books = ref<BookRecord[]>([])
+const currentNetworkChainId = ref<ChainId>(
+  networkStore.isLoaded ? networkStore.list[0].chain_id : 0,
+)
+
+const loadList = computed(
+  () => () =>
+    getBooks({
+      deployStatus: [BOOK_DEPLOY_STATUSES.successful],
+      chainId: currentNetworkChainId.value,
+    }),
+)
+
+const { loadNextPage, isLoading, isLoadMoreBtnShown } = usePaginate(
+  loadList,
+  setList,
+  concatList,
+  onError,
+)
+
+function setList(chunk: Book[]) {
+  books.value = chunk.map(book => new BookRecord(book)) ?? []
+}
+
+function concatList(chunk: Book[]) {
+  books.value = books.value.concat(
+    chunk.map(book => new BookRecord(book)) ?? [],
+  )
+}
+
+function onError(e: Error) {
+  ErrorHandler.processWithoutFeedback(e)
+  isLoadFailed.value = true
+}
+
+watch(
+  () => networkStore.isLoaded,
+  () => {
+    currentNetworkChainId.value = networkStore.list[0].chain_id
+  },
+)
+</script>
 
 <style lang="scss" scoped>
 .bookshelf-page {

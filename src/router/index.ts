@@ -32,13 +32,13 @@ const routes: Array<RouteRecordRaw> = [
   {
     path: '/my-nfts',
     name: ROUTE_NAMES.myNfts,
-    component: () => import('@/pages/MyNFTsPage.vue'),
+    component: () => import('@/pages/MyNfts/MyNFTsPage.vue'),
   },
   {
     path: '/my-nft/:id',
     props: true,
     name: ROUTE_NAMES.myNftItem,
-    component: () => import('@/pages/MyNftItemPage.vue'),
+    component: () => import('@/pages/MyNfts/MyNftItemPage.vue'),
   },
 ]
 

@@ -6,6 +6,7 @@ import {
   formatAssetFromWei,
   formatMDY,
 } from '@/helpers'
+
 import { CURRENCY } from '@/enums'
 import { GeneratedNFtRecord } from '@/records'
 

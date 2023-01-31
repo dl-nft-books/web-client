@@ -3,19 +3,19 @@ import { Loader, ErrorMessage, Tabs, NftDetails } from '@/common'
 
 import { ErrorHandler } from '@/helpers'
 import { ref } from 'vue'
-import { useI18n } from 'vue-i18n'
+import { useContext } from '@/composables'
 import { GeneratedNFtRecord } from '@/records'
 import { getGeneratedTokensById } from '@/api'
 
-const { t } = useI18n({ useScope: 'global' })
+const { $t } = useContext()
 
 const TABS = {
   myPurchase: {
-    translation: t('my-nft-item-page.my-purchase-tab'),
+    translation: $t('my-nft-item-page.my-purchase-tab'),
     id: 'my-purchase-tab',
   },
   bookDescription: {
-    translation: t('my-nft-item-page.book-description-tab'),
+    translation: $t('my-nft-item-page.book-description-tab'),
     id: 'book-description-tab',
   },
 }

@@ -1,9 +1,9 @@
 <script lang="ts" setup>
 import { Loader, ErrorMessage, BookCard, AppButton } from '@/common'
-import MyNftsNoData from '@/pages/my-nfts/MyNftsNoData.vue'
+import { MyNftsNoData } from '@/pages/MyNfts'
 
 import { ErrorHandler } from '@/helpers'
-import { ref, watch } from 'vue'
+import { ref, watch, computed } from 'vue'
 import { GeneratedNFtRecord } from '@/records'
 import { useWeb3ProvidersStore } from '@/store'
 import { storeToRefs } from 'pinia'
@@ -17,17 +17,18 @@ const { provider } = storeToRefs(useWeb3ProvidersStore())
 const isLoadFailed = ref(false)
 const nftList = ref<GeneratedNFtRecord[]>([])
 
+const loadList = computed(
+  () => () =>
+    getGeneratedTokens({
+      account: [provider.value.selectedAddress!],
+      status: [GENERATED_NFT_STATUSES.finishedUploading],
+    }),
+)
+
 const { loadFirstPage, loadNextPage, isLoading, isLoadMoreBtnShown } =
   usePaginate(loadList, setList, concatList, onError, {
     isLoadOnMounted: false,
   })
-
-function loadList() {
-  return getGeneratedTokens({
-    account: [provider.value.selectedAddress!],
-    status: [GENERATED_NFT_STATUSES.finishedUploading],
-  })
-}
 
 function setList(chunk: Token[]) {
   nftList.value = chunk.map(item => new GeneratedNFtRecord(item)) ?? []

@@ -1,0 +1,77 @@
+<template>
+  <div class="bookshelf-network-switcher">
+    <app-button
+      v-for="network in networkStore.list"
+      :key="network.id"
+      modification="switcher"
+      icon-size="large"
+      class="bookshelf-network-switcher__item"
+      :class="{
+        'bookshelf-network-switcher__item--picked':
+          modelValue === network.chain_id,
+      }"
+      :icon-left="getIconByScheme(getNetworkScheme(network.chain_id))"
+      @click="changeNetwork(getNetworkScheme(network.chain_id))"
+    />
+  </div>
+</template>
+
+<script setup lang="ts">
+import { AppButton } from '@/common'
+import { NETWORKS } from '@/enums'
+import { ChainId } from '@/types'
+import {
+  getChainFromNetwork,
+  getNetworkScheme,
+  getIconByScheme,
+} from '@/helpers'
+import { useNetworksStore } from '@/store'
+
+const networkStore = useNetworksStore()
+
+const emit = defineEmits<{
+  (event: 'update:modelValue', value: ChainId): void
+}>()
+
+defineProps<{
+  modelValue: ChainId
+}>()
+
+const changeNetwork = (network: NETWORKS) => {
+  emit('update:modelValue', Number(getChainFromNetwork(network)))
+}
+</script>
+
+<style lang="scss" scoped>
+.bookshelf-network-switcher {
+  display: flex;
+  justify-content: space-between;
+  border-radius: toRem(8);
+  border: toRem(1) solid rgba(var(--white-rgb), 0.5);
+  background-color: var(--black);
+  width: toRem(210);
+  height: toRem(52);
+  position: relative;
+  z-index: var(--page-index);
+}
+
+.bookshelf-network-switcher__item {
+  --bg-picked-color: #{rgba(var(--white-rgb), 0.2)};
+
+  padding: toRem(5);
+  color: var(--primary-main);
+  width: 100%;
+
+  &:first-child {
+    border-radius: toRem(8) 0 0 toRem(8);
+  }
+
+  &:last-child {
+    border-radius: 0 toRem(8) toRem(8) 0;
+  }
+
+  &--picked {
+    background-color: var(--bg-picked-color);
+  }
+}
+</style>

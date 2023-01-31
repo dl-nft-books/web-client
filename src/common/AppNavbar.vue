@@ -1,15 +1,19 @@
 <script lang="ts" setup>
-import { AppButton, AppLogo, Icon, AppNavigationMobile } from '@/common'
+import {
+  AppButton,
+  AppLogo,
+  Icon,
+  AppNavigationMobile,
+  Account,
+} from '@/common'
 import { useWeb3ProvidersStore } from '@/store'
-import { Bus, cropAddress } from '@/helpers'
+import { Bus } from '@/helpers'
 import { storeToRefs } from 'pinia'
 import { computed } from 'vue'
-import { useI18n } from 'vue-i18n'
 import { router } from '@/router'
 import { ROUTE_NAMES } from '@/enums'
 
 const { provider } = storeToRefs(useWeb3ProvidersStore())
-const { t } = useI18n({ useScope: 'global' })
 
 const openSidebar = () => {
   Bus.emit(Bus.eventList.openSidebar)
@@ -21,12 +25,6 @@ const handleProviderClick = () => {
   }
   provider.value.connect()
 }
-
-const connectProviderButtonText = computed(() => {
-  return provider.value.selectedAddress
-    ? cropAddress(provider.value.selectedAddress)
-    : t('app-navbar.connect-provider-button')
-})
 
 const isAboutPage = computed(() => {
   return router.currentRoute.value.name === ROUTE_NAMES.aboutUs
@@ -69,14 +67,16 @@ const isAboutPage = computed(() => {
     </div>
     <div class="app-navbar__provider-button-wrapper">
       <app-button
+        v-if="!provider.selectedAddress"
         class="app-navbar__provider-btn"
         :icon-left="$icons.metamask"
         color="secondary"
         size="small"
         :disabled="provider.selectedAddress"
-        :text="connectProviderButtonText"
+        :text="$t('app-navbar.connect-provider-button')"
         @click="handleProviderClick"
       />
+      <account v-else :modification="isAboutPage ? 'dark-mode' : 'default'" />
     </div>
     <app-navigation-mobile />
   </nav>

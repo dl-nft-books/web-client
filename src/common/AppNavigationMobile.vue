@@ -1,13 +1,12 @@
 <script lang="ts" setup>
 import { computed, ref } from 'vue'
-import { Icon, AppButton, AppLogo } from '@/common'
+import { Icon, AppButton, AppLogo, HeaderNetworkSwitcher } from '@/common'
 import { Bus, cropAddress } from '@/helpers'
 import { ICON_NAMES } from '@/enums'
 import { config } from '@config'
 import { storeToRefs } from 'pinia'
 import { useWeb3ProvidersStore } from '@/store'
-import { useI18n } from 'vue-i18n'
-import { useMetaMaskConnect } from '@/composables'
+import { useMetaMaskConnect, useContext } from '@/composables'
 
 const SOCIAL_LINKS = [
   {
@@ -25,7 +24,7 @@ const SOCIAL_LINKS = [
 ]
 
 const { provider } = storeToRefs(useWeb3ProvidersStore())
-const { t } = useI18n({ useScope: 'global' })
+const { $t } = useContext()
 
 const { connect } = useMetaMaskConnect()
 
@@ -34,7 +33,7 @@ const isShowSidebar = ref(false)
 const connectProviderButtonText = computed(() => {
   return provider.value.selectedAddress
     ? cropAddress(provider.value.selectedAddress)
-    : t('app-navbar.connect-provider-button')
+    : $t('app-navbar.connect-provider-button')
 })
 
 Bus.on(Bus.eventList.openSidebar, () => {
@@ -100,7 +99,11 @@ const hideSidebar = () => {
           :text="connectProviderButtonText"
           @click="connect"
         />
+        <div class="app-navigation-mobile__network">
+          <header-network-switcher />
+        </div>
       </div>
+
       <div class="app-navigation-mobile__social">
         <a
           v-for="social in SOCIAL_LINKS"
@@ -156,6 +159,7 @@ $z-local: 10;
 .app-navigation-mobile__nav {
   display: flex;
   flex-direction: column;
+  gap: toRem(20);
   margin: 0 auto;
   flex: 1;
 }
@@ -167,7 +171,6 @@ $z-local: 10;
   text-align: end;
   justify-items: center;
   justify-content: center;
-  margin-bottom: toRem(25);
   padding: 0 toRem(15);
 }
 
@@ -228,9 +231,15 @@ $z-local: 10;
 
 .app-navigation-mobile__provider-button-wrapper {
   display: flex;
+  flex-direction: column;
+  align-items: center;
   justify-content: center;
+  gap: toRem(20);
   flex: 1;
-  max-height: toRem(50);
+}
+
+.app-navigation-mobile__network {
+  position: relative;
 }
 
 .app-navigation-mobile__provider-btn {

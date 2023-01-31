@@ -1,5 +1,5 @@
 import { ref, watch } from 'vue'
-import { NftBookToken, NftBookToken__factory } from '@/types'
+import { NativeCurrency, NftBookToken, NftBookToken__factory } from '@/types'
 import { ethers } from 'ethers'
 
 import {
@@ -29,6 +29,8 @@ interface UseUnrefProvider {
     chainId: ChainId,
     chainName: string,
     chainRpcUrl: string,
+    nativeCurrency: NativeCurrency,
+    blockExplorerUrl: string,
   ) => Promise<void>
   signAndSendTx: (txRequestBody: TxRequestBody) => Promise<TransactionResponse>
   getHashFromTxResponse: (txResponse: TransactionResponse) => string

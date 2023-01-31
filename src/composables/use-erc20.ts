@@ -1,6 +1,6 @@
 import { ref, watch } from 'vue'
 import { BN } from '@/utils/math.util'
-import { Erc20, Erc20__factory } from '@/types'
+import { Erc20, Erc20__factory, NativeCurrency } from '@/types'
 import { ethers } from 'ethers'
 
 import {
@@ -30,6 +30,8 @@ export interface UseUnrefProvider {
     chainId: ChainId,
     chainName: string,
     chainRpcUrl: string,
+    nativeCurrency: NativeCurrency,
+    blockExplorerUrl: string,
   ) => Promise<void>
   signAndSendTx: (txRequestBody: TxRequestBody) => Promise<TransactionResponse>
   getHashFromTxResponse: (txResponse: TransactionResponse) => string

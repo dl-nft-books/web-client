@@ -1,72 +1,3 @@
-<script lang="ts" setup>
-import {
-  Loader,
-  ErrorMessage,
-  AppButton,
-  PurchasingModal,
-  PurchasingSuccessModal,
-} from '@/common'
-
-import { BookshelfNetworkInfo } from '@/pages/Bookshelf'
-import { ErrorHandler, formatFiatAssetFromWei } from '@/helpers'
-import { ref, watch } from 'vue'
-import { CURRENCY } from '@/enums'
-import { BookRecord } from '@/records'
-import { useWeb3ProvidersStore } from '@/store'
-import { useMetaMaskConnect } from '@/composables'
-import { storeToRefs } from 'pinia'
-import { getBookById } from '@/api'
-import { ethers } from 'ethers'
-
-const props = defineProps<{
-  id: string
-}>()
-const { provider } = storeToRefs(useWeb3ProvidersStore())
-const { connect } = useMetaMaskConnect()
-const isLoaded = ref(false)
-const isLoadFailed = ref(false)
-const isPurchaseModalShown = ref(false)
-const isPurchaseSuccessModalShown = ref(false)
-
-const book = ref<BookRecord | undefined>()
-
-const submit = async () => {
-  try {
-    isPurchaseModalShown.value = false
-    isPurchaseSuccessModalShown.value = true
-  } catch (error) {
-    ErrorHandler.process(error)
-  }
-}
-
-const init = async () => {
-  try {
-    const { data } = await getBookById(props.id)
-    book.value = new BookRecord(data)
-  } catch (error) {
-    ErrorHandler.processWithoutFeedback(error)
-    isLoadFailed.value = true
-  }
-  isLoaded.value = true
-}
-
-// TODO dynamic link
-const getEtherscanLink = (token: string) => {
-  return `https://goerli.etherscan.io/token/${token}`
-}
-
-watch(
-  () => provider.value.isConnected,
-  value => {
-    if (!value) {
-      isPurchaseModalShown.value = false
-    }
-  },
-)
-
-init()
-</script>
-
 <template>
   <div class="bookshelf-item-page">
     <template v-if="isLoaded">
@@ -95,12 +26,16 @@ init()
                 v-if="book.voucherToken !== ethers.constants.AddressZero"
                 scheme="default"
                 icon-size="large"
+                :href="getBlockExplorerLink(book.chainID, book.voucherToken)"
                 :icon-right="$icons.voucher"
-                :href="getEtherscanLink(book.voucherToken)"
               />
             </div>
           </div>
-          <bookshelf-network-info />
+          <bookshelf-network-info
+            v-if="bookNetwork"
+            :name="bookNetwork.name"
+            :scheme="getNetworkScheme(bookNetwork.chain_id.toString())"
+          />
           <app-button
             v-if="provider.isConnected"
             class="bookshelf-item-page__purchase-btn"
@@ -136,6 +71,81 @@ init()
     <loader v-else />
   </div>
 </template>
+
+<script lang="ts" setup>
+import {
+  Loader,
+  ErrorMessage,
+  AppButton,
+  PurchasingModal,
+  PurchasingSuccessModal,
+} from '@/common'
+
+import { BookshelfNetworkInfo } from '@/pages/Bookshelf'
+import { ref, watch, computed } from 'vue'
+import {
+  formatFiatAssetFromWei,
+  ErrorHandler,
+  getNetworkScheme,
+  getBlockExplorerLink,
+} from '@/helpers'
+import { CURRENCY } from '@/enums'
+import { BookRecord } from '@/records'
+import { useWeb3ProvidersStore, useNetworksStore } from '@/store'
+import { useMetaMaskConnect } from '@/composables'
+import { storeToRefs } from 'pinia'
+import { getBookById } from '@/api'
+import { ethers } from 'ethers'
+
+const props = defineProps<{
+  id: string
+}>()
+const { provider } = storeToRefs(useWeb3ProvidersStore())
+const { connect } = useMetaMaskConnect()
+
+const isLoaded = ref(false)
+const isLoadFailed = ref(false)
+const isPurchaseModalShown = ref(false)
+const isPurchaseSuccessModalShown = ref(false)
+
+const networkStore = useNetworksStore()
+const bookNetwork = computed(() =>
+  networkStore.getNetworkByID(book.value?.chainID),
+)
+
+const book = ref<BookRecord | undefined>()
+
+const submit = async () => {
+  try {
+    isPurchaseModalShown.value = false
+    isPurchaseSuccessModalShown.value = true
+  } catch (error) {
+    ErrorHandler.process(error)
+  }
+}
+
+const init = async () => {
+  try {
+    const { data } = await getBookById(props.id)
+    book.value = new BookRecord(data)
+  } catch (error) {
+    ErrorHandler.processWithoutFeedback(error)
+    isLoadFailed.value = true
+  }
+  isLoaded.value = true
+}
+
+watch(
+  () => provider.value.isConnected,
+  value => {
+    if (!value) {
+      isPurchaseModalShown.value = false
+    }
+  },
+)
+
+init()
+</script>
 
 <style lang="scss" scoped>
 .bookshelf-item-page {

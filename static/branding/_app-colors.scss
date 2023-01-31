@@ -68,5 +68,10 @@ $border-black: #3E3E3E;
 
 /* other colors */
 
-$polygon-network: #8247E5;
+$network-purple-dark: #8247E5;
+$network-purple-light: #627EEA;
+$network-black: #0B2545;
+$network-green: #87FF65;
+$drop-down-shadow: #b6b6b7;
+$drop-down-shadow-rgb: hexToRGB($drop-down-shadow);
 $shadow-color: #96969d;

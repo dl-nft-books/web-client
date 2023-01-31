@@ -1,10 +1,40 @@
-<script lang="ts" setup>
-import { AppButton, Icon } from '@/common'
+<template>
+  <div :class="bookCardClasses">
+    <div class="book-card__cover-wrp">
+      <img :src="bannerUrl" :alt="title" class="book-card__cover" />
+      <book-card-network
+        v-if="network"
+        :name="network.name"
+        :scheme="getNetworkScheme(network.chain_id)"
+      />
+    </div>
+    <span class="book-card__title">{{ title }}</span>
+    <span class="book-card__price">
+      <template v-if="price">
+        {{ formatFiatAssetFromWei(price, CURRENCY.USD) }}
+      </template>
+    </span>
+    <template v-if="$slots.actionButton">
+      <slot name="actionButton" />
+    </template>
+    <template v-else>
+      <app-button
+        class="book-card__purchase-btn"
+        size="x-small"
+        :text="actionButtonText"
+        :route="actionButtonLink"
+      />
+    </template>
+  </div>
+</template>
 
+<script lang="ts" setup>
+import { AppButton, BookCardNetwork } from '@/common'
 import { BookRecord, GeneratedNFtRecord } from '@/records'
-import { formatFiatAssetFromWei } from '@/helpers'
+import { formatFiatAssetFromWei, getNetworkScheme } from '@/helpers'
 import { computed } from 'vue'
-import { useI18n } from 'vue-i18n'
+import { useContext } from '@/composables'
+import { Network } from '@/types'
 import { ROUTE_NAMES, CURRENCY } from '@/enums'
 
 const props = withDefaults(
@@ -13,15 +43,17 @@ const props = withDefaults(
     modification?: 'centered' | 'default'
     backgroundColor?: 'primary' | 'secondary' | 'tertiary'
     actionBtnText?: string
+    network?: Network | null
   }>(),
   {
     modification: 'default',
     backgroundColor: 'primary',
     actionBtnText: '',
+    network: null,
   },
 )
 
-const { t } = useI18n({ useScope: 'global' })
+const { $t } = useContext()
 
 const bookCardClasses = computed(() =>
   [
@@ -32,7 +64,7 @@ const bookCardClasses = computed(() =>
 )
 
 const actionButtonText = computed(
-  () => props.actionBtnText || t('bookshelf-page.purchase-btn'),
+  () => props.actionBtnText || $t('bookshelf-page.purchase-btn'),
 )
 
 const actionButtonLink = computed(() =>
@@ -55,38 +87,6 @@ const price = computed(() =>
   props.book instanceof BookRecord ? props.book.price : '',
 )
 </script>
-
-<template>
-  <div :class="bookCardClasses">
-    <div class="book-card__cover-wrp">
-      <img :src="bannerUrl" :alt="title" class="book-card__cover" />
-      <!-- For now its hardcoded value. Will be changed in future updates -->
-      <div class="book-card__network">
-        <icon class="book-card__icon" :name="$icons.polygon" />
-        <p class="book-card__network-name">
-          {{ $t('networks.polygon') }}
-        </p>
-      </div>
-    </div>
-    <span class="book-card__title">{{ title }}</span>
-    <span class="book-card__price">
-      <template v-if="price">
-        {{ formatFiatAssetFromWei(price, CURRENCY.USD) }}
-      </template>
-    </span>
-    <template v-if="$slots.actionButton">
-      <slot name="actionButton" />
-    </template>
-    <template v-else>
-      <app-button
-        class="book-card__purchase-btn"
-        size="x-small"
-        :text="actionButtonText"
-        :route="actionButtonLink"
-      />
-    </template>
-  </div>
-</template>
 
 <style lang="scss" scoped>
 .book-card {
@@ -117,34 +117,6 @@ const price = computed(() =>
   overflow: hidden;
   width: 100%;
   position: relative;
-}
-
-.book-card__network {
-  background-color: var(--text-primary-main);
-  width: fit-content;
-  height: toRem(31);
-  padding: 0 toRem(10);
-  position: absolute;
-  bottom: toRem(4);
-  right: 0;
-  border-radius: toRem(12) 0 toRem(12) 0;
-  display: flex;
-  align-items: center;
-  gap: toRem(10);
-}
-
-.book-card__network-name {
-  font-weight: 400;
-  font-size: toRem(15);
-  line-height: toRem(16);
-  padding-top: toRem(2);
-  color: var(--text-primary-invert-light);
-}
-
-.book-card__icon {
-  max-width: toRem(18);
-  max-height: toRem(16);
-  color: var(--primary-main);
 }
 
 .book-card__cover {
