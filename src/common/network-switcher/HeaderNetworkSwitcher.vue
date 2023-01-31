@@ -8,8 +8,8 @@
     <template #head="{ menu }">
       <loader v-if="isLoadingNetworks" />
       <error-message
-        class="header-network-switcher__error"
         v-else-if="isLoadFailed"
+        class="header-network-switcher__error"
         :message="$t('networks.network-error')"
       />
       <section
