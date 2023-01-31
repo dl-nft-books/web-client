@@ -1,10 +1,12 @@
 <template>
-  <span :class="classes">
-    <div :class="wrapperClasses">
+  <button :class="classes">
+    <span :class="wrapperClasses">
       <icon class="network-item__icon" :name="getIconByScheme(scheme)" />
-    </div>
-    {{ title }}
-  </span>
+    </span>
+    <p class="network-item__title">
+      {{ title }}
+    </p>
+  </button>
 </template>
 
 <script setup lang="ts">
@@ -51,6 +53,7 @@ const wrapperClasses = computed(() => [
 <style lang="scss" scoped>
 .network-item {
   --background-hover-color: rgba(var(--drop-down-shadow-rgb), 0.2);
+  --item-color: var(--text-secondary-main);
 
   display: flex;
   align-items: center;
@@ -58,13 +61,13 @@ const wrapperClasses = computed(() => [
   padding: toRem(15);
   width: 100%;
   line-height: toRem(19);
-  color: var(--text-secondary-main);
+  color: var(--item-color);
   user-select: none;
   transition: 0.2s ease-in-out;
   transition-property: background-color;
 
   .account--dark-mode & {
-    color: var(--text-secondary-invert-main);
+    --item-color: var(--text-secondary-invert-main);
   }
 
   &--default {
@@ -116,6 +119,18 @@ const wrapperClasses = computed(() => [
     max-width: toRem(14);
     max-height: toRem(13);
     color: var(--network-green);
+  }
+}
+
+.network-item__title {
+  font-weight: 400;
+  font-size: toRem(16);
+  line-height: toRem(19);
+  color: var(--item-color);
+  user-select: none;
+
+  .network-item--non-active & {
+    font-weight: 500;
   }
 }
 </style>

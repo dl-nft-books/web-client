@@ -125,7 +125,8 @@
     "all-tokens-lbl": "All tokens",
     "q": "Q Mainnet",
     "unsupported": "Unknown network",
-    "switch-btn-lbl": "Switch Network"
+    "switch-btn-lbl": "Switch Network",
+    "network-error": "Failed to load network list"
   },
   "my-nfts-page": {
     "loading-error-msg": "Oops... Something went wrong",

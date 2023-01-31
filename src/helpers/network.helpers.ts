@@ -100,6 +100,6 @@ export async function switchNetwork(chainID: ChainId) {
       await provider.addNetwork(chainID)
     }
 
-    ErrorHandler.processWithoutFeedback(error)
+    ErrorHandler.process(error)
   }
 }
