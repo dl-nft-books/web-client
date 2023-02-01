@@ -1,31 +1,40 @@
 <template>
   <aside class="faq-guides-switcher">
     <button
-      v-for="(variant, i) in variants"
-      :key="i"
+      v-for="(item, index) in variants"
+      :key="index"
       class="faq-guides-switcher__item"
-      :class="{ 'faq-guides-switcher__item--picked': title === variant }"
-      @click="pickGuide(variant)"
+      :class="{
+        'faq-guides-switcher__item--picked': modelValue.value === item.value,
+      }"
+      @click="pickGuide(item)"
     >
       <p class="faq-guides-switcher__item-title">
-        {{ variant }}
+        {{ item.title }}
       </p>
     </button>
   </aside>
 </template>
 
 <script setup lang="ts">
-defineProps<{
-  variants: string[]
+import { GUIDES } from '@/enums'
+
+type Guide = {
   title: string
+  value: GUIDES
+}
+
+defineProps<{
+  variants: Guide[]
+  modelValue: Guide
 }>()
 
 const emit = defineEmits<{
-  (event: 'update:title', value: string): void
+  (event: 'update:modelValue', value: Guide): void
 }>()
 
-const pickGuide = (guideTitle: string) => {
-  emit('update:title', guideTitle)
+const pickGuide = (guide: Guide) => {
+  emit('update:modelValue', guide)
 }
 </script>
 

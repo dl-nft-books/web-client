@@ -31,12 +31,12 @@
         alt="fancy-image"
       />
     </section>
-    <f-a-q-guides />
+    <faq-guides />
   </div>
 </template>
 
 <script setup lang="ts">
-import { FAQGuides } from '@/pages/FAQ'
+import { FaqGuides } from '@/pages/faq'
 </script>
 
 <style scoped lang="scss">

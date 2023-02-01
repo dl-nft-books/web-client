@@ -1,69 +1,68 @@
 <template>
-  <f-a-q-card-info :order-number="1">
+  <faq-card-info :order-number="1">
     <template #header>
       <p class="faq-metamask__phrase">
-        {{ $t('faq-page.guide-1.abstract-1') }}
+        {{ $t('faq-metamask.abstract-1') }}
       </p>
     </template>
     <section class="faq-metamask__images">
       <div class="faq-metamask__image-wrapper">
         <img
           src="/images/metamask-mobile.png"
-          class="faq-metamask__image faq-metamask__image--small"
-          alt="metamask-example"
-          :data-desktop-lbl="$t('faq-page.guide-1.abstract-1-desktop-lbl')"
+          class="faq-metamask__image faq-metamask__image--x-small"
+          :alt="$t('faq-metamask.alt-metamask-mobile')"
         />
         <p class="faq-metamask__image-lbl">
-          {{ $t('faq-page.guide-1.abstract-1-mobile-lbl') }}
+          {{ $t('faq-metamask.abstract-1-mobile-lbl') }}
         </p>
       </div>
       <div class="faq-metamask__image-wrapper">
         <img
           src="/images/metamask-desktop.png"
           class="faq-metamask__image faq-metamask__image--medium"
-          alt="metamask-example"
+          :alt="$t('faq-metamask.alt-metamask-desktop')"
         />
         <p class="faq-metamask__image-lbl">
-          {{ $t('faq-page.guide-1.abstract-1-desktop-lbl') }}
+          {{ $t('faq-metamask.abstract-1-desktop-lbl') }}
         </p>
-        <a :href="$t('faq-page.guide-1.abstract-1-link')" target="_blank">
-          {{ $t('faq-page.guide-1.abstract-1-link') }}
+        <a :href="$t('faq-metamask.abstract-1-link')" target="_blank">
+          {{ $t('faq-metamask.abstract-1-link') }}
         </a>
       </div>
     </section>
-  </f-a-q-card-info>
-  <f-a-q-card-info :order-number="2">
+  </faq-card-info>
+  <faq-card-info :order-number="2">
     <template #header>
       <div>
         <span class="faq-metamask__phrase">
-          {{ $t('faq-page.guide-1.abstract-2') }}
+          {{ $t('faq-metamask.abstract-2') }}
         </span>
         <span class="faq-metamask__phrase faq-metamask__phrase--bold">
-          {{ $t('faq-page.guide-1.abstract-2-acsent-word') }}
+          {{ $t('faq-metamask.abstract-2-acsent-word') }}
         </span>
         <span class="faq-metamask__phrase">
-          {{ $t('faq-page.guide-1.abstract-2-end') }}
+          {{ $t('faq-metamask.abstract-2-end') }}
         </span>
       </div>
     </template>
-  </f-a-q-card-info>
-  <f-a-q-card-info :order-number="3">
+  </faq-card-info>
+  <faq-card-info :order-number="3">
     <template #header>
       <div>
         <p class="faq-metamask__phrase">
-          {{ $t('faq-page.guide-1.abstract-3') }}
+          {{ $t('faq-metamask.abstract-3') }}
         </p>
         <p class="faq-metamask__phrase faq-metamask__phrase--bold">
-          {{ $t('faq-page.guide-1.subtitle-abstract-3') }}
+          {{ $t('faq-metamask.subtitle-abstract-3') }}
         </p>
       </div>
     </template>
     <ul class="faq-metamask__list">
       <li class="faq-metamask__list-item">
-        {{ $t('faq-page.guide-1.abstract-3-point-1') }}
+        {{ $t('faq-metamask.abstract-3-point-1') }}
       </li>
       <li class="faq-metamask__list-item">
-        {{ $t('faq-page.guide-1.abstract-3-point-2') }}
+        {{ $t('faq-metamask.abstract-3-point-2') }}
       </li>
       <p
         :class="[
@@ -73,10 +72,10 @@
           'faq-metamask__list-item-subtitle',
         ]"
       >
-        {{ $t('faq-page.guide-1.abstract-3-point-2-subtitle') }}
+        {{ $t('faq-metamask.abstract-3-point-2-subtitle') }}
       </p>
       <li class="faq-metamask__list-item">
-        {{ $t('faq-page.guide-1.abstract-3-point-3') }}
+        {{ $t('faq-metamask.abstract-3-point-3') }}
       </li>
       <p
         :class="[
@@ -86,18 +85,18 @@
           'faq-metamask__list-item-subtitle',
         ]"
       >
-        {{ $t('faq-page.guide-1.abstract-3-point-3-subtitle') }}
+        {{ $t('faq-metamask.abstract-3-point-3-subtitle') }}
       </p>
     </ul>
-  </f-a-q-card-info>
-  <f-a-q-card-info :order-number="4">
+  </faq-card-info>
+  <faq-card-info :order-number="4">
     <template #header>
       <div>
         <span class="faq-metamask__phrase">
-          {{ $t('faq-page.guide-1.abstract-4') }}
+          {{ $t('faq-metamask.abstract-4') }}
         </span>
         <span class="faq-metamask__phrase faq-metamask__phrase--bold">{{
-          $t('faq-page.guide-1.abstract-4-acsent-word')
+          $t('faq-metamask.abstract-4-acsent-word')
         }}</span>
       </div>
     </template>
@@ -105,14 +104,14 @@
       <img
         src="/images/metamask-portfolio.png"
         class="faq-metamask__image faq-metamask__image--medium"
-        alt="metamask-portfolio"
+        :alt="$t('faq-metamask.alt-metamask-portfolio')"
       />
     </div>
-  </f-a-q-card-info>
+  </faq-card-info>
 </template>
 
 <script setup lang="ts">
-import { FAQCardInfo } from '@/pages/FAQ'
+import { FaqCardInfo } from '@/pages/faq'
 </script>
 
 <style scoped lang="scss">

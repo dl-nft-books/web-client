@@ -95,6 +95,10 @@ $media-breakpoints: (
   background-size: contain;
   margin: 0 auto;
 
+  &--x-small {
+    width: clamp(toRem(50), 35%, toRem(200));
+  }
+
   &--small {
     width: clamp(toRem(50), 60%, toRem(200));
   }

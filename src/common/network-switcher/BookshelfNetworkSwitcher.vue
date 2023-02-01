@@ -17,7 +17,7 @@
   <template v-else>
     <select-field
       v-model="chainIdValue"
-      class="bookshelf-network-switcher__mobile"
+      class="bookshelf-network-switcher bookshelf-network-switcher--mobile"
       :value-options="selectOptions"
     />
   </template>
@@ -85,6 +85,16 @@ watch(chainIdValue, () => {
   height: toRem(52);
   position: relative;
   z-index: var(--page-index);
+
+  &--mobile {
+    flex: unset;
+    height: unset;
+    border: unset;
+    width: 50%;
+    z-index: var(--nav-bar-index);
+    color: var(--text-primary-invert-main);
+    max-width: toRem(250);
+  }
 }
 
 .bookshelf-network-switcher__item {

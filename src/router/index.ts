@@ -6,7 +6,7 @@ import {
   useRouter,
 } from 'vue-router'
 
-import { ROUTE_NAMES } from '@/enums'
+import { ROUTE_NAMES, ROUTE_METAS, PAGE_TECHNICAL_STATE } from '@/enums'
 import { config } from '@/config'
 
 const routes: Array<RouteRecordRaw> = [
@@ -18,33 +18,35 @@ const routes: Array<RouteRecordRaw> = [
     path: '/about-us',
     name: ROUTE_NAMES.aboutUs,
     component: () => import('@/pages/AboutUs.vue'),
+    meta: { [ROUTE_METAS.isDarkPage]: true },
   },
   {
     path: '/bookshelf',
     name: ROUTE_NAMES.bookshelf,
-    component: () => import('@/pages/Bookshelf/BookshelfPage.vue'),
+    component: () => import('@/pages/bookshelf/BookshelfPage.vue'),
   },
   {
     path: '/bookshelf/:id',
     name: ROUTE_NAMES.bookshelfItem,
     props: true,
-    component: () => import('@/pages/Bookshelf/BookshelfItemPage.vue'),
+    component: () => import('@/pages/bookshelf/BookshelfItemPage.vue'),
   },
   {
     path: '/my-nfts',
     name: ROUTE_NAMES.myNfts,
-    component: () => import('@/pages/MyNfts/MyNFTsPage.vue'),
+    component: () => import('@/pages/my-nfts/MyNFTsPage.vue'),
   },
   {
     path: '/my-nft/:id',
     props: true,
     name: ROUTE_NAMES.myNftItem,
-    component: () => import('@/pages/MyNfts/MyNftItemPage.vue'),
+    component: () => import('@/pages/my-nfts/MyNftItemPage.vue'),
   },
   {
     path: '/faq',
     name: ROUTE_NAMES.faq,
-    component: () => import('@/pages/FAQ/FAQPage.vue'),
+    component: () => import('@/pages/faq/FaqPage.vue'),
+    meta: { [ROUTE_METAS.isDarkPage]: true },
   },
   {
     path: '/technical-work',
@@ -66,9 +68,9 @@ const restrictedRoutes = [
   ROUTE_NAMES.myNfts,
 ]
 
-router.beforeEach(async (to, from, next) => {
+router.beforeEach((to, _, next) => {
   if (
-    config.TECHNICAL_STATE === 'updating' &&
+    config.TECHNICAL_STATE === PAGE_TECHNICAL_STATE.updating &&
     restrictedRoutes.some(route => route === to.name)
   ) {
     return next({ name: ROUTE_NAMES.technicalWork })

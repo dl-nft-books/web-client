@@ -1,70 +1,70 @@
 <template>
   <div class="faq-solve-problems">
-    <f-a-q-card-info :order-number="1">
+    <faq-card-info :order-number="1">
       <template #header>
         <div>
           <span class="faq-solve-problems__phrase">
-            {{ $t('faq-page.guide-4.abstract-1') }}
+            {{ $t('faq-solve-problems.abstract-1') }}
           </span>
           <span
             class="faq-solve-problems__phrase faq-solve-problems__phrase--bold"
           >
-            {{ $t('faq-page.guide-4.abstract-1-acsent-word') }}
+            {{ $t('faq-solve-problems.abstract-1-acsent-word') }}
           </span>
           <span class="faq-solve-problems__phrase">
-            {{ $t('faq-page.guide-4.abstract-1-continue') }}
+            {{ $t('faq-solve-problems.abstract-1-continue') }}
           </span>
         </div>
       </template>
       <img
         class="faq-solve-problems__image faq-solve-problems__image--medium"
         src="/images/gas-control.png"
-        alt="gas controls"
+        :alt="$t('faq-solve-problems.alt-gas-control')"
       />
-    </f-a-q-card-info>
-    <f-a-q-card-info :order-number="2">
+    </faq-card-info>
+    <faq-card-info :order-number="2">
       <template #header>
         <div>
           <span
             class="faq-solve-problems__phrase faq-solve-problems__phrase--bold"
           >
-            {{ $t('faq-page.guide-4.abstract-2-acsent-word') }}
+            {{ $t('faq-solve-problems.abstract-2-acsent-word') }}
           </span>
           <span class="faq-solve-problems__phrase">
-            {{ $t('faq-page.guide-4.abstract-2') }}
+            {{ $t('faq-solve-problems.abstract-2') }}
           </span>
         </div>
       </template>
       <img
         class="faq-solve-problems__image faq-solve-problems__image--medium"
         src="/images/transaction-retry.png"
-        alt="transaction retry"
+        :alt="$t('faq-solve-problems.alt-transaction-retry')"
       />
-    </f-a-q-card-info>
-    <f-a-q-card-info :order-number="3" modification="col-span">
+    </faq-card-info>
+    <faq-card-info :order-number="3" modification="col-span">
       <template #header>
         <div>
           <span
             class="faq-solve-problems__phrase faq-solve-problems__phrase--bold"
           >
-            {{ $t('faq-page.guide-4.abstract-3-acsent-word') }}
+            {{ $t('faq-solve-problems.abstract-3-acsent-word') }}
           </span>
           <span class="faq-solve-problems__phrase">
-            {{ $t('faq-page.guide-4.abstract-3') }}
+            {{ $t('faq-solve-problems.abstract-3') }}
           </span>
         </div>
       </template>
       <img
         class="faq-solve-problems__image faq-solve-problems__image--medium"
         src="/images/increase-fee.png"
-        alt="increase fee"
+        :alt="$t('faq-solve-problems.alt-increase-fee')"
       />
-    </f-a-q-card-info>
+    </faq-card-info>
   </div>
 </template>
 
 <script setup lang="ts">
-import { FAQCardInfo } from '@/pages/FAQ'
+import { FaqCardInfo } from '@/pages/faq'
 </script>
 
 <style scoped lang="scss">

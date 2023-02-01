@@ -8,3 +8,7 @@ export enum ROUTE_NAMES {
   faq = 'faq',
   technicalWork = 'technical-work',
 }
+
+export enum ROUTE_METAS {
+  isDarkPage = 'isDarkPage',
+}

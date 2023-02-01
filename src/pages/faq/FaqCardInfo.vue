@@ -1,8 +1,5 @@
 <template>
-  <div
-    class="faq-card-info"
-    :class="{ 'faq-card-info--col-span': modification === 'col-span' }"
-  >
+  <div :class="classes">
     <header class="faq-card-info__header">
       <div class="faq-card-info__number">
         <p class="faq-card-info__number-content">
@@ -16,15 +13,22 @@
 </template>
 
 <script setup lang="ts">
+import { computed } from 'vue'
+
 type MODIFICATIONS = 'col-span' | 'default'
 
-withDefaults(
+const props = withDefaults(
   defineProps<{
     orderNumber: number
     modification?: MODIFICATIONS
   }>(),
   { modification: 'default' },
 )
+
+const classes = computed(() => [
+  'faq-card-info',
+  `faq-card-info--${props.modification}`,
+])
 </script>
 
 <style scoped lang="scss">

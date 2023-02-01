@@ -2,8 +2,8 @@
   <div class="faq-guides">
     <div class="faq-guides__background" />
     <section class="faq-guides__content">
-      <f-a-q-guides-switcher v-model:title="guideTitle" :variants="variants" />
-      <f-a-q-guide-item :title="guideTitle" />
+      <faq-guides-switcher v-model="currentGuide" :variants="guides" />
+      <faq-guide-item :guide="currentGuide" />
     </section>
   </div>
 </template>
@@ -11,18 +11,31 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { useContext } from '@/composables'
-import { FAQGuidesSwitcher, FAQGuideItem } from '@/pages/FAQ'
+import { FaqGuidesSwitcher, FaqGuideItem } from '@/pages/faq'
+import { GUIDES } from '@/enums'
 
 const { $t } = useContext()
 
-const variants = [
-  $t('faq-page.guide-1.title'),
-  $t('faq-page.guide-2.title'),
-  $t('faq-page.guide-3.title'),
-  $t('faq-page.guide-4.title'),
+const guides = [
+  {
+    title: $t('faq-metamask.title'),
+    value: GUIDES.metamask,
+  },
+  {
+    title: $t('faq-buy-book.title'),
+    value: GUIDES.buyBook,
+  },
+  {
+    title: $t('faq-mobile-version.title'),
+    value: GUIDES.mobile,
+  },
+  {
+    title: $t('faq-solve-problems.title'),
+    value: GUIDES.problems,
+  },
 ]
 
-const guideTitle = ref(variants[0])
+const currentGuide = ref(guides[0])
 </script>
 
 <style scoped lang="scss">
