@@ -81,7 +81,7 @@ import {
   PurchasingSuccessModal,
 } from '@/common'
 
-import { BookshelfNetworkInfo } from '@/pages/Bookshelf'
+import { BookshelfNetworkInfo } from '@/pages/bookshelf'
 import { ref, watch, computed } from 'vue'
 import {
   formatFiatAssetFromWei,
