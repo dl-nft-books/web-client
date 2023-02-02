@@ -80,8 +80,8 @@ const buttonClasses = computed(() =>
 <template>
   <template v-if="route">
     <router-link
-      class="app-button"
       v-bind="$attrs"
+      class="app-button"
       :class="buttonClasses"
       :to="route"
     >
@@ -99,8 +99,8 @@ const buttonClasses = computed(() =>
   </template>
   <template v-else-if="href">
     <a
-      class="app-button"
       v-bind="$attrs"
+      class="app-button"
       :class="buttonClasses"
       :href="href"
       :target="props.hrefTarget"
@@ -119,8 +119,8 @@ const buttonClasses = computed(() =>
   </template>
   <template v-else>
     <button
-      class="app-button"
       v-bind="$attrs"
+      class="app-button"
       :class="buttonClasses"
       :disabled="isDisabled"
       :type="$attrs.type || 'button'"
