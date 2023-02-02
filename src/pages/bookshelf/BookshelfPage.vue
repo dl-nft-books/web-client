@@ -106,6 +106,7 @@ function onError(e: Error) {
   z-index: var(--page-index);
   margin-top: toRem(-220);
   background-color: var(--black);
+  overflow-x: hidden;
 
   /* Chain image */
   &:before {

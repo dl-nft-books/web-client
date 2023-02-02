@@ -14,7 +14,7 @@ html {
   scroll-padding-top: toRem(20);
 
   @include respond-to(medium) {
-    scroll-padding-top: toRem(180);
+    scroll-padding-top: toRem(160);
   }
 }
 

@@ -42,6 +42,7 @@ const pickGuide = (guide: Guide) => {
 <style scoped lang="scss">
 .faq-guides-switcher {
   --button-size: #{toRem(150)};
+  --mobile-background: #{rgba(var(--white-rgb), 0.6)};
 
   display: grid;
   position: sticky;
@@ -56,9 +57,11 @@ const pickGuide = (guide: Guide) => {
   @include respond-to(medium) {
     grid-template-columns: repeat(2, 1fr);
     grid-template-rows: toRem(45);
-    background-color: var(--background-primary);
-    top: 0;
-    padding-top: toRem(20);
+    background-color: var(--mobile-background);
+    padding: toRem(20);
+    top: toRem(10);
+    border-radius: toRem(8);
+    backdrop-filter: blur(toRem(3));
     width: unset;
   }
 }
