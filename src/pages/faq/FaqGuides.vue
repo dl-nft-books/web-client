@@ -2,7 +2,7 @@
   <div class="faq-guides">
     <div class="faq-guides__background" />
     <section class="faq-guides__content">
-      <faq-guides-switcher v-model="currentGuide" :variants="guides" />
+      <faq-guides-switcher v-model="currentGuide" :switcher-list="guides" />
       <div ref="guideRef" class="faq-guides__guides">
         <faq-guide-item
           v-for="(item, index) in guides"

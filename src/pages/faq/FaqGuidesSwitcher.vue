@@ -1,7 +1,7 @@
 <template>
   <aside class="faq-guides-switcher">
     <a
-      v-for="(item, index) in variants"
+      v-for="(item, index) in switcherList"
       :key="index"
       class="faq-guides-switcher__item"
       :class="{
@@ -26,7 +26,7 @@ type Guide = {
 }
 
 defineProps<{
-  variants: Guide[]
+  switcherList: Guide[]
   modelValue: Guide
 }>()
 

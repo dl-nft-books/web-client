@@ -27,16 +27,15 @@ const props = defineProps<{
 
 const currentGuide = computed(() => {
   switch (props.guide.value) {
-    case GUIDES.metamask:
-      return FaqMetamask
     case GUIDES.buyBook:
       return FaqBuyBook
     case GUIDES.mobile:
       return FaqMobileVersion
     case GUIDES.problems:
       return FaqSolveProblems
+    case GUIDES.metamask:
     default:
-      return null
+      return FaqMetamask
   }
 })
 </script>
