@@ -114,6 +114,7 @@ const price = computed(() =>
 }
 
 .book-card__cover-wrp {
+  display: flex;
   overflow: hidden;
   width: 100%;
   position: relative;
