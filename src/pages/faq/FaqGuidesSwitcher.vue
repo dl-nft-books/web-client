@@ -53,12 +53,6 @@ const pickGuide = (guide: Guide) => {
   grid-template-rows: var(--button-size);
   gap: toRem(20);
 
-  // @include respond-to(medium) {
-  //   grid-template-columns: repeat(auto-fit, minmax(var(--button-size), 1fr));
-  //   place-content: center;
-  //   background-color: var(--background-primary);
-  // }
-
   @include respond-to(medium) {
     grid-template-columns: repeat(2, 1fr);
     grid-template-rows: toRem(45);

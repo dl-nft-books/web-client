@@ -13,8 +13,8 @@ html {
   scroll-behavior: smooth;
   scroll-padding-top: toRem(20);
 
-  @include respond-to(small) {
-    scroll-padding-top: toRem(140);
+  @include respond-to(medium) {
+    scroll-padding-top: toRem(180);
   }
 }
 

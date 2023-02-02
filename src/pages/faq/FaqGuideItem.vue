@@ -48,7 +48,6 @@ const currentGuide = computed(() => {
   flex-direction: column;
   gap: toRem(20);
   width: 100%;
-  scroll-snap-align: start;
 
   @include respond-to(medium) {
     padding-left: 0;

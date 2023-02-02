@@ -7,8 +7,8 @@
         <faq-guide-item
           v-for="(item, index) in guides"
           :id="item.value"
-          class="faq-guides__item"
           :key="index"
+          class="faq-guides__item"
           :guide="item"
         />
       </div>
