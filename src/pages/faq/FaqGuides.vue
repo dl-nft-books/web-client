@@ -3,13 +3,21 @@
     <div class="faq-guides__background" />
     <section class="faq-guides__content">
       <faq-guides-switcher v-model="currentGuide" :variants="guides" />
-      <faq-guide-item :guide="currentGuide" />
+      <div ref="guideRef" class="faq-guides__guides">
+        <faq-guide-item
+          v-for="(item, index) in guides"
+          :id="item.value"
+          class="faq-guides__item"
+          :key="index"
+          :guide="item"
+        />
+      </div>
     </section>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
 import { useContext } from '@/composables'
 import { FaqGuidesSwitcher, FaqGuideItem } from '@/pages/faq'
 import { GUIDES } from '@/enums'
@@ -36,6 +44,30 @@ const guides = [
 ]
 
 const currentGuide = ref(guides[0])
+const guideRef = ref<HTMLElement | null>(null)
+
+const observer = new IntersectionObserver(
+  entries => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        currentGuide.value = guides.find(
+          guide => guide.value === entry.target.id,
+        )
+      }
+    })
+  },
+  { threshold: 0.3 },
+)
+
+onMounted(() => {
+  if (!guideRef.value) return
+
+  for (const guideSection of guideRef.value.getElementsByClassName(
+    'faq-guides__item',
+  )) {
+    observer.observe(guideSection)
+  }
+})
 </script>
 
 <style scoped lang="scss">
@@ -45,6 +77,12 @@ const currentGuide = ref(guides[0])
   min-height: toRem(300);
   width: 100%;
   position: relative;
+}
+
+.faq-guides__guides {
+  display: flex;
+  flex-direction: column;
+  gap: toRem(40);
 }
 
 .faq-guides__background {

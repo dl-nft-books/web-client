@@ -1,6 +1,6 @@
 <template>
   <div class="faq-guide-item">
-    <h3 class="faq-guide-item__title">
+    <h3 :id="guide.value" class="faq-guide-item__title">
       {{ guide.title }}
     </h3>
     <component :is="currentGuide" />
@@ -48,6 +48,7 @@ const currentGuide = computed(() => {
   flex-direction: column;
   gap: toRem(20);
   width: 100%;
+  scroll-snap-align: start;
 
   @include respond-to(medium) {
     padding-left: 0;
@@ -72,7 +73,6 @@ const currentGuide = computed(() => {
 
     @include respond-to(small) {
       width: toRem(60);
-      top: toRem(40);
     }
   }
 
