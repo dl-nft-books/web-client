@@ -116,14 +116,4 @@ watch(chainIdValue, () => {
     background-color: var(--bg-picked-color);
   }
 }
-
-.bookshelf-network-switcher__mobile {
-  flex: unset;
-  width: 50%;
-  position: relative;
-  z-index: var(--nav-bar-index);
-  color: var(--text-primary-invert-main);
-  background-color: var(--black);
-  max-width: toRem(250);
-}
 </style>
