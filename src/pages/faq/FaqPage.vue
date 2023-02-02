@@ -28,7 +28,7 @@
       <img
         class="faq-page__overview-image"
         src="/images/fancy-image.png"
-        alt="fancy-image"
+        :alt="$t('faq-page.alt-fancy-image')"
       />
     </section>
     <faq-guides />

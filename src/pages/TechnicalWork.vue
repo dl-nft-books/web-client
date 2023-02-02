@@ -3,7 +3,7 @@
     <img
       class="technical-work__image technical-work__image--medium"
       src="/images/technical-work.png"
-      alt="technical work"
+      :alt="$t('technical-work-page.alt-technical-work')"
     />
     <section class="technical-work__info">
       <h3 class="technical-work__title">
