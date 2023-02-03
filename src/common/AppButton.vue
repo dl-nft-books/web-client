@@ -9,6 +9,7 @@ type SCHEMES = 'filled' | 'flat' | 'default'
 
 type MODIFICATIONS = 'border-circle' | 'border-rounded' | 'switcher' | 'default'
 type ICON_SIZE = 'large' | 'medium' | 'x-medium'
+type HREF_TARGET = '_blank' | '_self' | '_parent' | '_top'
 
 type COLORS =
   | 'primary'
@@ -30,6 +31,7 @@ const props = withDefaults(
     size?: SIZES
     route?: LocationAsRelativeRaw
     href?: string
+    hrefTarget?: HREF_TARGET
     iconLeft?: ICON_NAMES
     iconRight?: ICON_NAMES
     iconSize?: ICON_SIZE
@@ -42,6 +44,7 @@ const props = withDefaults(
     size: 'medium',
     route: undefined,
     href: '',
+    hrefTarget: '_blank',
     iconLeft: undefined,
     iconRight: undefined,
     iconSize: 'medium',
@@ -95,7 +98,13 @@ const buttonClasses = computed(() =>
     </router-link>
   </template>
   <template v-else-if="href">
-    <a class="app-button" :class="buttonClasses" v-bind="$attrs" :href="href">
+    <a
+      class="app-button"
+      :class="buttonClasses"
+      v-bind="$attrs"
+      :href="href"
+      :target="props.hrefTarget"
+    >
       <icon v-if="iconLeft" :class="iconClasses" :name="iconLeft" />
       <template v-if="$slots.default">
         <slot />

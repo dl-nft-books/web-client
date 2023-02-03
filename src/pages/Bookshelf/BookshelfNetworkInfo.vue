@@ -12,7 +12,7 @@
         />
       </div>
       <p class="bookshelf-network-info__subtitle">
-        {{ $t('networks.title', { network: name }) }}
+        {{ name }}
       </p>
     </div>
   </section>

@@ -2,7 +2,7 @@
   <div class="book-card-network">
     <icon class="book-card-network__icon" :name="getIconByScheme(scheme)" />
     <p class="book-card-network__name">
-      {{ $t('networks.title', { network: name }) }}
+      {{ name }}
     </p>
   </div>
 </template>

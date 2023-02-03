@@ -1,5 +1,10 @@
 import { config } from '@/config'
-import { POLYGON_MUMBAI_CHAIN, Q_TESTNET_CHAIN } from '@/const'
+import {
+  POLYGON_MAINNET_CHAIN,
+  POLYGON_MUMBAI_CHAIN,
+  Q_MAINNET_CHAIN,
+  Q_TESTNET_CHAIN,
+} from '@/const'
 import {
   ETHEREUM_CHAINS,
   NETWORKS,
@@ -52,8 +57,12 @@ export function getNetworkInfo(chainID: ChainId): ChainUrlInfo | null {
   switch (chainID.toString()) {
     case POLYGON_CHAINS.mumbai:
       return POLYGON_MUMBAI_CHAIN
+    case POLYGON_CHAINS.mainnet:
+      return POLYGON_MAINNET_CHAIN
     case Q_CHAINS.testnet:
       return Q_TESTNET_CHAIN
+    case Q_CHAINS.mainet:
+      return Q_MAINNET_CHAIN
     default:
       return null
   }
