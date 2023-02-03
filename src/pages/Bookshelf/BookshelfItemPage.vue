@@ -17,6 +17,14 @@
           <h2 class="bookshelf-item-page__title">
             {{ book.title }}
           </h2>
+          <marquee
+            :text="[
+              $t('bookshelf-item-page.badge-1'),
+              $t('bookshelf-item-page.badge-2'),
+              $t('bookshelf-item-page.badge-1'),
+              $t('bookshelf-item-page.badge-2'),
+            ]"
+          />
           <div class="bookshelf-item-page__actions">
             <div class="bookshelf-item-page__price">
               {{ formatFiatAssetFromWei(book.price, CURRENCY.USD) }}
@@ -79,6 +87,7 @@ import {
   AppButton,
   PurchasingModal,
   PurchasingSuccessModal,
+  Marquee,
 } from '@/common'
 
 import { BookshelfNetworkInfo } from '@/pages/Bookshelf'
@@ -202,7 +211,7 @@ init()
   font-size: toRem(48);
   line-height: 1.2;
   font-weight: 900;
-  margin-bottom: toRem(40);
+  margin-bottom: toRem(34);
   max-width: 100%;
 
   @include text-ellipsis;
@@ -218,8 +227,8 @@ init()
   align-items: center;
   justify-content: space-between;
   gap: toRem(20);
-  padding-bottom: toRem(36);
-  margin-bottom: toRem(20);
+  padding-bottom: toRem(38);
+  margin-top: toRem(28);
 
   @include respond-to(medium) {
     justify-content: center;
