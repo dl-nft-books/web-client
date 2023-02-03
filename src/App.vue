@@ -48,6 +48,12 @@ init()
 </template>
 
 <style lang="scss" scoped>
+.app__container {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
 .app__main {
   padding: 0 var(--app-padding-right) 0 var(--app-padding-left);
 }

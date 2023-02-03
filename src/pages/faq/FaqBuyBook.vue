@@ -1,141 +1,225 @@
 <template>
   <div class="faq-buy-book">
-    <faq-card-info :order-number="1">
+    <faq-card-info
+      v-for="(item, index) in guideInfo"
+      :key="index"
+      :order-number="index + 1"
+    >
       <template #header>
         <div>
-          <span class="faq-buy-book__phrase">
-            {{ $t('faq-buy-book.abstract-1') }}
-          </span>
-          <a :href="$t('faq-buy-book.abstract-1-link')" target="_blank">
-            {{ $t('faq-buy-book.abstract-1-link') }}
-          </a>
-          <span class="faq-buy-book__phrase">
-            {{ $t('faq-buy-book.abstract-1-continue') }}
-          </span>
-          <span class="faq-buy-book__phrase faq-buy-book__phrase--bold">
-            {{ $t('faq-buy-book.abstract-1-acsent-word') }}
-          </span>
+          <component
+            v-for="text in item.text"
+            :is="text.component"
+            :key="text.value"
+            v-bind="text.attrs"
+            :class="{
+              'faq-buy-book__phrase': text.component === 'span',
+              'faq-buy-book__phrase--bold': text.isBold,
+            }"
+          >
+            {{ text.value }}
+          </component>
         </div>
       </template>
-      <img
-        class="faq-buy-book__image faq-buy-book__image--medium"
-        src="/images/connect-metamask.png"
-        :alt="$t('faq-buy-book.alt-connect-metamask')"
-      />
-    </faq-card-info>
-    <faq-card-info :order-number="2">
-      <template #header>
-        <div>
-          <span class="faq-buy-book__phrase">
-            {{ $t('faq-buy-book.abstract-2') }}
-          </span>
-
-          <span class="faq-buy-book__phrase faq-buy-book__phrase--bold">
-            {{ $t('faq-buy-book.abstract-2-acsent-word-1') }}
-          </span>
-          <span class="faq-buy-book__phrase">
-            {{ $t('faq-buy-book.abstract-2-continue') }}
-          </span>
-          <span class="faq-buy-book__phrase faq-buy-book__phrase--bold">
-            {{ $t('faq-buy-book.abstract-2-acsent-word-2') }}
-          </span>
-        </div>
+      <template v-if="item.img">
+        <img
+          v-for="image in item.img"
+          :key="image.alt"
+          :class="`faq-buy-book__image faq-buy-book__image--${image.size}`"
+          :src="image.src"
+          :alt="image.alt"
+        />
       </template>
-      <img
-        class="faq-buy-book__image faq-buy-book__image--medium"
-        src="/images/buy-book.png"
-        :alt="$t('faq-buy-book.alt-buy-book')"
-      />
-    </faq-card-info>
-    <faq-card-info :order-number="3">
-      <template #header>
-        <div>
-          <span class="faq-buy-book__phrase">
-            {{ $t('faq-buy-book.abstract-3') }}
-          </span>
-
-          <span class="faq-buy-book__phrase faq-buy-book__phrase--bold">
-            {{ $t('faq-buy-book.abstract-3-acsent-word') }}
-          </span>
-          <span class="faq-buy-book__phrase">
-            {{ $t('faq-buy-book.abstract-3-continue') }}
-          </span>
-        </div>
-      </template>
-      <img
-        class="faq-buy-book__image faq-buy-book__image--medium"
-        src="/images/signature.png"
-        :alt="$t('faq-buy-book.alt-signature')"
-      />
-    </faq-card-info>
-    <faq-card-info :order-number="4">
-      <template #header>
-        <div>
-          <span class="faq-buy-book__phrase">
-            {{ $t('faq-buy-book.abstract-4') }}
-          </span>
-
-          <span class="faq-buy-book__phrase faq-buy-book__phrase--bold">
-            {{ $t('faq-buy-book.abstract-4-acsent-word') }}
-          </span>
-        </div>
-      </template>
-      <img
-        class="faq-buy-book__image faq-buy-book__image--medium"
-        src="/images/my-nfts.png"
-        :alt="$t('faq-buy-book.alt-my-nfts')"
-      />
-    </faq-card-info>
-    <faq-card-info :order-number="5">
-      <template #header>
-        <div>
-          <span class="faq-buy-book__phrase">
-            {{ $t('faq-buy-book.abstract-5') }}
-          </span>
-
-          <span class="faq-buy-book__phrase faq-buy-book__phrase--bold">
-            {{ $t('faq-buy-book.abstract-5-acsent-word') }}
-          </span>
-          <span class="faq-buy-book__phrase">
-            {{ $t('faq-buy-book.abstract-5-continue') }}
-          </span>
-        </div>
-      </template>
-      <img
-        class="faq-buy-book__image faq-buy-book__image--medium"
-        src="/images/details.png"
-        :alt="$t('faq-buy-book.alt-details')"
-      />
-    </faq-card-info>
-    <faq-card-info :order-number="6">
-      <template #header>
-        <div>
-          <span class="faq-buy-book__phrase">
-            {{ $t('faq-buy-book.abstract-6') }}
-          </span>
-
-          <span class="faq-buy-book__phrase faq-buy-book__phrase--bold">
-            {{ $t('faq-buy-book.abstract-6-acsent-word-1') }}
-          </span>
-          <span class="faq-buy-book__phrase">
-            {{ $t('faq-buy-book.abstract-6-continue') }}
-          </span>
-          <span class="faq-buy-book__phrase faq-buy-book__phrase--bold">
-            {{ $t('faq-buy-book.abstract-6-acsent-word-2') }}
-          </span>
-        </div>
-      </template>
-      <img
-        class="faq-buy-book__image faq-buy-book__image--medium"
-        src="/images/manual-import.png"
-        :alt="$t('faq-buy-book.alt-manual-import')"
-      />
     </faq-card-info>
   </div>
 </template>
 
 <script setup lang="ts">
 import { FaqCardInfo } from '@/pages/faq'
+import { useContext } from '@/composables'
+import { GuideInfo } from '@/types'
+
+const { $t } = useContext()
+
+const guideInfo: GuideInfo[] = [
+  {
+    text: [
+      {
+        component: 'span',
+        value: $t('faq-buy-book.abstract-1'),
+        attrs: {},
+      },
+      {
+        component: 'a',
+        value: $t('faq-buy-book.abstract-1-link'),
+        attrs: {
+          target: '_blank',
+          href: $t('faq-buy-book.abstract-1-link'),
+        },
+      },
+      {
+        component: 'span',
+        value: $t('faq-buy-book.abstract-1-continue'),
+        attrs: {},
+      },
+      {
+        component: 'span',
+        value: $t('faq-buy-book.abstract-1-acsent-word'),
+        isBold: true,
+        attrs: {},
+      },
+    ],
+    img: [
+      {
+        alt: $t('faq-buy-book.alt-connect-metamask'),
+        src: '/images/connect-metamask.png',
+        size: 'medium',
+      },
+    ],
+  },
+  {
+    text: [
+      {
+        component: 'span',
+        value: $t('faq-buy-book.abstract-2'),
+        attrs: {},
+      },
+      {
+        component: 'span',
+        value: $t('faq-buy-book.abstract-2-acsent-word-1'),
+        attrs: {},
+        isBold: true,
+      },
+      {
+        component: 'span',
+        value: $t('faq-buy-book.abstract-2-continue'),
+        attrs: {},
+      },
+      {
+        component: 'span',
+        value: $t('faq-buy-book.abstract-2-acsent-word-2'),
+        attrs: {},
+        isBold: true,
+      },
+    ],
+    img: [
+      {
+        alt: $t('faq-buy-book.alt-buy-book'),
+        src: '/images/buy-book.png',
+        size: 'medium',
+      },
+    ],
+  },
+  {
+    text: [
+      {
+        component: 'span',
+        value: $t('faq-buy-book.abstract-3'),
+        attrs: {},
+      },
+      {
+        component: 'span',
+        value: $t('faq-buy-book.abstract-3-acsent-word'),
+        attrs: {},
+        isBold: true,
+      },
+      {
+        component: 'span',
+        value: $t('faq-buy-book.abstract-3-continue'),
+        attrs: {},
+      },
+    ],
+    img: [
+      {
+        alt: $t('faq-buy-book.alt-signature'),
+        src: '/images/signature.png',
+        size: 'medium',
+      },
+    ],
+  },
+  {
+    text: [
+      {
+        component: 'span',
+        value: $t('faq-buy-book.abstract-4'),
+        attrs: {},
+      },
+      {
+        component: 'span',
+        value: $t('faq-buy-book.abstract-4-acsent-word'),
+        attrs: {},
+        isBold: true,
+      },
+    ],
+    img: [
+      {
+        alt: $t('faq-buy-book.alt-my-nfts'),
+        src: '/images/my-nfts.png',
+        size: 'medium',
+      },
+    ],
+  },
+  {
+    text: [
+      {
+        component: 'span',
+        value: $t('faq-buy-book.abstract-5'),
+        attrs: {},
+      },
+      {
+        component: 'span',
+        value: $t('faq-buy-book.abstract-5-acsent-word'),
+        attrs: {},
+        isBold: true,
+      },
+      {
+        component: 'span',
+        value: $t('faq-buy-book.abstract-5-continue'),
+        attrs: {},
+      },
+    ],
+    img: [
+      {
+        alt: $t('faq-buy-book.alt-details'),
+        src: '/images/details.png',
+        size: 'medium',
+      },
+    ],
+  },
+  {
+    text: [
+      {
+        component: 'span',
+        value: $t('faq-buy-book.abstract-6'),
+        attrs: {},
+      },
+      {
+        component: 'span',
+        value: $t('faq-buy-book.abstract-6-acsent-word-1'),
+        attrs: {},
+        isBold: true,
+      },
+      {
+        component: 'span',
+        value: $t('faq-buy-book.abstract-6-continue'),
+        attrs: {},
+      },
+      {
+        component: 'span',
+        value: $t('faq-buy-book.abstract-6-acsent-word-2'),
+        attrs: {},
+        isBold: true,
+      },
+    ],
+    img: [
+      {
+        alt: $t('faq-buy-book.alt-manual-import'),
+        src: '/images/manual-import.png',
+        size: 'medium',
+      },
+    ],
+  },
+]
 </script>
 
 <style scoped lang="scss">

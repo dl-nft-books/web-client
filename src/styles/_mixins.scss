@@ -112,6 +112,7 @@ $media-breakpoints: (
   display: grid;
   grid-template-columns: repeat(2, minmax(50%, toRem(400)));
   gap: toRem(20);
+  max-width: toRem(800);
 
   @include respond-to(small) {
     display: flex;

@@ -1,119 +1,137 @@
 <template>
   <div class="faq-metamask">
-    <faq-card-info :order-number="1">
+    <faq-card-info
+      v-for="(item, index) in guideInfo"
+      :key="index"
+      :order-number="index + 1"
+    >
       <template #header>
-        <p class="faq-metamask__phrase">
-          {{ $t('faq-metamask.abstract-1') }}
-        </p>
-      </template>
-      <section class="faq-metamask__images">
-        <div class="faq-metamask__image-wrapper">
-          <img
-            src="/images/metamask-mobile.png"
-            class="faq-metamask__image faq-metamask__image--x-small"
-            :alt="$t('faq-metamask.alt-metamask-mobile')"
-          />
-          <p class="faq-metamask__image-lbl">
-            {{ $t('faq-metamask.abstract-1-mobile-lbl') }}
-          </p>
+        <div>
+          <component
+            v-for="text in item.text"
+            :is="text.component"
+            :key="text.value"
+            v-bind="text.attrs"
+            :class="{
+              'faq-metamask__phrase': text.component !== 'a',
+              'faq-metamask__phrase--bold': text.isBold,
+            }"
+          >
+            {{ text.value }}
+          </component>
         </div>
-        <div class="faq-metamask__image-wrapper">
+      </template>
+      <section v-if="item.img" class="faq-metamask__images">
+        <div
+          v-for="image in item.img"
+          :key="image.alt"
+          class="faq-metamask__image-wrapper"
+        >
           <img
-            src="/images/metamask-desktop.png"
-            class="faq-metamask__image faq-metamask__image--medium"
-            :alt="$t('faq-metamask.alt-metamask-desktop')"
+            :src="image.src"
+            :class="`faq-metamask__image faq-metamask__image--${image.size}`"
+            :alt="image.alt"
           />
-          <p class="faq-metamask__image-lbl">
-            {{ $t('faq-metamask.abstract-1-desktop-lbl') }}
+          <p v-if="image.label" class="faq-metamask__image-lbl">
+            {{ image.label }}
           </p>
-          <a :href="$t('faq-metamask.abstract-1-link')" target="_blank">
-            {{ $t('faq-metamask.abstract-1-link') }}
-          </a>
         </div>
       </section>
-    </faq-card-info>
-    <faq-card-info :order-number="2">
-      <template #header>
-        <div>
-          <span class="faq-metamask__phrase">
-            {{ $t('faq-metamask.abstract-2') }}
-          </span>
-          <span class="faq-metamask__phrase faq-metamask__phrase--bold">
-            {{ $t('faq-metamask.abstract-2-acsent-word') }}
-          </span>
-          <span class="faq-metamask__phrase">
-            {{ $t('faq-metamask.abstract-2-end') }}
-          </span>
-        </div>
-      </template>
-    </faq-card-info>
-    <faq-card-info :order-number="3">
-      <template #header>
-        <div>
-          <p class="faq-metamask__phrase">
-            {{ $t('faq-metamask.abstract-3') }}
-          </p>
-          <p class="faq-metamask__phrase faq-metamask__phrase--bold">
-            {{ $t('faq-metamask.subtitle-abstract-3') }}
-          </p>
-        </div>
-      </template>
-      <ul class="faq-metamask__list">
-        <li class="faq-metamask__list-item">
-          {{ $t('faq-metamask.abstract-3-point-1') }}
-        </li>
-        <li class="faq-metamask__list-item">
-          {{ $t('faq-metamask.abstract-3-point-2') }}
-        </li>
-        <p
-          :class="[
-            'faq-metamask__phrase',
-            'faq-metamask__phrase--italic',
-            'faq-metamask__phrase--color-dark',
-            'faq-metamask__list-item-subtitle',
-          ]"
-        >
-          {{ $t('faq-metamask.abstract-3-point-2-subtitle') }}
-        </p>
-        <li class="faq-metamask__list-item">
-          {{ $t('faq-metamask.abstract-3-point-3') }}
-        </li>
-        <p
-          :class="[
-            'faq-metamask__phrase',
-            'faq-metamask__phrase--italic',
-            'faq-metamask__phrase--color-dark',
-            'faq-metamask__list-item-subtitle',
-          ]"
-        >
-          {{ $t('faq-metamask.abstract-3-point-3-subtitle') }}
-        </p>
-      </ul>
-    </faq-card-info>
-    <faq-card-info :order-number="4">
-      <template #header>
-        <div>
-          <span class="faq-metamask__phrase">
-            {{ $t('faq-metamask.abstract-4') }}
-          </span>
-          <span class="faq-metamask__phrase faq-metamask__phrase--bold">{{
-            $t('faq-metamask.abstract-4-acsent-word')
-          }}</span>
-        </div>
-      </template>
-      <div class="faq-metamask__image-wrapper">
-        <img
-          src="/images/metamask-portfolio.png"
-          class="faq-metamask__image faq-metamask__image--medium"
-          :alt="$t('faq-metamask.alt-metamask-portfolio')"
-        />
-      </div>
+      <faq-metamask-list v-if="item.hasList" />
     </faq-card-info>
   </div>
 </template>
 
 <script setup lang="ts">
-import { FaqCardInfo } from '@/pages/faq'
+import { FaqCardInfo, FaqMetamaskList } from '@/pages/faq'
+import { useContext } from '@/composables'
+import { GuideInfo } from '@/types'
+
+const { $t } = useContext()
+
+const guideInfo: GuideInfo[] = [
+  {
+    text: [
+      {
+        component: 'p',
+        value: $t('faq-metamask.abstract-1'),
+        attrs: {},
+      },
+    ],
+    img: [
+      {
+        alt: $t('faq-metamask.alt-metamask-mobile'),
+        src: '/images/metamask-mobile.png',
+        size: 'x-small',
+        label: $t('faq-metamask.abstract-1-mobile-lbl'),
+      },
+      {
+        alt: $t('faq-metamask.alt-metamask-desktop'),
+        src: '/images/metamask-desktop.png',
+        size: 'medium',
+        label: $t('faq-metamask.abstract-1-desktop-lbl'),
+      },
+    ],
+  },
+  {
+    text: [
+      {
+        component: 'span',
+        value: $t('faq-metamask.abstract-2'),
+        attrs: {},
+      },
+      {
+        component: 'span',
+        value: $t('faq-metamask.abstract-2-acsent-word'),
+        attrs: {},
+        isBold: true,
+      },
+      {
+        component: 'span',
+        value: $t('faq-metamask.abstract-2-end'),
+        attrs: {},
+      },
+    ],
+  },
+  {
+    text: [
+      {
+        component: 'p',
+        value: $t('faq-metamask.abstract-3'),
+        attrs: {},
+      },
+      {
+        component: 'p',
+        value: $t('faq-metamask.subtitle-abstract-3'),
+        attrs: {},
+        isBold: true,
+      },
+    ],
+    hasList: true,
+  },
+  {
+    text: [
+      {
+        component: 'span',
+        value: $t('faq-metamask.abstract-4'),
+        attrs: {},
+      },
+      {
+        component: 'span',
+        value: $t('faq-metamask.abstract-4-acsent-word'),
+        attrs: {},
+        isBold: true,
+      },
+    ],
+    img: [
+      {
+        alt: $t('faq-metamask.alt-metamask-portfolio'),
+        src: '/images/metamask-portfolio.png',
+        size: 'medium',
+      },
+    ],
+  },
+]
 </script>
 
 <style scoped lang="scss">
@@ -127,7 +145,7 @@ import { FaqCardInfo } from '@/pages/faq'
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: toRem(20) toRem(40);
+  padding: toRem(10) toRem(40);
 
   @include respond-to(small) {
     flex-direction: column;

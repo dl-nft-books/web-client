@@ -1,70 +1,123 @@
 <template>
   <div class="faq-solve-problems">
-    <faq-card-info :order-number="1">
+    <faq-card-info
+      v-for="(item, index) in guideInfo"
+      :key="index"
+      :order-number="index + 1"
+      :modification="index === guideInfo.length - 1 ? 'col-span' : 'default'"
+    >
       <template #header>
         <div>
-          <span class="faq-solve-problems__phrase">
-            {{ $t('faq-solve-problems.abstract-1') }}
-          </span>
-          <span
-            class="faq-solve-problems__phrase faq-solve-problems__phrase--bold"
+          <component
+            v-for="text in item.text"
+            :is="text.component"
+            :key="text.value"
+            v-bind="text.attrs"
+            :class="{
+              'faq-solve-problems__phrase': text.component === 'span',
+              'faq-solve-problems__phrase--bold': text.isBold,
+            }"
           >
-            {{ $t('faq-solve-problems.abstract-1-acsent-word') }}
-          </span>
-          <span class="faq-solve-problems__phrase">
-            {{ $t('faq-solve-problems.abstract-1-continue') }}
-          </span>
+            {{ text.value }}
+          </component>
         </div>
       </template>
-      <img
-        class="faq-solve-problems__image faq-solve-problems__image--medium"
-        src="/images/gas-control.png"
-        :alt="$t('faq-solve-problems.alt-gas-control')"
-      />
-    </faq-card-info>
-    <faq-card-info :order-number="2">
-      <template #header>
-        <div>
-          <span
-            class="faq-solve-problems__phrase faq-solve-problems__phrase--bold"
-          >
-            {{ $t('faq-solve-problems.abstract-2-acsent-word') }}
-          </span>
-          <span class="faq-solve-problems__phrase">
-            {{ $t('faq-solve-problems.abstract-2') }}
-          </span>
-        </div>
+      <template v-if="item.img">
+        <img
+          v-for="image in item.img"
+          :key="image.alt"
+          :class="[
+            'faq-solve-problems__image',
+            `faq-solve-problems__image--${image.size}`,
+          ]"
+          :src="image.src"
+          :alt="image.alt"
+        />
       </template>
-      <img
-        class="faq-solve-problems__image faq-solve-problems__image--medium"
-        src="/images/transaction-retry.png"
-        :alt="$t('faq-solve-problems.alt-transaction-retry')"
-      />
-    </faq-card-info>
-    <faq-card-info :order-number="3" modification="col-span">
-      <template #header>
-        <div>
-          <span
-            class="faq-solve-problems__phrase faq-solve-problems__phrase--bold"
-          >
-            {{ $t('faq-solve-problems.abstract-3-acsent-word') }}
-          </span>
-          <span class="faq-solve-problems__phrase">
-            {{ $t('faq-solve-problems.abstract-3') }}
-          </span>
-        </div>
-      </template>
-      <img
-        class="faq-solve-problems__image faq-solve-problems__image--medium"
-        src="/images/increase-fee.png"
-        :alt="$t('faq-solve-problems.alt-increase-fee')"
-      />
     </faq-card-info>
   </div>
 </template>
 
 <script setup lang="ts">
+import { useContext } from '@/composables'
 import { FaqCardInfo } from '@/pages/faq'
+import { GuideInfo } from '@/types'
+
+const { $t } = useContext()
+
+const guideInfo: GuideInfo[] = [
+  {
+    text: [
+      {
+        component: 'span',
+        value: $t('faq-solve-problems.abstract-1'),
+        attrs: {},
+      },
+      {
+        component: 'span',
+        value: $t('faq-solve-problems.abstract-1-acsent-word'),
+        isBold: true,
+        attrs: {},
+      },
+      {
+        component: 'span',
+        value: $t('faq-solve-problems.abstract-1-continue'),
+        attrs: {},
+      },
+    ],
+    img: [
+      {
+        alt: $t('faq-solve-problems.alt-gas-control'),
+        src: '/images/gas-control.png',
+        size: 'medium',
+      },
+    ],
+  },
+  {
+    text: [
+      {
+        component: 'span',
+        value: $t('faq-solve-problems.abstract-2-acsent-word'),
+        isBold: true,
+        attrs: {},
+      },
+      {
+        component: 'span',
+        value: $t('faq-solve-problems.abstract-2'),
+        attrs: {},
+      },
+    ],
+    img: [
+      {
+        alt: $t('faq-solve-problems.alt-transaction-retry'),
+        src: '/images/transaction-retry.png',
+        size: 'medium',
+      },
+    ],
+  },
+  {
+    text: [
+      {
+        component: 'span',
+        value: $t('faq-solve-problems.abstract-3-acsent-word'),
+        isBold: true,
+        attrs: {},
+      },
+      {
+        component: 'span',
+        value: $t('faq-solve-problems.abstract-3'),
+        attrs: {},
+      },
+    ],
+    img: [
+      {
+        alt: $t('faq-solve-problems.alt-increase-fee'),
+        src: '/images/increase-fee.png',
+        size: 'medium',
+      },
+    ],
+  },
+]
 </script>
 
 <style scoped lang="scss">

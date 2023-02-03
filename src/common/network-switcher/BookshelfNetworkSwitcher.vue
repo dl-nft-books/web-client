@@ -17,7 +17,7 @@
   <template v-else>
     <select-field
       v-model="chainIdValue"
-      class="bookshelf-network-switcher bookshelf-network-switcher--mobile"
+      class="bookshelf-network-switcher"
       :value-options="selectOptions"
     />
   </template>
@@ -86,7 +86,7 @@ watch(chainIdValue, () => {
   position: relative;
   z-index: var(--page-index);
 
-  &--mobile {
+  @include respond-to(medium) {
     flex: unset;
     height: unset;
     border: unset;

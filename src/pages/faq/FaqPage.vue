@@ -1,10 +1,10 @@
 <template>
   <div class="faq-page">
-    <head class="faq-page__head">
+    <header class="faq-page__head">
       <h1 class="faq-page__title">
         {{ $t('faq-page.title') }}
       </h1>
-    </head>
+    </header>
     <section class="faq-page__overview">
       <div>
         <h3 class="faq-page__overview-title">

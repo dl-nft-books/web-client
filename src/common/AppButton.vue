@@ -103,7 +103,7 @@ const buttonClasses = computed(() =>
       class="app-button"
       :class="buttonClasses"
       :href="href"
-      :target="props.hrefTarget"
+      :target="hrefTarget"
     >
       <icon v-if="iconLeft" :class="iconClasses" :name="iconLeft" />
       <template v-if="$slots.default">
