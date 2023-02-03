@@ -69,6 +69,7 @@ defineProps<{
   from {
     transform: translateX(0);
   }
+
   to {
     transform: translateX(calc(-100% - var(--gap)));
   }
