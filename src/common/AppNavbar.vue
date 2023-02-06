@@ -33,7 +33,7 @@ const isDarkMode = computed(
 
 <template>
   <nav class="app-navbar" :class="{ 'app-navbar--dark': isDarkMode }">
-    <app-logo />
+    <app-logo :scheme="isDarkMode ? 'light' : 'dark'" />
     <button
       class="app-navbar__hamburger-button"
       type="button"
@@ -69,9 +69,9 @@ const isDarkMode = computed(
       <app-button
         v-if="!provider.selectedAddress"
         class="app-navbar__provider-btn"
-        :icon-left="$icons.metamask"
-        color="secondary"
+        scheme="flat"
         size="small"
+        :icon-left="$icons.metamask"
         :disabled="provider.selectedAddress"
         :text="$t('app-navbar.connect-provider-button')"
         @click="handleProviderClick"
@@ -97,10 +97,6 @@ const isDarkMode = computed(
 
   &--dark {
     background-color: var(--background-quinary);
-
-    & > * {
-      color: var(--text-primary-invert-light);
-    }
   }
 }
 
@@ -117,11 +113,13 @@ const isDarkMode = computed(
 }
 
 .app-navbar__text-link {
-  color: var(--text-secondary-main);
-  text-decoration: none;
-  font-family: var(--app-font-family);
   font-weight: 500;
-  font-size: toRem(16);
+
+  @include text-color-dark;
+
+  .app-navbar--dark & {
+    @include text-color-invert;
+  }
 
   &.router-link-active {
     border-bottom: toRem(2) solid var(--primary-main);
@@ -129,13 +127,23 @@ const isDarkMode = computed(
 }
 
 .app-navbar__provider-btn {
+  --app-button-bg: var(--background-primary);
+  --app-button-bg-hover: var(--background-tertiary);
+  --app-button-flat-border: #{toRem(1)} solid var(--border-secondary-dark);
+
   text-transform: uppercase;
-  font-family: var(--app-font-family);
-  color: var(--text-secondary-main);
-  font-size: toRem(16);
   font-weight: 500;
   padding: toRem(9) toRem(16);
-  background-color: var(--white);
+  color: var(--text-primary-light);
+
+  .app-navbar--dark & {
+    --app-button-bg: var(--background-quinary);
+    --app-button-bg-hover: var(--background-quaternary);
+    --app-button-flat-border: #{toRem(1)} solid var(--border-primary-light);
+    --app-button-flat-text-hover: var(--text-primary-invert-main);
+
+    @include text-color-invert;
+  }
 
   &:disabled {
     opacity: 1;

@@ -69,6 +69,7 @@
   --border-primary-main: #{$border-primary-main};
   --border-primary-dark: #{$border-primary-dark};
   --border-secondary-main: #{$border-secondary-main};
+  --border-secondary-dark: #{$border-secondary-dark};
   --border-black: #{$border-black};
 
   /* other colors */
@@ -85,6 +86,7 @@
   /* App variables */
   --app-txt: #{$text-primary-main};
   --app-font-family: 'Gilroy', sans-serif;
+  --app-font-secondary-family: 'Metropolis';
   --app-padding-right: #{toRem(100)};
   --app-padding-left: #{toRem(100)};
 

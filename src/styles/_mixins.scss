@@ -119,3 +119,57 @@ $media-breakpoints: (
     flex-direction: column;
   }
 }
+
+@mixin flex-container {
+  display: flex;
+  flex-direction: column;
+}
+
+@mixin text-color-invert {
+  color: var(--text-primary-invert-main);
+}
+
+@mixin text-color-dark {
+  color: var(--text-secondary-dark);
+}
+
+@mixin text-shadow {
+  --shadow-color: #{var(--text-primary-main)};
+
+  text-shadow: toRem(-1) toRem(1) 0 var(--shadow-color),
+    toRem(1) toRem(1) 0 var(--shadow-color),
+    toRem(1) toRem(-1) 0 var(--shadow-color),
+    toRem(-1) toRem(-1) 0 var(--shadow-color);
+
+  &--shadow-color-invert {
+    --shadow-color: #{var(--text-primary-invert-main)};
+  }
+}
+
+@mixin p-body-1 {
+  font-family: var(--app-font-secondary-family);
+  font-size: toRem(24);
+  line-height: 120%;
+
+  &--italic {
+    font-style: italic;
+  }
+}
+
+@mixin p-body-2 {
+  font-size: toRem(22);
+  line-height: 120%;
+
+  &--size-medium {
+    font-size: toRem(18);
+    line-height: 160%;
+  }
+
+  &--size-small {
+    font-size: toRem(14);
+  }
+
+  &--bold {
+    font-weight: 500;
+  }
+}

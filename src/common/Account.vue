@@ -1,7 +1,7 @@
 <template>
   <div :class="accountClasses">
     <header-network-switcher />
-    <drop-down :right="0">
+    <drop-down :right="-30">
       <template #head="{ menu }">
         <app-button
           :icon-left="$icons.avatarPlaceholder"

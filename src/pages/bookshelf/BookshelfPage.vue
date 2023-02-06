@@ -3,9 +3,9 @@
     <bookshelf-cubes />
     <bookshelf-header />
     <section class="bookshelf-page__title-wrapper">
-      <h2 class="bookshelf-page__title">
+      <h3 class="bookshelf-page__title">
         {{ $t('bookshelf-page.title') }}
-      </h2>
+      </h3>
       <bookshelf-network-switcher v-model="currentNetworkChainId" />
     </section>
     <error-message
@@ -97,8 +97,6 @@ function onError(e: Error) {
 
 <style lang="scss" scoped>
 .bookshelf-page {
-  display: flex;
-  flex-direction: column;
   gap: toRem(34);
   padding-top: toRem(200);
   padding-bottom: toRem(200);
@@ -107,6 +105,8 @@ function onError(e: Error) {
   margin-top: toRem(-220);
   background-color: var(--black);
   overflow: hidden;
+
+  @include flex-container;
 
   /* Chain image */
   &:before {
@@ -169,15 +169,11 @@ function onError(e: Error) {
 
 .bookshelf-page__title {
   text-transform: uppercase;
-  font-size: toRem(40);
-  line-height: toRem(50);
-  font-weight: 700;
-  color: var(--white);
   position: relative;
-  text-shadow: toRem(-1) toRem(1) 0 var(--text-primary-main),
-    toRem(1) toRem(1) 0 var(--text-primary-main),
-    toRem(1) toRem(-1) 0 var(--text-primary-main),
-    toRem(-1) toRem(-1) 0 var(--text-primary-main);
+
+  @include text-shadow;
+
+  @include text-color-invert;
 
   &:after {
     content: ' ';

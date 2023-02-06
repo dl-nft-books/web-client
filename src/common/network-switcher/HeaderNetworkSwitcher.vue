@@ -57,7 +57,7 @@ const isLoadingNetworks = ref(true)
 const isLoadFailed = ref(false)
 
 const dropDownShift = computed(() =>
-  width.value <= WINDOW_BREAKPOINTS.medium ? 0 : 81,
+  width.value <= WINDOW_BREAKPOINTS.medium ? 0 : 51,
 )
 
 const pickedNetwork = computed(() =>
