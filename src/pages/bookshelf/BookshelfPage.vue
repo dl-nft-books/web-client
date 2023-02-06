@@ -50,21 +50,19 @@ import {
 
 import { ErrorHandler } from '@/helpers'
 import { BookRecord } from '@/records'
-import { ref, computed, watch } from 'vue'
+import { ref, computed } from 'vue'
 import { BOOK_DEPLOY_STATUSES } from '@/enums'
 import { getBooks } from '@/api'
 import { usePaginate } from '@/composables'
 import { Book, ChainId } from '@/types'
-import { BookshelfHeader, BookshelfCubes } from '@/pages/Bookshelf'
+import { BookshelfHeader, BookshelfCubes } from '@/pages/bookshelf'
 import { useNetworksStore } from '@/store'
 
 const networkStore = useNetworksStore()
 
 const isLoadFailed = ref(false)
 const books = ref<BookRecord[]>([])
-const currentNetworkChainId = ref<ChainId>(
-  networkStore.isLoaded ? networkStore.list[0].chain_id : 0,
-)
+const currentNetworkChainId = ref<ChainId>(0)
 
 const loadList = computed(
   () => () =>
@@ -95,13 +93,6 @@ function onError(e: Error) {
   ErrorHandler.processWithoutFeedback(e)
   isLoadFailed.value = true
 }
-
-watch(
-  () => networkStore.isLoaded,
-  () => {
-    currentNetworkChainId.value = networkStore.list[0].chain_id
-  },
-)
 </script>
 
 <style lang="scss" scoped>
@@ -115,6 +106,7 @@ watch(
   z-index: var(--page-index);
   margin-top: toRem(-220);
   background-color: var(--black);
+  overflow: hidden;
 
   /* Chain image */
   &:before {
@@ -134,7 +126,8 @@ watch(
     }
 
     @include respond-to(small) {
-      display: none;
+      background-size: toRem(250);
+      top: toRem(400);
     }
   }
 
@@ -163,7 +156,7 @@ watch(
       left: toRem(-60);
       width: 160vw;
       border-radius: toRem(200);
-      height: 195vw;
+      height: 205vw;
     }
   }
 }
@@ -171,12 +164,7 @@ watch(
 .bookshelf-page__title-wrapper {
   display: flex;
   justify-content: space-between;
-
-  @include respond-to(medium) {
-    flex-direction: column;
-    align-items: center;
-    gap: toRem(15);
-  }
+  align-items: center;
 }
 
 .bookshelf-page__title {
@@ -196,9 +184,18 @@ watch(
     position: absolute;
     top: toRem(50);
     left: 0;
-    width: toRem(220);
+    width: toRem(120);
     height: toRem(2);
     background-color: var(--primary-main);
+
+    @include respond-to(medium) {
+      width: toRem(60);
+      top: toRem(40);
+    }
+  }
+
+  @include respond-to(medium) {
+    font-size: toRem(20);
   }
 }
 

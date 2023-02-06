@@ -74,3 +74,48 @@ $media-breakpoints: (
   transition-property: opacity, color, font-size, transform;
   margin-top: toRem(4);
 }
+
+@mixin guide-phrase {
+  line-height: 130%;
+
+  &--bold {
+    font-weight: 600;
+  }
+
+  &--italic {
+    font-style: italic;
+  }
+
+  &--color-dark {
+    color: var(--primary-dark);
+  }
+}
+
+@mixin guide-image {
+  background-size: contain;
+  margin: 0 auto;
+
+  &--x-small {
+    width: clamp(toRem(50), 35%, toRem(200));
+  }
+
+  &--small {
+    width: clamp(toRem(50), 60%, toRem(200));
+  }
+
+  &--medium {
+    width: clamp(toRem(200), 100%, toRem(500));
+  }
+}
+
+@mixin guide-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(50%, toRem(400)));
+  gap: toRem(20);
+  max-width: toRem(800);
+
+  @include respond-to(small) {
+    display: flex;
+    flex-direction: column;
+  }
+}

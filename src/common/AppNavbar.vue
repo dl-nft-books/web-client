@@ -11,7 +11,7 @@ import { Bus } from '@/helpers'
 import { storeToRefs } from 'pinia'
 import { computed } from 'vue'
 import { router } from '@/router'
-import { ROUTE_NAMES } from '@/enums'
+import { ROUTE_METAS } from '@/enums'
 
 const { provider } = storeToRefs(useWeb3ProvidersStore())
 
@@ -26,13 +26,13 @@ const handleProviderClick = () => {
   provider.value.connect()
 }
 
-const isAboutPage = computed(() => {
-  return router.currentRoute.value.name === ROUTE_NAMES.aboutUs
-})
+const isDarkMode = computed(
+  () => router.currentRoute.value.meta[ROUTE_METAS.isDarkPage],
+)
 </script>
 
 <template>
-  <nav class="app-navbar" :class="{ 'app-navbar--dark': isAboutPage }">
+  <nav class="app-navbar" :class="{ 'app-navbar--dark': isDarkMode }">
     <app-logo />
     <button
       class="app-navbar__hamburger-button"
@@ -76,7 +76,7 @@ const isAboutPage = computed(() => {
         :text="$t('app-navbar.connect-provider-button')"
         @click="handleProviderClick"
       />
-      <account v-else :modification="isAboutPage ? 'dark-mode' : 'default'" />
+      <account v-else :modification="isDarkMode ? 'dark-mode' : 'default'" />
     </div>
     <app-navigation-mobile />
   </nav>

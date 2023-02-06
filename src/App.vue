@@ -49,7 +49,9 @@ init()
 
 <style lang="scss" scoped>
 .app__container {
-  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
 }
 
 .app__main {

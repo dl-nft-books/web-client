@@ -81,7 +81,7 @@ import {
   PurchasingSuccessModal,
 } from '@/common'
 
-import { BookshelfNetworkInfo } from '@/pages/Bookshelf'
+import { BookshelfNetworkInfo } from '@/pages/bookshelf'
 import { ref, watch, computed } from 'vue'
 import {
   formatFiatAssetFromWei,
@@ -265,6 +265,7 @@ init()
   font-weight: 400;
   color: var(--text-secondary-main);
   margin-top: toRem(10);
+  white-space: pre-wrap;
 
   @include respond-to(medium) {
     font-size: toRem(18);

@@ -10,6 +10,12 @@ html {
   min-height: vh(100);
   display: flex;
   flex-direction: column;
+  scroll-behavior: smooth;
+  scroll-padding-top: toRem(20);
+
+  @include respond-to(medium) {
+    scroll-padding-top: toRem(160);
+  }
 }
 
 /* stylelint-disable-next-line */

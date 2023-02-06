@@ -5,7 +5,7 @@
       <app-logo scheme="light" />
       <div class="app-footer__links-wrapper">
         <app-button
-          :href="$config.FAQ_LINK"
+          :route="{ name: $routes.faq }"
           :text="$t('app-footer.faq-link')"
           class="app-footer__text-link"
         />
@@ -64,8 +64,7 @@ const SOCIAL_LINKS = [
   padding: toRem(40) var(--app-padding-right) toRem(40) var(--app-padding-left);
   background: var(--background-secondary);
   z-index: var(--footer-index);
-  position: sticky;
-  bottom: 0;
+  position: relative;
 }
 
 .app-footer__line {

@@ -157,6 +157,7 @@ init()
   font-size: toRem(25);
   line-height: 1.2;
   font-weight: 400;
+  white-space: pre-wrap;
 
   @include respond-to(medium) {
     font-size: toRem(18);
