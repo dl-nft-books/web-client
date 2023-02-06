@@ -21,7 +21,7 @@ import { Icon } from '@/common'
 .bookshelf-header {
   padding: toRem(80) 0;
   position: relative;
-  z-index: var(--page-index);
+  z-index: var(--z-index-layer-2);
 
   @include respond-to(small) {
     padding-top: toRem(20);

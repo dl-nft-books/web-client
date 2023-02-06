@@ -11,7 +11,7 @@
   width: 100%;
   height: vh(80);
   position: absolute;
-  z-index: var(--bg-index);
+  z-index: var(--z-index-layer-bottom);
 
   --top-cube-index: 0;
 

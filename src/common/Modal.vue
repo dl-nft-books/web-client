@@ -73,7 +73,7 @@ export default defineComponent({
   width: 100vw;
   height: vh(100);
   background: rgba(var(--black-rgb), 0.5);
-  z-index: var(--modal-index);
+  z-index: var(--z-index-layer-4);
 }
 
 .modal__pane {
