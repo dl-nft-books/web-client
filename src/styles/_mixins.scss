@@ -146,6 +146,14 @@ $media-breakpoints: (
   }
 }
 
+@mixin link-light {
+  font-weight: 500;
+}
+
+@mixin link-bold {
+  font-weight: 700;
+}
+
 @mixin p-body-1 {
   font-family: var(--app-font-secondary-family);
   font-size: toRem(24);

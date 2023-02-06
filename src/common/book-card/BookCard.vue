@@ -9,11 +9,9 @@
       />
     </div>
     <span class="book-card__title">{{ title }}</span>
-    <span class="book-card__price">
-      <template v-if="price">
-        {{ formatFiatAssetFromWei(price, CURRENCY.USD) }}
-      </template>
-    </span>
+    <h4 v-if="price" class="book-card__price">
+      {{ formatFiatAssetFromWei(price, CURRENCY.USD) }}
+    </h4>
     <template v-if="$slots.actionButton">
       <slot name="actionButton" />
     </template>
@@ -152,10 +150,6 @@ const price = computed(() =>
 }
 
 .book-card__price {
-  text-transform: uppercase;
-  font-size: toRem(20);
-  line-height: 1.25;
-  font-weight: 900;
   width: 45%;
 
   @include text-ellipsis;
@@ -172,5 +166,8 @@ const price = computed(() =>
 .book-card__purchase-btn {
   min-width: toRem(110);
   width: 45%;
+  text-transform: uppercase;
+
+  @include link-bold;
 }
 </style>

@@ -113,8 +113,6 @@ const isDarkMode = computed(
 }
 
 .app-navbar__text-link {
-  font-weight: 500;
-
   @include text-color-dark;
 
   .app-navbar--dark & {
