@@ -8,6 +8,7 @@ enum EVENTS {
   info = 'info',
   default = 'default',
   openSidebar = 'open-sidebar',
+  toggleScroll = 'toggle-scroll',
 }
 
 export class EventBus {

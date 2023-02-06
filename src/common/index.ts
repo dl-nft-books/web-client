@@ -18,5 +18,7 @@ export { default as AppNavigationMobile } from '@/common/AppNavigationMobile.vue
 export { default as DropDown } from '@/common/DropDown.vue'
 export { default as Account } from '@/common/Account.vue'
 export { default as BookPreview } from '@/common/BookPreview.vue'
+export { default as Marquee } from '@/common/Marquee.vue'
+export { default as NftDescription } from '@/common/NftDescription.vue'
 export * from '@/common/network-switcher'
 export * from '@/common/book-card'

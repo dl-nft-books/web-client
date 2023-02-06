@@ -89,7 +89,7 @@ onMounted(() => {
   width: 100%;
   height: vh(80);
   position: absolute;
-  z-index: var(--footer-index);
+  z-index: var(--z-index-layer-1);
   background: url('/images/cube-left.png') no-repeat left top / contain;
   background-size: 23%;
   opacity: 0.5;
@@ -100,7 +100,7 @@ onMounted(() => {
 .faq-guides__content {
   position: relative;
   height: fit-content;
-  z-index: var(--page-index);
+  z-index: var(--z-index-layer-2);
   display: grid;
   grid-template-columns: 30% 70%;
   justify-content: center;

@@ -1,5 +1,11 @@
 <script lang="ts" setup>
-import { Loader, ErrorMessage, Tabs, NftDetails } from '@/common'
+import {
+  Loader,
+  ErrorMessage,
+  Tabs,
+  NftDetails,
+  NftDescription,
+} from '@/common'
 
 import { ErrorHandler } from '@/helpers'
 import { ref } from 'vue'
@@ -66,16 +72,14 @@ init()
             :tabs="Object.values(TABS)"
             class="my-nft-item-page__tabs"
           />
-
-          <template v-if="currentTab === TABS.bookDescription.id">
-            <p class="my-nft-item-page__description">
-              {{ nftToken.description }}
-            </p>
-          </template>
-
-          <template v-if="currentTab === TABS.myPurchase.id">
-            <nft-details :nft-token="nftToken" />
-          </template>
+          <nft-description
+            v-if="currentTab === TABS.bookDescription.id"
+            :description="nftToken.description"
+          />
+          <nft-details
+            v-if="currentTab === TABS.myPurchase.id"
+            :nft-token="nftToken"
+          />
         </div>
       </template>
     </template>
@@ -151,16 +155,5 @@ init()
 
 .my-nft-item-page__tabs {
   margin-bottom: toRem(40);
-}
-
-.my-nft-item-page__description {
-  font-size: toRem(25);
-  line-height: 1.2;
-  font-weight: 400;
-  white-space: pre-wrap;
-
-  @include respond-to(medium) {
-    font-size: toRem(18);
-  }
 }
 </style>

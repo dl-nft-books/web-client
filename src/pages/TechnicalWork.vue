@@ -42,7 +42,7 @@
   width: 100%;
   height: 100%;
   position: absolute;
-  z-index: var(--footer-index);
+  z-index: var(--z-index-layer-1);
   left: 0;
   bottom: 0;
 }
@@ -55,7 +55,7 @@
   max-width: toRem(600);
   gap: toRem(24);
   position: relative;
-  z-index: var(--page-index);
+  z-index: var(--z-index-layer-2);
 }
 
 .technical-work__subtitle {
@@ -75,7 +75,7 @@
   object-fit: contain;
   background-size: contain;
   position: relative;
-  z-index: var(--page-index);
+  z-index: var(--z-index-layer-2);
   width: clamp(toRem(200), 60%, toRem(400));
 }
 </style>

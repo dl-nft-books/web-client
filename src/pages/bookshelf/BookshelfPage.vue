@@ -103,7 +103,7 @@ function onError(e: Error) {
   padding-top: toRem(200);
   padding-bottom: toRem(200);
   position: relative;
-  z-index: var(--page-index);
+  z-index: var(--z-index-layer-2);
   margin-top: toRem(-220);
   background-color: var(--black);
   overflow: hidden;
@@ -115,10 +115,10 @@ function onError(e: Error) {
     width: 100vw;
     top: toRem(110);
     left: 0;
-    z-index: var(--chain-index);
+    z-index: var(--z-index-layer-1);
     height: vh(100);
     background: url('/images/cubes.png') no-repeat right top / contain;
-    background-size: 45%;
+    background-size: clamp(toRem(250), 45%, toRem(800));
 
     @include respond-to(medium) {
       background-size: toRem(450);
@@ -143,7 +143,7 @@ function onError(e: Error) {
     background-size: 45%;
     background-color: var(--white);
     border-radius: toRem(300);
-    z-index: var(--bg-index);
+    z-index: var(--z-index-layer-bottom);
 
     @include respond-to(medium) {
       left: toRem(-60);
@@ -204,7 +204,7 @@ function onError(e: Error) {
   grid-template-columns: repeat(auto-fill, minmax(toRem(292), 1fr));
   grid-gap: toRem(20);
   position: relative;
-  z-index: var(--page-index);
+  z-index: var(--z-index-layer-2);
 }
 
 .bookshelf-page__load-more-btn {

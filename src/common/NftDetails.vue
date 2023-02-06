@@ -115,6 +115,7 @@ defineProps<{ nftToken: GeneratedNFtRecord }>()
 .nft-details__row-value {
   font-size: toRem(24);
   line-height: 1.2;
+  max-width: 100%;
 
   @include respond-to(small) {
     font-size: toRem(20);

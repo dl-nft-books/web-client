@@ -35,7 +35,7 @@ const props = withDefaults(
 
 const title = computed(() =>
   props.scheme !== NETWORKS.UNSUPPORTED
-    ? $t('networks.title', { network: props.name })
+    ? props.name
     : $t('networks.unsupported'),
 )
 

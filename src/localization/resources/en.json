@@ -119,7 +119,6 @@
     "load-more-btn": "SHOW MORE"
   },
   "networks": {
-    "title": "{network} Mainnet",
     "polygon": "Polygon Mainnet",
     "ethereum": "Ethereum Mainnet",
     "all-tokens-lbl": "All tokens",
@@ -129,7 +128,7 @@
     "network-error": "Failed to load network list"
   },
   "my-nfts-page": {
-    "loading-error-msg": "Oops... Something went wrong",
+    "loading-error-msg": "This page is currently unavailable due to connection problems with IPFS. Please, try again later.",
     "no-data-msg": "Empty data, please add new",
     "title": "MY NFTs",
     "details-btn": "Details",
@@ -291,14 +290,15 @@
     "ok-btn": "Ok"
   },
   "my-nft-item-page": {
-    "loading-error-msg": "Oops... Something went wrong",
+    "loading-error-msg": "This page is currently unavailable due to connection problems with IPFS. Please, try again later.",
     "purchase-btn": "Buy",
     "my-purchase-tab": "My Purchase",
     "book-description-tab": "Book Description"
   },
   "nft-description": {
     "badge-1": "For any acceptable token",
-    "badge-2": "Add your personal sign"
+    "badge-2": "With your personal sign",
+    "default-desc": "No description"
   },
   "nft-details": {
     "price-lbl": "Price",

@@ -63,7 +63,7 @@ const SOCIAL_LINKS = [
   width: 100%;
   padding: toRem(40) var(--app-padding-right) toRem(40) var(--app-padding-left);
   background: var(--background-secondary);
-  z-index: var(--footer-index);
+  z-index: var(--z-index-layer-1);
   position: relative;
 }
 

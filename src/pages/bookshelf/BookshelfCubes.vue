@@ -11,13 +11,13 @@
   width: 100%;
   height: vh(80);
   position: absolute;
-  z-index: var(--bg-index);
+  z-index: var(--z-index-layer-bottom);
 
   --top-cube-index: 0;
 
   &--top {
     background: url('/images/cube-top.png') no-repeat right top / contain;
-    background-size: 25%;
+    background-size: clamp(toRem(150), 25%, toRem(450));
     height: vh(40);
     top: toRem(110);
     right: 0;

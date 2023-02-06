@@ -281,7 +281,7 @@ const isEnoughBalanceForBuy = computed(
   () => new BN(balance.value).compare(formattedTokenAmount.value) >= 0,
 )
 const isEnoughVoucherTokensForBuy = computed(
-  () => new BN(balance.value).compare(formattedVoucherTokenAmount.value) >= 0,
+  () => new BN(balance.value).compare(formattedVoucherTokenAmount.value) >= 1,
 )
 
 const formattedTokenAmount = computed(() => {

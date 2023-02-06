@@ -158,6 +158,8 @@ const price = computed(() =>
   font-weight: 900;
   width: 45%;
 
+  @include text-ellipsis;
+
   .book-card--primary & {
     color: var(--text-primary-invert-light);
   }

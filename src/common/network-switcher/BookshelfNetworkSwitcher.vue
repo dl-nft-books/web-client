@@ -84,14 +84,14 @@ watch(chainIdValue, () => {
   width: toRem(210);
   height: toRem(52);
   position: relative;
-  z-index: var(--page-index);
+  z-index: var(--z-index-layer-2);
 
   @include respond-to(medium) {
     flex: unset;
     height: unset;
     border: unset;
     width: 50%;
-    z-index: var(--nav-bar-index);
+    z-index: var(--z-index-layer-3);
     color: var(--text-primary-invert-main);
     max-width: toRem(250);
   }
