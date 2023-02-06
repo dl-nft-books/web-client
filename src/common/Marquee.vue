@@ -5,7 +5,7 @@
         <li class="marquee__text">
           {{ item }}
         </li>
-        <div class="marquee__delimiter" />
+        <li class="marquee__delimiter" />
       </template>
     </ul>
 
@@ -15,7 +15,7 @@
         <li class="marquee__text">
           {{ item }}
         </li>
-        <div class="marquee__delimiter" />
+        <li class="marquee__delimiter" />
       </template>
     </ul>
   </div>
