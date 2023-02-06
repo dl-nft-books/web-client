@@ -1,7 +1,7 @@
 <template>
-  <div class="marquee">
+  <div ref="marqueeRef" class="marquee">
     <ul class="marquee__wrapper">
-      <template v-for="(item, index) in text" :key="index">
+      <template v-for="(item, index) in textArray" :key="index">
         <li class="marquee__text">
           {{ item }}
         </li>
@@ -11,7 +11,7 @@
 
     <!-- For infinite scrolling we need to dublicate text -->
     <ul class="marquee__wrapper" aria-hidden="true">
-      <template v-for="(item, index) in text" :key="index">
+      <template v-for="(item, index) in textArray" :key="index">
         <li class="marquee__text">
           {{ item }}
         </li>
@@ -22,9 +22,30 @@
 </template>
 
 <script setup lang="ts">
-defineProps<{
+import { ref, computed } from 'vue'
+
+const props = defineProps<{
   text: string[]
 }>()
+
+const charSize = 8 // px
+
+const marqueeRef = ref<HTMLElement | null>(null)
+
+const textArray = computed(() => {
+  if (!marqueeRef.value?.clientWidth) return props.text
+
+  let formattedTextArray = [...props.text]
+
+  let formattedTextLength = formattedTextArray.join(' ').length * charSize
+
+  while (formattedTextLength < marqueeRef.value?.clientWidth) {
+    formattedTextArray = [...formattedTextArray, ...props.text]
+    formattedTextLength = formattedTextArray.join(' ').length * charSize
+  }
+
+  return formattedTextArray
+})
 </script>
 
 <style scoped lang="scss">

@@ -298,7 +298,7 @@
   "nft-description": {
     "badge-1": "For any acceptable token",
     "badge-2": "With your personal sign",
-    "empty": "No description"
+    "default-desc": "No description"
   },
   "nft-details": {
     "price-lbl": "Price",

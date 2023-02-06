@@ -18,7 +18,7 @@
       </div>
     </div>
     <p class="nft-description__description">
-      {{ description || $t('nft-description.empty') }}
+      {{ description || $t('nft-description.default-desc') }}
     </p>
   </div>
 </template>
