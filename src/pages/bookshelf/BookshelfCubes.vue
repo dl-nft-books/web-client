@@ -17,7 +17,7 @@
 
   &--top {
     background: url('/images/cube-top.png') no-repeat right top / contain;
-    background-size: 25%;
+    background-size: clamp(toRem(150), 25%, toRem(450));
     height: vh(40);
     top: toRem(110);
     right: 0;

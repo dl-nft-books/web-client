@@ -118,7 +118,7 @@ function onError(e: Error) {
     z-index: var(--chain-index);
     height: vh(100);
     background: url('/images/cubes.png') no-repeat right top / contain;
-    background-size: 45%;
+    background-size: clamp(toRem(250), 45%, toRem(800));
 
     @include respond-to(medium) {
       background-size: toRem(450);

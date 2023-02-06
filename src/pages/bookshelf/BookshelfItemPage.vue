@@ -168,7 +168,7 @@ init()
   padding-top: toRem(40);
   padding-bottom: toRem(150);
   justify-content: center;
-  background: url('/images/background-cubes.png') no-repeat left bottom /
+  background: url('/images/background-cubes.png') no-repeat right bottom /
     contain;
 
   @include respond-to(medium) {
@@ -213,8 +213,7 @@ init()
   font-weight: 900;
   margin-bottom: toRem(34);
   max-width: 100%;
-
-  @include text-ellipsis;
+  word-wrap: break-word;
 
   @include respond-to(medium) {
     text-align: center;
