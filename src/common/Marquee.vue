@@ -23,25 +23,27 @@
 
 <script setup lang="ts">
 import { ref, computed } from 'vue'
+import { getTextWidth, getCanvasFont } from '@/helpers'
 
 const props = defineProps<{
   text: string[]
 }>()
 
-const charSize = 8 // px
-
 const marqueeRef = ref<HTMLElement | null>(null)
+
+const countLength = (text: string) =>
+  parseInt(getTextWidth(text, getCanvasFont(marqueeRef.value)).toFixed())
 
 const textArray = computed(() => {
   if (!marqueeRef.value?.clientWidth) return props.text
 
   let formattedTextArray = [...props.text]
 
-  let formattedTextLength = formattedTextArray.join(' ').length * charSize
+  let formattedTextLength = countLength(formattedTextArray.join(' '))
 
   while (formattedTextLength < marqueeRef.value?.clientWidth) {
     formattedTextArray = [...formattedTextArray, ...props.text]
-    formattedTextLength = formattedTextArray.join(' ').length * charSize
+    formattedTextLength = countLength(formattedTextArray.join(' '))
   }
 
   return formattedTextArray
