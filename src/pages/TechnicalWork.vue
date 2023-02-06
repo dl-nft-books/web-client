@@ -3,7 +3,7 @@
     <img
       class="technical-work__image technical-work__image--medium"
       src="/images/technical-work.png"
-      alt="technical work"
+      :alt="$t('technical-work-page.alt-technical-work')"
     />
     <section class="technical-work__info">
       <h3 class="technical-work__title">
@@ -22,9 +22,9 @@
 <style scoped lang="scss">
 .technical-work {
   display: flex;
+  flex: 1;
   justify-content: center;
   gap: toRem(100);
-  min-height: vh(69);
   position: relative;
 
   @include respond-to(medium) {
@@ -38,9 +38,9 @@
 .technical-work__background {
   background: url('/images/technical-background.png') no-repeat left bottom /
     contain;
-  background-size: 50%;
+  background-size: clamp(toRem(300), 50%, toRem(800));
   width: 100%;
-  height: vh(69);
+  height: 100%;
   position: absolute;
   z-index: var(--footer-index);
   left: 0;
@@ -54,6 +54,8 @@
   padding-bottom: toRem(70);
   max-width: toRem(600);
   gap: toRem(24);
+  position: relative;
+  z-index: var(--page-index);
 }
 
 .technical-work__subtitle {

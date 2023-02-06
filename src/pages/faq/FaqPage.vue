@@ -1,10 +1,10 @@
 <template>
   <div class="faq-page">
-    <head class="faq-page__head">
+    <header class="faq-page__head">
       <h1 class="faq-page__title">
         {{ $t('faq-page.title') }}
       </h1>
-    </head>
+    </header>
     <section class="faq-page__overview">
       <div>
         <h3 class="faq-page__overview-title">
@@ -28,15 +28,15 @@
       <img
         class="faq-page__overview-image"
         src="/images/fancy-image.png"
-        alt="fancy-image"
+        :alt="$t('faq-page.alt-fancy-image')"
       />
     </section>
-    <f-a-q-guides />
+    <faq-guides />
   </div>
 </template>
 
 <script setup lang="ts">
-import { FAQGuides } from '@/pages/FAQ'
+import { FaqGuides } from '@/pages/faq'
 </script>
 
 <style scoped lang="scss">

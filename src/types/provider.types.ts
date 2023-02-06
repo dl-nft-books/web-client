@@ -76,6 +76,7 @@ export interface ProviderWrapper {
   getTxUrl: (explorerUrl: string, txHash: string) => string
   getAddressUrl: (explorerUrl: string, address: string) => string
   getBalance?: (address: string) => Promise<string>
+  addNetwork?: (chainID: ChainId) => Promise<void>
 }
 
 export type { UseProvider } from '@/composables/useProvider'

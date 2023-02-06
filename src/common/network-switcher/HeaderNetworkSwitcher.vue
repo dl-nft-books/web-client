@@ -1,13 +1,20 @@
 <template>
   <drop-down
     v-if="provider.selectedAddress"
+    class="header-network-switcher"
     :right="dropDownShift"
     :disabled="isSwitchingChain"
   >
     <template #head="{ menu }">
+      <loader v-if="isLoadingNetworks" />
+      <error-message
+        v-else-if="isLoadFailed"
+        class="header-network-switcher__error"
+        :message="$t('networks.network-error')"
+      />
       <section
-        v-if="networksStore.isLoaded"
-        class="header-network-switcher"
+        v-else
+        class="header-network-switcher__wrapper"
         @click="menu.open"
       >
         <network-item
@@ -16,7 +23,6 @@
           :scheme="getNetworkScheme(pickedNetwork?.chain_id)"
         />
       </section>
-      <loader v-else />
     </template>
     <template #default="{ menu }">
       <div class="header-network-switcher__body">
@@ -33,10 +39,10 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, computed } from 'vue'
-import { DropDown, NetworkItem, Loader } from '@/common'
+import { ref, computed, onMounted } from 'vue'
+import { DropDown, NetworkItem, Loader, ErrorMessage } from '@/common'
 import { useWeb3ProvidersStore, useNetworksStore } from '@/store'
-import { getNetworkScheme, switchNetwork } from '@/helpers'
+import { ErrorHandler, getNetworkScheme, switchNetwork } from '@/helpers'
 import { ChainId } from '@/types'
 import { useWindowSize } from '@vueuse/core'
 import { WINDOW_BREAKPOINTS } from '@/enums'
@@ -47,6 +53,8 @@ const { width } = useWindowSize()
 const networksStore = useNetworksStore()
 
 const isSwitchingChain = ref(false)
+const isLoadingNetworks = ref(true)
+const isLoadFailed = ref(false)
 
 const dropDownShift = computed(() =>
   width.value <= WINDOW_BREAKPOINTS.medium ? 0 : 81,
@@ -58,53 +66,71 @@ const pickedNetwork = computed(() =>
 
 const changeNetwork = async (chainID: ChainId) => {
   isSwitchingChain.value = true
-  await switchNetwork(provider, chainID)
+  await switchNetwork(chainID)
   isSwitchingChain.value = false
 }
 
-networksStore.loadNetworks()
+onMounted(() => {
+  try {
+    networksStore.loadNetworks()
+    isLoadingNetworks.value = false
+  } catch (error) {
+    ErrorHandler.processWithoutFeedback(error)
+    isLoadFailed.value = true
+  }
+})
 </script>
 
 <style lang="scss" scoped>
 .header-network-switcher {
+  --background-head-color: var(--background-primary);
+  --background-body-color: var(--background-primary);
+  --border-color: var(--text-secondary-main);
+}
+
+.header-network-switcher__wrapper {
   display: flex;
   align-items: center;
   height: toRem(52);
   padding: toRem(12) toRem(16);
   gap: toRem(12);
-  background-color: var(--background-primary);
   border-radius: toRem(8);
-  border: toRem(1) solid var(--text-secondary-main);
+  border: toRem(1) solid var(--border-color);
+  background-color: var(--background-head-color);
   transition: 0.2s ease-in-out;
   transition-property: background-color;
   min-width: toRem(210);
 
   .app-navigation-mobile__network & {
-    background-color: transparent;
-    border: toRem(1) solid var(--white);
+    --background-head-color: transparent;
+    --border-color: var(--white);
   }
 
   &:hover {
     cursor: pointer;
-    background-color: var(--background-tertiary);
+    --background-head-color: var(--background-tertiary);
   }
 
   .account--dark-mode & {
-    background-color: transparent;
-    border: toRem(1) solid var(--white);
+    --background-head-color: transparent;
+    --border-color: var(--white);
   }
 }
 
 .header-network-switcher__body {
   width: toRem(206);
-  background-color: var(--background-primary);
+  background-color: var(--background-body-color);
 
   .app-navigation-mobile__network & {
-    background-color: var(--background-quaternary);
+    --background-body-color: var(--background-quaternary);
   }
 
   .account--dark-mode & {
-    background-color: var(--background-quaternary);
+    --background-body-color: var(--background-quaternary);
   }
+}
+
+.header-network-switcher__error {
+  scale: 0.7;
 }
 </style>

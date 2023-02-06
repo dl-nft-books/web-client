@@ -55,7 +55,7 @@ import { BOOK_DEPLOY_STATUSES } from '@/enums'
 import { getBooks } from '@/api'
 import { usePaginate } from '@/composables'
 import { Book, ChainId } from '@/types'
-import { BookshelfHeader, BookshelfCubes } from '@/pages/Bookshelf'
+import { BookshelfHeader, BookshelfCubes } from '@/pages/bookshelf'
 import { useNetworksStore } from '@/store'
 
 const networkStore = useNetworksStore()
@@ -106,6 +106,7 @@ function onError(e: Error) {
   z-index: var(--page-index);
   margin-top: toRem(-220);
   background-color: var(--black);
+  overflow: hidden;
 
   /* Chain image */
   &:before {

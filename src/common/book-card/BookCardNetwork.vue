@@ -30,12 +30,12 @@ withDefaults(
   height: toRem(31);
   padding: 0 toRem(10);
   position: absolute;
-  bottom: toRem(4);
-  right: 0;
+  bottom: 0;
+  right: toRem(-2);
   border-radius: toRem(12) 0 toRem(12) 0;
   display: flex;
   align-items: center;
-  gap: toRem(10);
+  gap: toRem(7);
 }
 
 .book-card-network__icon {

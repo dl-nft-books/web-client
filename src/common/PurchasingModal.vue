@@ -46,7 +46,7 @@
                 <app-button
                   :text="$t('networks.switch-btn-lbl')"
                   :icon-left="$icons.refresh"
-                  @click="switchNetwork(provider, book.chainID)"
+                  @click="switchNetwork(book.chainID)"
                 />
               </template>
             </template>

@@ -60,10 +60,14 @@ Bus.on(
 
 <style lang="scss" scoped>
 .app__container {
-  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
 
   &--scroll-disabled {
     height: vh(100);
+    flex: unset;
+    overflow: hidden;
   }
 }
 

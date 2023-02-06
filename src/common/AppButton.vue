@@ -8,8 +8,9 @@ import { ICON_NAMES } from '@/enums'
 type SCHEMES = 'filled' | 'flat' | 'default'
 
 type MODIFICATIONS = 'border-circle' | 'border-rounded' | 'switcher' | 'default'
-type ICON_SIZE = 'large' | 'medium' | 'x-medium'
+
 type HREF_TARGET = '_blank' | '_self' | '_parent' | '_top'
+type ICON_SIZE = 'large' | 'medium' | 'x-medium'
 
 type COLORS =
   | 'primary'
@@ -80,9 +81,9 @@ const buttonClasses = computed(() =>
 <template>
   <template v-if="route">
     <router-link
+      v-bind="$attrs"
       class="app-button"
       :class="buttonClasses"
-      v-bind="$attrs"
       :to="route"
     >
       <icon v-if="iconLeft" :class="iconClasses" :name="iconLeft" />
@@ -99,11 +100,11 @@ const buttonClasses = computed(() =>
   </template>
   <template v-else-if="href">
     <a
+      v-bind="$attrs"
       class="app-button"
       :class="buttonClasses"
-      v-bind="$attrs"
       :href="href"
-      :target="props.hrefTarget"
+      :target="hrefTarget"
     >
       <icon v-if="iconLeft" :class="iconClasses" :name="iconLeft" />
       <template v-if="$slots.default">
@@ -119,9 +120,9 @@ const buttonClasses = computed(() =>
   </template>
   <template v-else>
     <button
+      v-bind="$attrs"
       class="app-button"
       :class="buttonClasses"
-      v-bind="$attrs"
       :disabled="isDisabled"
       :type="$attrs.type || 'button'"
     >

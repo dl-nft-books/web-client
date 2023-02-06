@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { Loader, ErrorMessage, BookCard, AppButton } from '@/common'
-import { MyNftsNoData } from '@/pages/MyNfts'
+import { MyNftsNoData } from '@/pages/my-nfts'
 
 import { ErrorHandler } from '@/helpers'
 import { ref, watch, computed } from 'vue'

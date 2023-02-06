@@ -1,26 +1,43 @@
 <template>
   <div class="faq-guide-item">
-    <h3 class="faq-guide-item__title">
-      {{ title }}
+    <h3 :id="guide.value" class="faq-guide-item__title">
+      {{ guide.title }}
     </h3>
-    <f-a-q-metamask v-if="title === $t('faq-page.guide-1.title')" />
-    <f-a-q-buy-book v-if="title === $t('faq-page.guide-2.title')" />
-    <f-a-q-mobile-version v-if="title === $t('faq-page.guide-3.title')" />
-    <f-a-q-solve-problems v-if="title === $t('faq-page.guide-4.title')" />
+    <component :is="currentGuide" />
   </div>
 </template>
 
 <script setup lang="ts">
+import { computed } from 'vue'
 import {
-  FAQMetamask,
-  FAQBuyBook,
-  FAQMobileVersion,
-  FAQSolveProblems,
-} from '@/pages/FAQ'
+  FaqMetamask,
+  FaqBuyBook,
+  FaqMobileVersion,
+  FaqSolveProblems,
+} from '@/pages/faq'
 
-defineProps<{
-  title: string
+import { GUIDES } from '@/enums'
+
+const props = defineProps<{
+  guide: {
+    title: string
+    value: GUIDES
+  }
 }>()
+
+const currentGuide = computed(() => {
+  switch (props.guide.value) {
+    case GUIDES.buyBook:
+      return FaqBuyBook
+    case GUIDES.mobile:
+      return FaqMobileVersion
+    case GUIDES.problems:
+      return FaqSolveProblems
+    case GUIDES.metamask:
+    default:
+      return FaqMetamask
+  }
+})
 </script>
 
 <style scoped lang="scss">
@@ -54,7 +71,6 @@ defineProps<{
 
     @include respond-to(small) {
       width: toRem(60);
-      top: toRem(40);
     }
   }
 
