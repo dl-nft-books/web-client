@@ -7,7 +7,6 @@
       :class="{
         'faq-guides-switcher__item--picked': modelValue.value === item.value,
       }"
-      :href="`#${item.value}`"
       @click="pickGuide(item)"
     >
       <p class="faq-guides-switcher__item-title">
@@ -19,15 +18,24 @@
 
 <script setup lang="ts">
 import { GUIDES } from '@/enums'
+import { Ref } from 'vue'
 
 type Guide = {
   title: string
   value: GUIDES
 }
 
-defineProps<{
+interface GuideRef extends Ref<HTMLElement | null> {
+  guideSectionRef: HTMLElement | null
+}
+
+const props = defineProps<{
   switcherList: Guide[]
   modelValue: Guide
+  guideList: Array<{
+    ref: GuideRef
+    id: GUIDES
+  }>
 }>()
 
 const emit = defineEmits<{
@@ -35,6 +43,11 @@ const emit = defineEmits<{
 }>()
 
 const pickGuide = (guide: Guide) => {
+  const guideItem = props.guideList.find(item => item.id === guide.value)
+
+  if (!guideItem?.ref.guideSectionRef) return
+
+  guideItem.ref.guideSectionRef.scrollIntoView()
   emit('update:modelValue', guide)
 }
 </script>
@@ -79,12 +92,14 @@ const pickGuide = (guide: Guide) => {
   border-radius: toRem(5);
   background-color: var(--background-switcher);
   backdrop-filter: blur(toRem(3));
+  user-select: none;
   transition: 0.2s ease-in-out;
   transition-property: border background-color;
 
   &:hover {
     border: toRem(1) solid var(--primary-main);
     background-color: var(--bg-picked-color);
+    cursor: pointer;
   }
 
   &--picked {

@@ -1,6 +1,6 @@
 <template>
   <div class="faq-guide-item">
-    <h3 :id="guide.value" class="faq-guide-item__title">
+    <h3 :id="guide.value" ref="guideSectionRef" class="faq-guide-item__title">
       {{ guide.title }}
     </h3>
     <component :is="currentGuide" />
@@ -8,7 +8,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, ref } from 'vue'
 import {
   FaqMetamask,
   FaqBuyBook,
@@ -24,6 +24,12 @@ const props = defineProps<{
     value: GUIDES
   }
 }>()
+
+const guideSectionRef = ref<HTMLElement | null>(null)
+
+defineExpose({
+  guideSectionRef,
+})
 
 const currentGuide = computed(() => {
   switch (props.guide.value) {

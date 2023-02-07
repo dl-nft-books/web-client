@@ -2,7 +2,11 @@
   <div class="faq-guides">
     <div class="faq-guides__background" />
     <section class="faq-guides__content">
-      <faq-guides-switcher v-model="currentGuide" :switcher-list="guides" />
+      <faq-guides-switcher
+        v-model="currentGuide"
+        :switcher-list="guides"
+        :guide-list="guideList"
+      />
       <div ref="guideRef" class="faq-guides__guides">
         <faq-guide-item
           v-for="(item, index) in guides"
@@ -10,6 +14,13 @@
           :key="index"
           class="faq-guides__item"
           :guide="item"
+          :ref="
+            el =>
+              guideList.push({
+                ref: el,
+                id: item.value,
+              })
+          "
         />
       </div>
     </section>
@@ -17,7 +28,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, onBeforeUpdate, Ref } from 'vue'
 import { useContext } from '@/composables'
 import { FaqGuidesSwitcher, FaqGuideItem } from '@/pages/faq'
 import { GUIDES } from '@/enums'
@@ -44,6 +55,12 @@ const guides = [
 ]
 
 const currentGuide = ref(guides[0])
+const guideList = ref<
+  Array<{
+    ref: Ref<HTMLElement | null>
+    id: GUIDES
+  }>
+>([])
 const guideRef = ref<HTMLElement | null>(null)
 
 const observer = new IntersectionObserver(
@@ -67,6 +84,10 @@ onMounted(() => {
   )) {
     observer.observe(guideSection)
   }
+})
+
+onBeforeUpdate(() => {
+  guideList.value = []
 })
 </script>
 
