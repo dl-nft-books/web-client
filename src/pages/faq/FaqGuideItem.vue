@@ -1,6 +1,6 @@
 <template>
   <div class="faq-guide-item">
-    <h3 :id="guide.value" ref="guideSectionRef" class="faq-guide-item__title">
+    <h3 ref="guideSectionRef" class="faq-guide-item__title">
       {{ guide.title }}
     </h3>
     <component :is="currentGuide" />
