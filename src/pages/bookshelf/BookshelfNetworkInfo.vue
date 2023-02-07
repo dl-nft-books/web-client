@@ -1,17 +1,26 @@
 <template>
   <section class="bookshelf-network-info">
-    <p class="bookshelf-network-info__title">
+    <p
+      :class="[
+        'bookshelf-network-info__title',
+        'bookshelf-network-info__title--size-x-large',
+      ]"
+    >
       {{ $t('bookshelf-item-page.network-title') }}
     </p>
     <div class="bookshelf-network-info__wrapper">
-      <!-- TODO make this dynamic when network changing will be done -->
       <div :class="networkClasses">
         <icon
           class="bookshelf-network-info__icon"
           :name="getIconByScheme(scheme)"
         />
       </div>
-      <p class="bookshelf-network-info__subtitle">
+      <p
+        :class="[
+          'bookshelf-network-info__subtitle',
+          'bookshelf-network-info__subtitle--size-x-large',
+        ]"
+      >
         {{ name }}
       </p>
     </div>
@@ -57,13 +66,14 @@ const networkClasses = computed(() => [
 }
 
 .bookshelf-network-info__title {
-  font-size: toRem(20);
+  @include p-body-2;
+
+  margin-bottom: toRem(12);
 }
 
 .bookshelf-network-info__subtitle {
-  font-weight: 400;
-  font-size: toRem(20);
-  line-height: 120%;
+  @include p-body-2;
+
   color: var(--text-secondary-main);
 }
 

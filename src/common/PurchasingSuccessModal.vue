@@ -1,17 +1,3 @@
-<script lang="ts" setup>
-import { AppButton, Modal, Animation } from '@/common'
-
-import success from '@/assets/animations/success.json'
-
-defineProps<{
-  isShown: boolean
-}>()
-
-const emit = defineEmits<{
-  (event: 'update:is-shown', value: boolean): void
-}>()
-</script>
-
 <template>
   <modal
     :is-shown="isShown"
@@ -20,9 +6,9 @@ const emit = defineEmits<{
     <template #default="{ modal }">
       <div class="purchasing-success-modal__pane">
         <div class="purchasing-success-modal__head">
-          <h3 class="purchasing-success-modal__head-title">
+          <h4>
             {{ $t('purchasing-success-modal.head-title') }}
-          </h3>
+          </h4>
           <app-button
             class="purchasing-success-modal__close-btn"
             :icon-right="$icons.x"
@@ -41,12 +27,17 @@ const emit = defineEmits<{
               :speed="0.75"
             />
           </div>
-          <h4 class="purchasing-success-modal__title">
+          <h5 class="purchasing-success-modal__title">
             {{ $t('purchasing-success-modal.title') }}
-          </h4>
-          <span class="purchasing-success-modal__message">
+          </h5>
+          <p
+            :class="[
+              'purchasing-success-modal__message',
+              'purchasing-success-modal__message--size-medium',
+            ]"
+          >
             {{ $t('purchasing-success-modal.message') }}
-          </span>
+          </p>
           <app-button
             class="purchasing-success-modal__purchase-btn"
             :text="$t('purchasing-success-modal.ok-btn')"
@@ -59,12 +50,25 @@ const emit = defineEmits<{
   </modal>
 </template>
 
+<script lang="ts" setup>
+import { AppButton, Modal, Animation } from '@/common'
+
+import success from '@/assets/animations/success.json'
+
+defineProps<{
+  isShown: boolean
+}>()
+
+const emit = defineEmits<{
+  (event: 'update:is-shown', value: boolean): void
+}>()
+</script>
+
 <style lang="scss" scoped>
 .purchasing-success-modal__pane {
-  display: flex;
-  flex-direction: column;
+  @include flex-container;
+
   max-width: toRem(452);
-  max-height: toRem(492);
   padding: toRem(32);
   background: var(--background-primary);
   border-radius: toRem(10);
@@ -77,15 +81,9 @@ const emit = defineEmits<{
   margin-bottom: toRem(36);
 }
 
-.purchasing-success-modal__head-title {
-  font-size: toRem(24);
-  line-height: 1.2;
-  font-weight: 600;
-}
-
 .purchasing-success-modal__body {
-  display: flex;
-  flex-direction: column;
+  @include flex-container;
+
   align-items: center;
 }
 
@@ -97,20 +95,18 @@ const emit = defineEmits<{
 
 .purchasing-success-modal__title {
   margin-bottom: toRem(16);
-  font-size: toRem(18);
-  line-height: 1.2;
-  font-weight: 600;
 }
 
 .purchasing-success-modal__message {
   text-align: center;
   margin-bottom: toRem(36);
   max-width: toRem(310);
-  font-size: toRem(18);
-  line-height: 1.2;
+
+  @include p-body-2;
 }
 
 .purchasing-success-modal__purchase-btn {
   min-width: toRem(144);
+  text-transform: uppercase;
 }
 </style>

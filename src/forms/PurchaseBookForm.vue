@@ -9,12 +9,17 @@
         :speed="1"
       />
     </div>
-    <h4 class="purchase-book-form__submitting-title">
+    <h5 class="purchase-book-form__submitting-title">
       {{ $t('purchase-book-form.submitting-title') }}
-    </h4>
-    <span class="purchase-book-form__submitting-message">
+    </h5>
+    <p
+      :class="[
+        'purchase-book-form__submitting-message',
+        'purchase-book-form__submitting-message--size-medium',
+      ]"
+    >
       {{ $t('purchase-book-form.submitting-message') }}
-    </span>
+    </p>
   </template>
 
   <!-- Before generation stuff -->
@@ -470,22 +475,18 @@ watch(
 
 .purchase-book-form__submitting-animation-wrp {
   margin: 0 auto toRem(30);
-  max-width: toRem(240);
+  max-width: toRem(300);
 }
 
 .purchase-book-form__submitting-title {
-  margin-bottom: toRem(16);
-  font-size: toRem(18);
-  line-height: 1.2;
-  font-weight: 600;
   text-align: center;
 }
 
 .purchase-book-form__submitting-message {
   max-width: toRem(310);
-  font-size: toRem(18);
-  line-height: 1.2;
   text-align: center;
+
+  @include p-body-2;
 }
 
 .purchase-book-form__not-enough-balance-msg {
@@ -496,7 +497,8 @@ watch(
 }
 
 .purchase-book-form__purchase-btn {
-  margin: 0 auto;
+  margin-inline: auto;
+  margin-top: toRem(20);
   min-width: toRem(144);
   min-height: toRem(48);
 }

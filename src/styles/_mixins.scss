@@ -168,6 +168,14 @@ $media-breakpoints: (
   font-size: toRem(22);
   line-height: 120%;
 
+  &--size-large {
+    font-size: toRem(24);
+  }
+
+  &--size-x-large {
+    font-size: toRem(20);
+  }
+
   &--size-medium {
     font-size: toRem(18);
     line-height: 160%;

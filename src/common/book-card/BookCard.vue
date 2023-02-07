@@ -60,6 +60,7 @@ const bookCardClasses = computed(() =>
     'book-card',
     `book-card--${props.modification}`,
     `book-card--${props.backgroundColor}`,
+    !price.value ? 'book-card--right' : '',
   ].join(' '),
 )
 
@@ -110,6 +111,10 @@ const price = computed(() =>
   &--tertiary {
     background: var(--background-tertiary);
     border: toRem(1) solid var(--border-primary-main);
+  }
+
+  &--right {
+    justify-content: flex-end;
   }
 }
 

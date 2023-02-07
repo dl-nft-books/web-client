@@ -126,11 +126,19 @@ h1 {
 h2 {
   font-size: toRem(48);
   line-height: toRem(61);
+
+  @include respond-to(medium) {
+    font-size: toRem(30);
+  }
 }
 
 h3 {
   font-size: toRem(40);
   line-height: toRem(50);
+
+  @include respond-to(medium) {
+    font-size: toRem(30);
+  }
 }
 
 h4 {
