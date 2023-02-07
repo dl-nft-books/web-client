@@ -1,6 +1,6 @@
 <template>
   <aside class="faq-guides-switcher">
-    <a
+    <button
       v-for="(item, index) in switcherList"
       :key="index"
       class="faq-guides-switcher__item"
@@ -12,7 +12,7 @@
       <p class="faq-guides-switcher__item-title">
         {{ item.title }}
       </p>
-    </a>
+    </button>
   </aside>
 </template>
 
