@@ -3,7 +3,13 @@
     <span :class="wrapperClasses">
       <icon class="network-item__icon" :name="getIconByScheme(scheme)" />
     </span>
-    <p class="network-item__title">
+    <p
+      :class="[
+        'network-item__title',
+        'network-item__title--size-x-medium',
+        'network-item__title--light',
+      ]"
+    >
       {{ title }}
     </p>
   </button>
@@ -123,9 +129,8 @@ const wrapperClasses = computed(() => [
 }
 
 .network-item__title {
-  font-weight: 400;
-  font-size: toRem(16);
-  line-height: toRem(19);
+  @include p-body-2;
+
   color: var(--item-color);
   user-select: none;
 

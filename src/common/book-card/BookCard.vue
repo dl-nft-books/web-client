@@ -8,7 +8,9 @@
         :scheme="getNetworkScheme(network.chain_id)"
       />
     </div>
-    <span class="book-card__title">{{ title }}</span>
+    <h5 class="book-card__title">
+      {{ title }}
+    </h5>
     <h4 v-if="price" class="book-card__price">
       {{ formatFiatAssetFromWei(price, CURRENCY.USD) }}
     </h4>
@@ -129,12 +131,8 @@ const price = computed(() =>
 
 .book-card__title {
   text-transform: uppercase;
-  font-size: toRem(16);
-  line-height: 1.25;
-  font-weight: 700;
   width: 100%;
-
-  @include text-ellipsis;
+  word-wrap: break-word;
 
   .book-card--centered & {
     text-align: center;

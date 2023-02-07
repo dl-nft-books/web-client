@@ -1,7 +1,7 @@
 <template>
   <div :class="accountClasses">
     <header-network-switcher />
-    <drop-down :right="-30">
+    <drop-down :right="0">
       <template #head="{ menu }">
         <app-button
           :icon-left="$icons.avatarPlaceholder"
@@ -18,9 +18,9 @@
               class="account__avatar-icon"
               :name="$icons.avatarPlaceholder"
             />
-            <p class="account__address">
+            <h5 class="account__address account__address--size-x-medium">
               {{ cropAddress(provider.selectedAddress) }}
-            </p>
+            </h5>
           </div>
           <app-button
             class="account__action"
@@ -103,24 +103,14 @@ const copyAddress = async () => {
   }
 }
 
-.account__action-info {
-  font-weight: 500;
-  font-size: toRem(16);
-  color: var(--text-secondary-main);
-
-  .account--dark-mode & {
-    color: var(--text-secondary-invert-main);
-  }
-}
-
 .account__address {
-  font-weight: 600;
-  font-size: toRem(16);
+  @include p-body-2;
+
   color: var(--text-secondary-main);
   user-select: none;
 
   .account--dark-mode & {
-    color: var(--text-secondary-invert-main);
+    @include text-color-invert;
   }
 }
 
@@ -165,6 +155,12 @@ const copyAddress = async () => {
   width: 100%;
   min-height: toRem(50);
   user-select: none;
+
+  .account--dark-mode & {
+    --app-button-text-hover: var(--text-primary-invert-main);
+
+    @include text-color-invert;
+  }
 }
 
 .account__action-icon {

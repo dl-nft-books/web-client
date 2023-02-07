@@ -173,11 +173,19 @@ $media-breakpoints: (
     line-height: 160%;
   }
 
+  &--size-x-medium {
+    font-size: toRem(16);
+  }
+
   &--size-small {
     font-size: toRem(14);
   }
 
   &--bold {
     font-weight: 500;
+  }
+
+  &--light {
+    font-weight: 400;
   }
 }

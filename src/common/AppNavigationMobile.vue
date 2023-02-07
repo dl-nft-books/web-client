@@ -215,12 +215,10 @@ $z-local: 10;
 }
 
 .app-navigation-mobile__text-link {
+  @include p-body-1;
+
   text-align: center;
   color: var(--text-secondary-main);
-  text-decoration: none;
-  font-family: var(--app-font-family);
-  font-weight: 500;
-  font-size: toRem(24);
   text-transform: uppercase;
   transition: color 0.2s;
 
@@ -230,8 +228,8 @@ $z-local: 10;
 }
 
 .app-navigation-mobile__provider-button-wrapper {
-  display: flex;
-  flex-direction: column;
+  @include flex-container;
+
   align-items: center;
   justify-content: center;
   gap: toRem(20);
@@ -244,11 +242,11 @@ $z-local: 10;
 
 .app-navigation-mobile__provider-btn {
   text-transform: uppercase;
-  font-family: var(--app-font-family);
-  font-size: toRem(16);
-  font-weight: 500;
   padding: toRem(9) toRem(16);
-  color: var(--text-primary-invert-main);
+
+  @include link-light;
+
+  @include text-color-invert;
 
   &:deep(.app-button__icon-left) {
     width: toRem(30);

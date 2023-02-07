@@ -115,11 +115,19 @@ const isDarkMode = computed(
 .app-navbar__text-link {
   @include text-color-dark;
 
+  transition: 0.2s ease-in-out;
+  transition-property: color;
+
+  &:hover {
+    color: var(--text-secondary-main);
+  }
+
   .app-navbar--dark & {
     @include text-color-invert;
   }
 
   &.router-link-active {
+    color: var(--text-secondary-main);
     border-bottom: toRem(2) solid var(--primary-main);
   }
 }
