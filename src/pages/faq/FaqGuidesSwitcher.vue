@@ -18,22 +18,17 @@
 
 <script setup lang="ts">
 import { GUIDES } from '@/enums'
-import { Ref } from 'vue'
 
 type Guide = {
   title: string
   value: GUIDES
 }
 
-interface GuideRef extends Ref<HTMLElement | null> {
-  guideSectionRef: HTMLElement | null
-}
-
 const props = defineProps<{
   switcherList: Guide[]
   modelValue: Guide
   guideList: Array<{
-    ref: GuideRef
+    ref: HTMLElement | null
     id: GUIDES
   }>
 }>()
@@ -45,9 +40,9 @@ const emit = defineEmits<{
 const pickGuide = (guide: Guide) => {
   const guideItem = props.guideList.find(item => item.id === guide.value)
 
-  if (!guideItem?.ref.guideSectionRef) return
+  if (!guideItem?.ref) return
 
-  guideItem.ref.guideSectionRef.scrollIntoView()
+  guideItem.ref.scrollIntoView()
   emit('update:modelValue', guide)
 }
 </script>
