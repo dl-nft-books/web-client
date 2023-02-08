@@ -68,6 +68,7 @@ const SOCIAL_LINKS = [
   background: var(--background-secondary);
   z-index: var(--z-index-layer-1);
   position: relative;
+  scroll-snap-align: end;
 }
 
 .app-footer__line {

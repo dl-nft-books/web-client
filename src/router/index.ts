@@ -17,7 +17,7 @@ const routes: Array<RouteRecordRaw> = [
   {
     path: '/about-us',
     name: ROUTE_NAMES.aboutUs,
-    component: () => import('@/pages/AboutUs.vue'),
+    component: () => import('@/pages/about-us/AboutUs.vue'),
     meta: { [ROUTE_METAS.isDarkPage]: true },
   },
   {

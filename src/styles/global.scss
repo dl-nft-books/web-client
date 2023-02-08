@@ -11,7 +11,8 @@ html {
   display: flex;
   flex-direction: column;
   scroll-behavior: smooth;
-  scroll-padding-top: toRem(20);
+  scroll-padding: toRem(20);
+  scroll-snap-type: y proximity;
 
   @include respond-to(medium) {
     scroll-padding-top: toRem(160);
