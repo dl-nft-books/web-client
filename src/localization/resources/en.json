@@ -130,7 +130,7 @@
   "my-nfts-page": {
     "loading-error-msg": "This page is currently unavailable due to connection problems with IPFS. Please, try again later.",
     "no-data-msg": "Empty data, please add new",
-    "title": "MY NFTs",
+    "title": "My NFTs",
     "details-btn": "Details",
     "load-more-btn": "Load More"
   },

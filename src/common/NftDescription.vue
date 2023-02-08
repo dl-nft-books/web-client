@@ -1,9 +1,3 @@
-<script lang="ts" setup>
-import { Icon } from '@/common'
-
-defineProps<{ description?: string }>()
-</script>
-
 <template>
   <div class="nft-description">
     <div class="nft-description__badges">
@@ -28,6 +22,12 @@ defineProps<{ description?: string }>()
     </p>
   </div>
 </template>
+
+<script lang="ts" setup>
+import { Icon } from '@/common'
+
+defineProps<{ description?: string }>()
+</script>
 
 <style lang="scss" scoped>
 .nft-description__badges {
