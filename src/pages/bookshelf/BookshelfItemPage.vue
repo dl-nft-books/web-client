@@ -21,8 +21,6 @@
             :text="[
               $t('bookshelf-item-page.badge-1'),
               $t('bookshelf-item-page.badge-2'),
-              $t('bookshelf-item-page.badge-1'),
-              $t('bookshelf-item-page.badge-2'),
             ]"
           />
           <div class="bookshelf-item-page__actions">

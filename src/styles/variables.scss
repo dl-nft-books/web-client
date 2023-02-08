@@ -147,10 +147,9 @@
   --field-error: var(--error-main);
 
   /* z-indexes */
-  --chain-index: 1;
-  --page-index: 2;
-  --bg-index: -1;
-  --nav-bar-index: 3;
-  --footer-index: 1;
-  --modal-index: 4;
+  --z-index-layer-1: 1;
+  --z-index-layer-2: 2;
+  --z-index-layer-3: 3;
+  --z-index-layer-4: 4;
+  --z-index-layer-bottom: -1;
 }

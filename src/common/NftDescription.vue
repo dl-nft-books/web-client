@@ -1,6 +1,6 @@
 <template>
   <div class="nft-description">
-    <div class="nft-description__badges">
+    <div class="nft-description__badge-wrapper">
       <div class="nft-description__badge">
         <icon
           class="nft-description__badge-icon"
@@ -18,7 +18,7 @@
       </div>
     </div>
     <p class="nft-description__description">
-      {{ description }}
+      {{ description || $t('nft-description.default-desc') }}
     </p>
   </div>
 </template>
@@ -30,7 +30,7 @@ defineProps<{ description?: string }>()
 </script>
 
 <style lang="scss" scoped>
-.nft-description__badges {
+.nft-description__badge-wrapper {
   display: flex;
   align-items: center;
   justify-content: space-between;

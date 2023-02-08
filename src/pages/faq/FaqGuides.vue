@@ -2,22 +2,36 @@
   <div class="faq-guides">
     <div class="faq-guides__background" />
     <section class="faq-guides__content">
-      <faq-guides-switcher v-model="currentGuide" :switcher-list="guides" />
+      <faq-guides-switcher
+        v-model="currentGuide"
+        :switcher-list="guides"
+        :guide-list="guideList"
+      />
       <div ref="guideRef" class="faq-guides__guides">
-        <faq-guide-item
+        <div
           v-for="(item, index) in guides"
-          :id="item.value"
           :key="index"
-          class="faq-guides__item"
-          :guide="item"
-        />
+          :ref="
+            el =>
+              guideList.push({
+                ref: el,
+                id: item.value,
+              })
+          "
+        >
+          <faq-guide-item
+            :id="item.value"
+            class="faq-guides__item"
+            :guide="item"
+          />
+        </div>
       </div>
     </section>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, Ref } from 'vue'
 import { useContext } from '@/composables'
 import { FaqGuidesSwitcher, FaqGuideItem } from '@/pages/faq'
 import { GUIDES } from '@/enums'
@@ -44,6 +58,12 @@ const guides = [
 ]
 
 const currentGuide = ref(guides[0])
+const guideList = ref<
+  Array<{
+    ref: Ref<HTMLElement | null>
+    id: GUIDES
+  }>
+>([])
 const guideRef = ref<HTMLElement | null>(null)
 
 const observer = new IntersectionObserver(
@@ -89,7 +109,7 @@ onMounted(() => {
   width: 100%;
   height: vh(80);
   position: absolute;
-  z-index: var(--footer-index);
+  z-index: var(--z-index-layer-1);
   background: url('/images/cube-left.png') no-repeat left top / contain;
   background-size: 23%;
   opacity: 0.5;
@@ -100,7 +120,7 @@ onMounted(() => {
 .faq-guides__content {
   position: relative;
   height: fit-content;
-  z-index: var(--page-index);
+  z-index: var(--z-index-layer-2);
   display: grid;
   grid-template-columns: 30% 70%;
   justify-content: center;

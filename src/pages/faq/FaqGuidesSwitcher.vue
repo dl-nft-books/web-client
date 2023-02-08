@@ -1,19 +1,18 @@
 <template>
   <aside class="faq-guides-switcher">
-    <a
+    <button
       v-for="(item, index) in switcherList"
       :key="index"
       class="faq-guides-switcher__item"
       :class="{
         'faq-guides-switcher__item--picked': modelValue.value === item.value,
       }"
-      :href="`#${item.value}`"
       @click="pickGuide(item)"
     >
       <p class="faq-guides-switcher__item-title">
         {{ item.title }}
       </p>
-    </a>
+    </button>
   </aside>
 </template>
 
@@ -25,9 +24,13 @@ type Guide = {
   value: GUIDES
 }
 
-defineProps<{
+const props = defineProps<{
   switcherList: Guide[]
   modelValue: Guide
+  guideList: Array<{
+    ref: HTMLElement | null
+    id: GUIDES
+  }>
 }>()
 
 const emit = defineEmits<{
@@ -35,6 +38,11 @@ const emit = defineEmits<{
 }>()
 
 const pickGuide = (guide: Guide) => {
+  const guideItem = props.guideList.find(item => item.id === guide.value)
+
+  if (!guideItem?.ref) return
+
+  guideItem.ref.scrollIntoView()
   emit('update:modelValue', guide)
 }
 </script>
@@ -79,12 +87,14 @@ const pickGuide = (guide: Guide) => {
   border-radius: toRem(5);
   background-color: var(--background-switcher);
   backdrop-filter: blur(toRem(3));
+  user-select: none;
   transition: 0.2s ease-in-out;
   transition-property: border background-color;
 
   &:hover {
     border: toRem(1) solid var(--primary-main);
     background-color: var(--bg-picked-color);
+    cursor: pointer;
   }
 
   &--picked {

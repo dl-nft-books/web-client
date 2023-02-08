@@ -88,7 +88,7 @@ const isDarkMode = computed(
   align-items: center;
   justify-content: space-between;
   padding: toRem(30) var(--app-padding-right) toRem(30) var(--app-padding-left);
-  z-index: var(--nav-bar-index);
+  z-index: var(--z-index-layer-3);
   position: relative;
 
   @include respond-to(small) {
