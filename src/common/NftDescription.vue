@@ -97,6 +97,7 @@ const badges: Badge[] = [
 
   color: var(--text-secondary-main);
   white-space: pre-wrap;
+  word-wrap: break-word;
 
   @include respond-to(medium) {
     font-size: toRem(18);
