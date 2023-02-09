@@ -149,6 +149,7 @@ init()
 .my-nft-item-page__title {
   text-transform: uppercase;
   margin-bottom: toRem(60);
+  word-wrap: break-word;
 
   @include respond-to(medium) {
     text-align: center;

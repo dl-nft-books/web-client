@@ -8,21 +8,12 @@
   </div>
 </template>
 
-<script lang="ts">
+<script setup lang="ts">
 import { LottieAnimation } from 'lottie-web-vue'
 
-import { defineComponent, PropType } from 'vue'
-
-export default defineComponent({
-  name: 'animation',
-  components: { LottieAnimation },
-  props: {
-    animationData: {
-      type: Object as PropType<JSON>,
-      required: true,
-    },
-  },
-})
+defineProps<{
+  animationData: JSON
+}>()
 </script>
 
 <style lang="scss" scoped></style>

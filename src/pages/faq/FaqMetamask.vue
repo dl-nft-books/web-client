@@ -32,7 +32,10 @@
             :class="`faq-metamask__image faq-metamask__image--${image.size}`"
             :alt="image.alt"
           />
-          <p v-if="image.label" class="faq-metamask__image-lbl">
+          <p
+            v-if="image.label"
+            class="faq-metamask__image-lbl faq-metamask__image-lbl--size-small"
+          >
             {{ image.label }}
           </p>
         </div>
@@ -168,8 +171,8 @@ const guideInfo: GuideInfo[] = [
 
 .faq-metamask__image-lbl {
   font-style: italic;
-  font-size: toRem(14);
-  line-height: 120%;
+
+  @include p-body-2;
 }
 
 .faq-metamask__phrase {

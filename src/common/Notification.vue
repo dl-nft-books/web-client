@@ -12,33 +12,21 @@
   </div>
 </template>
 
-<script lang="ts">
+<script setup lang="ts">
 import { Icon } from '@/common'
-
-import { defineComponent, PropType } from 'vue'
 import { ICON_NAMES } from '@/enums'
 
-export default defineComponent({
-  name: 'notification',
-  components: { Icon },
-  props: {
-    title: {
-      type: String,
-      default: '',
-    },
-    message: {
-      type: String,
-      required: true,
-    },
-    iconName: {
-      type: String as PropType<ICON_NAMES>,
-      default: ICON_NAMES.check,
-    },
+withDefaults(
+  defineProps<{
+    title?: string
+    message: string
+    iconName?: ICON_NAMES
+  }>(),
+  {
+    title: '',
+    iconName: ICON_NAMES.check,
   },
-  setup() {
-    return {}
-  },
-})
+)
 </script>
 
 <style lang="scss">
@@ -81,10 +69,10 @@ export default defineComponent({
 }
 
 .notification__title {
-  color: var(--text-primary-invert-main);
+  @include text-color-invert;
 }
 
 .notification__message {
-  color: var(--text-primary-invert-main);
+  @include text-color-invert;
 }
 </style>

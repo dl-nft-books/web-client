@@ -1,8 +1,8 @@
 <template>
   <div class="faq-guide-item">
-    <h3 class="faq-guide-item__title">
+    <h4 class="faq-guide-item__title">
       {{ guide.title }}
-    </h3>
+    </h4>
     <component :is="currentGuide" />
   </div>
 </template>
@@ -42,9 +42,9 @@ const currentGuide = computed(() => {
 
 <style scoped lang="scss">
 .faq-guide-item {
+  @include flex-container;
+
   padding-left: toRem(80);
-  display: flex;
-  flex-direction: column;
   gap: toRem(20);
   width: 100%;
 
@@ -54,9 +54,6 @@ const currentGuide = computed(() => {
 }
 
 .faq-guide-item__title {
-  font-weight: 700;
-  font-size: toRem(24);
-  line-height: toRem(30);
   text-transform: uppercase;
   position: relative;
 
@@ -72,10 +69,6 @@ const currentGuide = computed(() => {
     @include respond-to(small) {
       width: toRem(60);
     }
-  }
-
-  @include respond-to(medium) {
-    font-size: toRem(20);
   }
 }
 </style>

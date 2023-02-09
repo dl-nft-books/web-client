@@ -1,26 +1,27 @@
 <template>
   <div class="faq-page">
     <header class="faq-page__head">
-      <h1 class="faq-page__title">
+      <h3 class="faq-page__title">
         {{ $t('faq-page.title') }}
-      </h1>
+      </h3>
     </header>
     <section class="faq-page__overview">
       <div>
-        <h3 class="faq-page__overview-title">
+        <h4 class="faq-page__overview-title">
           {{ $t('faq-page.overview-title') }}
-        </h3>
+        </h4>
         <section class="faq-page__overview-info">
-          <p class="faq-page__overview-point">
-            {{ $t('faq-page.overview-abstract-1') }}
+          <p
+            v-for="(point, index) in overviewPoints"
+            :key="index"
+            :class="[
+              'faq-page__overview-point faq-page',
+              'faq-page__overview-point--size-x-medium',
+            ]"
+          >
+            {{ point }}
           </p>
-          <p class="faq-page__overview-point">
-            {{ $t('faq-page.overview-abstract-2') }}
-          </p>
-          <p class="faq-page__overview-point">
-            {{ $t('faq-page.overview-abstract-3') }}
-          </p>
-          <p class="faq-page__disclaimer">
+          <p class="faq-page__disclaimer faq-page__disclaimer--size-x-medium">
             {{ $t('faq-page.overview-disclaimer') }}
           </p>
         </section>
@@ -37,6 +38,15 @@
 
 <script setup lang="ts">
 import { FaqGuides } from '@/pages/faq'
+import { useContext } from '@/composables'
+
+const { $t } = useContext()
+
+const overviewPoints = [
+  $t('faq-page.overview-abstract-1'),
+  $t('faq-page.overview-abstract-2'),
+  $t('faq-page.overview-abstract-3'),
+]
 </script>
 
 <style scoped lang="scss">
@@ -48,32 +58,16 @@ import { FaqGuides } from '@/pages/faq'
 
 .faq-page__title {
   margin-bottom: toRem(40);
-  font-weight: 700;
-  font-size: toRem(40);
-  color: var(--background-primary);
-  max-width: toRem(600);
-  line-height: toRem(50);
+  max-width: toRem(660);
 
-  &:after {
-    display: block;
-    content: '';
-    height: toRem(2);
-    margin-top: toRem(10);
-    background: var(--primary-main);
-    margin-left: auto;
-    margin-right: auto;
-    width: clamp(#{toRem(155)}, 35%, #{toRem(215)});
-  }
+  @include text-color-invert;
 
-  @include respond-to(medium) {
-    font-size: toRem(40);
-  }
+  @include text-underline;
 }
 
 /* stylelint-disable */
 .faq-page__head {
   width: 100%;
-  min-height: toRem(300);
   display: flex;
   justify-content: center;
   text-align: center;
@@ -109,9 +103,6 @@ import { FaqGuides } from '@/pages/faq'
 }
 
 .faq-page__overview-title {
-  font-weight: 700;
-  font-size: toRem(24);
-  line-height: toRem(30);
   color: var(--primary-main);
   margin-bottom: toRem(20);
   margin-top: toRem(60);
@@ -122,8 +113,8 @@ import { FaqGuides } from '@/pages/faq'
 }
 
 .faq-page__overview-info {
-  display: flex;
-  flex-direction: column;
+  @include flex-container;
+
   gap: toRem(15);
   position: relative;
 
@@ -140,14 +131,14 @@ import { FaqGuides } from '@/pages/faq'
 }
 
 .faq-page__overview-point {
-  font-weight: 400;
-  line-height: 120%;
-  color: var(--text-primary-invert-main);
+  @include p-body-2;
+
+  @include text-color-invert;
 }
 
 .faq-page__disclaimer {
-  font-weight: 400;
-  line-height: 120%;
+  @include p-body-2;
+
   color: var(--text-diclaimer);
   font-style: italic;
 

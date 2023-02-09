@@ -1,6 +1,6 @@
 <template>
   <div v-once class="about-us">
-    <div class="about-us__head about-us__item">
+    <div class="about-us__head">
       <h3 class="about-us__title">
         {{ $t('about-us-page.title') }}
       </h3>
@@ -9,7 +9,7 @@
       </p>
     </div>
 
-    <about-us-decription class="about-us__item" />
+    <about-us-decription class="" />
 
     <img
       class="about-us__cubes about-us__cubes--right"
@@ -17,7 +17,7 @@
     />
 
     <about-us-quote-card
-      class="about-us__quote-card about-us__item"
+      class="about-us__quote-card"
       :title="$t('about-us-page.founder-title')"
       :subtitle="$t('about-us-page.founder-subtitle')"
       :image="FOUNDERS_IMAGES.KRAVCHENKO"
@@ -30,7 +30,7 @@
     />
 
     <about-us-quote-card
-      class="about-us__quote-card about-us__item"
+      class="about-us__quote-card"
       scheme="dark"
       modification="reverse"
       :title="$t('about-us-page.founder-title-2')"
@@ -81,14 +81,6 @@ const KurbatovQuotes = [
   position: relative;
 }
 
-.about-us__item {
-  scroll-snap-align: center;
-
-  &:first-child {
-    scroll-snap-align: end;
-  }
-}
-
 .about-us__quote-card {
   padding-top: toRem(140);
   padding-bottom: toRem(100);
@@ -116,21 +108,7 @@ const KurbatovQuotes = [
   color: var(--background-primary);
   margin-top: toRem(30);
 
-  /* Text underline */
-  &:after {
-    display: block;
-    content: '';
-    height: toRem(2);
-    margin-top: toRem(10);
-    background: var(--primary-main);
-    margin-left: auto;
-    margin-right: auto;
-    width: clamp(#{toRem(155)}, 20%, #{toRem(215)});
-  }
-
-  @include respond-to(medium) {
-    font-size: toRem(40);
-  }
+  @include text-underline;
 }
 
 .about-us__subtitle {
@@ -144,7 +122,7 @@ const KurbatovQuotes = [
   @include text-color-invert;
 
   @include respond-to(medium) {
-    font-size: toRem(32);
+    font-size: toRem(20);
   }
 }
 

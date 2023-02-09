@@ -1,54 +1,3 @@
-<script lang="ts" setup>
-import { computed, ref } from 'vue'
-import { Icon, AppButton, AppLogo, HeaderNetworkSwitcher } from '@/common'
-import { Bus, cropAddress } from '@/helpers'
-import { ICON_NAMES } from '@/enums'
-import { config } from '@config'
-import { storeToRefs } from 'pinia'
-import { useWeb3ProvidersStore } from '@/store'
-import { useMetaMaskConnect, useContext } from '@/composables'
-
-const SOCIAL_LINKS = [
-  {
-    iconName: ICON_NAMES.facebookCircle,
-    link: config.FACEBOOK_LINK,
-  },
-  {
-    iconName: ICON_NAMES.youtubeCircle,
-    link: config.YOUTUBE_LINK,
-  },
-  {
-    iconName: ICON_NAMES.linkedinCircle,
-    link: config.LINKEDIN_LINK,
-  },
-]
-
-const { provider } = storeToRefs(useWeb3ProvidersStore())
-const { $t } = useContext()
-
-const { connect } = useMetaMaskConnect()
-
-const isShowSidebar = ref(false)
-
-const connectProviderButtonText = computed(() => {
-  return provider.value.selectedAddress
-    ? cropAddress(provider.value.selectedAddress)
-    : $t('app-navbar.connect-provider-button')
-})
-
-Bus.on(Bus.eventList.openSidebar, () => {
-  showSidebar()
-})
-
-const showSidebar = () => {
-  isShowSidebar.value = true
-}
-
-const hideSidebar = () => {
-  isShowSidebar.value = false
-}
-</script>
-
 <template>
   <div
     class="app-navigation-mobile"
@@ -123,6 +72,57 @@ const hideSidebar = () => {
   </div>
 </template>
 
+<script lang="ts" setup>
+import { computed, ref } from 'vue'
+import { Icon, AppButton, AppLogo, HeaderNetworkSwitcher } from '@/common'
+import { Bus, cropAddress } from '@/helpers'
+import { ICON_NAMES } from '@/enums'
+import { config } from '@config'
+import { storeToRefs } from 'pinia'
+import { useWeb3ProvidersStore } from '@/store'
+import { useMetaMaskConnect, useContext } from '@/composables'
+
+const SOCIAL_LINKS = [
+  {
+    iconName: ICON_NAMES.facebookCircle,
+    link: config.FACEBOOK_LINK,
+  },
+  {
+    iconName: ICON_NAMES.youtubeCircle,
+    link: config.YOUTUBE_LINK,
+  },
+  {
+    iconName: ICON_NAMES.linkedinCircle,
+    link: config.LINKEDIN_LINK,
+  },
+]
+
+const { provider } = storeToRefs(useWeb3ProvidersStore())
+const { $t } = useContext()
+
+const { connect } = useMetaMaskConnect()
+
+const isShowSidebar = ref(false)
+
+const connectProviderButtonText = computed(() => {
+  return provider.value.selectedAddress
+    ? cropAddress(provider.value.selectedAddress)
+    : $t('app-navbar.connect-provider-button')
+})
+
+Bus.on(Bus.eventList.openSidebar, () => {
+  showSidebar()
+})
+
+const showSidebar = () => {
+  isShowSidebar.value = true
+}
+
+const hideSidebar = () => {
+  isShowSidebar.value = false
+}
+</script>
+
 <style lang="scss">
 $z-local: 10;
 
@@ -144,8 +144,7 @@ $z-local: 10;
   }
 
   @include respond-to(medium) {
-    display: flex;
-    flex-direction: column;
+    @include flex-container;
   }
 }
 
@@ -157,17 +156,17 @@ $z-local: 10;
 }
 
 .app-navigation-mobile__nav {
-  display: flex;
-  flex-direction: column;
+  @include flex-container;
+
   gap: toRem(20);
   margin: 0 auto;
   flex: 1;
 }
 
 .app-navigation-mobile__links-wrap {
-  display: flex;
+  @include flex-container;
+
   flex: 1;
-  flex-direction: column;
   text-align: end;
   justify-items: center;
   justify-content: center;

@@ -1,3 +1,17 @@
+<template>
+  <router-link
+    :class="`app-logo app-logo--${props.scheme}`"
+    :to="{ name: $routes.bookshelf }"
+    @click="hideSidebar"
+  >
+    <icon class="app-logo__book-icon" :name="$icons.book" />
+    <icon
+      class="app-logo__store-text-icon"
+      :name="$icons.distributedStoreText"
+    />
+  </router-link>
+</template>
+
 <script lang="ts" setup>
 import { Icon } from '@/common'
 
@@ -20,20 +34,6 @@ const hideSidebar = () => {
   emit('hideSidebar')
 }
 </script>
-
-<template>
-  <router-link
-    :class="`app-logo app-logo--${props.scheme}`"
-    :to="{ name: $routes.bookshelf }"
-    @click="hideSidebar"
-  >
-    <icon class="app-logo__book-icon" :name="$icons.book" />
-    <icon
-      class="app-logo__store-text-icon"
-      :name="$icons.distributedStoreText"
-    />
-  </router-link>
-</template>
 
 <style lang="scss" scoped>
 .app-logo {

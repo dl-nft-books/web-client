@@ -1,3 +1,65 @@
+<template>
+  <template v-if="route">
+    <router-link
+      v-bind="$attrs"
+      class="app-button"
+      :class="buttonClasses"
+      :to="route"
+    >
+      <icon v-if="iconLeft" :class="iconClasses" :name="iconLeft" />
+      <template v-if="$slots.default">
+        <slot />
+      </template>
+      <template v-else>
+        <span v-if="text" class="app-button__text">
+          {{ text }}
+        </span>
+      </template>
+      <icon v-if="iconRight" :class="iconClasses" :name="iconRight" />
+    </router-link>
+  </template>
+  <template v-else-if="href">
+    <a
+      v-bind="$attrs"
+      class="app-button"
+      :class="buttonClasses"
+      :href="href"
+      :target="hrefTarget"
+    >
+      <icon v-if="iconLeft" :class="iconClasses" :name="iconLeft" />
+      <template v-if="$slots.default">
+        <slot />
+      </template>
+      <template v-else>
+        <span v-if="text" class="app-button__text">
+          {{ text }}
+        </span>
+      </template>
+      <icon v-if="iconRight" :class="iconClasses" :name="iconRight" />
+    </a>
+  </template>
+  <template v-else>
+    <button
+      v-bind="$attrs"
+      class="app-button"
+      :class="buttonClasses"
+      :disabled="isDisabled"
+      :type="$attrs.type || 'button'"
+    >
+      <icon v-if="iconLeft" :class="iconClasses" :name="iconLeft" />
+      <template v-if="$slots.default">
+        <slot />
+      </template>
+      <template v-else>
+        <span v-if="text" class="app-button__text">
+          {{ text }}
+        </span>
+      </template>
+      <icon v-if="iconRight" :class="iconClasses" :name="iconRight" />
+    </button>
+  </template>
+</template>
+
 <script lang="ts" setup>
 import { Icon } from '@/common'
 
@@ -77,68 +139,6 @@ const buttonClasses = computed(() =>
   ].join(' '),
 )
 </script>
-
-<template>
-  <template v-if="route">
-    <router-link
-      v-bind="$attrs"
-      class="app-button"
-      :class="buttonClasses"
-      :to="route"
-    >
-      <icon v-if="iconLeft" :class="iconClasses" :name="iconLeft" />
-      <template v-if="$slots.default">
-        <slot />
-      </template>
-      <template v-else>
-        <span v-if="text" class="app-button__text">
-          {{ text }}
-        </span>
-      </template>
-      <icon v-if="iconRight" :class="iconClasses" :name="iconRight" />
-    </router-link>
-  </template>
-  <template v-else-if="href">
-    <a
-      v-bind="$attrs"
-      class="app-button"
-      :class="buttonClasses"
-      :href="href"
-      :target="hrefTarget"
-    >
-      <icon v-if="iconLeft" :class="iconClasses" :name="iconLeft" />
-      <template v-if="$slots.default">
-        <slot />
-      </template>
-      <template v-else>
-        <span v-if="text" class="app-button__text">
-          {{ text }}
-        </span>
-      </template>
-      <icon v-if="iconRight" :class="iconClasses" :name="iconRight" />
-    </a>
-  </template>
-  <template v-else>
-    <button
-      v-bind="$attrs"
-      class="app-button"
-      :class="buttonClasses"
-      :disabled="isDisabled"
-      :type="$attrs.type || 'button'"
-    >
-      <icon v-if="iconLeft" :class="iconClasses" :name="iconLeft" />
-      <template v-if="$slots.default">
-        <slot />
-      </template>
-      <template v-else>
-        <span v-if="text" class="app-button__text">
-          {{ text }}
-        </span>
-      </template>
-      <icon v-if="iconRight" :class="iconClasses" :name="iconRight" />
-    </button>
-  </template>
-</template>
 
 <style lang="scss" scoped>
 .app-button {

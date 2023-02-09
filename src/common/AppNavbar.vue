@@ -1,36 +1,3 @@
-<script lang="ts" setup>
-import {
-  AppButton,
-  AppLogo,
-  Icon,
-  AppNavigationMobile,
-  Account,
-} from '@/common'
-import { useWeb3ProvidersStore } from '@/store'
-import { Bus } from '@/helpers'
-import { storeToRefs } from 'pinia'
-import { computed } from 'vue'
-import { router } from '@/router'
-import { ROUTE_METAS } from '@/enums'
-
-const { provider } = storeToRefs(useWeb3ProvidersStore())
-
-const openSidebar = () => {
-  Bus.emit(Bus.eventList.openSidebar)
-}
-
-const handleProviderClick = () => {
-  if (provider.value.selectedAddress) {
-    return
-  }
-  provider.value.connect()
-}
-
-const isDarkMode = computed(
-  () => router.currentRoute.value.meta[ROUTE_METAS.isDarkPage],
-)
-</script>
-
 <template>
   <nav class="app-navbar" :class="{ 'app-navbar--dark': isDarkMode }">
     <app-logo :scheme="isDarkMode ? 'light' : 'dark'" />
@@ -81,6 +48,39 @@ const isDarkMode = computed(
     <app-navigation-mobile />
   </nav>
 </template>
+
+<script lang="ts" setup>
+import {
+  AppButton,
+  AppLogo,
+  Icon,
+  AppNavigationMobile,
+  Account,
+} from '@/common'
+import { useWeb3ProvidersStore } from '@/store'
+import { Bus } from '@/helpers'
+import { storeToRefs } from 'pinia'
+import { computed } from 'vue'
+import { router } from '@/router'
+import { ROUTE_METAS } from '@/enums'
+
+const { provider } = storeToRefs(useWeb3ProvidersStore())
+
+const openSidebar = () => {
+  Bus.emit(Bus.eventList.openSidebar)
+}
+
+const handleProviderClick = () => {
+  if (provider.value.selectedAddress) {
+    return
+  }
+  provider.value.connect()
+}
+
+const isDarkMode = computed(
+  () => router.currentRoute.value.meta[ROUTE_METAS.isDarkPage],
+)
+</script>
 
 <style lang="scss" scoped>
 .app-navbar {

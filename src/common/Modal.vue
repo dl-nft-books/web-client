@@ -10,56 +10,44 @@
   </teleport>
 </template>
 
-<script lang="ts">
-import { defineComponent, onMounted, ref, watch } from 'vue'
+<script setup lang="ts">
+import { onMounted, ref, watch } from 'vue'
 import { onClickOutside } from '@vueuse/core'
 import { Bus } from '@/helpers'
 
-const EVENTS = {
-  updateIsShown: 'update:is-shown',
+const emit = defineEmits<{
+  (event: 'update:is-shown', payload: boolean): void
+}>()
+
+const props = withDefaults(
+  defineProps<{
+    isShown?: boolean
+    isCloseByClickOutside?: boolean
+  }>(),
+  {
+    isShown: false,
+    isCloseByClickOutside: true,
+  },
+)
+
+const modalPane = ref<HTMLElement | undefined>()
+
+const closeModal = () => {
+  emit('update:is-shown', false)
 }
 
-export default defineComponent({
-  name: 'modal',
-  props: {
-    isShown: {
-      type: Boolean,
-      default: false,
-    },
-    isCloseByClickOutside: {
-      type: Boolean,
-      default: true,
-    },
-  },
-  setup(props, { emit }) {
-    const modalPane = ref<HTMLElement | undefined>()
+onMounted(() => {
+  if (!modalPane.value || !props.isCloseByClickOutside) return
 
-    onMounted(() => {
-      if (modalPane.value) {
-        if (props.isCloseByClickOutside) {
-          onClickOutside(modalPane, () => {
-            closeModal()
-          })
-        }
-      }
-    })
-
-    const closeModal = () => {
-      emit(EVENTS.updateIsShown, false)
-    }
-
-    watch(
-      () => props.isShown,
-      () => Bus.emit(Bus.eventList.toggleScroll),
-    )
-
-    return {
-      modalPane,
-
-      closeModal,
-    }
-  },
+  onClickOutside(modalPane, () => {
+    closeModal()
+  })
 })
+
+watch(
+  () => props.isShown,
+  () => Bus.emit(Bus.eventList.toggleScroll),
+)
 </script>
 
 <style lang="scss" scoped>

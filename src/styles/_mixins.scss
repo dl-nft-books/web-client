@@ -236,3 +236,16 @@ $media-breakpoints: (
     font-size: toRem(20);
   }
 }
+
+@mixin text-underline {
+  &:after {
+    display: block;
+    content: '';
+    height: toRem(2);
+    margin-top: toRem(10);
+    background: var(--primary-main);
+    margin-left: auto;
+    margin-right: auto;
+    width: clamp(#{toRem(155)}, 20%, #{toRem(215)});
+  }
+}

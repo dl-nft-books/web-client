@@ -12,7 +12,6 @@ html {
   flex-direction: column;
   scroll-behavior: smooth;
   scroll-padding: toRem(20);
-  scroll-snap-type: y proximity;
 
   @include respond-to(medium) {
     scroll-padding-top: toRem(160);
@@ -145,6 +144,10 @@ h3 {
 h4 {
   font-size: toRem(24);
   line-height: toRem(30);
+
+  @include respond-to(medium) {
+    font-size: toRem(20);
+  }
 }
 
 h5 {
