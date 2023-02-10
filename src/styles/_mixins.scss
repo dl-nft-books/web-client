@@ -125,6 +125,12 @@ $media-breakpoints: (
   flex-direction: column;
 }
 
+@mixin flex-container-row-centered {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
 @mixin text-color-invert {
   color: var(--text-primary-invert-main);
 }

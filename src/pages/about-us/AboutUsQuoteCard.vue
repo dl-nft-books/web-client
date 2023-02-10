@@ -17,7 +17,10 @@
       </div>
 
       <div class="about-us-quote-card__content">
-        <icon class="about-us-quote-card__icon" :name="$icons.leftQuote" />
+        <icon
+          class="about-us-quote-card__content-icon"
+          :name="$icons.leftQuote"
+        />
         <p
           v-for="(quote, index) in quotesList"
           :key="index"
@@ -195,7 +198,7 @@ const cardClasses = computed(() => [
   }
 }
 
-.about-us-quote-card__icon {
+.about-us-quote-card__content-icon {
   --size: #{toRem(57)};
 
   max-width: var(--size);

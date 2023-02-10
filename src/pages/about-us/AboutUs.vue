@@ -1,5 +1,5 @@
 <template>
-  <div v-once class="about-us">
+  <div class="about-us">
     <div class="about-us__head">
       <h3 class="about-us__title">
         {{ $t('about-us-page.title') }}
@@ -9,7 +9,7 @@
       </p>
     </div>
 
-    <about-us-decription class="" />
+    <about-us-decription />
 
     <img
       class="about-us__cubes about-us__cubes--right"

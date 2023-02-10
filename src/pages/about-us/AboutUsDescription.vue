@@ -70,8 +70,8 @@ const aboutUsInfo = [
 }
 
 .about-us-description__content {
-  margin-right: 5vw;
-  padding-bottom: 5vh;
+  padding-right: toRem(10);
+  padding-bottom: toRem(100);
 
   @include respond-to(medium) {
     padding: toRem(50) 0 0;

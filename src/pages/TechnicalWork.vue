@@ -54,8 +54,8 @@
 }
 
 .technical-work__info {
-  display: flex;
-  flex-direction: column;
+  @include flex-container;
+
   justify-content: center;
   padding-bottom: toRem(70);
   max-width: toRem(600);

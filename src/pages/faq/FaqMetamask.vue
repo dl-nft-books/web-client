@@ -145,9 +145,8 @@ const guideInfo: GuideInfo[] = [
 }
 
 .faq-metamask__images {
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  @include flex-container-row-centered;
+
   padding: toRem(10) toRem(40);
 
   @include respond-to(small) {

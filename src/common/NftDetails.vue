@@ -43,12 +43,7 @@ import {
 import { CURRENCY } from '@/enums'
 import { GeneratedNFtRecord } from '@/records'
 import { useContext } from '@/composables'
-
-type NftDetails = {
-  label: string
-  value: string
-  isUrl?: boolean
-}
+import { NftDetails } from '@/types'
 
 const props = defineProps<{ nftToken: GeneratedNFtRecord }>()
 

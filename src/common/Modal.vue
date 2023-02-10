@@ -52,9 +52,8 @@ watch(
 
 <style lang="scss" scoped>
 .modal {
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  @include flex-container-row-centered;
+
   position: fixed;
   top: 0;
   left: 0;

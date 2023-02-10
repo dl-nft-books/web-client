@@ -174,9 +174,8 @@ $z-local: 10;
 }
 
 .app-navigation-mobile__social {
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  @include flex-container-row-centered;
+
   padding: toRem(20);
   flex: 1;
 }

@@ -198,9 +198,8 @@ const setHeightCSSVar = (element: HTMLElement) => {
 }
 
 .textarea-field__icon-wrp {
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  @include flex-container-row-centered;
+
   position: absolute;
   top: 50%;
   right: calc(var(--field-padding-right) * 3 / 2);

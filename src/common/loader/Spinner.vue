@@ -2,8 +2,6 @@
   <div class="spinner" />
 </template>
 
-<script setup lang="ts"></script>
-
 <style lang="scss" scoped>
 .spinner {
   display: inline-block;

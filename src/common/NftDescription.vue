@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="nft-description">
     <div class="nft-description__badge-wrapper">
       <div
         v-for="(item, index) in badges"
@@ -29,11 +29,7 @@
 import { Icon } from '@/common'
 import { useContext } from '@/composables'
 import { ICON_NAMES } from '@/enums'
-
-type Badge = {
-  label: string
-  icon: ICON_NAMES
-}
+import { Badge } from '@/types'
 
 const { $t } = useContext()
 

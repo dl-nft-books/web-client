@@ -1,6 +1,6 @@
 <template>
   <div class="input-field" :class="inputClasses">
-    <label v-if="label" :for="`input-field--${uid}`" class="input-field__label">
+    <label v-if="label" class="input-field__label">
       {{ label }}
     </label>
     <div class="input-field__input-wrp">
@@ -44,7 +44,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, getCurrentInstance, ref, useAttrs } from 'vue'
+import { computed, ref, useAttrs } from 'vue'
 import { BN } from '@distributedlab/utils'
 import { Icon } from '@/common'
 import { ICON_NAMES } from '@/enums'
@@ -74,12 +74,11 @@ const props = withDefaults(
 )
 
 const emit = defineEmits<{
-  (event: 'update:model-value', payload: string | number): void
+  (event: 'update:modelValue', payload: string | number): void
 }>()
 
 const attrs = useAttrs()
 
-const uid = getCurrentInstance()?.uid
 const isPasswordShown = ref(false)
 
 const isNumberType = computed(() => props.type === 'text')
@@ -104,7 +103,7 @@ const listeners = computed(() => ({
     }
     if (props.modelValue === eventTarget.value) return
 
-    emit('update:model-value', eventTarget.value)
+    emit('update:modelValue', eventTarget.value)
   },
 }))
 
@@ -242,9 +241,8 @@ const setHeightCSSVar = (element: HTMLElement) => {
 }
 
 .input-field__icon-wrp {
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  @include flex-container-row-centered;
+
   position: absolute;
   top: 50%;
   right: calc(var(--field-padding-right) * 3 / 2);

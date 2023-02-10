@@ -15,7 +15,7 @@
             v-for="(point, index) in overviewPoints"
             :key="index"
             :class="[
-              'faq-page__overview-point faq-page',
+              'faq-page__overview-point',
               'faq-page__overview-point--size-x-medium',
             ]"
           >

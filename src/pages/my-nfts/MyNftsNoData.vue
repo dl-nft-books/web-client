@@ -53,9 +53,7 @@ const { provider } = useWeb3ProvidersStore()
 const { connect } = useMetaMaskConnect()
 
 const handleProviderClick = () => {
-  if (provider.selectedAddress) {
-    return
-  }
+  if (provider.selectedAddress) return
 
   connect()
 }

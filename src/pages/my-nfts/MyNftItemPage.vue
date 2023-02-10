@@ -35,7 +35,7 @@
         </div>
       </template>
     </template>
-    <loader class="my-nft-item-page__loader" v-else />
+    <loader v-else class="my-nft-item-page__loader" />
   </div>
 </template>
 

@@ -40,7 +40,7 @@
 import { Icon } from '@/common'
 
 const emit = defineEmits<{
-  (event: 'update:model-value', payload: boolean): void
+  (event: 'update:modelValue', payload: boolean): void
 }>()
 
 withDefaults(
@@ -61,7 +61,7 @@ withDefaults(
 const onChange = (event: Event) => {
   const target = event.target as HTMLInputElement
 
-  emit('update:model-value', target.checked)
+  emit('update:modelValue', target.checked)
 }
 </script>
 
@@ -104,9 +104,8 @@ const onChange = (event: Event) => {
 }
 
 .checkbox-field__frame {
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  @include flex-container-row-centered;
+
   width: 100%;
   height: 100%;
   color: var(--field-bg);

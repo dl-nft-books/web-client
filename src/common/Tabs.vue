@@ -6,7 +6,7 @@
       class="tabs__button"
       type="button"
       :class="{ 'tabs__button--active': modelValue === item.id }"
-      @click="emit('update:modelValue', item.id)"
+      @click="changeTab(item.id)"
     >
       {{ item.translation }}
     </button>
@@ -14,10 +14,7 @@
 </template>
 
 <script lang="ts" setup>
-type TabsType = {
-  translation: string
-  id: string
-}
+import { TabsType } from '@/types'
 
 defineProps<{
   modelValue: string
@@ -27,6 +24,10 @@ defineProps<{
 const emit = defineEmits<{
   (event: 'update:modelValue', value: string): void
 }>()
+
+const changeTab = (tab: string) => {
+  emit('update:modelValue', tab)
+}
 </script>
 
 <style lang="scss" scoped>
