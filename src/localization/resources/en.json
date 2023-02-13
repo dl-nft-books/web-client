@@ -118,6 +118,11 @@
     "purchase-btn": "Buy",
     "load-more-btn": "SHOW MORE"
   },
+  "bookshelf-prices": {
+    "floor-lbl": "Floor",
+    "price-lbl": "Price",
+    "floor-price-explanation": "Floor price is the minimum NFT price that can be exchanged for a book"
+  },
   "networks": {
     "polygon": "Polygon Mainnet",
     "ethereum": "Ethereum Mainnet",

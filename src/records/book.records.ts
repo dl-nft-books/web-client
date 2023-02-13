@@ -18,6 +18,7 @@ export class BookRecord {
   voucherToken: string
   voucherTokenAmount: string
   chainID: number
+  floorPrice: string
 
   constructor(record: Book) {
     this.contractAddress = record.contract_address
@@ -38,5 +39,6 @@ export class BookRecord {
     this.voucherToken = record.voucher_token
     this.voucherTokenAmount = record.voucher_token_amount
     this.chainID = record.chain_id
+    this.floorPrice = record.floor_price
   }
 }

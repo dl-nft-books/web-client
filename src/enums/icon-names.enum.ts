@@ -123,6 +123,7 @@ export enum ICON_NAMES {
   identification = 'identification',
   inboxIn = 'inbox-in',
   inbox = 'inbox',
+  infoCircle = 'info-circle',
   informationCircle = 'information-circle',
   key = 'key',
   leftQuote = 'left-quote',

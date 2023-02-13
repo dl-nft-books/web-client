@@ -215,6 +215,22 @@ $media-breakpoints: (
   }
 }
 
+@mixin info-headline-secondary {
+  font-size: toRem(28);
+  font-weight: 600;
+  line-height: toRem(34);
+  color: var(--text-secondary-dark);
+
+  &--acsent {
+    color: var(--primary-main);
+  }
+
+  @include respond-to(tablet) {
+    font-size: toRem(24);
+    line-height: toRem(29);
+  }
+}
+
 @mixin tab-button {
   position: relative;
   font-size: toRem(24);

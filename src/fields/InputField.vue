@@ -6,7 +6,6 @@
     <div class="input-field__input-wrp">
       <input
         class="input-field__input"
-        :id="`input-field--${uid}`"
         v-bind="$attrs"
         v-on="listeners"
         :value="modelValue"

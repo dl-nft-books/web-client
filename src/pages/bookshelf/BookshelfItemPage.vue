@@ -23,20 +23,21 @@
               $t('bookshelf-item-page.badge-2'),
             ]"
           />
-          <div class="bookshelf-item-page__actions">
-            <h3 class="bookshelf-item-page__price">
-              {{ formatFiatAssetFromWei(book.price, CURRENCY.USD) }}
-            </h3>
-            <div class="bookshelf-item-page__info">
-              <app-button
-                v-if="book.voucherToken !== ethers.constants.AddressZero"
-                scheme="default"
-                icon-size="large"
-                :href="getBlockExplorerLink(book.chainID, book.voucherToken)"
-                :icon-right="$icons.voucher"
-              />
-            </div>
-          </div>
+
+          <section class="bookshelf-item-page__prices">
+            <bookshelf-prices
+              :price="formatFiatAssetFromWei(book.price, CURRENCY.USD)"
+              :floor-price="
+                formatFiatAssetFromWei(book.floorPrice, CURRENCY.USD)
+              "
+              :voucher-link="
+                book.voucherToken !== ethers.constants.AddressZero
+                  ? getBlockExplorerLink(book.chainID, book.voucherToken)
+                  : undefined
+              "
+            />
+          </section>
+
           <bookshelf-network-info
             v-if="bookNetwork"
             :name="bookNetwork.name"
@@ -95,7 +96,7 @@ import {
   Marquee,
 } from '@/common'
 
-import { BookshelfNetworkInfo } from '@/pages/bookshelf'
+import { BookshelfNetworkInfo, BookshelfPrices } from '@/pages/bookshelf'
 import { ref, watch, computed } from 'vue'
 import {
   formatFiatAssetFromWei,
@@ -221,16 +222,13 @@ init()
   }
 }
 
-.bookshelf-item-page__actions {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: toRem(20);
-  padding-bottom: toRem(38);
-  margin-top: toRem(28);
+.bookshelf-item-page__prices {
+  width: 70%;
+  margin: toRem(49) 0;
 
-  @include respond-to(medium) {
-    justify-content: center;
+  @include respond-to(tablet) {
+    width: 90%;
+    margin: toRem(49) 0 toRem(30) 0;
   }
 }
 
@@ -240,15 +238,6 @@ init()
   text-align: right;
   user-select: none;
   gap: toRem(5);
-}
-
-.bookshelf-item-page__price {
-  color: var(--primary-main);
-  user-select: none;
-
-  @include respond-to(medium) {
-    text-align: center;
-  }
 }
 
 .bookshelf-item-page__purchase-btn {

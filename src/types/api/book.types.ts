@@ -22,4 +22,5 @@ export type Book = JsonApiRecordBase<'books'> & {
   voucher_token: string
   voucher_token_amount: string
   chain_id: number
+  floor_price: string
 }
