@@ -60,7 +60,7 @@ const bookCardClasses = computed(() =>
     'book-card',
     `book-card--${props.modification}`,
     `book-card--${props.backgroundColor}`,
-    !price.value ? 'book-card--right' : '',
+    ...(price.value ? [] : ['book-card--right']),
   ].join(' '),
 )
 
@@ -170,7 +170,6 @@ const price = computed(() =>
   min-width: toRem(110);
   width: 45%;
   text-transform: uppercase;
-
-  @include link-bold;
+  font-weight: 700;
 }
 </style>

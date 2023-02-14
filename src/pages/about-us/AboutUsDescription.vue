@@ -11,10 +11,7 @@
       <p
         v-for="(phrase, index) in aboutUsInfo"
         :key="index"
-        :class="[
-          'about-us-description__text',
-          'about-us-description__text--size-medium',
-        ]"
+        class="about-us-description__text"
       >
         {{ phrase }}
       </p>
@@ -79,13 +76,13 @@ const aboutUsInfo = [
 }
 
 .about-us-description__text {
-  @include p-body-2;
+  font-size: toRem(18);
+  line-height: 160%;
+  color: var(--text-primary-invert-main);
 
   &:nth-child(2n) {
     margin-top: toRem(25);
   }
-
-  @include text-color-invert;
 
   @include respond-to(medium) {
     font-size: toRem(16);

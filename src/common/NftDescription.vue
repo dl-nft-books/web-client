@@ -7,19 +7,12 @@
         class="nft-description__badge"
       >
         <icon class="nft-description__badge-icon" :name="item.icon" />
-        <p
-          class="nft-description__badge-text nft-description__badge-text--bold"
-        >
+        <p class="nft-description__badge-text">
           {{ item.label }}
         </p>
       </div>
     </div>
-    <p
-      :class="[
-        'nft-description__description',
-        'nft-description__description--size-large',
-      ]"
-    >
+    <p class="nft-description__description">
       {{ description || $t('nft-description.default-desc') }}
     </p>
   </div>
@@ -29,7 +22,11 @@
 import { Icon } from '@/common'
 import { useContext } from '@/composables'
 import { ICON_NAMES } from '@/enums'
-import { Badge } from '@/types'
+
+type Badge = {
+  label: string
+  icon: ICON_NAMES
+}
 
 const { $t } = useContext()
 
@@ -78,8 +75,8 @@ const badges: Badge[] = [
 }
 
 .nft-description__badge-text {
-  @include p-body-2;
-
+  font-size: toRem(22);
+  font-weight: 500;
   font-style: italic;
 
   @include respond-to(medium) {
@@ -89,8 +86,7 @@ const badges: Badge[] = [
 }
 
 .nft-description__description {
-  @include p-body-2;
-
+  font-size: toRem(24);
   color: var(--text-secondary-main);
   white-space: pre-wrap;
   word-wrap: break-word;

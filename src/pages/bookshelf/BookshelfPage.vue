@@ -105,8 +105,8 @@ function onError(e: Error) {
   margin-top: toRem(-220);
   background-color: var(--black);
   overflow: hidden;
-
-  @include flex-container;
+  display: flex;
+  flex-direction: column;
 
   /* Chain image */
   &:before {
@@ -170,10 +170,9 @@ function onError(e: Error) {
 .bookshelf-page__title {
   text-transform: uppercase;
   position: relative;
+  color: var(--text-primary-invert-main);
 
   @include text-shadow;
-
-  @include text-color-invert;
 
   &:after {
     content: ' ';

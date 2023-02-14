@@ -108,7 +108,8 @@ const pickGuide = (guide: Guide) => {
 }
 
 .faq-guides-switcher__item-title {
-  @include p-body-2;
+  font-size: toRem(22);
+  line-height: 120%;
 
   @include respond-to(medium) {
     font-size: toRem(14);

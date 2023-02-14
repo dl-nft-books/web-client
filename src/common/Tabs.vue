@@ -14,7 +14,10 @@
 </template>
 
 <script lang="ts" setup>
-import { TabsType } from '@/types'
+type TabsType = {
+  translation: string
+  id: string
+}
 
 defineProps<{
   modelValue: string

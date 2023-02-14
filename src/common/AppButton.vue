@@ -144,8 +144,9 @@ const buttonClasses = computed(() =>
 .app-button {
   --button-transition-duration: 0.2s;
 
-  @include flex-container-row-centered;
-
+  display: flex;
+  align-items: center;
+  justify-content: center;
   outline: 0;
   font-family: var(--app-font-family);
   margin: 0;

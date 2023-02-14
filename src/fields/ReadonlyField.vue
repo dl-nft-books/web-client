@@ -45,8 +45,8 @@ withDefaults(
 }
 
 .readonly-field__value-wrap {
-  @include flex-container;
-
+  display: flex;
+  flex-direction: column;
   position: relative;
 }
 

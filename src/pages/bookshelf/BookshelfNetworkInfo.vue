@@ -1,11 +1,6 @@
 <template>
   <section class="bookshelf-network-info">
-    <p
-      :class="[
-        'bookshelf-network-info__title',
-        'bookshelf-network-info__title--size-x-large',
-      ]"
-    >
+    <p class="bookshelf-network-info__title">
       {{ $t('bookshelf-item-page.network-title') }}
     </p>
     <div class="bookshelf-network-info__wrapper">
@@ -15,12 +10,7 @@
           :name="getIconByScheme(scheme)"
         />
       </div>
-      <p
-        :class="[
-          'bookshelf-network-info__subtitle',
-          'bookshelf-network-info__subtitle--size-x-large',
-        ]"
-      >
+      <p class="bookshelf-network-info__subtitle">
         {{ name }}
       </p>
     </div>
@@ -66,14 +56,13 @@ const networkClasses = computed(() => [
 }
 
 .bookshelf-network-info__title {
-  @include p-body-2;
-
+  font-size: toRem(20);
+  line-height: 120%;
   margin-bottom: toRem(12);
 }
 
 .bookshelf-network-info__subtitle {
-  @include p-body-2;
-
+  font-size: toRem(20);
   color: var(--text-secondary-main);
 }
 

@@ -18,7 +18,7 @@
               class="account__avatar-icon"
               :name="$icons.avatarPlaceholder"
             />
-            <h5 class="account__address account__address--size-x-medium">
+            <h5 class="account__address">
               {{ cropAddress(provider.selectedAddress) }}
             </h5>
           </div>
@@ -104,13 +104,12 @@ const copyAddress = async () => {
 }
 
 .account__address {
-  @include p-body-2;
-
+  font-size: toRem(16);
   color: var(--text-secondary-main);
   user-select: none;
 
   .account--dark-mode & {
-    @include text-color-invert;
+    color: var(--text-primary-invert-main);
   }
 }
 
@@ -159,7 +158,7 @@ const copyAddress = async () => {
   .account--dark-mode & {
     --app-button-text-hover: var(--text-primary-invert-main);
 
-    @include text-color-invert;
+    color: var(--text-primary-invert-main);
   }
 }
 

@@ -43,7 +43,10 @@
         :text="$t('app-navbar.connect-provider-button')"
         @click="handleProviderClick"
       />
-      <account v-else :modification="isDarkMode ? 'dark-mode' : 'default'" />
+      <account-info
+        v-else
+        :modification="isDarkMode ? 'dark-mode' : 'default'"
+      />
     </div>
     <app-navigation-mobile />
   </nav>
@@ -55,7 +58,7 @@ import {
   AppLogo,
   Icon,
   AppNavigationMobile,
-  Account,
+  AccountInfo,
 } from '@/common'
 import { useWeb3ProvidersStore } from '@/store'
 import { Bus } from '@/helpers'
@@ -113,8 +116,7 @@ const isDarkMode = computed(
 }
 
 .app-navbar__text-link {
-  @include text-color-dark;
-
+  color: var(--text-secondary-dark);
   transition: 0.2s ease-in-out;
   transition-property: color;
 
@@ -123,7 +125,7 @@ const isDarkMode = computed(
   }
 
   .app-navbar--dark & {
-    @include text-color-invert;
+    color: var(--text-primary-invert-main);
   }
 
   &.router-link-active {
@@ -148,7 +150,7 @@ const isDarkMode = computed(
     --app-button-flat-border: #{toRem(1)} solid var(--border-primary-light);
     --app-button-flat-text-hover: var(--text-primary-invert-main);
 
-    @include text-color-invert;
+    color: var(--text-primary-invert-main);
   }
 
   &:disabled {

@@ -101,9 +101,8 @@ const SOCIAL_LINKS = [
 }
 
 .app-footer__text-link {
-  @include text-color-invert;
-
-  @include link-light;
+  font-weight: 500;
+  color: var(--text-primary-invert-main);
 }
 
 .app-footer__social-links {

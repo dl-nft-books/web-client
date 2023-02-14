@@ -108,7 +108,7 @@ const KurbatovQuotes = [
   color: var(--background-primary);
   margin-top: toRem(30);
 
-  @include text-underline;
+  @include subtitle-underline;
 }
 
 .about-us__subtitle {
@@ -118,8 +118,7 @@ const KurbatovQuotes = [
   text-transform: uppercase;
   font-weight: 500;
   letter-spacing: toRem(3);
-
-  @include text-color-invert;
+  color: var(--text-primary-invert-main);
 
   @include respond-to(medium) {
     font-size: toRem(20);

@@ -21,20 +21,14 @@
       </template>
       <app-button
         v-if="isNotConnected"
-        :class="[
-          'my-nfts-no-data__marketplace-btn',
-          'my-nfts-no-data__marketplace-btn--size-x-large',
-        ]"
+        class="my-nfts-no-data__marketplace-btn"
         :text="$t('my-nfts-no-data.connect-metamask-btn')"
         :icon-left="$icons.metamask"
         @click="handleProviderClick"
       />
       <app-button
         v-else
-        :class="[
-          'my-nfts-no-data__marketplace-btn',
-          'my-nfts-no-data__marketplace-btn--size-x-large',
-        ]"
+        class="my-nfts-no-data__marketplace-btn"
         size="large"
         :icon-right="$icons.arrowRight"
         :text="$t('my-nfts-no-data.marketplace-btn')"
@@ -47,15 +41,13 @@
 <script lang="ts" setup>
 import { AppButton } from '@/common'
 import { useWeb3ProvidersStore } from '@/store'
-import { useMetaMaskConnect } from '@/composables'
 
 const { provider } = useWeb3ProvidersStore()
-const { connect } = useMetaMaskConnect()
 
 const handleProviderClick = () => {
   if (provider.selectedAddress) return
 
-  connect()
+  provider.connect()
 }
 
 withDefaults(
@@ -93,7 +85,8 @@ withDefaults(
 }
 
 .my-nfts-no-data__content {
-  @include flex-container;
+  display: flex;
+  flex-direction: column;
 
   @include respond-to(tablet) {
     align-items: center;
@@ -113,10 +106,8 @@ withDefaults(
   margin-top: toRem(44);
   min-height: toRem(74);
   min-width: toRem(296);
-
-  @include link-bold;
-
-  @include p-body-2;
+  font-weight: 700;
+  font-size: toRem(20);
 
   @include respond-to(small) {
     min-width: 100%;

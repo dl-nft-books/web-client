@@ -104,8 +104,9 @@ const onChange = (event: Event) => {
 }
 
 .checkbox-field__frame {
-  @include flex-container-row-centered;
-
+  display: flex;
+  align-items: center;
+  justify-content: center;
   width: 100%;
   height: 100%;
   color: var(--field-bg);

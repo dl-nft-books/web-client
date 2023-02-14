@@ -55,16 +55,11 @@
             class="bookshelf-item-page__purchase-btn"
             size="small"
             :text="$t('bookshelf-item-page.connect-btn')"
-            @click="connect"
+            @click="provider.connect"
           />
 
           <hr class="bookshelf-item-page__devider" />
-          <p
-            :class="[
-              'bookshelf-item-page__description',
-              'bookshelf-item-page__description--size-large',
-            ]"
-          >
+          <p class="bookshelf-item-page__description">
             {{ book.description }}
           </p>
         </div>
@@ -106,7 +101,6 @@ import {
 import { CURRENCY } from '@/enums'
 import { BookRecord } from '@/records'
 import { useWeb3ProvidersStore, useNetworksStore } from '@/store'
-import { useMetaMaskConnect } from '@/composables'
 import { storeToRefs } from 'pinia'
 import { getBookById } from '@/api'
 import { ethers } from 'ethers'
@@ -115,7 +109,6 @@ const props = defineProps<{
   id: string
 }>()
 const { provider } = storeToRefs(useWeb3ProvidersStore())
-const { connect } = useMetaMaskConnect()
 
 const isLoaded = ref(false)
 const isLoadFailed = ref(false)
@@ -207,7 +200,8 @@ init()
 }
 
 .bookshelf-item-page__details {
-  @include flex-container;
+  display: flex;
+  flex-direction: column;
 }
 
 .bookshelf-item-page__title {
@@ -255,8 +249,8 @@ init()
   text-transform: uppercase;
   width: 100%;
   height: toRem(60);
-
-  @include p-body-2;
+  font-size: toRem(22);
+  line-height: 120%;
 }
 
 .bookshelf-item-page__devider {
@@ -272,8 +266,7 @@ init()
   margin-top: toRem(10);
   word-wrap: break-word;
   white-space: pre-wrap;
-
-  @include p-body-2;
+  font-size: toRem(24);
 
   @include respond-to(medium) {
     font-size: toRem(18);

@@ -35,8 +35,8 @@ const classes = computed(() => [
 .faq-card-info {
   --background-color: #{rgba(var(--guide-card-color-rgb), 0.1)};
 
-  @include flex-container;
-
+  display: flex;
+  flex-direction: column;
   gap: toRem(15);
   width: 100%;
   max-width: toRem(800);

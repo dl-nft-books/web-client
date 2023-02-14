@@ -241,8 +241,9 @@ const setHeightCSSVar = (element: HTMLElement) => {
 }
 
 .input-field__icon-wrp {
-  @include flex-container-row-centered;
-
+  display: flex;
+  align-items: center;
+  justify-content: center;
   position: absolute;
   top: 50%;
   right: calc(var(--field-padding-right) * 3 / 2);
