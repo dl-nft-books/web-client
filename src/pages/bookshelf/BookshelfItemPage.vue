@@ -82,7 +82,7 @@
         />
       </template>
     </template>
-    <loader v-else />
+    <loader v-else class="bookshelf-item-page__loader" />
   </div>
 </template>
 
@@ -168,6 +168,7 @@ init()
   $right-column: clamp(#{toRem(250)}, 55%, #{toRem(700)});
 
   display: grid;
+  flex: 1;
   width: 100%;
   grid-template-columns: $left-column $right-column;
   grid-column-gap: clamp(#{toRem(10)}, 5%, #{toRem(80)});
@@ -186,6 +187,10 @@ init()
   @include respond-to(small) {
     max-width: 100%;
   }
+}
+
+.bookshelf-item-page__loader {
+  grid-column: span 2;
 }
 
 .bookshelf-item-page__cover-wrp {
