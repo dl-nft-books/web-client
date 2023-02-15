@@ -48,14 +48,14 @@
 </template>
 
 <script setup lang="ts">
-import { computed, reactive, Ref, ref, toRef, watch } from 'vue'
+import { computed, inject, reactive, ref, toRef, watch } from 'vue'
 import { ethers } from 'ethers'
 
 import { Loader, AppButton, ErrorMessage } from '@/common'
 import { MessageField, ReadonlyField, TextareaField } from '@/fields'
 
 import { BookRecord } from '@/records'
-import { Platform } from '@/types'
+import { PurchaseFormKey } from '@/types'
 import { MAX_FIELD_LENGTH } from '@/const'
 import { useBalance, useFormValidation, useContext } from '@/composables'
 import { ErrorHandler, formatAssetFromWei } from '@/helpers'
@@ -63,17 +63,18 @@ import { BN } from '@/utils/math.util'
 import { required } from '@/validators'
 import { storeToRefs } from 'pinia'
 import { useWeb3ProvidersStore } from '@/store'
+import { ExposedFormRef } from '@/forms//PurchaseBookForm.vue'
 
 const props = defineProps<{
-  currentPlatform: Platform
   book: BookRecord
-  isFormDisabled: boolean
 }>()
+
+const { platform: currentPlatform, isFormDisabled } = inject(PurchaseFormKey)
 
 const { $t } = useContext()
 const { provider } = storeToRefs(useWeb3ProvidersStore())
 
-const { getBalance, isLoadFailed, balance } = useBalance(props.currentPlatform)
+const { getBalance, isLoadFailed, balance } = useBalance(currentPlatform)
 
 const form = reactive({
   tokenAddress: props.book.voucherToken,
@@ -112,12 +113,7 @@ const isEnoughVoucherTokensForBuy = computed(
   () => new BN(balance.value).compare(formattedVoucherTokenAmount.value) >= 1,
 )
 
-defineExpose<{
-  isFormValid: () => boolean
-  tokenAddress: Ref<string>
-  signature: Ref<string>
-  tokenAmount: Ref<string>
-}>({
+defineExpose<Omit<ExposedFormRef, 'promocode' | 'tokenPrice'>>({
   isFormValid,
   tokenAmount: formattedVoucherTokenAmount,
   tokenAddress: toRef(form, 'tokenAddress'),

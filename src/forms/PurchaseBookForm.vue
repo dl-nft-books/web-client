@@ -36,25 +36,19 @@
       @blur="touchField('tokenType')"
     />
 
-    <component
-      :is="paymentTemplate"
-      ref="paymentTemplateRef"
-      :book="book"
-      :current-platform="currentPlatform"
-      :is-form-disabled="isFormDisabled"
-    />
+    <component :is="paymentTemplate" ref="paymentTemplateRef" :book="book" />
   </form>
 </template>
 
 <script lang="ts" setup>
-import { ref, reactive, computed, Ref } from 'vue'
+import { ref, reactive, computed, Ref, provide } from 'vue'
 import { storeToRefs } from 'pinia'
 import { useWeb3ProvidersStore } from '@/store'
 import { BN } from '@/utils/math.util'
 
 import { createNewTask, getMintSignature } from '@/api'
 
-import { Platform, Promocode, TokenPrice } from '@/types'
+import { Platform, Promocode, TokenPrice, PurchaseFormKey } from '@/types'
 import { TOKEN_TYPES } from '@/enums'
 import { BookRecord } from '@/records'
 
@@ -85,9 +79,7 @@ import { required } from '@/validators'
 import loaderAnimation from '@/assets/animations/loader.json'
 import { ethers } from 'ethers'
 
-const TOKEN_AMOUNT_COEFFICIENT = 1.02
-
-type ExposedFormRef = {
+export type ExposedFormRef = {
   isFormValid: () => boolean
   promocode: Ref<Promocode | null>
   signature: Ref<string>
@@ -95,6 +87,8 @@ type ExposedFormRef = {
   tokenAmount: Ref<string>
   tokenPrice: Ref<TokenPrice | null>
 }
+
+const TOKEN_AMOUNT_COEFFICIENT = 1.02
 
 const props = defineProps<{
   book: BookRecord
@@ -121,6 +115,12 @@ const { getFieldErrorMessage, touchField, isFormValid } = useFormValidation(
     tokenType: { required },
   },
 )
+
+// to avoid props drilling - passing necessary info using provide -> inject
+provide(PurchaseFormKey, {
+  platform: props.currentPlatform,
+  isFormDisabled,
+})
 
 const paymentTemplateRef = ref<ExposedFormRef | null>(null)
 
@@ -191,7 +191,6 @@ const submit = async () => {
     tokenAmount: paymentTemplateRef.value?.tokenAmount,
     signature: paymentTemplateRef.value?.signature,
     promocode: paymentTemplateRef.value.promocode,
-    tokenType: form.tokenType,
   }
 
   disableForm()

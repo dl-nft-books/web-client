@@ -16,35 +16,7 @@
         {{ $t('purchase-book-form.not-enough-balance-msg') }}
       </p>
 
-      <!-- PROMOCODES -->
-      <input-field
-        v-model="form.promocode"
-        :label="$t('purchase-book-form.promocode-lbl')"
-        :placeholder="$t('purchase-book-form.promocode-placeholder')"
-        :error-message="getFieldErrorMessage('promocode')"
-        :disabled="isFormDisabled"
-        @blur="touchField('promocode')"
-        @update:model-value="handlePromocodeInput"
-      />
-
-      <loader v-if="promocodeInfo.isLoading" />
-
-      <template v-else>
-        <message-field
-          v-if="promocodeInfo.promocode"
-          scheme="success"
-          :icon="$icons.percentCircle"
-          :title="
-            $t('purchase-book-form.promocode-applied-msg', {
-              amount: Number(promocodeInfo.promocode.discount) * 100,
-            })
-          "
-        />
-        <message-field
-          v-if="promocodeInfo.error"
-          :title="promocodeInfo.error"
-        />
-      </template>
+      <promocode-template ref="promocodeRef" />
 
       <textarea-field
         v-model="form.signature"
@@ -70,43 +42,38 @@
 </template>
 
 <script setup lang="ts">
-import { computed, reactive, watch, toRef, Ref } from 'vue'
-import { debounce } from 'lodash'
+import { computed, reactive, watch, toRef, ref, inject } from 'vue'
+import { storeToRefs } from 'pinia'
+
 import { BN } from '@/utils/math.util'
 
-import {
-  InputField,
-  TextareaField,
-  ReadonlyField,
-  MessageField,
-} from '@/fields'
+import { TextareaField, ReadonlyField } from '@/fields'
 
 import { ErrorMessage, Loader, AppButton } from '@/common'
-import { useBalance, usePromocode, useFormValidation } from '@/composables'
-import { Platform, Promocode, TokenPrice } from '@/types'
+import { useBalance, useFormValidation } from '@/composables'
+import { PromocodeTemplate } from '@/forms/purchase-book-payments'
+import { Promocode, PurchaseFormKey } from '@/types'
 import { BookRecord } from '@/records'
 
 import { required, minLength, maxLength } from '@/validators'
 import { PROMOCODE_LENGTH, MAX_FIELD_LENGTH } from '@/const'
 import { useWeb3ProvidersStore } from '@/store'
-import { storeToRefs } from 'pinia'
+import { ExposedPromocodeRef } from '@/forms/purchase-book-payments/PromocodeTemplate.vue'
+import { ExposedFormRef } from '@/forms//PurchaseBookForm.vue'
 
 const props = defineProps<{
-  currentPlatform: Platform
   book: BookRecord
-  isFormDisabled: boolean
 }>()
+
+const { platform: currentPlatform, isFormDisabled } = inject(PurchaseFormKey)
 
 const {
   balance,
   isLoadFailed,
   isPriceAndBalanceLoaded,
   tokenPrice,
-  getPrice,
   loadBalanceAndPrice,
-} = useBalance(props.currentPlatform)
-
-const { promocodeInfo, validatePromocode } = usePromocode()
+} = useBalance(currentPlatform)
 
 const { provider } = storeToRefs(useWeb3ProvidersStore())
 
@@ -115,6 +82,9 @@ const form = reactive({
   signature: '',
   promocode: '',
 })
+
+const promocodeRef = ref<ExposedPromocodeRef | null>(null)
+const promocode = ref<Promocode | null>(null)
 
 const { getFieldErrorMessage, touchField, isFormValid } = useFormValidation(
   form,
@@ -126,26 +96,6 @@ const { getFieldErrorMessage, touchField, isFormValid } = useFormValidation(
     },
   },
 )
-
-const onPromocodeInput = async () => {
-  await validatePromocode(form.promocode)
-
-  //in order to always calculate new price based on initial price
-  await getPrice(form.tokenAddress, false)
-
-  if (!tokenPrice.value?.price || !promocodeInfo.promocode) return
-
-  const newPrice = new BN(tokenPrice.value.price, {
-    decimals: tokenPrice.value.token.decimals,
-  })
-    .div(1 - promocodeInfo.promocode.discount)
-    .toString()
-
-  tokenPrice.value.price = newPrice
-}
-
-const handlePromocodeInput = debounce(onPromocodeInput, 400)
-
 const formattedTokenAmount = computed(() => {
   if (!tokenPrice.value) return ''
 
@@ -159,21 +109,24 @@ const isEnoughBalanceForBuy = computed(
   () => new BN(balance.value).compare(formattedTokenAmount.value) >= 0,
 )
 
-defineExpose<{
-  isFormValid: () => boolean
-  tokenAddress: Ref<string>
-  tokenPrice: Ref<TokenPrice | null>
-  promocode: Ref<Promocode | null>
-  signature: Ref<string>
-  tokenAmount: Ref<string>
-}>({
-  isFormValid,
+defineExpose<ExposedFormRef>({
+  isFormValid: () => isFormValid() && promocodeRef.value?.isPromocodeValid(),
   tokenAmount: formattedTokenAmount,
   tokenPrice: tokenPrice,
   tokenAddress: toRef(form, 'tokenAddress'),
   signature: toRef(form, 'signature'),
-  promocode: toRef(promocodeInfo, 'promocode'),
+  promocode,
 })
+
+watch(
+  () => promocodeRef.value?.tokenPrice,
+  () => {
+    if (!promocodeRef.value?.tokenPrice) return
+
+    promocode.value = promocodeRef.value.promocode
+    tokenPrice.value = promocodeRef.value.tokenPrice
+  },
+)
 
 watch(
   () => provider.value.selectedAddress,
