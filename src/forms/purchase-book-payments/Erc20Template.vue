@@ -37,7 +37,7 @@
 
       <promocode-template
         ref="promocodeRef"
-        :is-erc20="true"
+        :token-type="TOKEN_TYPES.erc20"
         :token-address="form.tokenAddress"
       />
 
@@ -86,6 +86,7 @@ import { BookRecord } from '@/records'
 import { BN } from '@/utils/math.util'
 import { storeToRefs } from 'pinia'
 import { useWeb3ProvidersStore } from '@/store'
+import { TOKEN_TYPES } from '@/enums'
 
 const props = defineProps<{
   book: BookRecord
@@ -112,7 +113,7 @@ const {
 
 const loadBalanceAndPrice = debounce(async () => {
   isLoading.value = true
-  await _loadBalanceAndPrice(form.tokenAddress, true)
+  await _loadBalanceAndPrice(form.tokenAddress, TOKEN_TYPES.erc20)
   isLoading.value = false
 }, 400)
 

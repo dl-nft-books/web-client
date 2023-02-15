@@ -24,7 +24,12 @@
 
   <!-- Before generation stuff -->
   <form v-else class="purchase-book-form" @submit.prevent="submit">
-    <book-preview :book="book" />
+    <book-preview
+      :book="book"
+      :modification="
+        form.tokenType === TOKEN_TYPES.nft ? 'floor-price' : 'default'
+      "
+    />
 
     <select-field
       v-model="form.tokenType"
@@ -58,6 +63,7 @@ import {
   NativeTemplate,
   Erc20Template,
   VoucherTemplate,
+  NftTemplate,
 } from '@/forms/purchase-book-payments'
 
 import {
@@ -86,6 +92,7 @@ export type ExposedFormRef = {
   tokenAddress: Ref<string>
   tokenAmount: Ref<string>
   tokenPrice: Ref<TokenPrice | null>
+  tokenId?: Ref<string>
 }
 
 const TOKEN_AMOUNT_COEFFICIENT = 1.02
@@ -130,6 +137,8 @@ const paymentTemplate = computed(() => {
       return Erc20Template
     case TOKEN_TYPES.voucher:
       return VoucherTemplate
+    case TOKEN_TYPES.nft:
+      return NftTemplate
     case TOKEN_TYPES.native:
     default:
       return NativeTemplate
@@ -145,6 +154,10 @@ const tokenTypesOptions = computed(() => {
     {
       label: globalizeTokenType(TOKEN_TYPES.voucher),
       value: TOKEN_TYPES.voucher,
+    },
+    {
+      label: globalizeTokenType(TOKEN_TYPES.nft),
+      value: TOKEN_TYPES.nft,
     },
   ]
 

@@ -60,6 +60,7 @@ import { PROMOCODE_LENGTH, MAX_FIELD_LENGTH } from '@/const'
 import { useWeb3ProvidersStore } from '@/store'
 import { ExposedPromocodeRef } from '@/forms/purchase-book-payments/PromocodeTemplate.vue'
 import { ExposedFormRef } from '@/forms//PurchaseBookForm.vue'
+import { TOKEN_TYPES } from '@/enums'
 
 const props = defineProps<{
   book: BookRecord
@@ -131,7 +132,7 @@ watch(
 watch(
   () => provider.value.selectedAddress,
   () => {
-    loadBalanceAndPrice(form.tokenAddress, false)
+    loadBalanceAndPrice(form.tokenAddress, TOKEN_TYPES.native)
   },
   { immediate: true },
 )

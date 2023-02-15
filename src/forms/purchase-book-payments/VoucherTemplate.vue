@@ -64,6 +64,7 @@ import { required } from '@/validators'
 import { storeToRefs } from 'pinia'
 import { useWeb3ProvidersStore } from '@/store'
 import { ExposedFormRef } from '@/forms//PurchaseBookForm.vue'
+import { TOKEN_TYPES } from '@/enums'
 
 const props = defineProps<{
   book: BookRecord
@@ -130,7 +131,7 @@ watch(
 
     isLoading.value = true
     try {
-      await getBalance(props.book.voucherToken, true)
+      await getBalance(props.book.voucherToken, TOKEN_TYPES.erc20)
     } catch (error) {
       ErrorHandler.processWithoutFeedback(error)
       isLoadFailed.value = true

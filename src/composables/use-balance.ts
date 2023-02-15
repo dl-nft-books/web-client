@@ -2,8 +2,9 @@ import { ref } from 'vue'
 import { ethers } from 'ethers'
 import { errors } from '@/api/json-api'
 
-import { getPriceByPlatform } from '@/api'
-import { Platform, TokenPrice } from '@/types'
+import { getPriceByPlatform, getNftPriceByPlatform } from '@/api'
+import { NftPrice, Platform, TokenPrice } from '@/types'
+import { TOKEN_TYPES } from '@/enums'
 import { BN } from '@/utils/math.util'
 import { useWeb3ProvidersStore } from '@/store'
 import { useErc20 } from '@/composables'
@@ -11,6 +12,7 @@ import { ErrorHandler } from '@/helpers'
 
 export function useBalance(currentPlatform: Platform) {
   const tokenPrice = ref<TokenPrice | null>(null)
+  const nftPrice = ref<NftPrice | null>(null)
   const isTokenAddressUnsupported = ref(false)
   const balance = ref('')
   const isLoadFailed = ref(false)
@@ -19,15 +21,26 @@ export function useBalance(currentPlatform: Platform) {
   const { provider } = useWeb3ProvidersStore()
   const erc20 = useErc20(provider)
 
-  const getPrice = async (tokenAddress: string, isERC20Token: boolean) => {
+  const getPrice = async (tokenAddress: string, tokenType: TOKEN_TYPES) => {
     try {
-      const contract = isERC20Token ? tokenAddress : ''
-      const { data } = await getPriceByPlatform(
+      if (tokenType !== TOKEN_TYPES.nft) {
+        const contract = tokenType === TOKEN_TYPES.erc20 ? tokenAddress : ''
+        const { data } = await getPriceByPlatform(
+          currentPlatform.id,
+          contract,
+          Number(provider.chainId),
+        )
+
+        tokenPrice.value = data
+        return
+      }
+
+      const { data } = await getNftPriceByPlatform(
         currentPlatform.id,
-        contract,
-        Number(provider.chainId),
+        tokenAddress,
       )
-      tokenPrice.value = data
+
+      nftPrice.value = data
     } catch (error) {
       if (error instanceof errors.NotFoundError) {
         isTokenAddressUnsupported.value = true
@@ -36,19 +49,25 @@ export function useBalance(currentPlatform: Platform) {
     }
   }
 
-  const getBalance = async (tokenAddress: string, isERC20Token: boolean) => {
-    if (isERC20Token) {
-      erc20.init(tokenAddress)
-      await erc20.getDecimals()
-      const accountBalance = await erc20.getBalanceOf(provider.selectedAddress!)
-      balance.value = new BN(accountBalance)
-        .fromFraction(erc20.decimals.value)
-        .toString()
-    } else {
-      const accountBalance = await provider.getBalance(
-        provider.selectedAddress!,
-      )
-      balance.value = new BN(accountBalance).fromWei().toString()
+  const getBalance = async (tokenAddress: string, tokenType: TOKEN_TYPES) => {
+    let accountBalance: string
+
+    switch (tokenType) {
+      case TOKEN_TYPES.erc20:
+        erc20.init(tokenAddress)
+        await erc20.getDecimals()
+
+        accountBalance = await erc20.getBalanceOf(provider.selectedAddress!)
+        balance.value = new BN(accountBalance)
+          .fromFraction(erc20.decimals.value)
+          .toString()
+        break
+      case TOKEN_TYPES.native:
+        accountBalance = await provider.getBalance(provider.selectedAddress!)
+        balance.value = new BN(accountBalance).fromWei().toString()
+        break
+      default:
+        break
     }
   }
 
@@ -65,7 +84,7 @@ export function useBalance(currentPlatform: Platform) {
   */
   const loadBalanceAndPrice = async (
     tokenAddress: string,
-    isERC20Token: boolean,
+    tokenType: TOKEN_TYPES,
   ) => {
     tokenPrice.value = null
     balance.value = ''
@@ -75,15 +94,19 @@ export function useBalance(currentPlatform: Platform) {
       if paying with ERC20, we don't need to load balance until 
       user finishes input to tokenAddress field
     */
-    if (isERC20Token && !ethers.utils.isAddress(tokenAddress)) return
+    if (
+      tokenType !== TOKEN_TYPES.native &&
+      !ethers.utils.isAddress(tokenAddress)
+    )
+      return
 
     isPriceAndBalanceLoaded.value = false
     isTokenAddressUnsupported.value = false
 
     try {
       await Promise.all([
-        getPrice(tokenAddress, isERC20Token),
-        getBalance(tokenAddress, isERC20Token),
+        getPrice(tokenAddress, tokenType),
+        getBalance(tokenAddress, tokenType),
       ])
     } catch (e) {
       isLoadFailed.value = true
@@ -98,6 +121,7 @@ export function useBalance(currentPlatform: Platform) {
     getBalance,
     loadBalanceAndPrice,
     tokenPrice,
+    nftPrice,
     isTokenAddressUnsupported,
     balance,
     isLoadFailed,

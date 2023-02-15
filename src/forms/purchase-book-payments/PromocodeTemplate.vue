@@ -38,6 +38,7 @@ import { maxLength, minLength } from '@/validators'
 import { PROMOCODE_LENGTH } from '@/const'
 import { Promocode, TokenPrice, PurchaseFormKey } from '@/types'
 import { BN } from '@/utils/math.util'
+import { TOKEN_TYPES } from '@/enums'
 
 export type ExposedPromocodeRef = {
   isPromocodeValid: () => boolean
@@ -48,11 +49,11 @@ export type ExposedPromocodeRef = {
 const props = withDefaults(
   defineProps<{
     tokenAddress?: string
-    isErc20?: boolean
+    tokenType?: TOKEN_TYPES
   }>(),
   {
     tokenAddress: '',
-    isErc20: false,
+    tokenType: TOKEN_TYPES.native,
   },
 )
 
@@ -80,7 +81,7 @@ const onPromocodeInput = async () => {
   await validatePromocode(form.promocode)
 
   //in order to always calculate new price based on initial price
-  await getPrice(props.tokenAddress, props.isErc20)
+  await getPrice(props.tokenAddress, props.tokenType)
 
   if (!tokenPrice.value?.price || !promocodeInfo.promocode) return
 

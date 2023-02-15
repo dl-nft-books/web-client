@@ -288,6 +288,22 @@
     "voucher-token-unsupported-msg": "This payment method is not supported for the purchase of this book",
     "not-enough-voucher-tokens-msg": "You don't have enough voucher tokens to buy this NFT. Required amount: {amount}." 
   },
+  "nft-template": {
+    "token-address-lbl": "Token Address",
+    "token-id-lbl": "Token ID",
+    "token-address-placeholder": "Enter address of your NFT",
+    "token-id-placeholder": "Enter ID of your NFT",
+    "buy-terms": "I know and agree that if my NFT is more expensive, the price difference will not be refunded",
+    "collection-price": "Floor price of your NFT collection",
+    "price": "${price}",
+    "not-enough-price": "Floor price of your NFT collection is too low",
+    "unsupported-token-title": "This NFT collection is unsupported.",
+    "unsupported-token-subtitle":"Please choose another NFT.",
+    "loading-error-msg": "Something went wrong during fetching NFT price"
+  },
+  "book-preview": {
+    "label": "Floor price"
+  },
   "purchasing-success-modal": {
     "head-title": "Purchasing",
     "title": "Your payment was successful.",
@@ -324,6 +340,7 @@
     "erc20-lbl": "ERC-20",
     "native-lbl": "Native",
     "voucher-lbl": "Voucher Token",
+    "nft": "NFT",
     "not-found-lbl": "Token type not found"
   }
 }

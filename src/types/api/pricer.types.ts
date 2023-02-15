@@ -14,3 +14,8 @@ export type TokenPrice = JsonApiRecordBase<'prices'> & {
     name: string
   }
 }
+
+export type NftPrice = JsonApiRecordBase<'nft-price'> & {
+  native_currency: number
+  usd: number
+}
