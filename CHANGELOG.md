@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - All components refactored to script setup style
 - All components refactored to 'template -> script -> style' pattern
 - Clean up and refactoring old code base
+- Purchase form is devided into different components to increase code readability
 
 ## [1.2.0] - 2023-02-06
 #### Added

@@ -1,9 +1,7 @@
 import { InjectionKey, Ref } from 'vue'
 import { Platform } from '@/types'
 
-type FormInjectedInfo = {
+export const PurchaseFormKey: InjectionKey<{
   platform: Platform
   isFormDisabled: Ref<boolean>
-}
-
-export const PurchaseFormKey: InjectionKey<FormInjectedInfo> = Symbol('form')
+}> = Symbol('form-info')
