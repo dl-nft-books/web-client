@@ -1,6 +1,6 @@
 <template>
   <div class="about-us-description">
-    <div class="about-us-description-animation-wrapper">
+    <div class="about-us-description__animation">
       <animation
         :animation-data="blockchainAnimation"
         :loop="true"
@@ -53,7 +53,7 @@ const aboutUsInfo = [
   }
 }
 
-.about-us-description-animation-wrapper {
+.about-us-description__animation {
   max-width: 80%;
   display: block;
   margin-left: auto;

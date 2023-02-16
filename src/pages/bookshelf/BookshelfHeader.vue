@@ -17,8 +17,7 @@
         <p
           :class="[
             'bookshelf-header__text',
-            'bookshelf-header__text--bold',
-            'bookshelf-header__text--italic',
+            'bookshelf-header__text--bold-italic',
             'bookshelf-header__text--shadow-color-invert',
           ]"
         >
@@ -73,16 +72,13 @@ import { Icon } from '@/common'
 }
 
 .bookshelf-header__text {
-  &--italic {
-    font-style: italic;
-  }
-
-  &--bold {
-    font-weight: 500;
-  }
-
   font-size: toRem(22);
   line-height: 120%;
+
+  &--bold-italic {
+    font-weight: 500;
+    font-style: italic;
+  }
 
   @include text-shadow;
 }

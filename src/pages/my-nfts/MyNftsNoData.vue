@@ -24,7 +24,7 @@
         class="my-nfts-no-data__marketplace-btn"
         :text="$t('my-nfts-no-data.connect-metamask-btn')"
         :icon-left="$icons.metamask"
-        @click="handleProviderClick"
+        @click="provider.connect"
       />
       <app-button
         v-else
@@ -43,12 +43,6 @@ import { AppButton } from '@/common'
 import { useWeb3ProvidersStore } from '@/store'
 
 const { provider } = useWeb3ProvidersStore()
-
-const handleProviderClick = () => {
-  if (provider.selectedAddress) return
-
-  provider.connect()
-}
 
 withDefaults(
   defineProps<{

@@ -78,7 +78,6 @@ import { Icon, AppButton, AppLogo, HeaderNetworkSwitcher } from '@/common'
 import { Bus, cropAddress } from '@/helpers'
 import { ICON_NAMES } from '@/enums'
 import { config } from '@config'
-import { storeToRefs } from 'pinia'
 import { useWeb3ProvidersStore } from '@/store'
 import { useContext } from '@/composables'
 
@@ -97,14 +96,14 @@ const SOCIAL_LINKS = [
   },
 ]
 
-const { provider } = storeToRefs(useWeb3ProvidersStore())
+const { provider } = useWeb3ProvidersStore()
 const { $t } = useContext()
 
 const isShowSidebar = ref(false)
 
 const connectProviderButtonText = computed(() => {
-  return provider.value.selectedAddress
-    ? cropAddress(provider.value.selectedAddress)
+  return provider.selectedAddress
+    ? cropAddress(provider.selectedAddress)
     : $t('app-navbar.connect-provider-button')
 })
 
