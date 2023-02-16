@@ -1,5 +1,5 @@
-import { Token } from '@/types'
-import { BookPaymentRecord } from '@/records'
+import { BookPayment, BookPaymentNftExchange, Token } from '@/types'
+import { BookPaymentRecord, BookPaymentNftExchangeRecord } from '@/records'
 
 export class GeneratedNFtRecord {
   id: string
@@ -9,7 +9,8 @@ export class GeneratedNFtRecord {
   imageUrl: string
   signature: string
   status: string
-  payment: BookPaymentRecord
+  isTokenPayment: boolean
+  payment?: BookPaymentRecord | BookPaymentNftExchangeRecord
 
   constructor(record: Token) {
     this.id = record.id
@@ -19,6 +20,14 @@ export class GeneratedNFtRecord {
     this.imageUrl = record.image_url
     this.status = record.status
     this.signature = record.signature
-    this.payment = new BookPaymentRecord(record.payment)
+    this.isTokenPayment = record.is_token_payment
+
+    if (record.payment?.payer_address) {
+      this.payment = record.is_token_payment
+        ? new BookPaymentRecord(record.payment as BookPayment)
+        : new BookPaymentNftExchangeRecord(
+            record.payment as BookPaymentNftExchange,
+          )
+    }
   }
 }

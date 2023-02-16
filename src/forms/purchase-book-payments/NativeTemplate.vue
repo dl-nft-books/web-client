@@ -43,7 +43,6 @@
 
 <script setup lang="ts">
 import { computed, reactive, watch, toRef, ref, inject } from 'vue'
-import { storeToRefs } from 'pinia'
 
 import { BN } from '@/utils/math.util'
 
@@ -76,7 +75,7 @@ const {
   loadBalanceAndPrice,
 } = useBalance(currentPlatform)
 
-const { provider } = storeToRefs(useWeb3ProvidersStore())
+const { provider } = useWeb3ProvidersStore()
 
 const form = reactive({
   tokenAddress: '',
@@ -130,7 +129,7 @@ watch(
 )
 
 watch(
-  () => provider.value.selectedAddress,
+  () => provider.selectedAddress,
   () => {
     loadBalanceAndPrice(form.tokenAddress, TOKEN_TYPES.native)
   },

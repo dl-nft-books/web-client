@@ -47,7 +47,6 @@
 
 <script lang="ts" setup>
 import { ref, reactive, computed, Ref, provide } from 'vue'
-import { storeToRefs } from 'pinia'
 import { useWeb3ProvidersStore } from '@/store'
 import { BN } from '@/utils/math.util'
 
@@ -71,6 +70,7 @@ import {
   useFormValidation,
   useNftBookToken,
   useErc20,
+  useErc721,
 } from '@/composables'
 
 import { SelectField } from '@/fields'
@@ -107,9 +107,10 @@ const emit = defineEmits<{
   (event: 'submitting', value: boolean): void
 }>()
 
-const { provider } = storeToRefs(useWeb3ProvidersStore())
-const nftBookToken = useNftBookToken(provider.value, props.book.contractAddress)
-const erc20 = useErc20(provider.value)
+const { provider } = useWeb3ProvidersStore()
+const nftBookToken = useNftBookToken(provider, props.book.contractAddress)
+const erc20 = useErc20(provider)
+const erc721 = useErc721(provider)
 
 const form = reactive({
   tokenType: TOKEN_TYPES.native,
@@ -178,12 +179,12 @@ const tokenTypesOptions = computed(() => {
 })
 
 const approveSpend = async (tokenAmount: string, tokenAddress: string) => {
-  if (!provider.value.selectedAddress) return
+  if (!provider.selectedAddress) return
 
   erc20.init(tokenAddress)
 
   await erc20.approveSpend(
-    provider.value.selectedAddress,
+    provider.selectedAddress,
     tokenAmount,
     props.book.contractAddress,
   )
@@ -193,14 +194,14 @@ const submit = async () => {
   if (
     !isFormValid() ||
     !paymentTemplateRef.value?.isFormValid() ||
-    !provider.value.selectedAddress ||
-    !paymentTemplateRef.value.tokenAmount
+    !provider.selectedAddress
   )
     return
 
   const dataForMint = {
     tokenAddress: paymentTemplateRef.value?.tokenAddress,
     tokenPrice: paymentTemplateRef.value?.tokenPrice,
+    tokenId: paymentTemplateRef.value.tokenId,
     tokenAmount: paymentTemplateRef.value?.tokenAmount,
     signature: paymentTemplateRef.value?.signature,
     promocode: paymentTemplateRef.value.promocode,
@@ -212,9 +213,10 @@ const submit = async () => {
   try {
     const { data: currentTask } = await createNewTask({
       signature: paymentTemplateRef.value.signature,
-      account: provider.value.selectedAddress,
+      account: provider.selectedAddress,
       bookId: props.book.id,
     })
+
     const generatedTask = await untilTaskFinishedGeneration(currentTask.id)
 
     const { data: mintSignature } = await getMintSignature(
@@ -222,6 +224,7 @@ const submit = async () => {
       generatedTask!.id,
       dataForMint.tokenAddress,
       dataForMint.promocode ? dataForMint.promocode.id : undefined,
+      form.tokenType === TOKEN_TYPES.nft,
     )
 
     const nativeTokenAmount =
@@ -242,17 +245,36 @@ const submit = async () => {
       await approveSpend(props.book.voucherTokenAmount, props.book.voucherToken)
     }
 
-    await nftBookToken.mintToken(
-      dataForMint.tokenAddress || ethers.constants.AddressZero,
-      mintSignature.price,
-      mintSignature.discount,
-      mintSignature.end_timestamp,
-      generatedTask!.metadata_ipfs_hash,
-      mintSignature.signature.r,
-      mintSignature.signature.s,
-      mintSignature.signature.v,
-      nativeTokenAmount,
-    )
+    if (form.tokenType !== TOKEN_TYPES.nft) {
+      await nftBookToken.mintToken(
+        dataForMint.tokenAddress || ethers.constants.AddressZero,
+        mintSignature.price,
+        mintSignature.discount,
+        mintSignature.end_timestamp,
+        generatedTask!.metadata_ipfs_hash,
+        mintSignature.signature.r,
+        mintSignature.signature.s,
+        mintSignature.signature.v,
+        nativeTokenAmount,
+      )
+    }
+
+    if (form.tokenType === TOKEN_TYPES.nft) {
+      erc721.init(dataForMint.tokenAddress)
+
+      await erc721.approve(props.book.contractAddress, dataForMint.tokenId)
+
+      await nftBookToken.mintTokenByNFT(
+        dataForMint.tokenAddress,
+        mintSignature.price,
+        dataForMint.tokenId,
+        mintSignature.end_timestamp,
+        generatedTask!.metadata_ipfs_hash,
+        mintSignature.signature.r,
+        mintSignature.signature.s,
+        mintSignature.signature.v,
+      )
+    }
 
     emit('submitting', false)
     emit('submit')

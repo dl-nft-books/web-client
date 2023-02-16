@@ -8,7 +8,7 @@
     @blur="touchField('tokenAddress')"
   />
 
-  <loader v-if="isLoading" />
+  <loader v-if="isCollectionPriceLoading" />
 
   <template v-else-if="isLoadFailed">
     <message-field
@@ -35,13 +35,20 @@
   </template>
 
   <input-field
-    v-if="!isLoadFailed"
+    v-if="!isLoadFailed && isFloorPriceAcceptable"
     v-model="form.tokenId"
     :label="$t('nft-template.token-id-lbl')"
     :placeholder="$t('nft-template.token-id-placeholder')"
     :error-message="getFieldErrorMessage('tokenId')"
     :disabled="isFormDisabled"
     @blur="touchField('tokenId')"
+  />
+
+  <loader v-if="isNftOwnershipLoading" />
+
+  <message-field
+    v-if="!isNftOwnedByUser || !isNftExist"
+    :title="nftErrorMessage"
   />
 
   <textarea-field
@@ -65,15 +72,12 @@
     size="small"
     type="submit"
     :text="$t('purchase-book-form.generate-btn')"
-    :disabled="
-      isFormDisabled || !form.isAgreedWithTerms || !isFloorPriceAcceptable
-    "
+    :disabled="isGenerateButtonDisabled"
   />
 </template>
 
 <script setup lang="ts">
 import { computed, reactive, watch, toRef, ref, inject } from 'vue'
-import { storeToRefs } from 'pinia'
 
 import { BN } from '@/utils/math.util'
 
@@ -86,7 +90,12 @@ import {
 } from '@/fields'
 
 import { ErrorMessage, Loader, AppButton } from '@/common'
-import { useBalance, useFormValidation } from '@/composables'
+import {
+  useBalance,
+  useFormValidation,
+  useContext,
+  useErc721,
+} from '@/composables'
 import { PurchaseFormKey } from '@/types'
 import { BookRecord } from '@/records'
 
@@ -96,7 +105,7 @@ import { useWeb3ProvidersStore } from '@/store'
 import { ExposedFormRef } from '@/forms//PurchaseBookForm.vue'
 import { TOKEN_TYPES } from '@/enums'
 import { debounce } from 'lodash'
-import { formatAssetFromWei } from '@/helpers'
+import { ErrorHandler, formatAssetFromWei } from '@/helpers'
 
 const props = defineProps<{
   book: BookRecord
@@ -111,13 +120,11 @@ const {
   loadBalanceAndPrice: _loadBalanceAndPrice,
 } = useBalance(currentPlatform)
 
-const loadBalanceAndPrice = debounce(async () => {
-  isLoading.value = true
-  await _loadBalanceAndPrice(form.tokenAddress, TOKEN_TYPES.nft)
-  isLoading.value = false
-}, 400)
+const { $t } = useContext()
 
-const { provider } = storeToRefs(useWeb3ProvidersStore())
+const { provider } = useWeb3ProvidersStore()
+
+const erc721 = useErc721(provider)
 
 const form = reactive({
   tokenAddress: '',
@@ -135,7 +142,28 @@ const { getFieldErrorMessage, touchField, isFormValid } = useFormValidation(
   },
 )
 
-const isLoading = ref(false)
+const isCollectionPriceLoading = ref(false)
+const isNftOwnershipLoading = ref(false)
+const isNftOwnedByUser = ref(true)
+const isNftExist = ref(true)
+
+const isGenerateButtonDisabled = computed(() => {
+  return (
+    isFormDisabled.value ||
+    !form.isAgreedWithTerms ||
+    !isFloorPriceAcceptable.value ||
+    !isNftOwnedByUser.value ||
+    !isNftExist.value
+  )
+})
+
+const nftErrorMessage = computed(() => {
+  if (!isNftOwnedByUser.value) return $t('nft-template.user-is-not-owner')
+
+  if (!isNftExist.value) return $t('nft-template.nft-not-exist')
+
+  return ''
+})
 
 const isFloorPriceAcceptable = computed(() => {
   const formattedBookFloorPrice = formatAssetFromWei(props.book.floorPrice, 2)
@@ -143,17 +171,49 @@ const isFloorPriceAcceptable = computed(() => {
   return new BN(nftPrice.value?.usd).compare(formattedBookFloorPrice) >= 1
 })
 
+const loadBalanceAndPrice = debounce(async () => {
+  isCollectionPriceLoading.value = true
+  await _loadBalanceAndPrice(form.tokenAddress, TOKEN_TYPES.nft)
+  isCollectionPriceLoading.value = false
+}, 400)
+
+const onTokenIdInput = async () => {
+  if (!form.tokenAddress || !form.tokenId) return
+  try {
+    isNftOwnershipLoading.value = true
+    isNftExist.value = true
+    isNftOwnedByUser.value = true
+
+    erc721.init(form.tokenAddress)
+
+    const owner = await erc721.getOwner(form.tokenId)
+
+    if (owner !== provider.selectedAddress) isNftOwnedByUser.value = false
+  } catch (error) {
+    isNftExist.value = false
+    ErrorHandler.processWithoutFeedback(error)
+  }
+
+  isNftOwnershipLoading.value = false
+}
+
 defineExpose<Omit<ExposedFormRef, 'promocode' | 'tokenAmount' | 'tokenPrice'>>({
-  isFormValid: () => isFormValid(),
+  isFormValid,
   tokenAddress: toRef(form, 'tokenAddress'),
   signature: toRef(form, 'signature'),
   tokenId: toRef(form, 'tokenId'),
 })
 
 watch(
-  () => [provider.value.selectedAddress, form.tokenAddress],
+  () => [form.tokenId, provider.selectedAddress],
+  debounce(onTokenIdInput, 400),
+)
+
+watch(
+  () => [provider.selectedAddress, form.tokenAddress],
   () => {
     loadBalanceAndPrice()
+    form.tokenId = ''
   },
   { immediate: true },
 )

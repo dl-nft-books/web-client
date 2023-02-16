@@ -35,16 +35,18 @@ export function getMintSignature(
   taskId: string | number,
   tokenAddress?: string,
   promocodeId?: string,
+  isNft = false,
 ) {
-  return api.get<MintSignatureResponse>(
-    '/integrations/generator/signature/mint',
-    {
-      platform,
-      task_id: taskId,
-      ...(promocodeId ? { promocode_id: promocodeId } : {}),
-      ...(tokenAddress ? { token_address: tokenAddress } : {}),
-    },
-  )
+  const apiEndpoint = isNft
+    ? '/integrations/generator/signature/mint/nft'
+    : '/integrations/generator/signature/mint'
+
+  return api.get<MintSignatureResponse>(apiEndpoint, {
+    platform,
+    task_id: taskId,
+    ...(promocodeId ? { promocode_id: promocodeId } : {}),
+    ...(tokenAddress ? { token_address: tokenAddress } : {}),
+  })
 }
 export function getGeneratedTokens(opts?: {
   account?: string[]

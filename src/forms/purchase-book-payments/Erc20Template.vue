@@ -84,7 +84,6 @@ import { ExposedPromocodeRef } from '@/forms/purchase-book-payments/PromocodeTem
 import { ExposedFormRef } from '@/forms//PurchaseBookForm.vue'
 import { BookRecord } from '@/records'
 import { BN } from '@/utils/math.util'
-import { storeToRefs } from 'pinia'
 import { useWeb3ProvidersStore } from '@/store'
 import { TOKEN_TYPES } from '@/enums'
 
@@ -100,7 +99,7 @@ const form = reactive({
   promocode: '',
 })
 
-const { provider } = storeToRefs(useWeb3ProvidersStore())
+const { provider } = useWeb3ProvidersStore()
 
 const {
   balance,
@@ -166,7 +165,7 @@ watch(
 )
 
 watch(
-  () => [form.tokenAddress, provider.value.selectedAddress],
+  () => [form.tokenAddress, provider.selectedAddress],
   () => {
     if (!form.tokenAddress) return
 

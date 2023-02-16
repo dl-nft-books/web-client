@@ -27,6 +27,16 @@ export type BookPayment = JsonApiRecordBase<'payment'> & {
   }
 }
 
+export type BookPaymentNftExchange = JsonApiRecordBase<'payment'> & {
+  payer_address: string
+  floor_price: string
+  nft_address: string
+  nft_id: number
+  minted_token_price: string
+  purchase_timestamp: string
+  book_url: string
+}
+
 export type Token = JsonApiRecordBase<'tokens'> & {
   token_id: string
   name: string
@@ -34,7 +44,8 @@ export type Token = JsonApiRecordBase<'tokens'> & {
   image_url: string
   signature: string
   status: string
-  payment: BookPayment
+  is_token_payment: boolean
+  payment?: BookPayment | BookPaymentNftExchange
 }
 
 export type MintSignatureResponse = JsonApiRecordBase<'prices'> & {

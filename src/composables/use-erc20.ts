@@ -1,45 +1,11 @@
 import { ref, watch } from 'vue'
 import { BN } from '@/utils/math.util'
-import { Erc20, Erc20__factory, NativeCurrency } from '@/types'
-import { ethers } from 'ethers'
+import { Erc20, Erc20__factory, UnrefProvider } from '@/types'
+import { EthProviderRpcError } from '@/types'
 
-import {
-  DesignatedProvider,
-  ChainId,
-  TransactionResponse,
-  TxRequestBody,
-  EthProviderRpcError,
-} from '@/types'
-import { PROVIDERS } from '@/enums'
 import { handleEthError } from '@/helpers'
 
-export interface UseUnrefProvider {
-  currentProvider: ethers.providers.Web3Provider | undefined
-  currentSigner: ethers.providers.JsonRpcSigner | undefined
-
-  selectedProvider: PROVIDERS | undefined
-  chainId: ChainId | undefined
-  selectedAddress: string | undefined
-  isConnected: boolean
-
-  init: (provider: DesignatedProvider) => Promise<void>
-  connect: () => Promise<void>
-  disconnect: () => void
-  switchChain: (chainId: ChainId) => Promise<void>
-  addChain: (
-    chainId: ChainId,
-    chainName: string,
-    chainRpcUrl: string,
-    nativeCurrency: NativeCurrency,
-    blockExplorerUrl: string,
-  ) => Promise<void>
-  signAndSendTx: (txRequestBody: TxRequestBody) => Promise<TransactionResponse>
-  getHashFromTxResponse: (txResponse: TransactionResponse) => string
-  getTxUrl: (explorerUrl: string, txHash: string) => string
-  getAddressUrl: (explorerUrl: string, address: string) => string
-}
-
-export const useErc20 = (provider: UseUnrefProvider, address?: string) => {
+export const useErc20 = (provider: UnrefProvider, address?: string) => {
   const _instance = ref<Erc20 | undefined>()
   const _instance_rw = ref<Erc20 | undefined>()
 

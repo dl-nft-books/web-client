@@ -299,7 +299,9 @@
     "not-enough-price": "Floor price of your NFT collection is too low",
     "unsupported-token-title": "This NFT collection is unsupported.",
     "unsupported-token-subtitle":"Please choose another NFT.",
-    "loading-error-msg": "Something went wrong during fetching NFT price"
+    "loading-error-msg": "Something went wrong during fetching NFT price",
+    "user-is-not-owner": "You don't own this NFT",
+    "nft-not-exist": "NFT with such id doesn't exist"
   },
   "book-preview": {
     "label": "Floor price"
@@ -323,6 +325,9 @@
   },
   "nft-details": {
     "price-lbl": "Price",
+    "floor-price-lbl": "Floor Price",
+    "exchanged-nft-address": "Exchanged NFT address",
+    "exchanged-nft-id": "Exchanged NFT ID",
     "purchase-date-lbl": "Purchase Date",
     "your-token-lbl": "Your Token",
     "token-amount-lbl": "Amount of Your Token",

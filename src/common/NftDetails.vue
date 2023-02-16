@@ -41,7 +41,11 @@ import {
 } from '@/helpers'
 
 import { CURRENCY } from '@/enums'
-import { GeneratedNFtRecord } from '@/records'
+import {
+  BookPaymentNftExchangeRecord,
+  BookPaymentRecord,
+  GeneratedNFtRecord,
+} from '@/records'
 import { useContext } from '@/composables'
 import { NftDetails } from '@/types'
 
@@ -49,39 +53,81 @@ const props = defineProps<{ nftToken: GeneratedNFtRecord }>()
 
 const { $t } = useContext()
 
-const details: NftDetails[] = [
-  {
-    label: $t('nft-details.purchase-date-lbl'),
-    value: formatMDY(props.nftToken.payment.purchaseTimestamp),
-  },
-  {
-    label: $t('nft-details.price-lbl'),
-    value: formatFiatAssetFromWei(
-      props.nftToken.payment.mintedTokenPrice,
-      CURRENCY.USD,
-    ),
-  },
-  {
-    label: $t('nft-details.token-amount-lbl'),
-    value: formatAssetFromWei(
-      props.nftToken.payment.amount,
-      props.nftToken.payment.erc20Decimals,
-    ),
-  },
-  {
-    label: $t('nft-details.your-token-lbl'),
-    value: props.nftToken.payment.erc20Symbol,
-  },
-  {
-    label: $t('nft-details.signature-lbl'),
-    value: props.nftToken.signature,
-  },
-  {
-    label: $t('nft-details.document-lbl'),
-    value: props.nftToken.payment.bookUrl,
-    isUrl: true,
-  },
-]
+const getDetails = () => {
+  if (props.nftToken.payment instanceof BookPaymentRecord) {
+    return [
+      {
+        label: $t('nft-details.purchase-date-lbl'),
+        value: formatMDY(props.nftToken.payment.purchaseTimestamp),
+      },
+      {
+        label: $t('nft-details.price-lbl'),
+        value: formatFiatAssetFromWei(
+          props.nftToken.payment.mintedTokenPrice,
+          CURRENCY.USD,
+        ),
+      },
+      {
+        label: $t('nft-details.token-amount-lbl'),
+        value: formatAssetFromWei(
+          props.nftToken.payment.amount,
+          props.nftToken.payment.erc20Decimals,
+        ),
+      },
+      {
+        label: $t('nft-details.your-token-lbl'),
+        value: props.nftToken.payment.erc20Symbol,
+      },
+      {
+        label: $t('nft-details.signature-lbl'),
+        value: props.nftToken.signature,
+      },
+      {
+        label: $t('nft-details.document-lbl'),
+        value: props.nftToken.payment.bookUrl,
+        isUrl: true,
+      },
+    ] as NftDetails[]
+  }
+
+  if (props.nftToken.payment instanceof BookPaymentNftExchangeRecord) {
+    return [
+      {
+        label: $t('nft-details.purchase-date-lbl'),
+        value: formatMDY(props.nftToken.payment.purchaseTimestamp),
+      },
+      {
+        label: $t('nft-details.price-lbl'),
+        value: formatFiatAssetFromWei(
+          props.nftToken.payment.mintedTokenPrice,
+          CURRENCY.USD,
+        ),
+      },
+      {
+        label: $t('nft-details.floor-price-lbl'),
+        value: formatFiatAssetFromWei(
+          props.nftToken.payment.floorPrice,
+          CURRENCY.USD,
+        ),
+      },
+      {
+        label: $t('nft-details.exchanged-nft-address'),
+        value: props.nftToken.payment.nftAddress,
+      },
+      {
+        label: $t('nft-details.exchanged-nft-id'),
+        value: props.nftToken.payment.nftId,
+      },
+      {
+        label: $t('nft-details.document-lbl'),
+        value: props.nftToken.payment.bookUrl,
+        isUrl: true,
+      },
+    ] as NftDetails[]
+  }
+}
+
+const details: NftDetails[] = getDetails()!
 </script>
 
 <style lang="scss" scoped>

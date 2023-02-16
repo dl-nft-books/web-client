@@ -61,7 +61,6 @@ import { useBalance, useFormValidation, useContext } from '@/composables'
 import { ErrorHandler, formatAssetFromWei } from '@/helpers'
 import { BN } from '@/utils/math.util'
 import { required } from '@/validators'
-import { storeToRefs } from 'pinia'
 import { useWeb3ProvidersStore } from '@/store'
 import { ExposedFormRef } from '@/forms//PurchaseBookForm.vue'
 import { TOKEN_TYPES } from '@/enums'
@@ -73,7 +72,7 @@ const props = defineProps<{
 const { platform: currentPlatform, isFormDisabled } = inject(PurchaseFormKey)
 
 const { $t } = useContext()
-const { provider } = storeToRefs(useWeb3ProvidersStore())
+const { provider } = useWeb3ProvidersStore()
 
 const { getBalance, isLoadFailed, balance } = useBalance(currentPlatform)
 
@@ -122,7 +121,7 @@ defineExpose<Omit<ExposedFormRef, 'promocode' | 'tokenPrice'>>({
 })
 
 watch(
-  () => provider.value.selectedAddress,
+  () => provider.selectedAddress,
   async () => {
     if (!isVoucherSupported.value) {
       isLoading.value = false
