@@ -113,10 +113,11 @@
   },
   "bookshelf-page": {
     "loading-error-msg": "Oops... Something went wrong",
-    "no-data-msg": "Empty data, please add new",
+    "no-data-msg": "No books found in this category",
     "title": "Bookshelf",
     "purchase-btn": "Buy",
-    "load-more-btn": "SHOW MORE"
+    "load-more-btn": "SHOW MORE",
+    "search-placeholder": "Type something..."
   },
   "bookshelf-prices": {
     "floor-lbl": "Floor",

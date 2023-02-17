@@ -1,5 +1,5 @@
 <template>
-  <div :class="selectFieldClasses">
+  <div class="select-field" :class="selectFieldClasses">
     <label
       v-if="label"
       class="select-field__label"
@@ -104,6 +104,8 @@ import {
 import { useRouter } from '@/router'
 import { onClickOutside } from '@vueuse/core'
 
+type MODIFICATIONS = 'border-rounded' | 'dark' | 'default'
+
 const props = withDefaults(
   defineProps<{
     modelValue: string | number
@@ -111,6 +113,7 @@ const props = withDefaults(
     label?: string
     placeholder?: string
     errorMessage?: string
+    modifications?: MODIFICATIONS
   }>(),
   {
     valueOptions: () => [],
@@ -118,6 +121,7 @@ const props = withDefaults(
     label: '',
     placeholder: ' ',
     errorMessage: '',
+    modifications: 'default',
   },
 )
 
@@ -150,13 +154,19 @@ const title = computed(
   () => props.valueOptions.find(i => i.value === props.modelValue)?.label,
 )
 
-const selectFieldClasses = computed(() => ({
-  'select-field': true,
-  'select-field--error': props.errorMessage,
-  'select-field--open': isDropdownOpen.value,
-  'select-field--disabled': isDisabled.value,
-  'select-field--readonly': isReadonly.value,
-}))
+const selectFieldClasses = computed(() => {
+  const _modifications = props.modifications
+
+  const classList = [
+    ...(_modifications ? _modifications.split(' ') : []),
+    ...(isDropdownOpen.value ? ['open'] : []),
+    ...(isDisabled.value ? ['disabled'] : []),
+    ...(isReadonly.value ? ['readonly'] : []),
+    ...(props.errorMessage ? ['error'] : []),
+  ]
+
+  return classList.map(el => `select-field--${el}`).join(' ')
+})
 
 const setHeightCSSVar = (element: HTMLElement) => {
   element.style.setProperty(
@@ -232,6 +242,13 @@ $z-local-index: 1;
   display: flex;
   flex-direction: column;
   position: relative;
+  flex: 1;
+
+  .select-field--dark & {
+    --field-bg: var(--background-quaternary);
+    --field-border: rgba(var(--white-rgb), 0.5);
+    --field-text: var(--text-primary-invert-main);
+  }
 }
 
 .select-field__select-head {
@@ -246,6 +263,14 @@ $z-local-index: 1;
   @include field-border;
 
   @include field-text;
+
+  .select-field--border-rounded & {
+    border-radius: toRem(8);
+  }
+
+  .select-field--dark & {
+    background-color: var(--black);
+  }
 
   .select-field--error & {
     border-color: var(--field-error);
@@ -286,6 +311,14 @@ $z-local-index: 1;
   background: var(--field-bg);
 
   @include field-border;
+
+  .select-field--border-rounded & {
+    border-radius: toRem(8);
+  }
+
+  .select-field--dark & {
+    --field-bg: var(--background-quaternary);
+  }
 }
 
 .select-field__select-dropdown-enter-active {
@@ -322,6 +355,10 @@ $z-local-index: 1;
 
   &--active {
     background: rgba(var(--primary-main-rgb), 0.25);
+  }
+
+  .select-field--dark & {
+    color: var(--text-primary-invert-main);
   }
 }
 

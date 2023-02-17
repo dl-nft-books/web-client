@@ -99,25 +99,6 @@ const stopWatching = watch(isShown, () => {
 
       animation: slide-top 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
     }
-
-    // TODO: maybe think about it
-    // &:before {
-    //   content: '';
-    //   position: absolute;
-    //   z-index: var(--z-index-layer-3);
-    //   border-style: solid;
-    //   left: toRem(4);
-    //   top: calc(-1 * var(--pop-up-size) - var(--pop-up-margin));
-    //   border-width: toRem(10) 0 toRem(10) toRem(10);
-    //   rotate: 90deg;
-    //   border-color: transparent transparent transparent
-    //     var(--background-secondary);
-    //   filter: drop-shadow(
-    //     0 toRem(6) toRem(40) rgba(var(--primary-main-rgb), 0.3)
-    //   );
-
-    //   animation: slide-top 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
-    // }
   }
 
   &:hover {

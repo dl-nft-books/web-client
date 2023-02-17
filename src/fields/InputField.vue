@@ -50,6 +50,7 @@ import { ICON_NAMES } from '@/enums'
 
 type INPUT_TYPES = 'text' | 'password' | 'number'
 type SCHEMES = 'icon-left' | 'default'
+type MODIFICATIONS = 'dark' | 'border-rounded' | 'icon-large' | 'default'
 
 const props = withDefaults(
   defineProps<{
@@ -58,6 +59,7 @@ const props = withDefaults(
     placeholder?: string
     type?: INPUT_TYPES
     schemes?: SCHEMES
+    modifications?: MODIFICATIONS
     errorMessage?: string
     iconName?: ICON_NAMES | null
   }>(),
@@ -69,6 +71,7 @@ const props = withDefaults(
     schemes: 'default',
     errorMessage: '',
     iconName: null,
+    modifications: 'default',
   },
 )
 
@@ -108,8 +111,11 @@ const listeners = computed(() => ({
 
 const inputClasses = computed(() => {
   const _schemes = props.schemes
+  const _modifications = props.modifications
+
   const classList = [
-    ...(_schemes ? [_schemes.split(' ')] : []),
+    ...(_schemes ? _schemes.split(' ') : []),
+    ...(_modifications ? _modifications.split(' ') : []),
     ...(isDisabled.value ? ['disabled'] : []),
     ...(isReadonly.value ? ['readonly'] : []),
     ...(props.errorMessage ? ['error'] : []),
@@ -145,7 +151,6 @@ const setHeightCSSVar = (element: HTMLElement) => {
   flex-direction: column;
   position: relative;
   width: 100%;
-  flex: 1;
 
   &--disabled,
   &--readonly {
@@ -169,15 +174,29 @@ const setHeightCSSVar = (element: HTMLElement) => {
   display: flex;
   flex-direction: column;
   position: relative;
+  flex: 1;
 }
 
 .input-field__input {
   padding: var(--field-padding);
   transition-property: box-shadow;
+  flex: 1;
 
   @include field-text;
 
   @include field-border;
+
+  .input-field--border-rounded & {
+    border-radius: toRem(8);
+  }
+
+  .input-field--dark & {
+    background-color: var(--black);
+    color: var(--text-primary-invert-main);
+
+    --field-placeholder: var(--text-primary-invert-main);
+    --field-border: rgba(var(--white-rgb), 0.5);
+  }
 
   &::-webkit-input-placeholder {
     @include field-placeholder;
@@ -197,10 +216,6 @@ const setHeightCSSVar = (element: HTMLElement) => {
 
   &::placeholder {
     @include field-placeholder;
-  }
-
-  &:not(:read-only) {
-    box-shadow: inset 0 0 0 toRem(50) var(--field-bg);
   }
 
   // Hide number arrows
@@ -228,6 +243,14 @@ const setHeightCSSVar = (element: HTMLElement) => {
     padding-left: calc(var(--field-padding-right) * 3);
   }
 
+  &:not(:read-only) {
+    box-shadow: inset 0 0 0 toRem(50) var(--field-bg);
+
+    .input-field--dark & {
+      box-shadow: unset;
+    }
+  }
+
   &:not([disabled]):focus {
     box-sizing: border-box;
     box-shadow: 0 0 0 toRem(1.5) var(--field-border-focus);
@@ -253,11 +276,21 @@ const setHeightCSSVar = (element: HTMLElement) => {
     transform: translate(-50%, -50%);
     width: max-content;
   }
+
+  .input-field--dark & {
+    color: var(--text-primary-invert-main);
+  }
 }
 
 .input-field__icon {
-  width: toRem(18);
-  height: toRem(18);
+  --icon-size: #{toRem(18)};
+
+  .input-field--icon-large & {
+    --icon-size: #{toRem(25)};
+  }
+
+  width: var(--icon-size);
+  height: var(--icon-size);
 }
 
 .input-field__err-msg {
