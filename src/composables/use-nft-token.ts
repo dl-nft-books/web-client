@@ -76,7 +76,7 @@ export const useNftBookToken = (provider: UnrefProvider, address?: string) => {
     v: number,
   ) => {
     try {
-      const contractTransaction = await _instance_rw.value?.minTokenByNFT(
+      const contractTransaction = await _instance_rw.value?.mintTokenByNFT(
         nftAddress,
         nftFloorPrice,
         tokenId,
