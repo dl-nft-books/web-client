@@ -122,7 +122,8 @@
   "bookshelf-prices": {
     "floor-lbl": "Floor",
     "price-lbl": "Price",
-    "floor-price-explanation": "Floor price is the minimum NFT price that can be exchanged for a book"
+    "floor-price-explanation": "Floor price is the minimum NFT price that can be exchanged for a book",
+    "voucher-explanation": "You can use the voucher token when you pay"
   },
   "networks": {
     "polygon": "Polygon Mainnet",
@@ -326,14 +327,15 @@
   },
   "nft-details": {
     "price-lbl": "Price",
-    "floor-price-lbl": "Floor Price",
+    "floor-price-lbl": "Exchanged NFT Floor Price",
     "exchanged-nft-address": "Exchanged NFT address",
     "exchanged-nft-id": "Exchanged NFT ID",
     "purchase-date-lbl": "Purchase Date",
     "your-token-lbl": "Your Token",
     "token-amount-lbl": "Amount of Your Token",
     "signature-lbl": "Your Signature",
-    "document-lbl": "Document"
+    "document-lbl": "Document",
+    "token-id-lbl": "Token ID"
   },
   "my-nfts-no-data": {
     "message-first": "Your bookshelf is still empty.",

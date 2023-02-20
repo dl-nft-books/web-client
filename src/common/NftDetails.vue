@@ -68,6 +68,10 @@ const getDetails = () => {
         ),
       },
       {
+        label: $t('nft-details.token-id-lbl'),
+        value: props.nftToken.tokenId,
+      },
+      {
         label: $t('nft-details.token-amount-lbl'),
         value: formatAssetFromWei(
           props.nftToken.payment.amount,
@@ -104,11 +108,8 @@ const getDetails = () => {
         ),
       },
       {
-        label: $t('nft-details.floor-price-lbl'),
-        value: formatFiatAssetFromWei(
-          props.nftToken.payment.floorPrice,
-          CURRENCY.USD,
-        ),
+        label: $t('nft-details.token-id-lbl'),
+        value: props.nftToken.tokenId,
       },
       {
         label: $t('nft-details.exchanged-nft-address'),
@@ -117,6 +118,10 @@ const getDetails = () => {
       {
         label: $t('nft-details.exchanged-nft-id'),
         value: props.nftToken.payment.nftId,
+      },
+      {
+        label: $t('nft-details.signature-lbl'),
+        value: props.nftToken.signature,
       },
       {
         label: $t('nft-details.document-lbl'),

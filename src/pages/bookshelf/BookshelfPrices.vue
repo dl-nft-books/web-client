@@ -41,13 +41,17 @@
         >
           {{ price }}
         </p>
-        <app-button
+        <pop-up
           v-if="voucherLink"
-          class="bookshelf-prices__item-link"
-          scheme="default"
-          :href="voucherLink"
-          :icon-right="$icons.voucher"
-        />
+          :message="$t('bookshelf-prices.voucher-explanation')"
+        >
+          <app-button
+            class="bookshelf-prices__item-link"
+            scheme="default"
+            :href="voucherLink"
+            :icon-right="$icons.voucher"
+          />
+        </pop-up>
       </div>
     </div>
   </section>

@@ -175,13 +175,17 @@ init()
   padding-top: toRem(40);
   padding-bottom: toRem(150);
   justify-content: center;
-  background: url('/images/background-cubes.png') no-repeat right bottom /
+  background: url('/images/background-cubes.png') no-repeat right center /
     contain;
+  background-size: clamp(toRem(300), 30%, toRem(500));
 
   @include respond-to(medium) {
     display: flex;
     flex-direction: column;
     row-gap: toRem(40);
+    background: url('/images/background-cubes.png') no-repeat right top /
+      contain;
+    background-size: clamp(toRem(300), 50%, toRem(500));
   }
 
   @include respond-to(small) {

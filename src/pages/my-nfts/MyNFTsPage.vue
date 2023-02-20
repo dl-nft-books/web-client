@@ -106,7 +106,9 @@ watch(
   gap: toRem(34);
   padding-top: toRem(70);
   padding-bottom: toRem(200);
-  background: url('/images/background-cubes.png') no-repeat right / contain;
+  background: url('/images/background-cubes.png') no-repeat right center /
+    contain;
+  background-size: clamp(toRem(300), 30%, toRem(500));
 
   @include respond-to(tablet) {
     padding-top: toRem(10);

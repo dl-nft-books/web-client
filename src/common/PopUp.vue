@@ -61,6 +61,7 @@ onMounted(() => {
 })
 
 const stopWatching = watch(isShown, () => {
+  // Use nextTick to ensure DOM has been updated before getting pop-up height
   nextTick(() => {
     if (!popUpRef.value) return
 
@@ -88,9 +89,10 @@ const stopWatching = watch(isShown, () => {
       box-shadow: 0 toRem(6) toRem(40) rgba(var(--primary-main-rgb), 0.3);
       top: calc(-1 * var(--pop-up-size) - var(--pop-up-margin));
       left: toRem(-80);
-
-      @include flex-container-row-centered;
-
+      display: flex;
+      align-items: center;
+      text-align: center;
+      justify-content: center;
       padding: toRem(10);
 
       &:hover {

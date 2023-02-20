@@ -52,7 +52,14 @@ import { BN } from '@/utils/math.util'
 
 import { createNewTask, getMintSignature } from '@/api'
 
-import { Platform, Promocode, TokenPrice, PurchaseFormKey } from '@/types'
+import {
+  Platform,
+  Promocode,
+  TokenPrice,
+  PurchaseFormKey,
+  MintSignatureResponse,
+  Task,
+} from '@/types'
 import { TOKEN_TYPES } from '@/enums'
 import { BookRecord } from '@/records'
 
@@ -178,15 +185,80 @@ const tokenTypesOptions = computed(() => {
   return defaultOptions
 })
 
-const approveSpend = async (tokenAmount: string, tokenAddress: string) => {
+const approveTokenSpend = async (
+  tokenType: TOKEN_TYPES,
+  tokenAmount?: string,
+  tokenAddress?: string,
+  tokenId?: string,
+) => {
   if (!provider.selectedAddress) return
 
-  erc20.init(tokenAddress)
+  switch (tokenType) {
+    case TOKEN_TYPES.erc20:
+      if (!tokenAddress || !tokenAmount) return
+      erc20.init(tokenAddress)
 
-  await erc20.approveSpend(
-    provider.selectedAddress,
-    tokenAmount,
-    props.book.contractAddress,
+      await erc20.approveSpend(
+        provider.selectedAddress,
+        tokenAmount,
+        props.book.contractAddress,
+      )
+      break
+    case TOKEN_TYPES.voucher:
+      erc20.init(props.book.voucherToken)
+
+      await erc20.approveSpend(
+        provider.selectedAddress,
+        props.book.voucherTokenAmount,
+        props.book.contractAddress,
+      )
+      break
+    case TOKEN_TYPES.nft:
+      if (!tokenAddress || !tokenId) return
+      erc721.init(tokenAddress)
+
+      await erc721.approve(props.book.contractAddress, tokenId)
+      break
+    default:
+      break
+  }
+}
+
+// Minting with ERC721 requires to invoke different mint function on contract
+const mintToken = async (
+  mintSignature: MintSignatureResponse,
+  generatedTask: Task,
+  tokenAddress: string,
+  tokenId?: string,
+  nativeTokenAmount?: string,
+) => {
+  if (form.tokenType !== TOKEN_TYPES.nft) {
+    await nftBookToken.mintToken(
+      tokenAddress || ethers.constants.AddressZero,
+      mintSignature.price,
+      mintSignature.discount,
+      mintSignature.end_timestamp,
+      generatedTask!.metadata_ipfs_hash,
+      mintSignature.signature.r,
+      mintSignature.signature.s,
+      mintSignature.signature.v,
+      nativeTokenAmount,
+    )
+
+    return
+  }
+
+  if (!tokenId) return
+
+  await nftBookToken.mintTokenByNFT(
+    tokenAddress,
+    mintSignature.price,
+    tokenId,
+    mintSignature.end_timestamp,
+    generatedTask!.metadata_ipfs_hash,
+    mintSignature.signature.r,
+    mintSignature.signature.s,
+    mintSignature.signature.v,
   )
 }
 
@@ -237,44 +309,20 @@ const submit = async () => {
             .mul(TOKEN_AMOUNT_COEFFICIENT)
             .toFixed()
 
-    if (form.tokenType === TOKEN_TYPES.erc20) {
-      await approveSpend(dataForMint.tokenAmount, dataForMint.tokenAddress)
-    }
+    await approveTokenSpend(
+      form.tokenType,
+      dataForMint.tokenAmount,
+      dataForMint.tokenAddress,
+      dataForMint.tokenId,
+    )
 
-    if (form.tokenType === TOKEN_TYPES.voucher) {
-      await approveSpend(props.book.voucherTokenAmount, props.book.voucherToken)
-    }
-
-    if (form.tokenType !== TOKEN_TYPES.nft) {
-      await nftBookToken.mintToken(
-        dataForMint.tokenAddress || ethers.constants.AddressZero,
-        mintSignature.price,
-        mintSignature.discount,
-        mintSignature.end_timestamp,
-        generatedTask!.metadata_ipfs_hash,
-        mintSignature.signature.r,
-        mintSignature.signature.s,
-        mintSignature.signature.v,
-        nativeTokenAmount,
-      )
-    }
-
-    if (form.tokenType === TOKEN_TYPES.nft) {
-      erc721.init(dataForMint.tokenAddress)
-
-      await erc721.approve(props.book.contractAddress, dataForMint.tokenId)
-
-      await nftBookToken.mintTokenByNFT(
-        dataForMint.tokenAddress,
-        mintSignature.price,
-        dataForMint.tokenId,
-        mintSignature.end_timestamp,
-        generatedTask!.metadata_ipfs_hash,
-        mintSignature.signature.r,
-        mintSignature.signature.s,
-        mintSignature.signature.v,
-      )
-    }
+    await mintToken(
+      mintSignature,
+      generatedTask,
+      dataForMint.tokenAddress,
+      dataForMint.tokenId,
+      nativeTokenAmount,
+    )
 
     emit('submitting', false)
     emit('submit')
