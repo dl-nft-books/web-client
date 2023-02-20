@@ -47,7 +47,6 @@ withDefaults(
 .book-card-network__name {
   font-size: toRem(15);
   padding-top: toRem(2);
-
-  @include text-color-invert;
+  color: var(--text-primary-invert-main);
 }
 </style>

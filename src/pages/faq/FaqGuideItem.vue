@@ -42,8 +42,8 @@ const currentGuide = computed(() => {
 
 <style scoped lang="scss">
 .faq-guide-item {
-  @include flex-container;
-
+  display: flex;
+  flex-direction: column;
   padding-left: toRem(80);
   gap: toRem(20);
   width: 100%;

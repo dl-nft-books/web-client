@@ -6,12 +6,7 @@
         <h4 class="about-us-quote-card__title">
           {{ title }}
         </h4>
-        <p
-          :class="[
-            'about-us-quote-card__subtitle',
-            'about-us-quote-card__subtitle--size-small',
-          ]"
-        >
+        <p class="about-us-quote-card__subtitle">
           {{ subtitle }}
         </p>
       </div>
@@ -24,10 +19,7 @@
         <p
           v-for="(quote, index) in quotesList"
           :key="index"
-          :class="[
-            'about-us-quote-card__content-item',
-            'about-us-quote-card__content-item--size-medium',
-          ]"
+          class="about-us-quote-card__content-item"
         >
           {{ quote }}
         </p>
@@ -151,8 +143,7 @@ const cardClasses = computed(() => [
 
   .about-us-quote-card__wrapper--dark & {
     align-self: flex-start;
-
-    @include text-color-invert;
+    color: var(--text-primary-invert-main);
 
     @include respond-to(medium) {
       align-self: center;
@@ -161,8 +152,8 @@ const cardClasses = computed(() => [
 }
 
 .about-us-quote-card__subtitle {
-  @include p-body-2;
-
+  font-size: toRem(14);
+  line-height: 120%;
   text-transform: uppercase;
   margin-top: toRem(10);
   align-self: flex-end;
@@ -173,8 +164,7 @@ const cardClasses = computed(() => [
 
   .about-us-quote-card__wrapper--dark & {
     align-self: flex-start;
-
-    @include text-color-invert;
+    color: var(--text-primary-invert-main);
 
     @include respond-to(medium) {
       align-self: center;
@@ -183,8 +173,8 @@ const cardClasses = computed(() => [
 }
 
 .about-us-quote-card__content {
-  @include flex-container;
-
+  display: flex;
+  flex-direction: column;
   justify-content: center;
   padding: toRem(40) toRem(30);
   gap: toRem(10);
@@ -215,8 +205,8 @@ const cardClasses = computed(() => [
 }
 
 .about-us-quote-card__content-item {
-  @include p-body-2;
-
+  font-size: toRem(18);
+  line-height: 160%;
   align-self: flex-start;
 
   @include respond-to(medium) {
@@ -226,8 +216,7 @@ const cardClasses = computed(() => [
 
   .about-us-quote-card__wrapper--dark & {
     padding-top: toRem(15);
-
-    @include text-color-invert;
+    color: var(--text-primary-invert-main);
   }
 }
 </style>

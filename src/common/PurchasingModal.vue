@@ -40,12 +40,7 @@
                     :speed="1"
                   />
                 </div>
-                <p
-                  :class="[
-                    'purchasing-modal__wrong-network-message',
-                    'purchasing-modal__wrong-network-message--size-medium',
-                  ]"
-                >
+                <p class="purchasing-modal__wrong-network-message">
                   {{ $t('purchasing-modal.wrong-network-message') }}
                 </p>
                 <app-button
@@ -175,8 +170,8 @@ init()
 }
 
 .purchasing-modal__body {
-  @include flex-container;
-
+  display: flex;
+  flex-direction: column;
   align-items: center;
   padding: toRem(20);
   gap: toRem(20);
@@ -196,8 +191,8 @@ init()
   max-width: toRem(386);
   text-align: center;
   margin-bottom: toRem(20);
-
-  @include p-body-2;
+  font-size: toRem(18);
+  line-height: 160%;
 }
 
 .purchasing-modal__close-btn {

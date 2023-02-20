@@ -33,6 +33,7 @@ const init = async () => {
     useNotifications()
     await web3Store.detectProviders()
 
+    // temporary
     const metamaskProvider = web3Store.providers.find(
       provider => provider.name === PROVIDERS.metamask,
     )

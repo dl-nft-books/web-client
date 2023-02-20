@@ -17,8 +17,7 @@
         <p
           :class="[
             'bookshelf-header__text',
-            'bookshelf-header__text--italic',
-            'bookshelf-header__text--bold',
+            'bookshelf-header__text--bold-italic',
             'bookshelf-header__text--shadow-color-invert',
           ]"
         >
@@ -46,10 +45,9 @@ import { Icon } from '@/common'
 
 .bookshelf-header__title {
   margin-bottom: toRem(5);
+  color: var(--text-primary-invert-main);
 
   @include text-shadow;
-
-  @include text-color-invert;
 }
 
 .bookshelf-header__description {
@@ -69,15 +67,18 @@ import { Icon } from '@/common'
 }
 
 .bookshelf-header__book-desctiption {
-  @include flex-container;
+  display: flex;
+  flex-direction: column;
 }
 
 .bookshelf-header__text {
-  &--italic {
+  font-size: toRem(22);
+  line-height: 120%;
+
+  &--bold-italic {
+    font-weight: 500;
     font-style: italic;
   }
-
-  @include p-body-2;
 
   @include text-shadow;
 }

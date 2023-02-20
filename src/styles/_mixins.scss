@@ -120,25 +120,6 @@ $media-breakpoints: (
   }
 }
 
-@mixin flex-container {
-  display: flex;
-  flex-direction: column;
-}
-
-@mixin flex-container-row-centered {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-@mixin text-color-invert {
-  color: var(--text-primary-invert-main);
-}
-
-@mixin text-color-dark {
-  color: var(--text-secondary-dark);
-}
-
 @mixin text-shadow {
   --shadow-color: #{var(--text-primary-main)};
 
@@ -149,58 +130,6 @@ $media-breakpoints: (
 
   &--shadow-color-invert {
     --shadow-color: #{var(--text-primary-invert-main)};
-  }
-}
-
-@mixin link-light {
-  font-weight: 500;
-}
-
-@mixin link-bold {
-  font-weight: 700;
-}
-
-@mixin p-body-1 {
-  font-family: var(--app-font-secondary-family);
-  font-size: toRem(24);
-  line-height: 120%;
-
-  &--italic {
-    font-style: italic;
-  }
-}
-
-@mixin p-body-2 {
-  font-size: toRem(22);
-  line-height: 120%;
-
-  &--size-large {
-    font-size: toRem(24);
-  }
-
-  &--size-x-large {
-    font-size: toRem(20);
-  }
-
-  &--size-medium {
-    font-size: toRem(18);
-    line-height: 160%;
-  }
-
-  &--size-x-medium {
-    font-size: toRem(16);
-  }
-
-  &--size-small {
-    font-size: toRem(14);
-  }
-
-  &--bold {
-    font-weight: 500;
-  }
-
-  &--light {
-    font-weight: 400;
   }
 }
 
@@ -215,51 +144,7 @@ $media-breakpoints: (
   }
 }
 
-@mixin info-headline-secondary {
-  font-size: toRem(28);
-  font-weight: 600;
-  line-height: toRem(34);
-  color: var(--text-secondary-dark);
-
-  &--acsent {
-    color: var(--primary-main);
-  }
-
-  @include respond-to(tablet) {
-    font-size: toRem(24);
-    line-height: toRem(29);
-  }
-}
-
-@mixin tab-button {
-  position: relative;
-  font-size: toRem(24);
-  font-weight: 400;
-  color: var(--text-secondary-main);
-  transition: color 0.2s linear;
-
-  &--active {
-    color: var(--text-primary-main);
-    font-weight: 500;
-
-    &:after {
-      content: '';
-      position: absolute;
-      left: 0;
-      bottom: toRem(-3);
-      width: 100%;
-      height: toRem(2);
-      background: var(--primary-main);
-      transition: all 0.2s ease;
-    }
-  }
-
-  @include respond-to(small) {
-    font-size: toRem(20);
-  }
-}
-
-@mixin text-underline {
+@mixin subtitle-underline {
   &:after {
     display: block;
     content: '';

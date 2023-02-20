@@ -9,13 +9,7 @@
       <h3 class="technical-work__title">
         {{ $t('technical-work-page.title') }}
       </h3>
-      <p
-        :class="[
-          'technical-work__subtitle',
-          'technical-work__subtitle--size-large',
-          'technical-work__subtitle--bold',
-        ]"
-      >
+      <p class="technical-work__subtitle">
         {{ $t('technical-work-page.subtitle') }}
       </p>
     </section>
@@ -54,8 +48,8 @@
 }
 
 .technical-work__info {
-  @include flex-container;
-
+  display: flex;
+  flex-direction: column;
   justify-content: center;
   padding-bottom: toRem(70);
   max-width: toRem(600);
@@ -69,7 +63,8 @@
 }
 
 .technical-work__subtitle {
-  @include p-body-2;
+  font-size: toRem(24);
+  font-weight: 500;
 
   @include respond-to(tablet) {
     font-size: toRem(18);

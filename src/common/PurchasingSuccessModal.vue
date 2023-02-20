@@ -30,12 +30,7 @@
           <h5 class="purchasing-success-modal__title">
             {{ $t('purchasing-success-modal.title') }}
           </h5>
-          <p
-            :class="[
-              'purchasing-success-modal__message',
-              'purchasing-success-modal__message--size-medium',
-            ]"
-          >
+          <p class="purchasing-success-modal__message">
             {{ $t('purchasing-success-modal.message') }}
           </p>
           <app-button
@@ -66,8 +61,8 @@ const emit = defineEmits<{
 
 <style lang="scss" scoped>
 .purchasing-success-modal__pane {
-  @include flex-container;
-
+  display: flex;
+  flex-direction: column;
   max-width: toRem(452);
   padding: toRem(32);
   background: var(--background-primary);
@@ -82,8 +77,8 @@ const emit = defineEmits<{
 }
 
 .purchasing-success-modal__body {
-  @include flex-container;
-
+  display: flex;
+  flex-direction: column;
   align-items: center;
 }
 
@@ -101,8 +96,8 @@ const emit = defineEmits<{
   text-align: center;
   margin-bottom: toRem(36);
   max-width: toRem(310);
-
-  @include p-body-2;
+  font-size: toRem(18);
+  line-height: 160%;
 }
 
 .purchasing-success-modal__purchase-btn {

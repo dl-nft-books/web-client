@@ -12,12 +12,7 @@
     <h5 class="purchase-book-form__submitting-title">
       {{ $t('purchase-book-form.submitting-title') }}
     </h5>
-    <p
-      :class="[
-        'purchase-book-form__submitting-message',
-        'purchase-book-form__submitting-message--size-medium',
-      ]"
-    >
+    <p class="purchase-book-form__submitting-message">
       {{ $t('purchase-book-form.submitting-message') }}
     </p>
   </template>
@@ -353,7 +348,7 @@ const submit = async () => {
 .purchase-book-form__submitting-message {
   max-width: toRem(310);
   text-align: center;
-
-  @include p-body-2;
+  font-size: toRem(18);
+  line-height: 160%;
 }
 </style>

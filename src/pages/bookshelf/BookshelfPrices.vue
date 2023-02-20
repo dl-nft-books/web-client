@@ -7,12 +7,7 @@
           'bookshelf-prices__item-wrapper--label',
         ]"
       >
-        <p
-          :class="[
-            'bookshelf-prices__item-label',
-            'bookshelf-prices__item-label--size-medium',
-          ]"
-        >
+        <p class="bookshelf-prices__item-label">
           {{ $t('bookshelf-prices.floor-lbl') }}
         </p>
         <pop-up :message="$t('bookshelf-prices.floor-price-explanation')">
@@ -24,12 +19,7 @@
       </p>
     </div>
     <div class="bookshelf-prices__item">
-      <p
-        :class="[
-          'bookshelf-prices__item-label',
-          'bookshelf-prices__item-label--size-medium',
-        ]"
-      >
+      <p class="bookshelf-prices__item-label">
         {{ $t('bookshelf-prices.price-lbl') }}
       </p>
       <div class="bookshelf-prices__item-wrapper">
@@ -75,7 +65,9 @@ defineProps<{
 }
 
 .bookshelf-prices__item-wrapper {
-  @include flex-container-row-centered;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 
   &--label {
     justify-content: flex-start;
@@ -86,20 +78,32 @@ defineProps<{
 }
 
 .bookshelf-prices__item {
-  @include flex-container;
-
+  display: flex;
+  flex-direction: column;
   gap: toRem(7);
 }
 
 .bookshelf-prices__item-label {
-  @include p-body-2;
-
+  font-size: toRem(18);
+  line-height: 120%;
   color: var(--text-secondary-main);
   text-transform: uppercase;
 }
 
 .bookshelf-prices__item-value {
-  @include info-headline-secondary;
+  font-size: toRem(28);
+  font-weight: 600;
+  line-height: toRem(34);
+  color: var(--text-secondary-dark);
+
+  &--acsent {
+    color: var(--primary-main);
+  }
+
+  @include respond-to(tablet) {
+    font-size: toRem(24);
+    line-height: toRem(29);
+  }
 }
 
 .bookshelf-prices__item-link {

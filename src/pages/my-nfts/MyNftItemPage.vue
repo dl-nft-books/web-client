@@ -147,7 +147,8 @@ init()
 }
 
 .my-nft-item-page__details {
-  @include flex-container;
+  display: flex;
+  flex-direction: column;
 }
 
 .my-nft-item-page__title {

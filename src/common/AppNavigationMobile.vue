@@ -46,7 +46,7 @@
           size="small"
           :disabled="provider.selectedAddress"
           :text="connectProviderButtonText"
-          @click="connect"
+          @click="provider.connect"
         />
         <div class="app-navigation-mobile__network">
           <header-network-switcher />
@@ -78,9 +78,8 @@ import { Icon, AppButton, AppLogo, HeaderNetworkSwitcher } from '@/common'
 import { Bus, cropAddress } from '@/helpers'
 import { ICON_NAMES } from '@/enums'
 import { config } from '@config'
-import { storeToRefs } from 'pinia'
 import { useWeb3ProvidersStore } from '@/store'
-import { useMetaMaskConnect, useContext } from '@/composables'
+import { useContext } from '@/composables'
 
 const SOCIAL_LINKS = [
   {
@@ -97,16 +96,14 @@ const SOCIAL_LINKS = [
   },
 ]
 
-const { provider } = storeToRefs(useWeb3ProvidersStore())
+const { provider } = useWeb3ProvidersStore()
 const { $t } = useContext()
-
-const { connect } = useMetaMaskConnect()
 
 const isShowSidebar = ref(false)
 
 const connectProviderButtonText = computed(() => {
-  return provider.value.selectedAddress
-    ? cropAddress(provider.value.selectedAddress)
+  return provider.selectedAddress
+    ? cropAddress(provider.selectedAddress)
     : $t('app-navbar.connect-provider-button')
 })
 
@@ -144,7 +141,8 @@ $z-local: 10;
   }
 
   @include respond-to(medium) {
-    @include flex-container;
+    display: flex;
+    flex-direction: column;
   }
 }
 
@@ -156,16 +154,16 @@ $z-local: 10;
 }
 
 .app-navigation-mobile__nav {
-  @include flex-container;
-
+  display: flex;
+  flex-direction: column;
   gap: toRem(20);
   margin: 0 auto;
   flex: 1;
 }
 
 .app-navigation-mobile__links-wrap {
-  @include flex-container;
-
+  display: flex;
+  flex-direction: column;
   flex: 1;
   text-align: end;
   justify-items: center;
@@ -174,8 +172,9 @@ $z-local: 10;
 }
 
 .app-navigation-mobile__social {
-  @include flex-container-row-centered;
-
+  display: flex;
+  align-items: center;
+  justify-content: center;
   padding: toRem(20);
   flex: 1;
 }
@@ -213,8 +212,9 @@ $z-local: 10;
 }
 
 .app-navigation-mobile__text-link {
-  @include p-body-1;
-
+  font-family: var(--app-font-family-secondary);
+  font-size: toRem(24);
+  line-height: 120%;
   text-align: center;
   color: var(--text-secondary-main);
   text-transform: uppercase;
@@ -226,8 +226,8 @@ $z-local: 10;
 }
 
 .app-navigation-mobile__provider-button-wrapper {
-  @include flex-container;
-
+  display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
   gap: toRem(20);
@@ -241,10 +241,8 @@ $z-local: 10;
 .app-navigation-mobile__provider-btn {
   text-transform: uppercase;
   padding: toRem(9) toRem(16);
-
-  @include link-light;
-
-  @include text-color-invert;
+  font-weight: 500;
+  color: var(--text-primary-invert-main);
 
   &:deep(.app-button__icon-left) {
     width: toRem(30);

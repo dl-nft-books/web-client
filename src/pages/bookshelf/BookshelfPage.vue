@@ -154,8 +154,8 @@ watch(
   margin-top: toRem(-220);
   background-color: var(--black);
   overflow: hidden;
-
-  @include flex-container;
+  display: flex;
+  flex-direction: column;
 
   /* Chain image */
   &:before {
@@ -259,10 +259,9 @@ watch(
 .bookshelf-page__title {
   text-transform: uppercase;
   position: relative;
+  color: var(--text-primary-invert-main);
 
   @include text-shadow;
-
-  @include text-color-invert;
 
   &:after {
     content: ' ';

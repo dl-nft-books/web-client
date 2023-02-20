@@ -8,6 +8,7 @@ import {
   handleEthError,
   requestAddEthChain,
   requestSwitchEthChain,
+  isMobile,
 } from '@/helpers'
 import { computed, ref } from 'vue'
 import {
@@ -23,10 +24,12 @@ import {
 import { Deferrable } from '@ethersproject/properties'
 import { TransactionRequest } from '@ethersproject/abstract-provider'
 import { useNetworksStore } from '@/store'
+import { router } from '@/router'
 
 export const useMetamask = (provider: ProviderInstance): ProviderWrapper => {
   const chainId = ref<ChainId>('')
   const selectedAddress = ref('')
+  const METAMASK_APP_CONNECT_URL = `https://metamask.app.link/dapp/${window.location.host}${router.currentRoute.value.fullPath}`
 
   const currentProvider = computed(
     () =>
@@ -76,9 +79,15 @@ export const useMetamask = (provider: ProviderInstance): ProviderWrapper => {
 
   const connect = async () => {
     try {
+      if (isMobile() && !navigator.userAgent.includes('MetaMask')) {
+        window.open(METAMASK_APP_CONNECT_URL)
+        return
+      }
+
       await connectEthAccounts(currentProvider.value)
     } catch (error) {
       handleEthError(error as EthProviderRpcError)
+      window.location.reload()
     }
   }
 

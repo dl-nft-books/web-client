@@ -14,14 +14,11 @@
           <p
             v-for="(point, index) in overviewPoints"
             :key="index"
-            :class="[
-              'faq-page__overview-point',
-              'faq-page__overview-point--size-x-medium',
-            ]"
+            class="faq-page__overview-point"
           >
             {{ point }}
           </p>
-          <p class="faq-page__disclaimer faq-page__disclaimer--size-x-medium">
+          <p class="faq-page__disclaimer">
             {{ $t('faq-page.overview-disclaimer') }}
           </p>
         </section>
@@ -59,10 +56,9 @@ const overviewPoints = [
 .faq-page__title {
   margin-bottom: toRem(40);
   max-width: toRem(660);
+  color: var(--text-primary-invert-main);
 
-  @include text-color-invert;
-
-  @include text-underline;
+  @include subtitle-underline;
 }
 
 /* stylelint-disable */
@@ -113,8 +109,8 @@ const overviewPoints = [
 }
 
 .faq-page__overview-info {
-  @include flex-container;
-
+  display: flex;
+  flex-direction: column;
   gap: toRem(15);
   position: relative;
 
@@ -131,14 +127,14 @@ const overviewPoints = [
 }
 
 .faq-page__overview-point {
-  @include p-body-2;
-
-  @include text-color-invert;
+  font-size: toRem(16);
+  line-height: 120%;
+  color: var(--text-primary-invert-main);
 }
 
 .faq-page__disclaimer {
-  @include p-body-2;
-
+  font-size: toRem(16);
+  line-height: 120%;
   color: var(--text-diclaimer);
   font-style: italic;
 

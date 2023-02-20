@@ -1,7 +1,7 @@
 <template>
   <div class="nft-details">
     <div v-for="(item, index) in details" :key="index" class="nft-details__row">
-      <p class="nft-details__row-label nft-details__row-label--size-x-large">
+      <p class="nft-details__row-label">
         {{ item.label }}
       </p>
       <a
@@ -14,7 +14,6 @@
         <span
           :class="[
             'nft-details__row-value',
-            'nft-details__row-value--size-large',
             'nft-details__row-value--shortened',
           ]"
         >
@@ -22,10 +21,7 @@
         </span>
         <icon class="nft-details__row-icon" :name="$icons.download" />
       </a>
-      <p
-        v-else
-        class="nft-details__row-value nft-details__row-value--size-large"
-      >
+      <p v-else class="nft-details__row-value">
         {{ item.value }}
       </p>
     </div>
@@ -47,7 +43,12 @@ import {
   GeneratedNFtRecord,
 } from '@/records'
 import { useContext } from '@/composables'
-import { NftDetails } from '@/types'
+
+type NftDetails = {
+  label: string
+  value: string
+  isUrl?: boolean
+}
 
 const props = defineProps<{ nftToken: GeneratedNFtRecord }>()
 
@@ -154,8 +155,8 @@ const details: NftDetails[] = getDetails()!
 }
 
 .nft-details__row-label {
-  @include p-body-2;
-
+  font-size: toRem(20);
+  line-height: 120%;
   color: var(--text-secondary-main);
 
   @include respond-to(small) {
@@ -164,8 +165,8 @@ const details: NftDetails[] = getDetails()!
 }
 
 .nft-details__row-value {
-  @include p-body-2;
-
+  font-size: toRem(24);
+  line-height: 120%;
   max-width: 100%;
   word-break: break-word;
 
