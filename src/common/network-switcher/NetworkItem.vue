@@ -66,7 +66,7 @@ const wrapperClasses = computed(() => [
   transition: 0.2s ease-in-out;
   transition-property: background-color;
 
-  .account--dark-mode & {
+  .account-info--dark-mode & {
     --item-color: var(--text-secondary-invert-main);
   }
 

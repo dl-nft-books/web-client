@@ -111,7 +111,7 @@ onMounted(() => {
     --background-head-color: var(--background-tertiary);
   }
 
-  .account--dark-mode & {
+  .account-info--dark-mode & {
     --background-head-color: transparent;
     --border-color: var(--white);
   }
@@ -125,7 +125,7 @@ onMounted(() => {
     --background-body-color: var(--background-quaternary);
   }
 
-  .account--dark-mode & {
+  .account-info--dark-mode & {
     --background-body-color: var(--background-quaternary);
   }
 }
