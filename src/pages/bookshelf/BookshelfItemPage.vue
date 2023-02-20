@@ -24,9 +24,9 @@
             ]"
           />
           <div class="bookshelf-item-page__actions">
-            <div class="bookshelf-item-page__price">
+            <h3 class="bookshelf-item-page__price">
               {{ formatFiatAssetFromWei(book.price, CURRENCY.USD) }}
-            </div>
+            </h3>
             <div class="bookshelf-item-page__info">
               <app-button
                 v-if="book.voucherToken !== ethers.constants.AddressZero"
@@ -45,6 +45,7 @@
           <app-button
             v-if="provider.isConnected"
             class="bookshelf-item-page__purchase-btn"
+            size="small"
             :text="$t('bookshelf-item-page.purchase-btn')"
             @click="isPurchaseModalShown = true"
           />
@@ -52,8 +53,9 @@
           <app-button
             v-else
             class="bookshelf-item-page__purchase-btn"
+            size="small"
             :text="$t('bookshelf-item-page.connect-btn')"
-            @click="connect"
+            @click="provider.connect"
           />
 
           <hr class="bookshelf-item-page__devider" />
@@ -99,7 +101,6 @@ import {
 import { CURRENCY } from '@/enums'
 import { BookRecord } from '@/records'
 import { useWeb3ProvidersStore, useNetworksStore } from '@/store'
-import { useMetaMaskConnect } from '@/composables'
 import { storeToRefs } from 'pinia'
 import { getBookById } from '@/api'
 import { ethers } from 'ethers'
@@ -108,7 +109,6 @@ const props = defineProps<{
   id: string
 }>()
 const { provider } = storeToRefs(useWeb3ProvidersStore())
-const { connect } = useMetaMaskConnect()
 
 const isLoaded = ref(false)
 const isLoadFailed = ref(false)
@@ -206,16 +206,12 @@ init()
 
 .bookshelf-item-page__title {
   text-transform: uppercase;
-  font-size: toRem(48);
-  line-height: 1.2;
-  font-weight: 900;
   margin-bottom: toRem(34);
   max-width: 100%;
   word-wrap: break-word;
 
   @include respond-to(medium) {
     text-align: center;
-    font-size: toRem(30);
   }
 }
 
@@ -241,20 +237,20 @@ init()
 }
 
 .bookshelf-item-page__price {
-  font-weight: 700;
-  font-size: toRem(44);
-  line-height: toRem(54);
   color: var(--primary-main);
+  user-select: none;
 
   @include respond-to(medium) {
     text-align: center;
-    font-size: toRem(30);
   }
 }
 
 .bookshelf-item-page__purchase-btn {
+  text-transform: uppercase;
   width: 100%;
+  height: toRem(60);
   font-size: toRem(22);
+  line-height: 120%;
 }
 
 .bookshelf-item-page__devider {
@@ -266,13 +262,11 @@ init()
 }
 
 .bookshelf-item-page__description {
-  font-size: toRem(24);
-  line-height: 1.2;
-  font-weight: 400;
   color: var(--text-secondary-main);
   margin-top: toRem(10);
   word-wrap: break-word;
   white-space: pre-wrap;
+  font-size: toRem(24);
 
   @include respond-to(medium) {
     font-size: toRem(18);

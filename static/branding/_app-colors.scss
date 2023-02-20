@@ -9,8 +9,10 @@ $background-tertiary: #fafafa;
 $background-quaternary: #313131;
 $background-quinary: #111010;
 $background-quinary-rgb: hexToRGB($background-quinary);
+
 $background-error: #ffedf3;
 $background-success: #F2FFED;
+
 $background-switcher: #F1F3F8;
 $background-switcher-picked: #2dceff;
 $background-switcher-picked-rgb: hexToRGB($background-switcher-picked); 
@@ -21,9 +23,10 @@ $success-light: #5efc82;
 $success-main: #00c853;
 $success-dark: #009624;
 
-$error-light: #ff6434;
-$error-main: #dd2c00;
-$error-dark: #a30000;
+$error-light: #EC7770;
+$error-main: #DD3A31;
+$error-dark: #A7302A;
+
 $warning-light: #f16709;
 $warning-main: #ff6d00;
 $warning-dark: #c43c00;
@@ -34,10 +37,10 @@ $info-dark: #0094cc;
 
 /* brand colors */
 
-$primary-light: #84f1ff;
+$primary-light: #D7DADB;
 $primary-main: #4cbecf;
 $primary-main-rgb: hexToRGB($primary-main);
-$primary-dark: #008d9e;
+$primary-dark: #3BA2B1;
 
 /* typography colors */
 
@@ -47,7 +50,7 @@ $text-primary-dark: #1f1f1f;
 
 $text-secondary-light: #c8bdbd;
 $text-secondary-main: #978d8d;
-$text-secondary-dark: #696060;
+$text-secondary-dark: #262626;
 
 $text-primary-invert-light: #ffffff;
 $text-primary-invert-main: #ffffff;
@@ -68,7 +71,7 @@ $border-primary-main: #cbdae9;
 $border-primary-dark: #9aa9b7;
 $border-secondary-light: #e4e7e7;
 $border-secondary-main: #e4e7e7;
-$border-secondary-dark: #e4e7e7;
+$border-secondary-dark: #978d8d;
 $border-black: #3E3E3E;
 
 /* other colors */

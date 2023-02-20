@@ -1,3 +1,43 @@
+<template>
+  <div class="my-nfts-page">
+    <h3>
+      {{ $t('my-nfts-page.title') }}
+    </h3>
+    <template v-if="provider.isConnected">
+      <error-message
+        v-if="isLoadFailed"
+        :message="$t('my-nfts-page.loading-error-msg')"
+      />
+      <template v-else-if="nftList.length || isLoading">
+        <div v-if="nftList.length" class="my-nfts-page__list">
+          <book-card
+            v-for="book in nftList"
+            :key="book.id"
+            background-color="tertiary"
+            :book="book"
+            :action-btn-text="$t('my-nfts-page.details-btn')"
+          />
+        </div>
+
+        <loader v-if="isLoading" />
+
+        <app-button
+          v-if="isLoadMoreBtnShown"
+          class="my-nfts-page__load-more-btn"
+          size="small"
+          scheme="flat"
+          :text="$t('my-nfts-page.load-more-btn')"
+          @click="loadNextPage"
+        />
+      </template>
+
+      <my-nfts-no-data v-else />
+    </template>
+
+    <my-nfts-no-data v-else is-not-connected />
+  </div>
+</template>
+
 <script lang="ts" setup>
 import { Loader, ErrorMessage, BookCard, AppButton } from '@/common'
 import { MyNftsNoData } from '@/pages/my-nfts'
@@ -58,69 +98,20 @@ watch(
 )
 </script>
 
-<template>
-  <div class="my-nfts-page">
-    <h2 class="my-nfts-page__title">
-      {{ $t('my-nfts-page.title') }}
-    </h2>
-    <template v-if="provider.isConnected">
-      <template v-if="isLoadFailed">
-        <error-message :message="$t('my-nfts-page.loading-error-msg')" />
-      </template>
-      <template v-else-if="nftList.length || isLoading">
-        <template v-if="nftList.length">
-          <div class="my-nfts-page__list">
-            <book-card
-              class="my-nfts-page__card"
-              v-for="book in nftList"
-              :key="book.id"
-              background-color="tertiary"
-              :book="book"
-              scheme="link"
-              :action-btn-text="$t('my-nfts-page.details-btn')"
-              is-user-owned
-            />
-          </div>
-        </template>
-        <template v-if="isLoading">
-          <loader />
-        </template>
-
-        <app-button
-          v-if="isLoadMoreBtnShown"
-          class="my-nfts-page__load-more-btn"
-          size="small"
-          scheme="flat"
-          :text="$t('my-nfts-page.load-more-btn')"
-          @click="loadNextPage"
-        />
-      </template>
-      <template v-else>
-        <my-nfts-no-data />
-      </template>
-    </template>
-    <template v-else>
-      <my-nfts-no-data is-no-connected />
-    </template>
-  </div>
-</template>
-
 <style lang="scss" scoped>
 .my-nfts-page {
   display: flex;
   flex-direction: column;
+  flex: 1;
   gap: toRem(34);
   padding-top: toRem(70);
   padding-bottom: toRem(200);
-  min-height: vh(80);
   background: url('/images/background-cubes.png') no-repeat right / contain;
-}
 
-.my-nfts-page__title {
-  text-transform: uppercase;
-  font-size: toRem(40);
-  line-height: 1.2;
-  font-weight: 700;
+  @include respond-to(tablet) {
+    padding-top: toRem(10);
+    padding-bottom: toRem(80);
+  }
 }
 
 .my-nfts-page__list {

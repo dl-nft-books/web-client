@@ -1,6 +1,6 @@
 <template>
   <div class="input-field" :class="inputClasses">
-    <label v-if="label" :for="`input-field--${uid}`" class="input-field__label">
+    <label v-if="label" class="input-field__label">
       {{ label }}
     </label>
     <div class="input-field__input-wrp">
@@ -43,128 +43,101 @@
   </div>
 </template>
 
-<script lang="ts">
-import { Icon } from '@/common'
-
+<script setup lang="ts">
+import { computed, ref, useAttrs } from 'vue'
 import { BN } from '@distributedlab/utils'
-
-import {
-  computed,
-  defineComponent,
-  getCurrentInstance,
-  PropType,
-  ref,
-} from 'vue'
+import { Icon } from '@/common'
 import { ICON_NAMES } from '@/enums'
 
-enum INPUT_TYPES {
-  text = 'text',
-  password = 'password',
-  number = 'number',
-}
+type INPUT_TYPES = 'text' | 'password' | 'number'
+type SCHEMES = 'icon-left' | 'default'
 
-enum EVENTS {
-  updateModelValue = 'update:model-value',
-}
-
-enum SCHEMES {
-  iconLeft = 'icon-left',
-}
-
-export default defineComponent({
-  name: 'input-field',
-  components: { Icon },
-  props: {
-    modelValue: { type: [String, Number], default: '' },
-    label: { type: String, default: '' },
-    placeholder: { type: String, default: ' ' },
-    type: {
-      type: String as PropType<INPUT_TYPES>,
-      default: INPUT_TYPES.text,
-    },
-    schemes: { type: String as PropType<SCHEMES>, default: '' },
-    errorMessage: { type: String, default: '' },
-    iconName: { type: String as PropType<ICON_NAMES>, default: '' },
+const props = withDefaults(
+  defineProps<{
+    modelValue?: string | number
+    label?: string
+    placeholder?: string
+    type?: INPUT_TYPES
+    schemes?: SCHEMES
+    errorMessage?: string
+    iconName?: ICON_NAMES | null
+  }>(),
+  {
+    modelValue: '',
+    label: '',
+    placeholder: ' ',
+    type: 'text',
+    schemes: 'default',
+    errorMessage: '',
+    iconName: null,
   },
-  emits: Object.values(EVENTS),
-  setup(props, { emit, attrs }) {
-    const uid = getCurrentInstance()?.uid
-    const isPasswordShown = ref(false)
+)
 
-    const isNumberType = computed(() => props.type === INPUT_TYPES.number)
-    const isPasswordType = computed(() => props.type === INPUT_TYPES.password)
+const emit = defineEmits<{
+  (event: 'update:modelValue', payload: string | number): void
+}>()
 
-    const min = computed((): string => (attrs?.min as string) || '')
-    const max = computed((): string => (attrs?.max as string) || '')
+const attrs = useAttrs()
 
-    const isDisabled = computed(() =>
-      ['', 'disabled', true].includes(attrs.disabled as string | boolean),
-    )
+const isPasswordShown = ref(false)
 
-    const isReadonly = computed(() =>
-      ['', 'readonly', true].includes(attrs.readonly as string | boolean),
-    )
+const isNumberType = computed(() => props.type === 'text')
+const isPasswordType = computed(() => props.type === 'password')
 
-    const listeners = computed(() => ({
-      input: (event: Event) => {
-        const eventTarget = event.target as HTMLInputElement
-        if (isNumberType.value) {
-          eventTarget.value = normalizeRange(eventTarget.value)
-        }
-        if (props.modelValue === eventTarget.value) return
+const min = computed((): string => (attrs?.min as string) || '')
+const max = computed((): string => (attrs?.max as string) || '')
 
-        emit(EVENTS.updateModelValue, eventTarget.value)
-      },
-    }))
+const isDisabled = computed(() =>
+  ['', 'disabled', true].includes(attrs.disabled as string | boolean),
+)
 
-    const inputClasses = computed(() => {
-      const _schemes = props.schemes
-      const classList = [
-        ...(_schemes ? [_schemes.split(' ')] : []),
-        ...(isDisabled.value ? ['disabled'] : []),
-        ...(isReadonly.value ? ['readonly'] : []),
-        ...(props.errorMessage ? ['error'] : []),
-        ...(props.iconName || isPasswordType ? ['iconed'] : []),
-      ]
+const isReadonly = computed(() =>
+  ['', 'readonly', true].includes(attrs.readonly as string | boolean),
+)
 
-      return classList.map(el => `input-field--${el}`).join(' ')
-    })
-
-    const normalizeRange = (value: string | number): string => {
-      let result = value
-
-      if (min.value && new BN(value).compare(min.value) < 0) {
-        result = min.value
-      } else if (max.value && new BN(value).compare(max.value) > 0) {
-        result = max.value
-      }
-
-      return result as string
+const listeners = computed(() => ({
+  input: (event: Event) => {
+    const eventTarget = event.target as HTMLInputElement
+    if (isNumberType.value) {
+      eventTarget.value = normalizeRange(eventTarget.value)
     }
+    if (props.modelValue === eventTarget.value) return
 
-    const setHeightCSSVar = (element: HTMLElement) => {
-      element.style.setProperty(
-        '--field-error-msg-height',
-        `${element.scrollHeight}px`,
-      )
-    }
-
-    return {
-      uid,
-      isPasswordShown,
-
-      listeners,
-      isDisabled,
-      isReadonly,
-      min,
-      max,
-      inputClasses,
-      isPasswordType,
-
-      setHeightCSSVar,
-    }
+    emit('update:modelValue', eventTarget.value)
   },
+}))
+
+const inputClasses = computed(() => {
+  const _schemes = props.schemes
+  const classList = [
+    ...(_schemes ? [_schemes.split(' ')] : []),
+    ...(isDisabled.value ? ['disabled'] : []),
+    ...(isReadonly.value ? ['readonly'] : []),
+    ...(props.errorMessage ? ['error'] : []),
+    ...(props.iconName || isPasswordType ? ['iconed'] : []),
+  ]
+
+  return classList.map(el => `input-field--${el}`).join(' ')
 })
+
+const normalizeRange = (value: string | number): string => {
+  let result = value
+
+  if (min.value && new BN(value).compare(min.value) < 0) {
+    result = min.value
+  } else if (max.value && new BN(value).compare(max.value) > 0) {
+    result = max.value
+  }
+
+  return result as string
+}
+
+const setHeightCSSVar = (element: HTMLElement) => {
+  element.style.setProperty(
+    '--field-error-msg-height',
+    `${element.scrollHeight}px`,
+  )
+}
 </script>
 
 <style lang="scss" scoped>
@@ -269,8 +242,8 @@ export default defineComponent({
 
 .input-field__icon-wrp {
   display: flex;
-  justify-content: center;
   align-items: center;
+  justify-content: center;
   position: absolute;
   top: 50%;
   right: calc(var(--field-padding-right) * 3 / 2);

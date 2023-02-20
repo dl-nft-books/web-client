@@ -11,16 +11,17 @@
   </div>
 </template>
 
-<script lang="ts">
-import { defineComponent } from 'vue'
-
-export default defineComponent({
-  name: 'readonly-field',
-  props: {
-    value: { type: [String, Number], default: '' },
-    label: { type: String, default: '' },
+<script setup lang="ts">
+withDefaults(
+  defineProps<{
+    value?: string
+    label?: string
+  }>(),
+  {
+    value: '',
+    label: '',
   },
-})
+)
 </script>
 
 <style lang="scss" scoped>
@@ -38,9 +39,7 @@ export default defineComponent({
 }
 
 .readonly-field__label {
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  @include text-ellipsis;
 
   @include field-label;
 }
@@ -55,8 +54,8 @@ export default defineComponent({
   padding: var(--field-padding);
   transition-property: box-shadow;
   border-bottom: toRem(1) solid var(--field-border);
-  overflow: hidden;
-  text-overflow: ellipsis;
+
+  @include text-ellipsis;
 
   @include field-text;
 }

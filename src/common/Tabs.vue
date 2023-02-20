@@ -1,3 +1,18 @@
+<template>
+  <div class="tabs">
+    <button
+      v-for="(item, idx) in tabs"
+      :key="idx"
+      class="tabs__button"
+      type="button"
+      :class="{ 'tabs__button--active': modelValue === item.id }"
+      @click="changeTab(item.id)"
+    >
+      {{ item.translation }}
+    </button>
+  </div>
+</template>
+
 <script lang="ts" setup>
 type TabsType = {
   translation: string
@@ -5,29 +20,18 @@ type TabsType = {
 }
 
 defineProps<{
-  currentTabId: string
+  modelValue: string
   tabs: TabsType[]
 }>()
 
 const emit = defineEmits<{
-  (event: 'update:current-tab-id', value: string): void
+  (event: 'update:modelValue', value: string): void
 }>()
-</script>
 
-<template>
-  <div class="tabs">
-    <button
-      v-for="(item, id) in tabs"
-      :key="id"
-      class="tabs__button"
-      :class="{ 'tabs__button--active': currentTabId === item.id }"
-      type="button"
-      @click="emit('update:current-tab-id', item.id)"
-    >
-      {{ item.translation }}
-    </button>
-  </div>
-</template>
+const changeTab = (tab: string) => {
+  emit('update:modelValue', tab)
+}
+</script>
 
 <style lang="scss" scoped>
 .tabs {
@@ -38,13 +42,12 @@ const emit = defineEmits<{
 }
 
 .tabs__button {
+  padding-right: toRem(10);
   position: relative;
   font-size: toRem(24);
-  font-family: var(--app-font-family);
   font-weight: 400;
-  padding-right: toRem(10);
   color: var(--text-secondary-main);
-  transition: all 0.2s linear;
+  transition: color 0.2s linear;
 
   &--active {
     color: var(--text-primary-main);

@@ -4,7 +4,6 @@
       {{ $t('bookshelf-item-page.network-title') }}
     </p>
     <div class="bookshelf-network-info__wrapper">
-      <!-- TODO make this dynamic when network changing will be done -->
       <div :class="networkClasses">
         <icon
           class="bookshelf-network-info__icon"
@@ -58,12 +57,12 @@ const networkClasses = computed(() => [
 
 .bookshelf-network-info__title {
   font-size: toRem(20);
+  line-height: 120%;
+  margin-bottom: toRem(12);
 }
 
 .bookshelf-network-info__subtitle {
-  font-weight: 400;
   font-size: toRem(20);
-  line-height: 120%;
   color: var(--text-secondary-main);
 }
 

@@ -6,8 +6,23 @@
     <div class="bookshelf-header__description">
       <icon class="bookshelf-header__icon" :name="$icons.bookWithFeather" />
       <div class="bookshelf-header__book-desctiption">
-        <p>{{ $t('bookshelf-header.book-description-title') }}</p>
-        <p>{{ $t('bookshelf-header.book-description-subtitle') }}</p>
+        <p
+          :class="[
+            'bookshelf-header__text',
+            'bookshelf-header__text--shadow-color-invert',
+          ]"
+        >
+          {{ $t('bookshelf-header.book-description-title') }}
+        </p>
+        <p
+          :class="[
+            'bookshelf-header__text',
+            'bookshelf-header__text--bold-italic',
+            'bookshelf-header__text--shadow-color-invert',
+          ]"
+        >
+          {{ $t('bookshelf-header.book-description-subtitle') }}
+        </p>
       </div>
     </div>
   </header>
@@ -30,19 +45,9 @@ import { Icon } from '@/common'
 
 .bookshelf-header__title {
   margin-bottom: toRem(5);
-  font-weight: 900;
-  font-size: toRem(58);
-  letter-spacing: toRem(3);
-  text-transform: uppercase;
-  color: var(--background-primary);
-  text-shadow: toRem(-1) toRem(1) 0 var(--text-primary-main),
-    toRem(1) toRem(1) 0 var(--text-primary-main),
-    toRem(1) toRem(-1) 0 var(--text-primary-main),
-    toRem(-1) toRem(-1) 0 var(--text-primary-main);
+  color: var(--text-primary-invert-main);
 
-  @include respond-to(medium) {
-    font-size: toRem(40);
-  }
+  @include text-shadow;
 }
 
 .bookshelf-header__description {
@@ -64,30 +69,18 @@ import { Icon } from '@/common'
 .bookshelf-header__book-desctiption {
   display: flex;
   flex-direction: column;
+}
 
-  & > * {
-    text-shadow: toRem(-1) toRem(1) 0 var(--text-primary-invert-main),
-      toRem(1) toRem(1) 0 var(--text-primary-invert-main),
-      toRem(1) toRem(-1) 0 var(--text-primary-invert-main),
-      toRem(-1) toRem(-1) 0 var(--text-primary-invert-main);
-  }
+.bookshelf-header__text {
+  font-size: toRem(22);
+  line-height: 120%;
 
-  & > *:first-child {
-    font-size: toRem(22);
-    line-height: 120%;
-    font-weight: 400;
-  }
-
-  & > *:nth-child(2) {
-    font-size: toRem(22);
-    line-height: 120%;
+  &--bold-italic {
     font-weight: 500;
     font-style: italic;
   }
 
-  @include respond-to(medium) {
-    font-size: toRem(16);
-  }
+  @include text-shadow;
 }
 
 .bookshelf-header__icon {

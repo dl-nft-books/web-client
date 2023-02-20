@@ -1,3 +1,36 @@
+<template>
+  <div class="textarea-field" :class="textareaClasses">
+    <label
+      v-if="label"
+      :for="`textarea-field--${uid}`"
+      class="textarea-field__label"
+    >
+      {{ label }}
+    </label>
+    <div class="textarea-field__textarea-wrp">
+      <textarea
+        class="textarea-field__textarea"
+        :id="`textarea-field--${uid}`"
+        v-bind="$attrs"
+        v-on="listeners"
+        :value="modelValue"
+        :placeholder="placeholder"
+        :tabindex="isDisabled || isReadonly ? -1 : $attrs.tabindex"
+        :disabled="isDisabled || isReadonly"
+      />
+    </div>
+    <transition
+      name="textarea-field__err-msg-transition"
+      @enter="setHeightCSSVar"
+      @before-leave="setHeightCSSVar"
+    >
+      <span v-if="errorMessage" class="textarea-field__err-msg">
+        {{ errorMessage }}
+      </span>
+    </transition>
+  </div>
+</template>
+
 <script lang="ts" setup>
 import { computed, getCurrentInstance, useAttrs } from 'vue'
 
@@ -61,39 +94,6 @@ const setHeightCSSVar = (element: HTMLElement) => {
   )
 }
 </script>
-
-<template>
-  <div class="textarea-field" :class="textareaClasses">
-    <label
-      v-if="label"
-      :for="`textarea-field--${uid}`"
-      class="textarea-field__label"
-    >
-      {{ label }}
-    </label>
-    <div class="textarea-field__textarea-wrp">
-      <textarea
-        class="textarea-field__textarea"
-        :id="`textarea-field--${uid}`"
-        v-bind="$attrs"
-        v-on="listeners"
-        :value="modelValue"
-        :placeholder="placeholder"
-        :tabindex="isDisabled || isReadonly ? -1 : $attrs.tabindex"
-        :disabled="isDisabled || isReadonly"
-      />
-    </div>
-    <transition
-      name="textarea-field__err-msg-transition"
-      @enter="setHeightCSSVar"
-      @before-leave="setHeightCSSVar"
-    >
-      <span v-if="errorMessage" class="textarea-field__err-msg">
-        {{ errorMessage }}
-      </span>
-    </transition>
-  </div>
-</template>
 
 <style lang="scss" scoped>
 .textarea-field {
@@ -199,8 +199,8 @@ const setHeightCSSVar = (element: HTMLElement) => {
 
 .textarea-field__icon-wrp {
   display: flex;
-  justify-content: center;
   align-items: center;
+  justify-content: center;
   position: absolute;
   top: 50%;
   right: calc(var(--field-padding-right) * 3 / 2);

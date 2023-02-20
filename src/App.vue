@@ -1,3 +1,19 @@
+<template>
+  <div
+    v-if="isAppInitialized"
+    class="app__container"
+    :class="{ 'app__container--scroll-disabled': !isScrollEnabled }"
+  >
+    <app-navbar />
+    <router-view v-slot="{ Component, route }">
+      <transition :name="route.meta.transition || 'fade'" mode="out-in">
+        <component class="app__main" :is="Component" />
+      </transition>
+    </router-view>
+    <app-footer />
+  </div>
+</template>
+
 <script lang="ts" setup>
 import { AppNavbar, AppFooter } from '@/common'
 
@@ -41,22 +57,6 @@ Bus.on(
   () => (isScrollEnabled.value = !isScrollEnabled.value),
 )
 </script>
-
-<template>
-  <div
-    v-if="isAppInitialized"
-    class="app__container"
-    :class="{ 'app__container--scroll-disabled': !isScrollEnabled }"
-  >
-    <app-navbar />
-    <router-view v-slot="{ Component, route }">
-      <transition :name="route.meta.transition || 'fade'" mode="out-in">
-        <component class="app__main" :is="Component" />
-      </transition>
-    </router-view>
-    <app-footer />
-  </div>
-</template>
 
 <style lang="scss" scoped>
 .app__container {

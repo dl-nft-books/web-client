@@ -1,29 +1,3 @@
-<script lang="ts" setup>
-import { AppButton } from '@/common'
-import { useWeb3ProvidersStore } from '@/store'
-import { storeToRefs } from 'pinia'
-import { useMetaMaskConnect } from '@/composables'
-
-const { provider } = storeToRefs(useWeb3ProvidersStore())
-const { connect } = useMetaMaskConnect()
-const handleProviderClick = () => {
-  if (provider.value.selectedAddress) {
-    return
-  }
-
-  connect()
-}
-
-withDefaults(
-  defineProps<{
-    isNoConnected?: boolean
-  }>(),
-  {
-    isNoConnected: false,
-  },
-)
-</script>
-
 <template>
   <div class="my-nfts-no-data">
     <div class="my-nfts-no-data__img-wrapper">
@@ -34,11 +8,9 @@ withDefaults(
       />
     </div>
     <div class="my-nfts-no-data__content">
-      <template v-if="isNoConnected">
-        <p class="my-nfts-no-data__message">
-          {{ $t('my-nfts-no-data.connect-metamask-message') }}
-        </p>
-      </template>
+      <p v-if="isNotConnected" class="my-nfts-no-data__message">
+        {{ $t('my-nfts-no-data.connect-metamask-message') }}
+      </p>
       <template v-else>
         <p class="my-nfts-no-data__message">
           {{ $t('my-nfts-no-data.message-first') }}
@@ -47,28 +19,40 @@ withDefaults(
           {{ $t('my-nfts-no-data.message-second') }}
         </p>
       </template>
-
-      <template v-if="isNoConnected">
-        <app-button
-          class="my-nfts-no-data__marketplace-btn"
-          size="large"
-          :text="$t('my-nfts-no-data.connect-metamask-btn')"
-          :icon-left="$icons.metamask"
-          @click="handleProviderClick"
-        />
-      </template>
-      <template v-else>
-        <app-button
-          class="my-nfts-no-data__marketplace-btn"
-          size="large"
-          :icon-right="$icons.arrowRight"
-          :text="$t('my-nfts-no-data.marketplace-btn')"
-          :route="{ name: $routes.bookshelf }"
-        />
-      </template>
+      <app-button
+        v-if="isNotConnected"
+        class="my-nfts-no-data__marketplace-btn"
+        :text="$t('my-nfts-no-data.connect-metamask-btn')"
+        :icon-left="$icons.metamask"
+        @click="provider.connect"
+      />
+      <app-button
+        v-else
+        class="my-nfts-no-data__marketplace-btn"
+        size="large"
+        :icon-right="$icons.arrowRight"
+        :text="$t('my-nfts-no-data.marketplace-btn')"
+        :route="{ name: $routes.bookshelf }"
+      />
     </div>
   </div>
 </template>
+
+<script lang="ts" setup>
+import { AppButton } from '@/common'
+import { useWeb3ProvidersStore } from '@/store'
+
+const { provider } = useWeb3ProvidersStore()
+
+withDefaults(
+  defineProps<{
+    isNotConnected?: boolean
+  }>(),
+  {
+    isNotConnected: false,
+  },
+)
+</script>
 
 <style lang="scss" scoped>
 .my-nfts-no-data {
@@ -105,8 +89,7 @@ withDefaults(
 }
 
 .my-nfts-no-data__message {
-  font-size: toRem(30);
-  line-height: 1.33;
+  @include info-headline;
 
   @include respond-to(tablet) {
     text-align: center;
@@ -115,5 +98,13 @@ withDefaults(
 
 .my-nfts-no-data__marketplace-btn {
   margin-top: toRem(44);
+  min-height: toRem(74);
+  min-width: toRem(296);
+  font-weight: 700;
+  font-size: toRem(20);
+
+  @include respond-to(small) {
+    min-width: 100%;
+  }
 }
 </style>

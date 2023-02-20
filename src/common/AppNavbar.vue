@@ -1,39 +1,6 @@
-<script lang="ts" setup>
-import {
-  AppButton,
-  AppLogo,
-  Icon,
-  AppNavigationMobile,
-  Account,
-} from '@/common'
-import { useWeb3ProvidersStore } from '@/store'
-import { Bus } from '@/helpers'
-import { storeToRefs } from 'pinia'
-import { computed } from 'vue'
-import { router } from '@/router'
-import { ROUTE_METAS } from '@/enums'
-
-const { provider } = storeToRefs(useWeb3ProvidersStore())
-
-const openSidebar = () => {
-  Bus.emit(Bus.eventList.openSidebar)
-}
-
-const handleProviderClick = () => {
-  if (provider.value.selectedAddress) {
-    return
-  }
-  provider.value.connect()
-}
-
-const isDarkMode = computed(
-  () => router.currentRoute.value.meta[ROUTE_METAS.isDarkPage],
-)
-</script>
-
 <template>
   <nav class="app-navbar" :class="{ 'app-navbar--dark': isDarkMode }">
-    <app-logo />
+    <app-logo :scheme="isDarkMode ? 'light' : 'dark'" />
     <button
       class="app-navbar__hamburger-button"
       type="button"
@@ -69,18 +36,54 @@ const isDarkMode = computed(
       <app-button
         v-if="!provider.selectedAddress"
         class="app-navbar__provider-btn"
-        :icon-left="$icons.metamask"
-        color="secondary"
+        scheme="flat"
         size="small"
+        :icon-left="$icons.metamask"
         :disabled="provider.selectedAddress"
         :text="$t('app-navbar.connect-provider-button')"
         @click="handleProviderClick"
       />
-      <account v-else :modification="isDarkMode ? 'dark-mode' : 'default'" />
+      <account-info
+        v-else
+        :modification="isDarkMode ? 'dark-mode' : 'default'"
+      />
     </div>
     <app-navigation-mobile />
   </nav>
 </template>
+
+<script lang="ts" setup>
+import {
+  AppButton,
+  AppLogo,
+  Icon,
+  AppNavigationMobile,
+  AccountInfo,
+} from '@/common'
+import { useWeb3ProvidersStore } from '@/store'
+import { Bus } from '@/helpers'
+import { storeToRefs } from 'pinia'
+import { computed } from 'vue'
+import { router } from '@/router'
+import { ROUTE_METAS } from '@/enums'
+
+const { provider } = storeToRefs(useWeb3ProvidersStore())
+
+const openSidebar = () => {
+  Bus.emit(Bus.eventList.openSidebar)
+}
+
+const handleProviderClick = () => {
+  if (provider.value.selectedAddress) {
+    return
+  }
+  provider.value.connect()
+}
+
+const isDarkMode = computed(
+  () => router.currentRoute.value.meta[ROUTE_METAS.isDarkPage],
+)
+</script>
 
 <style lang="scss" scoped>
 .app-navbar {
@@ -97,10 +100,6 @@ const isDarkMode = computed(
 
   &--dark {
     background-color: var(--background-quinary);
-
-    & > * {
-      color: var(--text-primary-invert-light);
-    }
   }
 }
 
@@ -117,25 +116,42 @@ const isDarkMode = computed(
 }
 
 .app-navbar__text-link {
-  color: var(--text-secondary-main);
-  text-decoration: none;
-  font-family: var(--app-font-family);
-  font-weight: 500;
-  font-size: toRem(16);
+  color: var(--text-secondary-dark);
+  transition: 0.2s ease-in-out;
+  transition-property: color;
+
+  &:hover {
+    color: var(--text-secondary-main);
+  }
+
+  .app-navbar--dark & {
+    color: var(--text-primary-invert-main);
+  }
 
   &.router-link-active {
+    color: var(--text-secondary-main);
     border-bottom: toRem(2) solid var(--primary-main);
   }
 }
 
 .app-navbar__provider-btn {
+  --app-button-bg: var(--background-primary);
+  --app-button-bg-hover: var(--background-tertiary);
+  --app-button-flat-border: #{toRem(1)} solid var(--border-secondary-dark);
+
   text-transform: uppercase;
-  font-family: var(--app-font-family);
-  color: var(--text-secondary-main);
-  font-size: toRem(16);
   font-weight: 500;
   padding: toRem(9) toRem(16);
-  background-color: var(--white);
+  color: var(--text-primary-light);
+
+  .app-navbar--dark & {
+    --app-button-bg: var(--background-quinary);
+    --app-button-bg-hover: var(--background-quaternary);
+    --app-button-flat-border: #{toRem(1)} solid var(--border-primary-light);
+    --app-button-flat-text-hover: var(--text-primary-invert-main);
+
+    color: var(--text-primary-invert-main);
+  }
 
   &:disabled {
     opacity: 1;

@@ -7,17 +7,20 @@
         <app-button
           :route="{ name: $routes.faq }"
           :text="$t('app-footer.faq-link')"
+          scheme="default"
           class="app-footer__text-link"
         />
 
         <app-button
           :href="$config.HELP_LINK"
           :text="$t('app-footer.help-link')"
+          scheme="default"
           class="app-footer__text-link"
         />
         <app-button
           :href="$config.BLOG_LINK"
           :text="$t('app-footer.blog-link')"
+          scheme="default"
           class="app-footer__text-link"
         />
       </div>
@@ -76,7 +79,7 @@ const SOCIAL_LINKS = [
 .app-footer__content {
   display: flex;
   align-items: center;
-  margin-top: toRem(30);
+  margin-top: toRem(20);
 
   @include respond-to(medium) {
     flex-direction: column;
@@ -98,12 +101,8 @@ const SOCIAL_LINKS = [
 }
 
 .app-footer__text-link {
-  color: var(--text-primary-invert-main);
-  text-decoration: none;
-  font-family: var(--app-font-family);
   font-weight: 500;
-  font-size: toRem(16);
-  background: none;
+  color: var(--text-primary-invert-main);
 }
 
 .app-footer__social-links {

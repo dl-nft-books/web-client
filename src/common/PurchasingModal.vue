@@ -6,9 +6,9 @@
     <template #default="{ modal }">
       <div class="purchasing-modal__pane">
         <div class="purchasing-modal__head">
-          <h3 class="purchasing-modal__head-title">
+          <h4>
             {{ title }}
-          </h3>
+          </h4>
           <app-button
             class="purchasing-modal__close-btn"
             :icon-right="$icons.x"
@@ -40,10 +40,11 @@
                     :speed="1"
                   />
                 </div>
-                <span class="purchasing-modal__wrong-network-message">
+                <p class="purchasing-modal__wrong-network-message">
                   {{ $t('purchasing-modal.wrong-network-message') }}
-                </span>
+                </p>
                 <app-button
+                  size="small"
                   :text="$t('networks.switch-btn-lbl')"
                   :icon-left="$icons.refresh"
                   @click="switchNetwork(book.chainID)"
@@ -168,12 +169,6 @@ init()
   }
 }
 
-.purchasing-modal__head-title {
-  font-size: toRem(24);
-  line-height: 1.2;
-  font-weight: 600;
-}
-
 .purchasing-modal__body {
   display: flex;
   flex-direction: column;
@@ -188,14 +183,24 @@ init()
 }
 
 .purchasing-modal__wrong-network-animation-wrp {
-  margin: 0 auto toRem(30);
-  max-width: toRem(240);
+  margin: 0 auto;
+  max-width: toRem(300);
 }
 
 .purchasing-modal__wrong-network-message {
-  max-width: toRem(310);
-  font-size: toRem(18);
-  line-height: 1.2;
+  max-width: toRem(386);
   text-align: center;
+  margin-bottom: toRem(20);
+  font-size: toRem(18);
+  line-height: 160%;
+}
+
+.purchasing-modal__close-btn {
+  transition: 0.2s ease-in-out;
+  transition-property: transform;
+
+  &:hover {
+    transform: rotate(90deg);
+  }
 }
 </style>

@@ -8,12 +8,12 @@
         :scheme="getNetworkScheme(network.chain_id)"
       />
     </div>
-    <span class="book-card__title">{{ title }}</span>
-    <span class="book-card__price">
-      <template v-if="price">
-        {{ formatFiatAssetFromWei(price, CURRENCY.USD) }}
-      </template>
-    </span>
+    <h5 class="book-card__title">
+      {{ title }}
+    </h5>
+    <h4 v-if="price" class="book-card__price">
+      {{ formatFiatAssetFromWei(price, CURRENCY.USD) }}
+    </h4>
     <template v-if="$slots.actionButton">
       <slot name="actionButton" />
     </template>
@@ -60,6 +60,7 @@ const bookCardClasses = computed(() =>
     'book-card',
     `book-card--${props.modification}`,
     `book-card--${props.backgroundColor}`,
+    ...(price.value ? [] : ['book-card--right']),
   ].join(' '),
 )
 
@@ -111,6 +112,10 @@ const price = computed(() =>
     background: var(--background-tertiary);
     border: toRem(1) solid var(--border-primary-main);
   }
+
+  &--right {
+    justify-content: flex-end;
+  }
 }
 
 .book-card__cover-wrp {
@@ -131,12 +136,8 @@ const price = computed(() =>
 
 .book-card__title {
   text-transform: uppercase;
-  font-size: toRem(16);
-  line-height: 1.25;
-  font-weight: 700;
   width: 100%;
-
-  @include text-ellipsis;
+  word-wrap: break-word;
 
   .book-card--centered & {
     text-align: center;
@@ -152,10 +153,6 @@ const price = computed(() =>
 }
 
 .book-card__price {
-  text-transform: uppercase;
-  font-size: toRem(20);
-  line-height: 1.25;
-  font-weight: 900;
   width: 45%;
 
   @include text-ellipsis;
@@ -172,5 +169,7 @@ const price = computed(() =>
 .book-card__purchase-btn {
   min-width: toRem(110);
   width: 45%;
+  text-transform: uppercase;
+  font-weight: 700;
 }
 </style>

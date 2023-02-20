@@ -1,54 +1,3 @@
-<script lang="ts" setup>
-import { computed, ref } from 'vue'
-import { Icon, AppButton, AppLogo, HeaderNetworkSwitcher } from '@/common'
-import { Bus, cropAddress } from '@/helpers'
-import { ICON_NAMES } from '@/enums'
-import { config } from '@config'
-import { storeToRefs } from 'pinia'
-import { useWeb3ProvidersStore } from '@/store'
-import { useMetaMaskConnect, useContext } from '@/composables'
-
-const SOCIAL_LINKS = [
-  {
-    iconName: ICON_NAMES.facebookCircle,
-    link: config.FACEBOOK_LINK,
-  },
-  {
-    iconName: ICON_NAMES.youtubeCircle,
-    link: config.YOUTUBE_LINK,
-  },
-  {
-    iconName: ICON_NAMES.linkedinCircle,
-    link: config.LINKEDIN_LINK,
-  },
-]
-
-const { provider } = storeToRefs(useWeb3ProvidersStore())
-const { $t } = useContext()
-
-const { connect } = useMetaMaskConnect()
-
-const isShowSidebar = ref(false)
-
-const connectProviderButtonText = computed(() => {
-  return provider.value.selectedAddress
-    ? cropAddress(provider.value.selectedAddress)
-    : $t('app-navbar.connect-provider-button')
-})
-
-Bus.on(Bus.eventList.openSidebar, () => {
-  showSidebar()
-})
-
-const showSidebar = () => {
-  isShowSidebar.value = true
-}
-
-const hideSidebar = () => {
-  isShowSidebar.value = false
-}
-</script>
-
 <template>
   <div
     class="app-navigation-mobile"
@@ -97,7 +46,7 @@ const hideSidebar = () => {
           size="small"
           :disabled="provider.selectedAddress"
           :text="connectProviderButtonText"
-          @click="connect"
+          @click="provider.connect"
         />
         <div class="app-navigation-mobile__network">
           <header-network-switcher />
@@ -122,6 +71,54 @@ const hideSidebar = () => {
     </nav>
   </div>
 </template>
+
+<script lang="ts" setup>
+import { computed, ref } from 'vue'
+import { Icon, AppButton, AppLogo, HeaderNetworkSwitcher } from '@/common'
+import { Bus, cropAddress } from '@/helpers'
+import { ICON_NAMES } from '@/enums'
+import { config } from '@config'
+import { useWeb3ProvidersStore } from '@/store'
+import { useContext } from '@/composables'
+
+const SOCIAL_LINKS = [
+  {
+    iconName: ICON_NAMES.facebookCircle,
+    link: config.FACEBOOK_LINK,
+  },
+  {
+    iconName: ICON_NAMES.youtubeCircle,
+    link: config.YOUTUBE_LINK,
+  },
+  {
+    iconName: ICON_NAMES.linkedinCircle,
+    link: config.LINKEDIN_LINK,
+  },
+]
+
+const { provider } = useWeb3ProvidersStore()
+const { $t } = useContext()
+
+const isShowSidebar = ref(false)
+
+const connectProviderButtonText = computed(() => {
+  return provider.selectedAddress
+    ? cropAddress(provider.selectedAddress)
+    : $t('app-navbar.connect-provider-button')
+})
+
+Bus.on(Bus.eventList.openSidebar, () => {
+  showSidebar()
+})
+
+const showSidebar = () => {
+  isShowSidebar.value = true
+}
+
+const hideSidebar = () => {
+  isShowSidebar.value = false
+}
+</script>
 
 <style lang="scss">
 $z-local: 10;
@@ -166,8 +163,8 @@ $z-local: 10;
 
 .app-navigation-mobile__links-wrap {
   display: flex;
-  flex: 1;
   flex-direction: column;
+  flex: 1;
   text-align: end;
   justify-items: center;
   justify-content: center;
@@ -176,8 +173,8 @@ $z-local: 10;
 
 .app-navigation-mobile__social {
   display: flex;
-  justify-content: center;
   align-items: center;
+  justify-content: center;
   padding: toRem(20);
   flex: 1;
 }
@@ -215,12 +212,11 @@ $z-local: 10;
 }
 
 .app-navigation-mobile__text-link {
+  font-family: var(--app-font-family-secondary);
+  font-size: toRem(24);
+  line-height: 120%;
   text-align: center;
   color: var(--text-secondary-main);
-  text-decoration: none;
-  font-family: var(--app-font-family);
-  font-weight: 500;
-  font-size: toRem(24);
   text-transform: uppercase;
   transition: color 0.2s;
 
@@ -244,10 +240,8 @@ $z-local: 10;
 
 .app-navigation-mobile__provider-btn {
   text-transform: uppercase;
-  font-family: var(--app-font-family);
-  font-size: toRem(16);
-  font-weight: 500;
   padding: toRem(9) toRem(16);
+  font-weight: 500;
   color: var(--text-primary-invert-main);
 
   &:deep(.app-button__icon-left) {

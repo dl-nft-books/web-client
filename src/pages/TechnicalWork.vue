@@ -27,7 +27,7 @@
   gap: toRem(100);
   position: relative;
 
-  @include respond-to(medium) {
+  @include respond-to(tablet) {
     flex-direction: column;
     gap: toRem(30);
     align-items: center;
@@ -56,19 +56,28 @@
   gap: toRem(24);
   position: relative;
   z-index: var(--z-index-layer-2);
+
+  @include respond-to(tablet) {
+    gap: toRem(12);
+  }
 }
 
 .technical-work__subtitle {
-  font-weight: 500;
-  line-height: toRem(29);
   font-size: toRem(24);
+  font-weight: 500;
+
+  @include respond-to(tablet) {
+    font-size: toRem(18);
+  }
 }
 
 .technical-work__title {
   color: var(--primary-main);
-  font-weight: 700;
   font-size: toRem(32);
-  line-height: toRem(40);
+
+  @include respond-to(tablet) {
+    font-size: toRem(20);
+  }
 }
 
 .technical-work__image {
@@ -76,6 +85,6 @@
   background-size: contain;
   position: relative;
   z-index: var(--z-index-layer-2);
-  width: clamp(toRem(200), 60%, toRem(400));
+  width: clamp(toRem(200), 75%, toRem(400));
 }
 </style>

@@ -1,20 +1,15 @@
 <template>
   <div class="nft-description">
     <div class="nft-description__badge-wrapper">
-      <div class="nft-description__badge">
-        <icon
-          class="nft-description__badge-icon"
-          :name="$icons.badgeCircleStar"
-        />
-        <span class="nft-description__badge-text">
-          {{ $t('nft-description.badge-1') }}
-        </span>
-      </div>
-      <div class="nft-description__badge">
-        <icon class="nft-description__badge-icon" :name="$icons.badgePencil" />
-        <span class="nft-description__badge-text">
-          {{ $t('nft-description.badge-2') }}
-        </span>
+      <div
+        v-for="(item, index) in badges"
+        :key="index"
+        class="nft-description__badge"
+      >
+        <icon class="nft-description__badge-icon" :name="item.icon" />
+        <p class="nft-description__badge-text">
+          {{ item.label }}
+        </p>
       </div>
     </div>
     <p class="nft-description__description">
@@ -25,8 +20,28 @@
 
 <script lang="ts" setup>
 import { Icon } from '@/common'
+import { useContext } from '@/composables'
+import { ICON_NAMES } from '@/enums'
+
+type Badge = {
+  label: string
+  icon: ICON_NAMES
+}
+
+const { $t } = useContext()
 
 defineProps<{ description?: string }>()
+
+const badges: Badge[] = [
+  {
+    label: $t('nft-description.badge-1'),
+    icon: ICON_NAMES.badgeCircleStar,
+  },
+  {
+    label: $t('nft-description.badge-2'),
+    icon: ICON_NAMES.badgePencil,
+  },
+]
 </script>
 
 <style lang="scss" scoped>
@@ -34,12 +49,13 @@ defineProps<{ description?: string }>()
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: toRem(20) toRem(10);
+  gap: toRem(80);
   margin-bottom: toRem(40);
 
   @include respond-to(small) {
     align-items: flex-start;
     flex-direction: column;
+    gap: toRem(20);
   }
 }
 
@@ -60,7 +76,6 @@ defineProps<{ description?: string }>()
 
 .nft-description__badge-text {
   font-size: toRem(22);
-  line-height: 1.2;
   font-weight: 500;
   font-style: italic;
 
@@ -71,9 +86,10 @@ defineProps<{ description?: string }>()
 }
 
 .nft-description__description {
-  font-size: toRem(25);
-  line-height: 1.2;
+  font-size: toRem(24);
+  color: var(--text-secondary-main);
   white-space: pre-wrap;
+  word-wrap: break-word;
 
   @include respond-to(medium) {
     font-size: toRem(18);
