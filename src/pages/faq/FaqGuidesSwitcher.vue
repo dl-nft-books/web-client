@@ -67,7 +67,7 @@ const pickGuide = (guide: Guide) => {
     grid-template-rows: toRem(45);
     background-color: var(--mobile-background);
     padding: toRem(20);
-    top: toRem(10);
+    top: 0;
     border-radius: toRem(8);
     backdrop-filter: blur(toRem(3));
     width: unset;

@@ -176,6 +176,10 @@ const isDarkMode = computed(
 .app-navbar__hamburger-button-icon {
   width: 100%;
   height: 100%;
+
+  .app-navbar--dark & {
+    color: var(--text-primary-invert-main);
+  }
 }
 
 .app-navbar__provider-button-wrapper {
