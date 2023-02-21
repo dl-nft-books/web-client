@@ -50,11 +50,11 @@ import {
 
 import { ErrorHandler } from '@/helpers'
 import { ref } from 'vue'
-import { useContext } from '@/composables'
+import { useContext, useGenerator } from '@/composables'
 import { GeneratedNFtRecord } from '@/records'
-import { getGeneratedTokensById } from '@/api'
 
 const { $t } = useContext()
+const { getGeneratedTokenById } = useGenerator()
 
 const TABS = {
   myPurchase: {
@@ -79,7 +79,7 @@ const nftToken = ref<GeneratedNFtRecord | undefined>()
 
 const init = async () => {
   try {
-    const { data } = await getGeneratedTokensById(props.id)
+    const data = await getGeneratedTokenById(props.id)
     nftToken.value = new GeneratedNFtRecord(data)
   } catch (error) {
     ErrorHandler.processWithoutFeedback(error)
@@ -104,9 +104,9 @@ init()
   padding-top: toRem(40);
   padding-bottom: toRem(100);
   justify-content: center;
-  background: url('/images/background-cubes.png') no-repeat right bottom /
+  background: url('/images/background-cubes.png') no-repeat right center /
     contain;
-  background-size: clamp(toRem(300), 30%, toRem(500));
+  background-size: clamp(toRem(300), 30%, toRem(400));
 
   @include respond-to(medium) {
     display: flex;

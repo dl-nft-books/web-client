@@ -45,8 +45,6 @@ import { ref, reactive, computed, Ref, provide } from 'vue'
 import { useWeb3ProvidersStore } from '@/store'
 import { BN } from '@/utils/math.util'
 
-import { createNewTask, getMintSignature } from '@/api'
-
 import {
   Platform,
   Promocode,
@@ -73,14 +71,11 @@ import {
   useNftBookToken,
   useErc20,
   useErc721,
+  useGenerator,
 } from '@/composables'
 
 import { SelectField } from '@/fields'
-import {
-  ErrorHandler,
-  untilTaskFinishedGeneration,
-  globalizeTokenType,
-} from '@/helpers'
+import { ErrorHandler, globalizeTokenType } from '@/helpers'
 
 import { required } from '@/validators'
 
@@ -110,6 +105,8 @@ const emit = defineEmits<{
 }>()
 
 const { provider } = useWeb3ProvidersStore()
+const { createNewGenerationTask, getMintSignature, getGeneratedTask } =
+  useGenerator()
 const nftBookToken = useNftBookToken(provider, props.book.contractAddress)
 const erc20 = useErc20(provider)
 const erc721 = useErc721(provider)
@@ -278,15 +275,15 @@ const submit = async () => {
   emit('submitting', true)
 
   try {
-    const { data: currentTask } = await createNewTask({
+    const currentTask = await createNewGenerationTask({
       signature: paymentTemplateRef.value.signature,
       account: provider.selectedAddress,
       bookId: props.book.id,
     })
 
-    const generatedTask = await untilTaskFinishedGeneration(currentTask.id)
+    const generatedTask = await getGeneratedTask(currentTask.id)
 
-    const { data: mintSignature } = await getMintSignature(
+    const mintSignature = await getMintSignature(
       props.currentPlatform.id,
       generatedTask!.id,
       dataForMint.tokenAddress,

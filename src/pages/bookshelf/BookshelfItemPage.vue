@@ -100,10 +100,10 @@ import {
   getBlockExplorerLink,
 } from '@/helpers'
 import { CURRENCY } from '@/enums'
+import { useBooks } from '@/composables'
 import { BookRecord } from '@/records'
 import { useWeb3ProvidersStore, useNetworksStore } from '@/store'
 import { storeToRefs } from 'pinia'
-import { getBookById } from '@/api'
 import { ethers } from 'ethers'
 
 const props = defineProps<{
@@ -117,6 +117,7 @@ const isPurchaseModalShown = ref(false)
 const isPurchaseSuccessModalShown = ref(false)
 
 const networkStore = useNetworksStore()
+const { getBookById } = useBooks()
 const bookNetwork = computed(() =>
   networkStore.getNetworkByID(book.value?.chainID),
 )
@@ -134,7 +135,8 @@ const submit = async () => {
 
 const init = async () => {
   try {
-    const { data } = await getBookById(props.id)
+    const data = await getBookById(props.id)
+
     book.value = new BookRecord(data)
   } catch (error) {
     ErrorHandler.processWithoutFeedback(error)

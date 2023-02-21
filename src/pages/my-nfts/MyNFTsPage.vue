@@ -41,18 +41,16 @@
 <script lang="ts" setup>
 import { Loader, ErrorMessage, BookCard, AppButton } from '@/common'
 import { MyNftsNoData } from '@/pages/my-nfts'
-
 import { ErrorHandler } from '@/helpers'
 import { ref, watch, computed } from 'vue'
 import { GeneratedNFtRecord } from '@/records'
 import { useWeb3ProvidersStore } from '@/store'
-import { storeToRefs } from 'pinia'
-import { GENERATED_NFT_STATUSES } from '@/enums'
-import { getGeneratedTokens } from '@/api'
-import { usePaginate } from '@/composables'
+import { usePaginate, useGenerator } from '@/composables'
 import { Token } from '@/types'
+import { GENERATED_NFT_STATUSES } from '@/enums'
 
-const { provider } = storeToRefs(useWeb3ProvidersStore())
+const { provider } = useWeb3ProvidersStore()
+const { getGeneratedTokens } = useGenerator()
 
 const isLoadFailed = ref(false)
 const nftList = ref<GeneratedNFtRecord[]>([])
@@ -60,7 +58,7 @@ const nftList = ref<GeneratedNFtRecord[]>([])
 const loadList = computed(
   () => () =>
     getGeneratedTokens({
-      account: [provider.value.selectedAddress!],
+      account: [provider.selectedAddress!],
       status: [GENERATED_NFT_STATUSES.finishedUploading],
     }),
 )
@@ -86,7 +84,7 @@ function onError(e: Error) {
 }
 
 watch(
-  () => provider.value.selectedAddress,
+  () => provider.selectedAddress,
   val => {
     if (val) {
       loadFirstPage()
@@ -108,7 +106,7 @@ watch(
   padding-bottom: toRem(200);
   background: url('/images/background-cubes.png') no-repeat right center /
     contain;
-  background-size: clamp(toRem(300), 30%, toRem(500));
+  background-size: clamp(toRem(300), 30%, toRem(400));
 
   @include respond-to(tablet) {
     padding-top: toRem(10);

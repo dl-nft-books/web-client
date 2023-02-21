@@ -72,8 +72,7 @@ import { InputField } from '@/fields'
 import { ErrorHandler } from '@/helpers'
 import { BookRecord } from '@/records'
 import { BOOK_DEPLOY_STATUSES, WINDOW_BREAKPOINTS } from '@/enums'
-import { getBooks } from '@/api'
-import { usePaginate } from '@/composables'
+import { usePaginate, useBooks } from '@/composables'
 import { Book, ChainId } from '@/types'
 import { BookshelfHeader, BookshelfCubes } from '@/pages/bookshelf'
 import { useNetworksStore } from '@/store'
@@ -81,6 +80,7 @@ import { useWindowSize } from '@vueuse/core'
 
 const networkStore = useNetworksStore()
 const { width } = useWindowSize()
+const { getBooks } = useBooks()
 
 const isLoadFailed = ref(false)
 const books = ref<BookRecord[]>([])
