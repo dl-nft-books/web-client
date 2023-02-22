@@ -1,36 +1,48 @@
-import { ref, watch } from 'vue'
-import { NftBookToken, NftBookToken__factory, UnrefProvider } from '@/types'
+import { ref, watch, computed } from 'vue'
+import { NftBookToken, NftBookToken__factory } from '@/types'
 import { EthProviderRpcError } from '@/types'
 import { handleEthError } from '@/helpers'
+import { useWeb3ProvidersStore } from '@/store'
 
-export const useNftBookToken = (provider: UnrefProvider, address?: string) => {
+export const useNftBookToken = (address?: string) => {
   const _instance = ref<NftBookToken | undefined>()
   const _instance_rw = ref<NftBookToken | undefined>()
+
+  const web3ProvidersStore = useWeb3ProvidersStore()
+  const provider = computed(() => web3ProvidersStore.provider)
 
   watch(provider, () => {
     if (address) init(address)
   })
 
-  if (address && provider.currentProvider && provider.currentSigner) {
+  if (
+    address &&
+    provider.value.currentProvider &&
+    provider.value.currentSigner
+  ) {
     _instance.value = NftBookToken__factory.connect(
       address,
-      provider.currentProvider,
+      provider.value.currentProvider,
     )
     _instance_rw.value = NftBookToken__factory.connect(
       address,
-      provider.currentSigner,
+      provider.value.currentSigner,
     )
   }
 
   const init = (address: string) => {
-    if (address && provider.currentProvider && provider.currentSigner) {
+    if (
+      address &&
+      provider.value.currentProvider &&
+      provider.value.currentSigner
+    ) {
       _instance.value = NftBookToken__factory.connect(
         address,
-        provider.currentProvider,
+        provider.value.currentProvider,
       )
       _instance_rw.value = NftBookToken__factory.connect(
         address,
-        provider.currentSigner,
+        provider.value.currentSigner,
       )
     }
   }

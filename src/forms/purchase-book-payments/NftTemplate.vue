@@ -90,14 +90,8 @@ import {
 } from '@/fields'
 
 import { ErrorMessage, Loader, AppButton } from '@/common'
-import {
-  useBalance,
-  useFormValidation,
-  useContext,
-  useErc721,
-} from '@/composables'
-import { PurchaseFormKey } from '@/types'
-import { BookRecord } from '@/records'
+import { useBalance, useFormValidation, useErc721 } from '@/composables'
+import { Book, PurchaseFormKey } from '@/types'
 
 import { required, address } from '@/validators'
 import { MAX_FIELD_LENGTH } from '@/const'
@@ -106,9 +100,10 @@ import { ExposedFormRef } from '@/forms//PurchaseBookForm.vue'
 import { TOKEN_TYPES } from '@/enums'
 import { debounce } from 'lodash'
 import { ErrorHandler, formatAssetFromWei } from '@/helpers'
+import { useI18n } from 'vue-i18n'
 
 const props = defineProps<{
-  book: BookRecord
+  book: Book
 }>()
 
 const { platform: currentPlatform, isFormDisabled } = inject(PurchaseFormKey)
@@ -120,11 +115,12 @@ const {
   loadBalanceAndPrice: _loadBalanceAndPrice,
 } = useBalance(currentPlatform)
 
-const { $t } = useContext()
+const { t } = useI18n()
 
-const { provider } = useWeb3ProvidersStore()
+const web3ProvidersStore = useWeb3ProvidersStore()
+const provider = computed(() => web3ProvidersStore.provider)
 
-const erc721 = useErc721(provider)
+const erc721 = useErc721()
 
 const form = reactive({
   tokenAddress: '',
@@ -158,15 +154,15 @@ const isGenerateButtonDisabled = computed(() => {
 })
 
 const nftErrorMessage = computed(() => {
-  if (!isNftOwnedByUser.value) return $t('nft-template.user-is-not-owner')
+  if (!isNftOwnedByUser.value) return t('nft-template.user-is-not-owner')
 
-  if (!isNftExist.value) return $t('nft-template.nft-not-exist')
+  if (!isNftExist.value) return t('nft-template.nft-not-exist')
 
   return ''
 })
 
 const isFloorPriceAcceptable = computed(() => {
-  const formattedBookFloorPrice = formatAssetFromWei(props.book.floorPrice, 2)
+  const formattedBookFloorPrice = formatAssetFromWei(props.book.floor_price, 2)
 
   return new BN(nftPrice.value?.usd).compare(formattedBookFloorPrice) >= 1
 })
@@ -188,7 +184,7 @@ const onTokenIdInput = async () => {
 
     const owner = await erc721.getOwner(form.tokenId)
 
-    if (owner !== provider.selectedAddress) isNftOwnedByUser.value = false
+    if (owner !== provider.value.selectedAddress) isNftOwnedByUser.value = false
   } catch (error) {
     isNftExist.value = false
     ErrorHandler.processWithoutFeedback(error)
@@ -205,12 +201,12 @@ defineExpose<Omit<ExposedFormRef, 'promocode' | 'tokenAmount' | 'tokenPrice'>>({
 })
 
 watch(
-  () => [form.tokenId, provider.selectedAddress],
+  () => [form.tokenId, provider.value.selectedAddress],
   debounce(onTokenIdInput, 400),
 )
 
 watch(
-  () => [provider.selectedAddress, form.tokenAddress],
+  () => [provider.value.selectedAddress, form.tokenAddress],
   () => {
     loadBalanceAndPrice()
     form.tokenId = ''

@@ -32,27 +32,27 @@
 
 <script setup lang="ts">
 import { ref, onMounted, Ref } from 'vue'
-import { useContext } from '@/composables'
 import { FaqGuidesSwitcher, FaqGuideItem } from '@/pages/faq'
 import { GUIDES } from '@/enums'
+import { useI18n } from 'vue-i18n'
 
-const { $t } = useContext()
+const { t } = useI18n()
 
 const guides = [
   {
-    title: $t('faq-metamask.title'),
+    title: t('faq-metamask.title'),
     value: GUIDES.metamask,
   },
   {
-    title: $t('faq-buy-book.title'),
+    title: t('faq-buy-book.title'),
     value: GUIDES.buyBook,
   },
   {
-    title: $t('faq-mobile-version.title'),
+    title: t('faq-mobile-version.title'),
     value: GUIDES.mobile,
   },
   {
-    title: $t('faq-solve-problems.title'),
+    title: t('faq-solve-problems.title'),
     value: GUIDES.problems,
   },
 ]

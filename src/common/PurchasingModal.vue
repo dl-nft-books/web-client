@@ -47,7 +47,7 @@
                   size="small"
                   :text="$t('networks.switch-btn-lbl')"
                   :icon-left="$icons.refresh"
-                  @click="switchNetwork(book.chainID)"
+                  @click="switchNetwork(book.chain_id)"
                 />
               </template>
             </template>
@@ -64,20 +64,19 @@ import { AppButton, Modal, Animation, Loader, ErrorMessage } from '@/common'
 
 import { useWeb3ProvidersStore } from '@/store'
 import { storeToRefs } from 'pinia'
-import { BookRecord } from '@/records'
 import { ErrorHandler, switchNetwork } from '@/helpers'
 import { ref, computed } from 'vue'
-import { useContext } from '@/composables'
 import { getPlatformsList } from '@/api'
 import { PurchaseBookForm } from '@/forms'
 
 import disableChainAnimation from '@/assets/animations/disable-chain.json'
 import { ETHEREUM_CHAINS, POLYGON_CHAINS, Q_CHAINS } from '@/enums'
-import { Platform } from '@/types'
+import { Book, Platform } from '@/types'
+import { useI18n } from 'vue-i18n'
 
 const props = defineProps<{
   isShown: boolean
-  book: BookRecord
+  book: Book
 }>()
 
 const emit = defineEmits<{
@@ -85,7 +84,7 @@ const emit = defineEmits<{
   (event: 'submit'): void
 }>()
 
-const { $t } = useContext()
+const { t } = useI18n()
 
 const isLoaded = ref(false)
 const isSubmitting = ref(false)
@@ -95,15 +94,15 @@ const isLoadFailed = ref(false)
 const { provider } = storeToRefs(useWeb3ProvidersStore())
 
 const isValidChain = computed(
-  () => props.book.chainID === Number(provider.value.chainId),
+  () => props.book.chain_id === Number(provider.value.chainId),
 )
 
 const title = computed(() => {
   if (!isValidChain.value && isLoaded.value)
-    return $t('purchasing-modal.wrong-network-title')
+    return t('purchasing-modal.wrong-network-title')
   return isSubmitting.value
-    ? $t('purchasing-modal.generation-title')
-    : $t('purchasing-modal.title')
+    ? t('purchasing-modal.generation-title')
+    : t('purchasing-modal.title')
 })
 
 // Pricer returns price only for not test networks, for debug need to convert
@@ -130,7 +129,7 @@ async function init() {
 
     currentPlatform.value = platforms.find(
       platform =>
-        platform.chain_identifier === Number(formatChain(props.book.chainID)),
+        platform.chain_identifier === Number(formatChain(props.book.chain_id)),
     )
   } catch (e) {
     isLoadFailed.value = true

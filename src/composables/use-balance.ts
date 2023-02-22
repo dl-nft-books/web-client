@@ -1,4 +1,4 @@
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 import { ethers } from 'ethers'
 import { errors } from '@/api/json-api'
 
@@ -18,8 +18,9 @@ export function useBalance(currentPlatform: Platform) {
   const isLoadFailed = ref(false)
   const isPriceAndBalanceLoaded = ref(false)
 
-  const { provider } = useWeb3ProvidersStore()
-  const erc20 = useErc20(provider)
+  const web3ProvidersStore = useWeb3ProvidersStore()
+  const provider = computed(() => web3ProvidersStore.provider)
+  const erc20 = useErc20()
 
   const getPrice = async (tokenAddress: string, tokenType: TOKEN_TYPES) => {
     try {
@@ -28,7 +29,7 @@ export function useBalance(currentPlatform: Platform) {
         const { data } = await getPriceByPlatform(
           currentPlatform.id,
           contract,
-          Number(provider.chainId),
+          Number(provider.value.chainId),
         )
 
         tokenPrice.value = data
@@ -57,13 +58,17 @@ export function useBalance(currentPlatform: Platform) {
         erc20.init(tokenAddress)
         await erc20.getDecimals()
 
-        accountBalance = await erc20.getBalanceOf(provider.selectedAddress!)
+        accountBalance = await erc20.getBalanceOf(
+          provider.value.selectedAddress!,
+        )
         balance.value = new BN(accountBalance)
           .fromFraction(erc20.decimals.value)
           .toString()
         break
       case TOKEN_TYPES.native:
-        accountBalance = await provider.getBalance(provider.selectedAddress!)
+        accountBalance = await provider.value.getBalance(
+          provider.value.selectedAddress!,
+        )
         balance.value = new BN(accountBalance).fromWei().toString()
         break
       default:
@@ -71,17 +76,6 @@ export function useBalance(currentPlatform: Platform) {
     }
   }
 
-  /* 
-    boolean variable isERC20Token appears here to understand whether user trying
-    to pay for the book with ERC20 or not
-
-    using only tokenAddress variable it isn't possible to determine what token
-    type is picked by user in this moment
-
-    Example: user picks ERC20, inputs some data, then switching back to Native.
-    In that case tokenAddress is not equal to empty string, but it doesn`t mean
-    that we need load balance for ERC20 token.
-  */
   const loadBalanceAndPrice = async (
     tokenAddress: string,
     tokenType: TOKEN_TYPES,

@@ -49,7 +49,7 @@
           @click="provider.connect"
         />
         <div class="app-navigation-mobile__network">
-          <header-network-switcher />
+          <header-network-switcher modification="dark-mode" />
         </div>
       </div>
 
@@ -79,7 +79,7 @@ import { Bus, cropAddress } from '@/helpers'
 import { ICON_NAMES } from '@/enums'
 import { config } from '@config'
 import { useWeb3ProvidersStore } from '@/store'
-import { useContext } from '@/composables'
+import { useI18n } from 'vue-i18n'
 
 const SOCIAL_LINKS = [
   {
@@ -95,16 +95,17 @@ const SOCIAL_LINKS = [
     link: config.LINKEDIN_LINK,
   },
 ]
+const web3ProvidersStore = useWeb3ProvidersStore()
+const provider = computed(() => web3ProvidersStore.provider)
 
-const { provider } = useWeb3ProvidersStore()
-const { $t } = useContext()
+const { t } = useI18n()
 
 const isShowSidebar = ref(false)
 
 const connectProviderButtonText = computed(() => {
-  return provider.selectedAddress
-    ? cropAddress(provider.selectedAddress)
-    : $t('app-navbar.connect-provider-button')
+  return provider.value.selectedAddress
+    ? cropAddress(provider.value.selectedAddress)
+    : t('app-navbar.connect-provider-button')
 })
 
 Bus.on(Bus.eventList.openSidebar, () => {

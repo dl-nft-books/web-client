@@ -10,7 +10,7 @@
       <template v-else-if="nftToken">
         <div class="my-nft-item-page__cover-wrp">
           <img
-            :src="nftToken.imageUrl"
+            :src="nftToken.image_url"
             :alt="nftToken.name"
             class="my-nft-item-page__cover"
           />
@@ -50,19 +50,20 @@ import {
 
 import { ErrorHandler } from '@/helpers'
 import { ref } from 'vue'
-import { useContext, useGenerator } from '@/composables'
-import { GeneratedNFtRecord } from '@/records'
+import { useGenerator } from '@/composables'
+import { Token } from '@/types'
+import { useI18n } from 'vue-i18n'
 
-const { $t } = useContext()
+const { t } = useI18n()
 const { getGeneratedTokenById } = useGenerator()
 
 const TABS = {
   myPurchase: {
-    translation: $t('my-nft-item-page.my-purchase-tab'),
+    translation: t('my-nft-item-page.my-purchase-tab'),
     id: 'my-purchase-tab',
   },
   bookDescription: {
-    translation: $t('my-nft-item-page.book-description-tab'),
+    translation: t('my-nft-item-page.book-description-tab'),
     id: 'book-description-tab',
   },
 }
@@ -75,12 +76,12 @@ const isLoaded = ref(false)
 const isLoadFailed = ref(false)
 const currentTab = ref(TABS.myPurchase.id)
 
-const nftToken = ref<GeneratedNFtRecord | undefined>()
+const nftToken = ref<Token | undefined>()
 
 const init = async () => {
   try {
     const data = await getGeneratedTokenById(props.id)
-    nftToken.value = new GeneratedNFtRecord(data)
+    nftToken.value = data
   } catch (error) {
     ErrorHandler.processWithoutFeedback(error)
     isLoadFailed.value = true

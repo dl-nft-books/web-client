@@ -52,9 +52,9 @@ import {
   PurchaseFormKey,
   MintSignatureResponse,
   Task,
+  Book,
 } from '@/types'
 import { TOKEN_TYPES } from '@/enums'
-import { BookRecord } from '@/records'
 
 import { Animation, BookPreview } from '@/common'
 
@@ -95,7 +95,7 @@ export type ExposedFormRef = {
 const TOKEN_AMOUNT_COEFFICIENT = 1.02
 
 const props = defineProps<{
-  book: BookRecord
+  book: Book
   currentPlatform: Platform
 }>()
 
@@ -104,12 +104,14 @@ const emit = defineEmits<{
   (event: 'submitting', value: boolean): void
 }>()
 
-const { provider } = useWeb3ProvidersStore()
+const web3ProvidersStore = useWeb3ProvidersStore()
+const provider = computed(() => web3ProvidersStore.provider)
+
 const { createNewGenerationTask, getMintSignature, getGeneratedTask } =
   useGenerator()
-const nftBookToken = useNftBookToken(provider, props.book.contractAddress)
-const erc20 = useErc20(provider)
-const erc721 = useErc721(provider)
+const nftBookToken = useNftBookToken(props.book.contract_address)
+const erc20 = useErc20()
+const erc721 = useErc721()
 
 const form = reactive({
   tokenType: TOKEN_TYPES.native,
@@ -183,7 +185,7 @@ const approveTokenSpend = async (
   tokenAddress?: string,
   tokenId?: string,
 ) => {
-  if (!provider.selectedAddress) return
+  if (!provider.value.selectedAddress) return
 
   switch (tokenType) {
     case TOKEN_TYPES.erc20:
@@ -191,25 +193,25 @@ const approveTokenSpend = async (
       erc20.init(tokenAddress)
 
       await erc20.approveSpend(
-        provider.selectedAddress,
+        provider.value.selectedAddress,
         tokenAmount,
-        props.book.contractAddress,
+        props.book.contract_address,
       )
       break
     case TOKEN_TYPES.voucher:
-      erc20.init(props.book.voucherToken)
+      erc20.init(props.book.voucher_token)
 
       await erc20.approveSpend(
-        provider.selectedAddress,
-        props.book.voucherTokenAmount,
-        props.book.contractAddress,
+        provider.value.selectedAddress,
+        props.book.voucher_token_amount,
+        props.book.contract_address,
       )
       break
     case TOKEN_TYPES.nft:
       if (!tokenAddress || !tokenId) return
       erc721.init(tokenAddress)
 
-      await erc721.approve(props.book.contractAddress, tokenId)
+      await erc721.approve(props.book.contract_address, tokenId)
       break
     default:
       break
@@ -258,7 +260,7 @@ const submit = async () => {
   if (
     !isFormValid() ||
     !paymentTemplateRef.value?.isFormValid() ||
-    !provider.selectedAddress
+    !provider.value.selectedAddress
   )
     return
 
@@ -277,7 +279,7 @@ const submit = async () => {
   try {
     const currentTask = await createNewGenerationTask({
       signature: paymentTemplateRef.value.signature,
-      account: provider.selectedAddress,
+      account: provider.value.selectedAddress,
       bookId: props.book.id,
     })
 

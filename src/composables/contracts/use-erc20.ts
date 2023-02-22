@@ -1,32 +1,50 @@
-import { ref, watch } from 'vue'
+import { ref, computed, watch } from 'vue'
 import { BN } from '@/utils/math.util'
-import { Erc20, Erc20__factory, UnrefProvider } from '@/types'
+import { Erc20, Erc20__factory } from '@/types'
 import { EthProviderRpcError } from '@/types'
+import { useWeb3ProvidersStore } from '@/store'
 
 import { handleEthError } from '@/helpers'
 
-export const useErc20 = (provider: UnrefProvider, address?: string) => {
+export const useErc20 = (address?: string) => {
   const _instance = ref<Erc20 | undefined>()
   const _instance_rw = ref<Erc20 | undefined>()
+
+  const web3ProvidersStore = useWeb3ProvidersStore()
+  const provider = computed(() => web3ProvidersStore.provider)
 
   watch(provider, () => {
     if (address) init(address)
   })
 
-  if (address && provider.currentProvider && provider.currentSigner) {
-    _instance.value = Erc20__factory.connect(address, provider.currentProvider)
-    _instance_rw.value = Erc20__factory.connect(address, provider.currentSigner)
+  if (
+    address &&
+    provider.value.currentProvider &&
+    provider.value.currentSigner
+  ) {
+    _instance.value = Erc20__factory.connect(
+      address,
+      provider.value.currentProvider,
+    )
+    _instance_rw.value = Erc20__factory.connect(
+      address,
+      provider.value.currentSigner,
+    )
   }
 
   const init = (address: string) => {
-    if (address && provider.currentProvider && provider.currentSigner) {
+    if (
+      address &&
+      provider.value.currentProvider &&
+      provider.value.currentSigner
+    ) {
       _instance.value = Erc20__factory.connect(
         address,
-        provider.currentProvider,
+        provider.value.currentProvider,
       )
       _instance_rw.value = Erc20__factory.connect(
         address,
-        provider.currentSigner,
+        provider.value.currentSigner,
       )
     }
   }
@@ -55,9 +73,9 @@ export const useErc20 = (provider: UnrefProvider, address?: string) => {
       getSymbol(),
       getTotalSupply(),
     ])
-    if (provider.currentSigner) {
+    if (provider.value.currentSigner) {
       balance.value = await getBalanceOf(
-        await provider.currentSigner?.getAddress(),
+        await provider.value.currentSigner?.getAddress(),
       )
     }
   }

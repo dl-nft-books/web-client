@@ -12,7 +12,7 @@
       {{ title }}
     </h5>
     <h4 v-if="price" class="book-card__price">
-      {{ formatFiatAssetFromWei(price, CURRENCY.USD) }}
+      {{ formatFiatAssetFromWei(price, CURRENCIES.USD) }}
     </h4>
     <template v-if="$slots.actionButton">
       <slot name="actionButton" />
@@ -30,16 +30,16 @@
 
 <script lang="ts" setup>
 import { AppButton, BookCardNetwork } from '@/common'
-import { BookRecord, GeneratedNFtRecord } from '@/records'
 import { formatFiatAssetFromWei, getNetworkScheme } from '@/helpers'
 import { computed } from 'vue'
-import { useContext } from '@/composables'
-import { Network } from '@/types'
-import { ROUTE_NAMES, CURRENCY } from '@/enums'
+import { useGenerator } from '@/composables'
+import { Network, Book, Token } from '@/types'
+import { ROUTE_NAMES, CURRENCIES } from '@/enums'
+import { useI18n } from 'vue-i18n'
 
 const props = withDefaults(
   defineProps<{
-    book: BookRecord | GeneratedNFtRecord
+    book: Book | Token
     modification?: 'centered' | 'default'
     backgroundColor?: 'primary' | 'secondary' | 'tertiary'
     actionBtnText?: string
@@ -53,7 +53,8 @@ const props = withDefaults(
   },
 )
 
-const { $t } = useContext()
+const { t } = useI18n()
+const { isToken } = useGenerator()
 
 const bookCardClasses = computed(() =>
   [
@@ -65,28 +66,24 @@ const bookCardClasses = computed(() =>
 )
 
 const actionButtonText = computed(
-  () => props.actionBtnText || $t('bookshelf-page.purchase-btn'),
+  () => props.actionBtnText || t('bookshelf-page.purchase-btn'),
 )
 
 const actionButtonLink = computed(() =>
-  props.book instanceof GeneratedNFtRecord
+  isToken(props.book)
     ? { name: ROUTE_NAMES.myNftItem, params: { id: props.book.id } }
     : { name: ROUTE_NAMES.bookshelfItem, params: { id: props.book.id } },
 )
 
 const bannerUrl = computed(() =>
-  props.book instanceof GeneratedNFtRecord
-    ? props.book.imageUrl
-    : props.book.bannerUrl,
+  isToken(props.book) ? props.book.image_url : props.book.banner.attributes.url,
 )
 
 const title = computed(() =>
-  props.book instanceof GeneratedNFtRecord ? props.book.name : props.book.title,
+  isToken(props.book) ? props.book.name : props.book.title,
 )
 
-const price = computed(() =>
-  props.book instanceof BookRecord ? props.book.price : '',
-)
+const price = computed(() => (isToken(props.book) ? '' : props.book.price))
 </script>
 
 <style lang="scss" scoped>

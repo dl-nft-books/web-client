@@ -2,6 +2,8 @@ import { api } from '@/api'
 import { config } from '@/config'
 import { GENERATED_NFT_STATUSES } from '@/enums'
 import {
+  BookPayment,
+  BookPaymentNftExchange,
   CreateTaskResponse,
   MintSignatureResponse,
   PageOrder,
@@ -18,6 +20,14 @@ enum TASK_STATUS {
 }
 
 const DEFAULT_CALL_INTERVAL = 3000 // ms
+
+type TokenWithRegularPayment = Token & {
+  payment: BookPayment
+}
+
+type ExchangedToken = Token & {
+  payment: BookPaymentNftExchange
+}
 
 export function useGenerator() {
   const createNewGenerationTask = async (opts: {
@@ -116,12 +126,43 @@ export function useGenerator() {
     return data
   }
 
+  const isToken = (object: unknown): object is Token => {
+    return (
+      typeof object === 'object' &&
+      object !== null &&
+      object !== undefined &&
+      'payment' in object &&
+      (object as Token).payment !== undefined
+    )
+  }
+
+  const isTokenWithRegularPayment = (
+    object: unknown,
+  ): object is TokenWithRegularPayment => {
+    return (
+      isToken(object) &&
+      object.payment !== undefined &&
+      'erc20_data' in object.payment
+    )
+  }
+
+  const isExchangedToken = (object: unknown): object is ExchangedToken => {
+    return (
+      isToken(object) &&
+      object.payment !== undefined &&
+      'nft_address' in object.payment
+    )
+  }
+
   return {
     createNewGenerationTask,
     getGenerationTaskById,
     getMintSignature,
     getGeneratedTask,
     getGeneratedTokens,
+    isToken,
+    isTokenWithRegularPayment,
+    isExchangedToken,
     getGeneratedTokenById,
   }
 }

@@ -79,16 +79,15 @@ import { useFormValidation, useBalance } from '@/composables'
 import { required, address, minLength, maxLength } from '@/validators'
 
 import { PROMOCODE_LENGTH, MAX_FIELD_LENGTH } from '@/const'
-import { Promocode, PurchaseFormKey } from '@/types'
+import { Book, Promocode, PurchaseFormKey } from '@/types'
 import { ExposedPromocodeRef } from '@/forms/purchase-book-payments/PromocodeTemplate.vue'
 import { ExposedFormRef } from '@/forms//PurchaseBookForm.vue'
-import { BookRecord } from '@/records'
 import { BN } from '@/utils/math.util'
 import { useWeb3ProvidersStore } from '@/store'
 import { TOKEN_TYPES } from '@/enums'
 
 const props = defineProps<{
-  book: BookRecord
+  book: Book
 }>()
 
 const { platform: currentPlatform, isFormDisabled } = inject(PurchaseFormKey)
@@ -99,7 +98,8 @@ const form = reactive({
   promocode: '',
 })
 
-const { provider } = useWeb3ProvidersStore()
+const web3ProvidersStore = useWeb3ProvidersStore()
+const provider = computed(() => web3ProvidersStore.provider)
 
 const {
   balance,
@@ -165,7 +165,7 @@ watch(
 )
 
 watch(
-  () => [form.tokenAddress, provider.selectedAddress],
+  () => [form.tokenAddress, provider.value.selectedAddress],
   () => {
     if (!form.tokenAddress) return
 

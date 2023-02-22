@@ -79,30 +79,4 @@ export interface ProviderWrapper {
   addNetwork?: (chainID: ChainId) => Promise<void>
 }
 
-export interface UnrefProvider {
-  currentProvider: ethers.providers.Web3Provider | undefined
-  currentSigner: ethers.providers.JsonRpcSigner | undefined
-
-  selectedProvider: PROVIDERS | undefined
-  chainId: ChainId | undefined
-  selectedAddress: string | undefined
-  isConnected: boolean
-
-  init: (provider: DesignatedProvider) => Promise<void>
-  connect: () => Promise<void>
-  disconnect: () => void
-  switchChain: (chainId: ChainId) => Promise<void>
-  addChain: (
-    chainId: ChainId,
-    chainName: string,
-    chainRpcUrl: string,
-    nativeCurrency: NativeCurrency,
-    blockExplorerUrl: string,
-  ) => Promise<void>
-  signAndSendTx: (txRequestBody: TxRequestBody) => Promise<TransactionResponse>
-  getHashFromTxResponse: (txResponse: TransactionResponse) => string
-  getTxUrl: (explorerUrl: string, txHash: string) => string
-  getAddressUrl: (explorerUrl: string, address: string) => string
-}
-
-export type { UseProvider } from '@/composables/useProvider'
+export type { UseProvider } from '@/composables'

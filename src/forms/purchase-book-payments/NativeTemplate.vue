@@ -51,8 +51,7 @@ import { TextareaField, ReadonlyField } from '@/fields'
 import { ErrorMessage, Loader, AppButton } from '@/common'
 import { useBalance, useFormValidation } from '@/composables'
 import { PromocodeTemplate } from '@/forms/purchase-book-payments'
-import { Promocode, PurchaseFormKey } from '@/types'
-import { BookRecord } from '@/records'
+import { Book, Promocode, PurchaseFormKey } from '@/types'
 
 import { required, minLength, maxLength } from '@/validators'
 import { PROMOCODE_LENGTH, MAX_FIELD_LENGTH } from '@/const'
@@ -62,7 +61,7 @@ import { ExposedFormRef } from '@/forms//PurchaseBookForm.vue'
 import { TOKEN_TYPES } from '@/enums'
 
 const props = defineProps<{
-  book: BookRecord
+  book: Book
 }>()
 
 const { platform: currentPlatform, isFormDisabled } = inject(PurchaseFormKey)
@@ -75,7 +74,8 @@ const {
   loadBalanceAndPrice,
 } = useBalance(currentPlatform)
 
-const { provider } = useWeb3ProvidersStore()
+const web3ProvidersStore = useWeb3ProvidersStore()
+const provider = computed(() => web3ProvidersStore.provider)
 
 const form = reactive({
   tokenAddress: '',
@@ -129,7 +129,7 @@ watch(
 )
 
 watch(
-  () => provider.selectedAddress,
+  () => provider.value.selectedAddress,
   () => {
     loadBalanceAndPrice(form.tokenAddress, TOKEN_TYPES.native)
   },

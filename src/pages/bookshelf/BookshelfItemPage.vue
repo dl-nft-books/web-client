@@ -8,7 +8,7 @@
       <template v-else-if="book">
         <div class="bookshelf-item-page__cover-wrp">
           <img
-            :src="book.bannerUrl"
+            :src="book.banner.attributes.url"
             :alt="book.title"
             class="bookshelf-item-page__cover"
           />
@@ -26,13 +26,13 @@
 
           <section class="bookshelf-item-page__prices">
             <bookshelf-prices
-              :price="formatFiatAssetFromWei(book.price, CURRENCY.USD)"
+              :price="formatFiatAssetFromWei(book.price, CURRENCIES.USD)"
               :floor-price="
-                formatFiatAssetFromWei(book.floorPrice, CURRENCY.USD)
+                formatFiatAssetFromWei(book.floor_price, CURRENCIES.USD)
               "
               :voucher-link="
-                book.voucherToken !== ethers.constants.AddressZero
-                  ? getBlockExplorerLink(book.chainID, book.voucherToken)
+                book.voucher_token !== ethers.constants.AddressZero
+                  ? getBlockExplorerLink(book.chain_id, book.voucher_token)
                   : undefined
               "
             />
@@ -99,12 +99,12 @@ import {
   getNetworkScheme,
   getBlockExplorerLink,
 } from '@/helpers'
-import { CURRENCY } from '@/enums'
+import { CURRENCIES } from '@/enums'
 import { useBooks } from '@/composables'
-import { BookRecord } from '@/records'
 import { useWeb3ProvidersStore, useNetworksStore } from '@/store'
 import { storeToRefs } from 'pinia'
 import { ethers } from 'ethers'
+import { Book } from '@/types'
 
 const props = defineProps<{
   id: string
@@ -119,10 +119,10 @@ const isPurchaseSuccessModalShown = ref(false)
 const networkStore = useNetworksStore()
 const { getBookById } = useBooks()
 const bookNetwork = computed(() =>
-  networkStore.getNetworkByID(book.value?.chainID),
+  networkStore.getNetworkByID(book.value?.chain_id),
 )
 
-const book = ref<BookRecord | undefined>()
+const book = ref<Book | undefined>()
 
 const submit = async () => {
   try {
@@ -137,7 +137,7 @@ const init = async () => {
   try {
     const data = await getBookById(props.id)
 
-    book.value = new BookRecord(data)
+    book.value = data
   } catch (error) {
     ErrorHandler.processWithoutFeedback(error)
     isLoadFailed.value = true

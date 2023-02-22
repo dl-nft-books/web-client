@@ -20,25 +20,25 @@
 
 <script lang="ts" setup>
 import { Icon } from '@/common'
-import { useContext } from '@/composables'
 import { ICON_NAMES } from '@/enums'
+import { useI18n } from 'vue-i18n'
 
 type Badge = {
   label: string
   icon: ICON_NAMES
 }
 
-const { $t } = useContext()
+const { t } = useI18n()
 
 defineProps<{ description?: string }>()
 
 const badges: Badge[] = [
   {
-    label: $t('nft-description.badge-1'),
+    label: t('nft-description.badge-1'),
     icon: ICON_NAMES.badgeCircleStar,
   },
   {
-    label: $t('nft-description.badge-2'),
+    label: t('nft-description.badge-2'),
     icon: ICON_NAMES.badgePencil,
   },
 ]

@@ -54,30 +54,32 @@ import { ethers } from 'ethers'
 import { Loader, AppButton, ErrorMessage } from '@/common'
 import { MessageField, ReadonlyField, TextareaField } from '@/fields'
 
-import { BookRecord } from '@/records'
-import { PurchaseFormKey } from '@/types'
+import { Book, PurchaseFormKey } from '@/types'
 import { MAX_FIELD_LENGTH } from '@/const'
-import { useBalance, useFormValidation, useContext } from '@/composables'
+import { useBalance, useFormValidation } from '@/composables'
 import { ErrorHandler, formatAssetFromWei } from '@/helpers'
 import { BN } from '@/utils/math.util'
 import { required } from '@/validators'
 import { useWeb3ProvidersStore } from '@/store'
 import { ExposedFormRef } from '@/forms//PurchaseBookForm.vue'
 import { TOKEN_TYPES } from '@/enums'
+import { useI18n } from 'vue-i18n'
 
 const props = defineProps<{
-  book: BookRecord
+  book: Book
 }>()
 
 const { platform: currentPlatform, isFormDisabled } = inject(PurchaseFormKey)
 
-const { $t } = useContext()
-const { provider } = useWeb3ProvidersStore()
+const { t } = useI18n()
+
+const web3ProvidersStore = useWeb3ProvidersStore()
+const provider = computed(() => web3ProvidersStore.provider)
 
 const { getBalance, isLoadFailed, balance } = useBalance(currentPlatform)
 
 const form = reactive({
-  tokenAddress: props.book.voucherToken,
+  tokenAddress: props.book.voucher_token,
   signature: '',
   promocode: '',
 })
@@ -92,19 +94,19 @@ const { getFieldErrorMessage, touchField, isFormValid } = useFormValidation(
 const isLoading = ref(true)
 
 const isVoucherSupported = computed(
-  () => props.book.voucherToken !== ethers.constants.AddressZero,
+  () => props.book.voucher_token !== ethers.constants.AddressZero,
 )
 
 const formattedVoucherTokenAmount = computed(() =>
-  props.book.voucherTokenAmount
-    ? formatAssetFromWei(props.book.voucherTokenAmount, 2)
+  props.book.voucher_token_amount
+    ? formatAssetFromWei(props.book.voucher_token_amount, 2)
     : '',
 )
 
 const voucherErrorTitle = computed(() =>
   !isVoucherSupported.value
-    ? $t('purchase-book-form.voucher-token-unsupported-msg')
-    : $t('purchase-book-form.not-enough-voucher-tokens-msg', {
+    ? t('purchase-book-form.voucher-token-unsupported-msg')
+    : t('purchase-book-form.not-enough-voucher-tokens-msg', {
         amount: formattedVoucherTokenAmount.value,
       }),
 )
@@ -121,7 +123,7 @@ defineExpose<Omit<ExposedFormRef, 'promocode' | 'tokenPrice'>>({
 })
 
 watch(
-  () => provider.selectedAddress,
+  () => provider.value.selectedAddress,
   async () => {
     if (!isVoucherSupported.value) {
       isLoading.value = false
@@ -130,7 +132,7 @@ watch(
 
     isLoading.value = true
     try {
-      await getBalance(props.book.voucherToken, TOKEN_TYPES.erc20)
+      await getBalance(props.book.voucher_token, TOKEN_TYPES.erc20)
     } catch (error) {
       ErrorHandler.processWithoutFeedback(error)
       isLoadFailed.value = true

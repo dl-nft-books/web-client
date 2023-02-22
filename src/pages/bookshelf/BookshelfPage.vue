@@ -36,7 +36,7 @@
           v-for="book in books"
           :key="book.id"
           :book="book"
-          :network="networkStore.getNetworkByID(book.chainID)"
+          :network="networkStore.getNetworkByID(book.chain_id)"
         />
       </div>
 
@@ -70,7 +70,6 @@ import {
 } from '@/common'
 import { InputField } from '@/fields'
 import { ErrorHandler } from '@/helpers'
-import { BookRecord } from '@/records'
 import { BOOK_DEPLOY_STATUSES, WINDOW_BREAKPOINTS } from '@/enums'
 import { usePaginate, useBooks } from '@/composables'
 import { Book, ChainId } from '@/types'
@@ -83,7 +82,7 @@ const { width } = useWindowSize()
 const { getBooks } = useBooks()
 
 const isLoadFailed = ref(false)
-const books = ref<BookRecord[]>([])
+const books = ref<Book[]>([])
 const currentNetworkChainId = ref<ChainId>(0)
 
 const searchByString = ref('')
@@ -112,13 +111,11 @@ const { loadNextPage, isLoading, isLoadMoreBtnShown } = usePaginate(
 )
 
 function setList(chunk: Book[]) {
-  books.value = chunk.map(book => new BookRecord(book)) ?? []
+  books.value = chunk ?? []
 }
 
 function concatList(chunk: Book[]) {
-  books.value = books.value.concat(
-    chunk.map(book => new BookRecord(book)) ?? [],
-  )
+  books.value = books.value.concat(chunk ?? [])
 }
 
 function onError(e: Error) {

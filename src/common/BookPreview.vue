@@ -1,7 +1,11 @@
 <template>
   <div class="book-preview">
     <div class="book-preview__img-wrapper">
-      <img class="book-preview__img" :src="book.bannerUrl" :alt="book.title" />
+      <img
+        class="book-preview__img"
+        :src="book.banner.attributes.url"
+        :alt="book.title"
+      />
     </div>
     <div class="book-preview__details">
       <h4 class="book-preview__title">
@@ -24,15 +28,15 @@
 
 <script setup lang="ts">
 import { computed } from 'vue'
-import { BookRecord } from '@/records'
+import { Book } from '@/types'
 import { formatFiatAssetFromWei } from '@/helpers'
-import { CURRENCY } from '@/enums'
+import { CURRENCIES } from '@/enums'
 
 type MODIFICATIONS = 'floor-price' | 'default'
 
 const props = withDefaults(
   defineProps<{
-    book: BookRecord
+    book: Book
     modification?: MODIFICATIONS
   }>(),
   {
@@ -43,9 +47,9 @@ const props = withDefaults(
 const price = computed(() =>
   formatFiatAssetFromWei(
     props.modification === 'floor-price'
-      ? props.book.floorPrice
+      ? props.book.floor_price
       : props.book.price,
-    CURRENCY.USD,
+    CURRENCIES.USD,
   ),
 )
 </script>

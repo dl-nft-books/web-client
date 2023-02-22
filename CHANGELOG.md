@@ -4,10 +4,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [1.3.0 - rc.1]
 #### Added
 - Search on bookshelf page
 - Nft for nft exchange
+- useBook and useGenerator composable
 
 #### Changed
 - Typography refactored
@@ -15,6 +16,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - All components refactored to 'template -> script -> style' pattern
 - Clean up and refactoring old code base
 - Purchase form is devided into different components to increase code readability
+- Refactored composable folder structure
+
+#### Removed
+- useContext hook
+- Useless types
 
 ## [1.2.0] - 2023-02-06
 #### Added

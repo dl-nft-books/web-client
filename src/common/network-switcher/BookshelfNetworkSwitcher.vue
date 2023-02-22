@@ -37,11 +37,11 @@ import {
 import { useNetworksStore } from '@/store'
 import { SelectField } from '@/fields'
 import { useWindowSize } from '@vueuse/core'
-import { useContext } from '@/composables'
+import { useI18n } from 'vue-i18n'
 
 const networkStore = useNetworksStore()
 const { width } = useWindowSize()
-const { $t } = useContext()
+const { t } = useI18n()
 
 const emit = defineEmits<{
   (event: 'update:modelValue', value: ChainId): void
@@ -57,7 +57,7 @@ const isSmallScreen = computed(() => width.value <= WINDOW_BREAKPOINTS.tablet)
 
 const selectOptions = computed(() => [
   {
-    label: $t('networks.all-tokens-lbl'),
+    label: t('networks.all-tokens-lbl'),
     value: '0',
   },
   ...networkStore.list.map(network => ({

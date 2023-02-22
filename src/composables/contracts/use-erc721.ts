@@ -1,31 +1,46 @@
-import { ref, watch } from 'vue'
-import { Erc721, Erc721__factory, UnrefProvider } from '@/types'
+import { ref, watch, computed } from 'vue'
+import { Erc721, Erc721__factory } from '@/types'
+import { useWeb3ProvidersStore } from '@/store'
 
-export const useErc721 = (provider: UnrefProvider, address?: string) => {
+export const useErc721 = (address?: string) => {
   const _instance = ref<Erc721 | undefined>()
   const _instance_rw = ref<Erc721 | undefined>()
+
+  const web3ProvidersStore = useWeb3ProvidersStore()
+  const provider = computed(() => web3ProvidersStore.provider)
 
   watch(provider, () => {
     if (address) init(address)
   })
 
-  if (address && provider.currentProvider && provider.currentSigner) {
-    _instance.value = Erc721__factory.connect(address, provider.currentProvider)
+  if (
+    address &&
+    provider.value.currentProvider &&
+    provider.value.currentSigner
+  ) {
+    _instance.value = Erc721__factory.connect(
+      address,
+      provider.value.currentProvider,
+    )
     _instance_rw.value = Erc721__factory.connect(
       address,
-      provider.currentSigner,
+      provider.value.currentSigner,
     )
   }
 
   const init = (address: string) => {
-    if (address && provider.currentProvider && provider.currentSigner) {
+    if (
+      address &&
+      provider.value.currentProvider &&
+      provider.value.currentSigner
+    ) {
       _instance.value = Erc721__factory.connect(
         address,
-        provider.currentProvider,
+        provider.value.currentProvider,
       )
       _instance_rw.value = Erc721__factory.connect(
         address,
-        provider.currentSigner,
+        provider.value.currentSigner,
       )
     }
   }

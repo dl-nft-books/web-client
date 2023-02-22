@@ -35,14 +35,14 @@
 
 <script setup lang="ts">
 import { FaqGuides } from '@/pages/faq'
-import { useContext } from '@/composables'
+import { useI18n } from 'vue-i18n'
 
-const { $t } = useContext()
+const { t } = useI18n()
 
 const overviewPoints = [
-  $t('faq-page.overview-abstract-1'),
-  $t('faq-page.overview-abstract-2'),
-  $t('faq-page.overview-abstract-3'),
+  t('faq-page.overview-abstract-1'),
+  t('faq-page.overview-abstract-2'),
+  t('faq-page.overview-abstract-3'),
 ]
 </script>
 
