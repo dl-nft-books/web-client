@@ -67,7 +67,15 @@ const selectOptions = computed(() => [
 ])
 
 const changeNetwork = (network: NETWORKS) => {
-  emit('update:modelValue', Number(getChainFromNetwork(network)))
+  const chainId = Number(getChainFromNetwork(network))
+
+  // remove filter on click on the same button
+  if (chainId === Number(props.modelValue)) {
+    emit('update:modelValue', 0)
+    return
+  }
+
+  emit('update:modelValue', chainId)
 }
 
 watch(chainIdValue, () => {
