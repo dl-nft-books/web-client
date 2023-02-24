@@ -90,16 +90,20 @@ const pickGuide = (guide: Guide) => {
   user-select: none;
   transition: 0.2s ease-in-out;
   transition-property: border background-color;
-
-  &:hover {
-    border: toRem(1) solid var(--primary-main);
-    background-color: var(--bg-picked-color);
-    cursor: pointer;
-  }
+  touch-action: manipulation;
 
   &--picked {
     border: toRem(1) solid var(--primary-main);
     background-color: var(--bg-picked-color);
+  }
+
+  // prevent stuck hover effects on touch devices
+  @media (hover: hover) {
+    &:hover {
+      border: toRem(1) solid var(--primary-main);
+      background-color: var(--bg-picked-color);
+      cursor: pointer;
+    }
   }
 
   @include respond-to(medium) {

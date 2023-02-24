@@ -23,6 +23,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 #### Fixed
 - Bug with showing filter and search together
+- Touch devices bug on FAQ page
 
 #### Removed
 - useContext hook
