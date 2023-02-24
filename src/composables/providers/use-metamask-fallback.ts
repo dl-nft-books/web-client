@@ -1,4 +1,4 @@
-import { ref } from 'vue'
+import { ref, watch } from 'vue'
 import { router } from '@/router'
 import { ProviderWrapper } from '@/types'
 
@@ -19,6 +19,13 @@ export function useMetamaskFallback(): Pick<
       window.location.reload()
     }
   }
+
+  watch(
+    () => router.currentRoute,
+    () => {
+      MetamaskAppConnectUrl.value = `https://metamask.app.link/dapp/${window.location.host}${router.currentRoute.value.fullPath}`
+    },
+  )
 
   return {
     init,
