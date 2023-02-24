@@ -5,6 +5,7 @@ import {
   useCoinbase,
   usePhantom,
   useSolflare,
+  useMetamaskFallback,
 } from '@/composables'
 import {
   DesignatedProvider,
@@ -83,6 +84,9 @@ export const useProvider = (): UseProvider => {
         break
       case PROVIDERS.solflare:
         providerWrp.value = useSolflare(provider.instance)
+        break
+      case PROVIDERS.metamaskFallback:
+        providerWrp.value = useMetamaskFallback() as ProviderWrapper
         break
       default:
         throw new Error('Invalid Provider')

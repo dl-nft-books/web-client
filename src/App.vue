@@ -24,6 +24,7 @@ import { config } from '@config'
 import { useWeb3ProvidersStore } from '@/store'
 import { PROVIDERS } from '@/enums'
 import { Bus } from '@/helpers'
+import { DesignatedProvider } from '@/types'
 
 const isAppInitialized = ref(false)
 const web3Store = useWeb3ProvidersStore()
@@ -38,8 +39,21 @@ const init = async () => {
       provider => provider.name === PROVIDERS.metamask,
     )
 
+    const metamaskFallBack: DesignatedProvider = {
+      name: PROVIDERS.metamaskFallback,
+      instance: undefined,
+    }
+
     if (metamaskProvider) {
       await web3Store.provider.init(metamaskProvider)
+    } else {
+      /* if user has no extension or mobile metamask app we are using fallback 
+         provider to redirect him to app or to page where he can download it */
+      const fallbackProvider = web3Store.providers.find(
+        provider => provider.name === PROVIDERS.fallback,
+      )
+
+      if (fallbackProvider) await web3Store.provider.init(metamaskFallBack)
     }
 
     document.title = config.APP_NAME
