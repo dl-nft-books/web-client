@@ -1,4 +1,4 @@
-import { TokenPrice, Platform } from '@/types'
+import { TokenPrice, NftPrice, Platform } from '@/types'
 import { api } from '@/api'
 
 export function getPlatformsList() {
@@ -14,5 +14,12 @@ export function getPriceByPlatform(
     platform,
     ...(contract ? { contract } : {}),
     ...(chainID ? { chain_id: chainID } : {}),
+  })
+}
+
+export function getNftPriceByPlatform(platform: string, contract: string) {
+  return api.get<NftPrice>('/integrations/pricer/nft', {
+    platform,
+    contract,
   })
 }

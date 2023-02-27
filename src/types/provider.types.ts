@@ -79,4 +79,4 @@ export interface ProviderWrapper {
   addNetwork?: (chainID: ChainId) => Promise<void>
 }
 
-export type { UseProvider } from '@/composables/useProvider'
+export type { UseProvider } from '@/composables'

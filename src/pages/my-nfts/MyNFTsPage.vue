@@ -41,21 +41,20 @@
 <script lang="ts" setup>
 import { Loader, ErrorMessage, BookCard, AppButton } from '@/common'
 import { MyNftsNoData } from '@/pages/my-nfts'
-
 import { ErrorHandler } from '@/helpers'
-import { ref, watch, computed } from 'vue'
-import { GeneratedNFtRecord } from '@/records'
+import { ref, computed } from 'vue'
 import { useWeb3ProvidersStore } from '@/store'
-import { storeToRefs } from 'pinia'
-import { GENERATED_NFT_STATUSES } from '@/enums'
-import { getGeneratedTokens } from '@/api'
-import { usePaginate } from '@/composables'
+import { usePaginate, useGenerator } from '@/composables'
 import { Token } from '@/types'
+import { GENERATED_NFT_STATUSES } from '@/enums'
 
-const { provider } = storeToRefs(useWeb3ProvidersStore())
+const web3ProvidersStore = useWeb3ProvidersStore()
+const provider = computed(() => web3ProvidersStore.provider)
+
+const { getGeneratedTokens } = useGenerator()
 
 const isLoadFailed = ref(false)
-const nftList = ref<GeneratedNFtRecord[]>([])
+const nftList = ref<Token[]>([])
 
 const loadList = computed(
   () => () =>
@@ -65,37 +64,25 @@ const loadList = computed(
     }),
 )
 
-const { loadFirstPage, loadNextPage, isLoading, isLoadMoreBtnShown } =
-  usePaginate(loadList, setList, concatList, onError, {
-    isLoadOnMounted: false,
-  })
+const { loadNextPage, isLoading, isLoadMoreBtnShown } = usePaginate(
+  loadList,
+  setList,
+  concatList,
+  onError,
+)
 
 function setList(chunk: Token[]) {
-  nftList.value = chunk.map(item => new GeneratedNFtRecord(item)) ?? []
+  nftList.value = chunk ?? []
 }
 
 function concatList(chunk: Token[]) {
-  nftList.value = nftList.value.concat(
-    chunk.map(item => new GeneratedNFtRecord(item)) ?? [],
-  )
+  nftList.value = nftList.value.concat(chunk ?? [])
 }
 
 function onError(e: Error) {
   ErrorHandler.processWithoutFeedback(e)
   isLoadFailed.value = true
 }
-
-watch(
-  () => provider.value.selectedAddress,
-  val => {
-    if (val) {
-      loadFirstPage()
-    } else {
-      nftList.value = []
-    }
-  },
-  { immediate: true },
-)
 </script>
 
 <style lang="scss" scoped>
@@ -106,7 +93,9 @@ watch(
   gap: toRem(34);
   padding-top: toRem(70);
   padding-bottom: toRem(200);
-  background: url('/images/background-cubes.png') no-repeat right / contain;
+  background: url('/images/background-cubes.png') no-repeat right center /
+    contain;
+  background-size: clamp(toRem(300), 30%, toRem(400));
 
   @include respond-to(tablet) {
     padding-top: toRem(10);

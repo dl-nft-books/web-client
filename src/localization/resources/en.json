@@ -113,10 +113,17 @@
   },
   "bookshelf-page": {
     "loading-error-msg": "Oops... Something went wrong",
-    "no-data-msg": "Empty data, please add new",
+    "no-data-msg": "No books found in this category",
     "title": "Bookshelf",
     "purchase-btn": "Buy",
-    "load-more-btn": "SHOW MORE"
+    "load-more-btn": "SHOW MORE",
+    "search-placeholder": "Type something..."
+  },
+  "bookshelf-prices": {
+    "floor-lbl": "Floor",
+    "price-lbl": "Price",
+    "floor-price-explanation": "Floor price is the minimum NFT price that can be exchanged for a book",
+    "voucher-explanation": "You can use the voucher token when you pay"
   },
   "networks": {
     "polygon": "Polygon Mainnet",
@@ -283,6 +290,24 @@
     "voucher-token-unsupported-msg": "This payment method is not supported for the purchase of this book",
     "not-enough-voucher-tokens-msg": "You don't have enough voucher tokens to buy this NFT. Required amount: {amount}." 
   },
+  "nft-template": {
+    "token-address-lbl": "Token Address",
+    "token-id-lbl": "Token ID",
+    "token-address-placeholder": "Enter address of your NFT",
+    "token-id-placeholder": "Enter ID of your NFT",
+    "buy-terms": "I know and agree that if my NFT is more expensive, the price difference will not be refunded",
+    "collection-price": "Floor price of your NFT collection",
+    "price": "${price}",
+    "not-enough-price": "Floor price of your NFT collection is too low",
+    "unsupported-token-title": "This NFT collection is unsupported.",
+    "unsupported-token-subtitle":"Please choose another NFT.",
+    "loading-error-msg": "Something went wrong during fetching NFT price",
+    "user-is-not-owner": "You don't own this NFT",
+    "nft-not-exist": "NFT with such id doesn't exist"
+  },
+  "book-preview": {
+    "label": "Floor price"
+  },
   "purchasing-success-modal": {
     "head-title": "Purchasing",
     "title": "Your payment was successful.",
@@ -302,11 +327,15 @@
   },
   "nft-details": {
     "price-lbl": "Price",
+    "floor-price-lbl": "Exchanged NFT Floor Price",
+    "exchanged-nft-address": "Exchanged NFT address",
+    "exchanged-nft-id": "Exchanged NFT ID",
     "purchase-date-lbl": "Purchase Date",
     "your-token-lbl": "Your Token",
     "token-amount-lbl": "Amount of Your Token",
     "signature-lbl": "Your Signature",
-    "document-lbl": "Document"
+    "document-lbl": "Document",
+    "token-id-lbl": "Token ID"
   },
   "my-nfts-no-data": {
     "message-first": "Your bookshelf is still empty.",
@@ -319,6 +348,7 @@
     "erc20-lbl": "ERC-20",
     "native-lbl": "Native",
     "voucher-lbl": "Voucher Token",
+    "nft": "NFT",
     "not-found-lbl": "Token type not found"
   }
 }

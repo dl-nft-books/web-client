@@ -44,32 +44,32 @@
 
 <script setup lang="ts">
 import { FaqCardInfo, FaqMetamaskList } from '@/pages/faq'
-import { useContext } from '@/composables'
 import { GuideInfo } from '@/types'
+import { useI18n } from 'vue-i18n'
 
-const { $t } = useContext()
+const { t } = useI18n()
 
 const guideInfo: GuideInfo[] = [
   {
     text: [
       {
         component: 'p',
-        value: $t('faq-metamask.abstract-1'),
+        value: t('faq-metamask.abstract-1'),
         attrs: {},
       },
     ],
     img: [
       {
-        alt: $t('faq-metamask.alt-metamask-mobile'),
+        alt: t('faq-metamask.alt-metamask-mobile'),
         src: '/images/metamask-mobile.png',
         size: 'x-small',
-        label: $t('faq-metamask.abstract-1-mobile-lbl'),
+        label: t('faq-metamask.abstract-1-mobile-lbl'),
       },
       {
-        alt: $t('faq-metamask.alt-metamask-desktop'),
+        alt: t('faq-metamask.alt-metamask-desktop'),
         src: '/images/metamask-desktop.png',
         size: 'medium',
-        label: $t('faq-metamask.abstract-1-desktop-lbl'),
+        label: t('faq-metamask.abstract-1-desktop-lbl'),
       },
     ],
   },
@@ -77,18 +77,18 @@ const guideInfo: GuideInfo[] = [
     text: [
       {
         component: 'span',
-        value: $t('faq-metamask.abstract-2'),
+        value: t('faq-metamask.abstract-2'),
         attrs: {},
       },
       {
         component: 'span',
-        value: $t('faq-metamask.abstract-2-acsent-word'),
+        value: t('faq-metamask.abstract-2-acsent-word'),
         attrs: {},
         isBold: true,
       },
       {
         component: 'span',
-        value: $t('faq-metamask.abstract-2-end'),
+        value: t('faq-metamask.abstract-2-end'),
         attrs: {},
       },
     ],
@@ -97,12 +97,12 @@ const guideInfo: GuideInfo[] = [
     text: [
       {
         component: 'p',
-        value: $t('faq-metamask.abstract-3'),
+        value: t('faq-metamask.abstract-3'),
         attrs: {},
       },
       {
         component: 'p',
-        value: $t('faq-metamask.subtitle-abstract-3'),
+        value: t('faq-metamask.subtitle-abstract-3'),
         attrs: {},
         isBold: true,
       },
@@ -113,19 +113,19 @@ const guideInfo: GuideInfo[] = [
     text: [
       {
         component: 'span',
-        value: $t('faq-metamask.abstract-4'),
+        value: t('faq-metamask.abstract-4'),
         attrs: {},
       },
       {
         component: 'span',
-        value: $t('faq-metamask.abstract-4-acsent-word'),
+        value: t('faq-metamask.abstract-4-acsent-word'),
         attrs: {},
         isBold: true,
       },
     ],
     img: [
       {
-        alt: $t('faq-metamask.alt-metamask-portfolio'),
+        alt: t('faq-metamask.alt-metamask-portfolio'),
         src: '/images/metamask-portfolio.png',
         size: 'medium',
       },

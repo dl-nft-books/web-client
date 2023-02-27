@@ -36,42 +36,42 @@
 
 <script setup lang="ts">
 import { FaqCardInfo } from '@/pages/faq'
-import { useContext } from '@/composables'
 import { GuideInfo } from '@/types'
+import { useI18n } from 'vue-i18n'
 
-const { $t } = useContext()
+const { t } = useI18n()
 
 const guideInfo: GuideInfo[] = [
   {
     text: [
       {
         component: 'span',
-        value: $t('faq-buy-book.abstract-1'),
+        value: t('faq-buy-book.abstract-1'),
         attrs: {},
       },
       {
         component: 'a',
-        value: $t('faq-buy-book.abstract-1-link'),
+        value: t('faq-buy-book.abstract-1-link'),
         attrs: {
           target: '_blank',
-          href: $t('faq-buy-book.abstract-1-link'),
+          href: t('faq-buy-book.abstract-1-link'),
         },
       },
       {
         component: 'span',
-        value: $t('faq-buy-book.abstract-1-continue'),
+        value: t('faq-buy-book.abstract-1-continue'),
         attrs: {},
       },
       {
         component: 'span',
-        value: $t('faq-buy-book.abstract-1-acsent-word'),
+        value: t('faq-buy-book.abstract-1-acsent-word'),
         isBold: true,
         attrs: {},
       },
     ],
     img: [
       {
-        alt: $t('faq-buy-book.alt-connect-metamask'),
+        alt: t('faq-buy-book.alt-connect-metamask'),
         src: '/images/connect-metamask.png',
         size: 'medium',
       },
@@ -81,30 +81,30 @@ const guideInfo: GuideInfo[] = [
     text: [
       {
         component: 'span',
-        value: $t('faq-buy-book.abstract-2'),
+        value: t('faq-buy-book.abstract-2'),
         attrs: {},
       },
       {
         component: 'span',
-        value: $t('faq-buy-book.abstract-2-acsent-word-1'),
+        value: t('faq-buy-book.abstract-2-acsent-word-1'),
         attrs: {},
         isBold: true,
       },
       {
         component: 'span',
-        value: $t('faq-buy-book.abstract-2-continue'),
+        value: t('faq-buy-book.abstract-2-continue'),
         attrs: {},
       },
       {
         component: 'span',
-        value: $t('faq-buy-book.abstract-2-acsent-word-2'),
+        value: t('faq-buy-book.abstract-2-acsent-word-2'),
         attrs: {},
         isBold: true,
       },
     ],
     img: [
       {
-        alt: $t('faq-buy-book.alt-buy-book'),
+        alt: t('faq-buy-book.alt-buy-book'),
         src: '/images/buy-book.png',
         size: 'medium',
       },
@@ -114,24 +114,24 @@ const guideInfo: GuideInfo[] = [
     text: [
       {
         component: 'span',
-        value: $t('faq-buy-book.abstract-3'),
+        value: t('faq-buy-book.abstract-3'),
         attrs: {},
       },
       {
         component: 'span',
-        value: $t('faq-buy-book.abstract-3-acsent-word'),
+        value: t('faq-buy-book.abstract-3-acsent-word'),
         attrs: {},
         isBold: true,
       },
       {
         component: 'span',
-        value: $t('faq-buy-book.abstract-3-continue'),
+        value: t('faq-buy-book.abstract-3-continue'),
         attrs: {},
       },
     ],
     img: [
       {
-        alt: $t('faq-buy-book.alt-signature'),
+        alt: t('faq-buy-book.alt-signature'),
         src: '/images/signature.png',
         size: 'medium',
       },
@@ -141,19 +141,19 @@ const guideInfo: GuideInfo[] = [
     text: [
       {
         component: 'span',
-        value: $t('faq-buy-book.abstract-4'),
+        value: t('faq-buy-book.abstract-4'),
         attrs: {},
       },
       {
         component: 'span',
-        value: $t('faq-buy-book.abstract-4-acsent-word'),
+        value: t('faq-buy-book.abstract-4-acsent-word'),
         attrs: {},
         isBold: true,
       },
     ],
     img: [
       {
-        alt: $t('faq-buy-book.alt-my-nfts'),
+        alt: t('faq-buy-book.alt-my-nfts'),
         src: '/images/my-nfts.png',
         size: 'medium',
       },
@@ -163,24 +163,24 @@ const guideInfo: GuideInfo[] = [
     text: [
       {
         component: 'span',
-        value: $t('faq-buy-book.abstract-5'),
+        value: t('faq-buy-book.abstract-5'),
         attrs: {},
       },
       {
         component: 'span',
-        value: $t('faq-buy-book.abstract-5-acsent-word'),
+        value: t('faq-buy-book.abstract-5-acsent-word'),
         attrs: {},
         isBold: true,
       },
       {
         component: 'span',
-        value: $t('faq-buy-book.abstract-5-continue'),
+        value: t('faq-buy-book.abstract-5-continue'),
         attrs: {},
       },
     ],
     img: [
       {
-        alt: $t('faq-buy-book.alt-details'),
+        alt: t('faq-buy-book.alt-details'),
         src: '/images/details.png',
         size: 'medium',
       },
@@ -190,30 +190,30 @@ const guideInfo: GuideInfo[] = [
     text: [
       {
         component: 'span',
-        value: $t('faq-buy-book.abstract-6'),
+        value: t('faq-buy-book.abstract-6'),
         attrs: {},
       },
       {
         component: 'span',
-        value: $t('faq-buy-book.abstract-6-acsent-word-1'),
+        value: t('faq-buy-book.abstract-6-acsent-word-1'),
         attrs: {},
         isBold: true,
       },
       {
         component: 'span',
-        value: $t('faq-buy-book.abstract-6-continue'),
+        value: t('faq-buy-book.abstract-6-continue'),
         attrs: {},
       },
       {
         component: 'span',
-        value: $t('faq-buy-book.abstract-6-acsent-word-2'),
+        value: t('faq-buy-book.abstract-6-acsent-word-2'),
         attrs: {},
         isBold: true,
       },
     ],
     img: [
       {
-        alt: $t('faq-buy-book.alt-manual-import'),
+        alt: t('faq-buy-book.alt-manual-import'),
         src: '/images/manual-import.png',
         size: 'medium',
       },

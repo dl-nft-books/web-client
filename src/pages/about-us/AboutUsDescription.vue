@@ -21,17 +21,16 @@
 
 <script setup lang="ts">
 import { Animation } from '@/common'
-import { useContext } from '@/composables'
+import { useI18n } from 'vue-i18n'
 
 import blockchainAnimation from '@/assets/animations/blockchain-animation.json'
-
-const { $t } = useContext()
+const { t } = useI18n()
 
 const aboutUsInfo = [
-  $t('about-us-page.description-abstract-1'),
-  $t('about-us-page.description-abstract-2'),
-  $t('about-us-page.description-abstract-3'),
-  $t('about-us-page.description-abstract-4'),
+  t('about-us-page.description-abstract-1'),
+  t('about-us-page.description-abstract-2'),
+  t('about-us-page.description-abstract-3'),
+  t('about-us-page.description-abstract-4'),
 ]
 </script>
 

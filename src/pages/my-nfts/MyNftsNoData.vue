@@ -39,10 +39,12 @@
 </template>
 
 <script lang="ts" setup>
+import { computed } from 'vue'
 import { AppButton } from '@/common'
 import { useWeb3ProvidersStore } from '@/store'
 
-const { provider } = useWeb3ProvidersStore()
+const web3ProvidersStore = useWeb3ProvidersStore()
+const provider = computed(() => web3ProvidersStore.provider)
 
 withDefaults(
   defineProps<{

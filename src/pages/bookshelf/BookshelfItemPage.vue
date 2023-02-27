@@ -8,7 +8,7 @@
       <template v-else-if="book">
         <div class="bookshelf-item-page__cover-wrp">
           <img
-            :src="book.bannerUrl"
+            :src="book.banner.attributes.url"
             :alt="book.title"
             class="bookshelf-item-page__cover"
           />
@@ -23,20 +23,21 @@
               $t('bookshelf-item-page.badge-2'),
             ]"
           />
-          <div class="bookshelf-item-page__actions">
-            <h3 class="bookshelf-item-page__price">
-              {{ formatFiatAssetFromWei(book.price, CURRENCY.USD) }}
-            </h3>
-            <div class="bookshelf-item-page__info">
-              <app-button
-                v-if="book.voucherToken !== ethers.constants.AddressZero"
-                scheme="default"
-                icon-size="large"
-                :href="getBlockExplorerLink(book.chainID, book.voucherToken)"
-                :icon-right="$icons.voucher"
-              />
-            </div>
-          </div>
+
+          <section class="bookshelf-item-page__prices">
+            <bookshelf-prices
+              :price="formatFiatAssetFromWei(book.price, CURRENCIES.USD)"
+              :floor-price="
+                formatFiatAssetFromWei(book.floor_price, CURRENCIES.USD)
+              "
+              :voucher-link="
+                book.voucher_token !== ethers.constants.AddressZero
+                  ? getBlockExplorerLink(book.chain_id, book.voucher_token)
+                  : undefined
+              "
+            />
+          </section>
+
           <bookshelf-network-info
             v-if="bookNetwork"
             :name="bookNetwork.name"
@@ -76,7 +77,7 @@
         />
       </template>
     </template>
-    <loader v-else />
+    <loader v-else class="bookshelf-item-page__loader" />
   </div>
 </template>
 
@@ -90,7 +91,7 @@ import {
   Marquee,
 } from '@/common'
 
-import { BookshelfNetworkInfo } from '@/pages/bookshelf'
+import { BookshelfNetworkInfo, BookshelfPrices } from '@/pages/bookshelf'
 import { ref, watch, computed } from 'vue'
 import {
   formatFiatAssetFromWei,
@@ -98,12 +99,12 @@ import {
   getNetworkScheme,
   getBlockExplorerLink,
 } from '@/helpers'
-import { CURRENCY } from '@/enums'
-import { BookRecord } from '@/records'
+import { CURRENCIES } from '@/enums'
+import { useBooks } from '@/composables'
 import { useWeb3ProvidersStore, useNetworksStore } from '@/store'
 import { storeToRefs } from 'pinia'
-import { getBookById } from '@/api'
 import { ethers } from 'ethers'
+import { Book } from '@/types'
 
 const props = defineProps<{
   id: string
@@ -116,11 +117,12 @@ const isPurchaseModalShown = ref(false)
 const isPurchaseSuccessModalShown = ref(false)
 
 const networkStore = useNetworksStore()
+const { getBookById } = useBooks()
 const bookNetwork = computed(() =>
-  networkStore.getNetworkByID(book.value?.chainID),
+  networkStore.getNetworkByID(book.value?.chain_id),
 )
 
-const book = ref<BookRecord | undefined>()
+const book = ref<Book | undefined>()
 
 const submit = async () => {
   try {
@@ -133,8 +135,9 @@ const submit = async () => {
 
 const init = async () => {
   try {
-    const { data } = await getBookById(props.id)
-    book.value = new BookRecord(data)
+    const data = await getBookById(props.id)
+
+    book.value = data
   } catch (error) {
     ErrorHandler.processWithoutFeedback(error)
     isLoadFailed.value = true
@@ -160,24 +163,33 @@ init()
   $right-column: clamp(#{toRem(250)}, 55%, #{toRem(700)});
 
   display: grid;
+  flex: 1;
   width: 100%;
   grid-template-columns: $left-column $right-column;
   grid-column-gap: clamp(#{toRem(10)}, 5%, #{toRem(80)});
   padding-top: toRem(40);
   padding-bottom: toRem(150);
   justify-content: center;
-  background: url('/images/background-cubes.png') no-repeat right bottom /
+  background: url('/images/background-cubes.png') no-repeat right center /
     contain;
+  background-size: clamp(toRem(300), 30%, toRem(500));
 
   @include respond-to(medium) {
     display: flex;
     flex-direction: column;
     row-gap: toRem(40);
+    background: url('/images/background-cubes.png') no-repeat right top /
+      contain;
+    background-size: clamp(toRem(300), 50%, toRem(500));
   }
 
   @include respond-to(small) {
     max-width: 100%;
   }
+}
+
+.bookshelf-item-page__loader {
+  grid-column: span 2;
 }
 
 .bookshelf-item-page__cover-wrp {
@@ -215,16 +227,13 @@ init()
   }
 }
 
-.bookshelf-item-page__actions {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: toRem(20);
-  padding-bottom: toRem(38);
-  margin-top: toRem(28);
+.bookshelf-item-page__prices {
+  width: 70%;
+  margin: toRem(49) 0;
 
-  @include respond-to(medium) {
-    justify-content: center;
+  @include respond-to(tablet) {
+    width: 90%;
+    margin: toRem(49) 0 toRem(30) 0;
   }
 }
 
@@ -234,15 +243,6 @@ init()
   text-align: right;
   user-select: none;
   gap: toRem(5);
-}
-
-.bookshelf-item-page__price {
-  color: var(--primary-main);
-  user-select: none;
-
-  @include respond-to(medium) {
-    text-align: center;
-  }
 }
 
 .bookshelf-item-page__purchase-btn {

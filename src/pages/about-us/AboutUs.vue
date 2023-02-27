@@ -48,9 +48,9 @@
 
 <script setup lang="ts">
 import { AboutUsDecription, AboutUsQuoteCard } from '@/pages/about-us'
-import { useContext } from '@/composables'
+import { useI18n } from 'vue-i18n'
 
-const { $t } = useContext()
+const { t } = useI18n()
 
 const CUBES_IMAGES = {
   LEFT: '/images/about-us-left.png',
@@ -63,13 +63,13 @@ const FOUNDERS_IMAGES = {
   KRAVCHENKO: '/images/pavlo-kravchenko.png',
 }
 
-const KravchenkoQuotes = [$t('about-us-page.founder-description')]
+const KravchenkoQuotes = [t('about-us-page.founder-description')]
 
 const KurbatovQuotes = [
-  $t('about-us-page.founder-description-2-abstract-1'),
-  $t('about-us-page.founder-description-2-abstract-2'),
-  $t('about-us-page.founder-description-2-abstract-3'),
-  $t('about-us-page.founder-description-2-abstract-4'),
+  t('about-us-page.founder-description-2-abstract-1'),
+  t('about-us-page.founder-description-2-abstract-2'),
+  t('about-us-page.founder-description-2-abstract-3'),
+  t('about-us-page.founder-description-2-abstract-4'),
 ]
 </script>
 

@@ -14,11 +14,11 @@ import { Icon } from '@/common'
 import { computed } from 'vue'
 import { NETWORKS } from '@/enums'
 import { getIconByScheme } from '@/helpers'
-import { useContext } from '@/composables'
+import { useI18n } from 'vue-i18n'
 
-type MODIFICATIONS = 'non-active' | 'default'
+type MODIFICATIONS = 'non-active' | 'dark-mode' | 'default'
 
-const { $t } = useContext()
+const { t } = useI18n()
 
 const props = withDefaults(
   defineProps<{
@@ -36,12 +36,12 @@ const props = withDefaults(
 const title = computed(() =>
   props.scheme !== NETWORKS.UNSUPPORTED
     ? props.name
-    : $t('networks.unsupported'),
+    : t('networks.unsupported'),
 )
 
 const classes = computed(() => [
   'network-item',
-  `network-item--${props.modification}`,
+  ...props.modification.split(' ').map(mod => `network-item--${mod}`),
 ])
 
 const wrapperClasses = computed(() => [
@@ -66,20 +66,22 @@ const wrapperClasses = computed(() => [
   transition: 0.2s ease-in-out;
   transition-property: background-color;
 
-  .account-info--dark-mode & {
-    --item-color: var(--text-secondary-invert-main);
+  &:hover {
+    cursor: pointer;
+    background-color: var(--background-hover-color);
   }
 
-  &--default {
-    &:hover {
-      cursor: pointer;
-      background-color: var(--background-hover-color);
-    }
+  &--dark-mode {
+    --item-color: var(--text-secondary-invert-main);
   }
 
   &--non-active {
     padding: 0;
     font-weight: 500;
+
+    &:hover {
+      --background-hover-color: transparent;
+    }
   }
 }
 

@@ -18,6 +18,7 @@
     <select-field
       v-model="chainIdValue"
       class="bookshelf-network-switcher"
+      modifications="border-rounded dark"
       :value-options="selectOptions"
     />
   </template>
@@ -36,11 +37,11 @@ import {
 import { useNetworksStore } from '@/store'
 import { SelectField } from '@/fields'
 import { useWindowSize } from '@vueuse/core'
-import { useContext } from '@/composables'
+import { useI18n } from 'vue-i18n'
 
 const networkStore = useNetworksStore()
 const { width } = useWindowSize()
-const { $t } = useContext()
+const { t } = useI18n()
 
 const emit = defineEmits<{
   (event: 'update:modelValue', value: ChainId): void
@@ -52,11 +53,11 @@ const props = defineProps<{
 
 const chainIdValue = ref<ChainId>(props.modelValue.toString())
 
-const isSmallScreen = computed(() => width.value <= WINDOW_BREAKPOINTS.medium)
+const isSmallScreen = computed(() => width.value <= WINDOW_BREAKPOINTS.tablet)
 
 const selectOptions = computed(() => [
   {
-    label: $t('networks.all-tokens-lbl'),
+    label: t('networks.all-tokens-lbl'),
     value: '0',
   },
   ...networkStore.list.map(network => ({
@@ -86,14 +87,12 @@ watch(chainIdValue, () => {
   position: relative;
   z-index: var(--z-index-layer-2);
 
-  @include respond-to(medium) {
+  @include respond-to(tablet) {
     flex: unset;
     height: unset;
     border: unset;
-    width: 50%;
     z-index: var(--z-index-layer-3);
-    color: var(--text-primary-invert-main);
-    max-width: toRem(250);
+    width: clamp(toRem(150), 50%, toRem(250));
   }
 }
 

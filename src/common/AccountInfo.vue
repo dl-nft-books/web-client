@@ -1,6 +1,6 @@
 <template>
   <div :class="accountClasses">
-    <header-network-switcher />
+    <header-network-switcher :modification="modification" />
     <drop-down :right="0">
       <template #head="{ menu }">
         <app-button
@@ -56,13 +56,14 @@ const accountClasses = computed(() => [
   `account-info--${props.modification}`,
 ])
 
-const { provider } = useWeb3ProvidersStore()
+const web3ProvidersStore = useWeb3ProvidersStore()
+const provider = computed(() => web3ProvidersStore.provider)
 
 const copyAddress = async () => {
-  if (!provider.selectedAddress) return
+  if (!provider.value.selectedAddress) return
 
   try {
-    await copyToClipboard(provider.selectedAddress)
+    await copyToClipboard(provider.value.selectedAddress)
   } catch (error) {
     ErrorHandler.process(error)
   }

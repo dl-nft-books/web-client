@@ -1,29 +1,57 @@
 <template>
   <div class="book-preview">
     <div class="book-preview__img-wrapper">
-      <img class="book-preview__img" :src="book.bannerUrl" :alt="book.title" />
+      <img
+        class="book-preview__img"
+        :src="book.banner.attributes.url"
+        :alt="book.title"
+      />
     </div>
     <div class="book-preview__details">
       <h4 class="book-preview__title">
         {{ book.title }}
       </h4>
-      <span class="book-preview__price">
-        {{ price }}
-      </span>
+      <div class="book-preview__price-wrapper">
+        <span
+          v-if="modification === 'floor-price'"
+          class="book-preview__price-label"
+        >
+          {{ $t('book-preview.label') }}
+        </span>
+        <span class="book-preview__price">
+          {{ price }}
+        </span>
+      </div>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { BookRecord } from '@/records'
+import { computed } from 'vue'
+import { Book } from '@/types'
 import { formatFiatAssetFromWei } from '@/helpers'
-import { CURRENCY } from '@/enums'
+import { CURRENCIES } from '@/enums'
 
-const props = defineProps<{
-  book: BookRecord
-}>()
+type MODIFICATIONS = 'floor-price' | 'default'
 
-const price = formatFiatAssetFromWei(props.book.price, CURRENCY.USD)
+const props = withDefaults(
+  defineProps<{
+    book: Book
+    modification?: MODIFICATIONS
+  }>(),
+  {
+    modification: 'default',
+  },
+)
+
+const price = computed(() =>
+  formatFiatAssetFromWei(
+    props.modification === 'floor-price'
+      ? props.book.floor_price
+      : props.book.price,
+    CURRENCIES.USD,
+  ),
+)
 </script>
 
 <style lang="scss" scoped>
@@ -34,6 +62,19 @@ const price = formatFiatAssetFromWei(props.book.price, CURRENCY.USD)
   padding-bottom: toRem(24);
   margin-bottom: toRem(10);
   border-bottom: toRem(1) solid var(--border-primary-main);
+}
+
+.book-preview__price-wrapper {
+  display: flex;
+  flex: 1;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: toRem(40);
+}
+
+.book-preview__price-label {
+  font-size: toRem(14);
+  color: var(--text-primary-light);
 }
 
 .book-preview__img-wrapper {
@@ -53,6 +94,7 @@ const price = formatFiatAssetFromWei(props.book.price, CURRENCY.USD)
 .book-preview__details {
   display: flex;
   flex-direction: column;
+  width: 100%;
 }
 
 .book-preview__title {
@@ -71,7 +113,6 @@ const price = formatFiatAssetFromWei(props.book.price, CURRENCY.USD)
 
 .book-preview__price {
   text-transform: uppercase;
-  margin-top: auto;
   font-size: toRem(22);
   line-height: 1.2;
   font-weight: 900;

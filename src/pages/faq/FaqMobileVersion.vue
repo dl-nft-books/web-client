@@ -39,34 +39,34 @@
 
 <script setup lang="ts">
 import { FaqCardInfo } from '@/pages/faq'
-import { useContext } from '@/composables'
 import { GuideInfo } from '@/types'
+import { useI18n } from 'vue-i18n'
 
-const { $t } = useContext()
+const { t } = useI18n()
 
 const guideInfo: GuideInfo[] = [
   {
     text: [
       {
         component: 'span',
-        value: $t('faq-mobile-version.abstract-1'),
+        value: t('faq-mobile-version.abstract-1'),
         attrs: {},
       },
       {
         component: 'span',
-        value: $t('faq-mobile-version.abstract-1-acsent-word'),
+        value: t('faq-mobile-version.abstract-1-acsent-word'),
         isBold: true,
         attrs: {},
       },
       {
         component: 'span',
-        value: $t('faq-mobile-version.abstract-1-continue'),
+        value: t('faq-mobile-version.abstract-1-continue'),
         attrs: {},
       },
     ],
     img: [
       {
-        alt: $t('faq-mobile-version.alt-mobile-bookshelf'),
+        alt: t('faq-mobile-version.alt-mobile-bookshelf'),
         src: '/images/mobile-bookshelf.png',
         size: 'medium',
       },
@@ -76,13 +76,13 @@ const guideInfo: GuideInfo[] = [
     text: [
       {
         component: 'p',
-        value: $t('faq-mobile-version.abstract-2'),
+        value: t('faq-mobile-version.abstract-2'),
         attrs: {},
       },
     ],
     img: [
       {
-        alt: $t('faq-mobile-version.alt-mobile-generation'),
+        alt: t('faq-mobile-version.alt-mobile-generation'),
         src: '/images/mobile-generation.png',
         size: 'medium',
       },
@@ -92,13 +92,13 @@ const guideInfo: GuideInfo[] = [
     text: [
       {
         component: 'p',
-        value: $t('faq-mobile-version.abstract-3'),
+        value: t('faq-mobile-version.abstract-3'),
         attrs: {},
       },
     ],
     img: [
       {
-        alt: $t('faq-mobile-version.alt-mobile-payment'),
+        alt: t('faq-mobile-version.alt-mobile-payment'),
         src: '/images/mobile-payment.png',
         size: 'medium',
       },
@@ -108,19 +108,19 @@ const guideInfo: GuideInfo[] = [
     text: [
       {
         component: 'span',
-        value: $t('faq-mobile-version.abstract-4'),
+        value: t('faq-mobile-version.abstract-4'),
         attrs: {},
       },
       {
         component: 'span',
-        value: $t('faq-mobile-version.abstract-4-acsent-word'),
+        value: t('faq-mobile-version.abstract-4-acsent-word'),
         isBold: true,
         attrs: {},
       },
     ],
     img: [
       {
-        alt: $t('faq-mobile-version.alt-activity-tab'),
+        alt: t('faq-mobile-version.alt-activity-tab'),
         src: '/images/activity-tab.png',
         size: 'small',
       },
@@ -130,13 +130,13 @@ const guideInfo: GuideInfo[] = [
     text: [
       {
         component: 'p',
-        value: $t('faq-mobile-version.abstract-5'),
+        value: t('faq-mobile-version.abstract-5'),
         attrs: {},
       },
     ],
     img: [
       {
-        alt: $t('faq-mobile-version.alt-block-explorer'),
+        alt: t('faq-mobile-version.alt-block-explorer'),
         src: '/images/block-explorer.png',
         size: 'small',
       },
@@ -146,35 +146,35 @@ const guideInfo: GuideInfo[] = [
     text: [
       {
         component: 'span',
-        value: $t('faq-mobile-version.abstract-6'),
+        value: t('faq-mobile-version.abstract-6'),
         attrs: {},
       },
       {
         component: 'span',
-        value: $t('faq-mobile-version.abstract-6-acsent-word-1'),
+        value: t('faq-mobile-version.abstract-6-acsent-word-1'),
         isBold: true,
         attrs: {},
       },
       {
         component: 'span',
-        value: $t('faq-mobile-version.abstract-6-continue'),
+        value: t('faq-mobile-version.abstract-6-continue'),
         attrs: {},
       },
       {
         component: 'span',
-        value: $t('faq-mobile-version.abstract-6-acsent-word-2'),
+        value: t('faq-mobile-version.abstract-6-acsent-word-2'),
         isBold: true,
         attrs: {},
       },
       {
         component: 'span',
-        value: $t('faq-mobile-version.abstract-6-end'),
+        value: t('faq-mobile-version.abstract-6-end'),
         attrs: {},
       },
     ],
     img: [
       {
-        alt: $t('faq-mobile-version.alt-transaction-action'),
+        alt: t('faq-mobile-version.alt-transaction-action'),
         src: '/images/transaction-action.png',
         size: 'small',
       },
@@ -184,24 +184,24 @@ const guideInfo: GuideInfo[] = [
     text: [
       {
         component: 'span',
-        value: $t('faq-mobile-version.abstract-7'),
+        value: t('faq-mobile-version.abstract-7'),
         attrs: {},
       },
       {
         component: 'span',
-        value: $t('faq-mobile-version.abstract-7-acsent-word'),
+        value: t('faq-mobile-version.abstract-7-acsent-word'),
         isBold: true,
         attrs: {},
       },
       {
         component: 'span',
-        value: $t('faq-mobile-version.abstract-7-continue'),
+        value: t('faq-mobile-version.abstract-7-continue'),
         attrs: {},
       },
     ],
     img: [
       {
-        alt: $t('faq-mobile-version.alt-import-nfts'),
+        alt: t('faq-mobile-version.alt-import-nfts'),
         src: '/images/import-nfts.png',
         size: 'medium',
       },
@@ -211,37 +211,37 @@ const guideInfo: GuideInfo[] = [
     text: [
       {
         component: 'span',
-        value: $t('faq-mobile-version.abstract-8'),
+        value: t('faq-mobile-version.abstract-8'),
         attrs: {},
       },
       {
         component: 'a',
-        value: $t('faq-mobile-version.abstract-8-link'),
+        value: t('faq-mobile-version.abstract-8-link'),
         attrs: {
-          href: $t('faq-mobile-version.abstract-8-link'),
+          href: t('faq-mobile-version.abstract-8-link'),
           target: '_blank',
         },
       },
       {
         component: 'span',
-        value: $t('faq-mobile-version.abstract-8-continue'),
+        value: t('faq-mobile-version.abstract-8-continue'),
         attrs: {},
       },
       {
         component: 'span',
-        value: $t('faq-mobile-version.abstract-8-acsent-word'),
+        value: t('faq-mobile-version.abstract-8-acsent-word'),
         isBold: true,
         attrs: {},
       },
       {
         component: 'span',
-        value: $t('faq-mobile-version.abstract-8-end'),
+        value: t('faq-mobile-version.abstract-8-end'),
         attrs: {},
       },
     ],
     img: [
       {
-        alt: $t('faq-mobile-version.alt-mobile-details'),
+        alt: t('faq-mobile-version.alt-mobile-details'),
         src: '/images/mobile-details.png',
         size: 'small',
       },

@@ -11,6 +11,8 @@ export function globalizeTokenType(type: string) {
       return t('token-types.native-lbl')
     case TOKEN_TYPES.voucher:
       return t('token-types.voucher-lbl')
+    case TOKEN_TYPES.nft:
+      return t('token-types.nft')
     default:
       return t('token-types.not-found-lbl')
   }

@@ -2,7 +2,9 @@
 /* tslint:disable */
 /* eslint-disable */
 export type { Erc20 } from "./Erc20";
+export type { Erc721 } from "./Erc721";
 export type { NftBookToken } from "./NftBookToken";
 export * as factories from "./factories";
 export { Erc20__factory } from "./factories/Erc20__factory";
+export { Erc721__factory } from "./factories/Erc721__factory";
 export { NftBookToken__factory } from "./factories/NftBookToken__factory";

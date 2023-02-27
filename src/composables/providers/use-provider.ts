@@ -5,7 +5,7 @@ import {
   useCoinbase,
   usePhantom,
   useSolflare,
-} from '@/composables/useProvider'
+} from '@/composables'
 import {
   DesignatedProvider,
   ChainId,

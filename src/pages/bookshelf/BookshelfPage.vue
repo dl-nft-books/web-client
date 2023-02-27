@@ -6,7 +6,25 @@
       <h3 class="bookshelf-page__title">
         {{ $t('bookshelf-page.title') }}
       </h3>
-      <bookshelf-network-switcher v-model="currentNetworkChainId" />
+      <div class="bookshelf-page__actions">
+        <bookshelf-network-switcher
+          v-if="isFilterVisible"
+          v-model="currentNetworkChainId"
+        />
+        <input-field
+          v-model="searchModel"
+          class="bookshelf-page__actions-search"
+          :class="{
+            'bookshelf-page__actions-search--full-width': !isFilterVisible,
+          }"
+          schemes="icon-left"
+          :modifications="searchFieldModifications"
+          :placeholder="$t('bookshelf-page.search-placeholder')"
+          :icon-name="$icons.search"
+          @focus="onSearchFocus"
+          @blur="onSearchBlur"
+        />
+      </div>
     </section>
     <error-message
       v-if="isLoadFailed"
@@ -18,7 +36,7 @@
           v-for="book in books"
           :key="book.id"
           :book="book"
-          :network="networkStore.getNetworkByID(book.chainID)"
+          :network="networkStore.getNetworkByID(book.chain_id)"
         />
       </div>
 
@@ -39,6 +57,9 @@
 </template>
 
 <script lang="ts" setup>
+import { ref, computed, watch } from 'vue'
+import { debounce } from 'lodash'
+
 import {
   Loader,
   ErrorMessage,
@@ -47,27 +68,37 @@ import {
   AppButton,
   BookshelfNetworkSwitcher,
 } from '@/common'
-
+import { InputField } from '@/fields'
 import { ErrorHandler } from '@/helpers'
-import { BookRecord } from '@/records'
-import { ref, computed } from 'vue'
-import { BOOK_DEPLOY_STATUSES } from '@/enums'
-import { getBooks } from '@/api'
-import { usePaginate } from '@/composables'
+import { BOOK_DEPLOY_STATUSES, WINDOW_BREAKPOINTS } from '@/enums'
+import { usePaginate, useBooks } from '@/composables'
 import { Book, ChainId } from '@/types'
 import { BookshelfHeader, BookshelfCubes } from '@/pages/bookshelf'
 import { useNetworksStore } from '@/store'
+import { useWindowSize } from '@vueuse/core'
 
 const networkStore = useNetworksStore()
+const { width } = useWindowSize()
+const { getBooks } = useBooks()
 
 const isLoadFailed = ref(false)
-const books = ref<BookRecord[]>([])
+const books = ref<Book[]>([])
 const currentNetworkChainId = ref<ChainId>(0)
+
+const searchByString = ref('')
+const searchModel = ref('')
+const isFilterVisible = ref(true)
+
+const isSmallScreen = computed(() => width.value <= WINDOW_BREAKPOINTS.small)
+const searchFieldModifications = computed(() =>
+  ['dark', 'border-rounded', isSmallScreen.value ? '' : 'icon-large'].join(' '),
+)
 
 const loadList = computed(
   () => () =>
     getBooks({
       deployStatus: [BOOK_DEPLOY_STATUSES.successful],
+      title: searchByString.value,
       chainId: currentNetworkChainId.value,
     }),
 )
@@ -80,19 +111,34 @@ const { loadNextPage, isLoading, isLoadMoreBtnShown } = usePaginate(
 )
 
 function setList(chunk: Book[]) {
-  books.value = chunk.map(book => new BookRecord(book)) ?? []
+  books.value = chunk ?? []
 }
 
 function concatList(chunk: Book[]) {
-  books.value = books.value.concat(
-    chunk.map(book => new BookRecord(book)) ?? [],
-  )
+  books.value = books.value.concat(chunk ?? [])
 }
 
 function onError(e: Error) {
   ErrorHandler.processWithoutFeedback(e)
   isLoadFailed.value = true
 }
+
+const onSearchFocus = () => {
+  if (isSmallScreen.value) {
+    isFilterVisible.value = false
+  }
+}
+
+const onSearchBlur = () => {
+  isFilterVisible.value = true
+}
+
+watch(
+  searchModel,
+  debounce(() => {
+    searchByString.value = searchModel.value
+  }, 200),
+)
 </script>
 
 <style lang="scss" scoped>
@@ -161,10 +207,50 @@ function onError(e: Error) {
   }
 }
 
+.bookshelf-page__actions {
+  position: relative;
+  z-index: var(--z-index-layer-3);
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: toRem(20);
+  width: 45%;
+  height: toRem(52);
+
+  @include respond-to(tablet) {
+    width: 70%;
+    height: toRem(46);
+  }
+
+  @include respond-to(small) {
+    width: 100%;
+  }
+}
+
+.bookshelf-page__actions-search {
+  width: clamp(toRem(150), 50%, toRem(285));
+  height: toRem(52);
+
+  @include respond-to(tablet) {
+    height: toRem(46);
+    width: 50%;
+  }
+
+  &--full-width {
+    width: 100%;
+  }
+}
+
 .bookshelf-page__title-wrapper {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  gap: toRem(20);
+
+  @include respond-to(small) {
+    flex-direction: column;
+    align-items: flex-start;
+  }
 }
 
 .bookshelf-page__title {
@@ -190,7 +276,7 @@ function onError(e: Error) {
   }
 
   @include respond-to(medium) {
-    font-size: toRem(20);
+    font-size: toRem(24);
   }
 }
 

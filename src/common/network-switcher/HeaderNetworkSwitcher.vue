@@ -1,7 +1,7 @@
 <template>
   <drop-down
     v-if="provider.selectedAddress"
-    class="header-network-switcher"
+    :class="networkSwitcherClasses"
     :right="dropDownShift"
     :disabled="isSwitchingChain"
   >
@@ -12,23 +12,20 @@
         class="header-network-switcher__error"
         :message="$t('networks.network-error')"
       />
-      <section
-        v-else
-        class="header-network-switcher__wrapper"
-        @click="menu.open"
-      >
+      <div v-else class="header-network-switcher__wrapper" @click="menu.open">
         <network-item
-          modification="non-active"
+          :modification="`non-active ${modification}`"
           :name="pickedNetwork?.name"
           :scheme="getNetworkScheme(pickedNetwork?.chain_id)"
         />
-      </section>
+      </div>
     </template>
     <template #default="{ menu }">
       <div class="header-network-switcher__body">
         <network-item
           v-for="network in networksStore.list"
           :key="network.id"
+          :modification="modification"
           :scheme="getNetworkScheme(network.chain_id)"
           :name="network.name"
           @click="changeNetwork(network.chain_id), menu.close()"
@@ -47,7 +44,17 @@ import { ChainId } from '@/types'
 import { useWindowSize } from '@vueuse/core'
 import { WINDOW_BREAKPOINTS } from '@/enums'
 
-const { provider } = useWeb3ProvidersStore()
+type MODIFICATIONS = 'dark-mode' | 'default'
+
+const props = withDefaults(
+  defineProps<{
+    modification?: MODIFICATIONS
+  }>(),
+  { modification: 'default' },
+)
+
+const web3ProvidersStore = useWeb3ProvidersStore()
+const provider = computed(() => web3ProvidersStore.provider)
 const { width } = useWindowSize()
 
 const networksStore = useNetworksStore()
@@ -56,12 +63,17 @@ const isSwitchingChain = ref(false)
 const isLoadingNetworks = ref(true)
 const isLoadFailed = ref(false)
 
+const networkSwitcherClasses = computed(() => [
+  'header-network-switcher',
+  `header-network-switcher--${props.modification}`,
+])
+
 const dropDownShift = computed(() =>
   width.value <= WINDOW_BREAKPOINTS.medium ? 0 : 81,
 )
 
 const pickedNetwork = computed(() =>
-  networksStore.getNetworkByID(Number(provider.chainId)),
+  networksStore.getNetworkByID(Number(provider.value.chainId)),
 )
 
 const changeNetwork = async (chainID: ChainId) => {
@@ -86,6 +98,14 @@ onMounted(() => {
   --background-head-color: var(--background-primary);
   --background-body-color: var(--background-primary);
   --border-color: var(--text-secondary-main);
+  --background-hover-color: var(--background-tertiary);
+
+  &--dark-mode {
+    --background-head-color: transparent;
+    --background-body-color: var(--background-quaternary);
+    --border-color: var(--white);
+    --background-hover-color: rgba(var(--drop-down-shadow-rgb), 0.2);
+  }
 }
 
 .header-network-switcher__wrapper {
@@ -101,33 +121,15 @@ onMounted(() => {
   transition-property: background-color;
   min-width: toRem(210);
 
-  .app-navigation-mobile__network & {
-    --background-head-color: transparent;
-    --border-color: var(--white);
-  }
-
   &:hover {
     cursor: pointer;
-    --background-head-color: var(--background-tertiary);
-  }
-
-  .account-info--dark-mode & {
-    --background-head-color: transparent;
-    --border-color: var(--white);
+    --background-head-color: var(--background-hover-color);
   }
 }
 
 .header-network-switcher__body {
   width: toRem(206);
   background-color: var(--background-body-color);
-
-  .app-navigation-mobile__network & {
-    --background-body-color: var(--background-quaternary);
-  }
-
-  .account-info--dark-mode & {
-    --background-body-color: var(--background-quaternary);
-  }
 }
 
 .header-network-switcher__error {
