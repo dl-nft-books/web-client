@@ -33,7 +33,7 @@
 
 <script lang="ts" setup>
 import { computed, useAttrs } from 'vue'
-import { uuid } from 'uuidv4'
+import uuid from 'uuidv4'
 
 const props = withDefaults(
   defineProps<{

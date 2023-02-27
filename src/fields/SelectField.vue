@@ -92,7 +92,7 @@
 
 <script lang="ts" setup>
 import { Icon } from '@/common'
-import { uuid } from 'uuidv4'
+import uuid from 'uuidv4'
 
 import { computed, onMounted, ref, useAttrs, watch } from 'vue'
 import { useRouter } from '@/router'

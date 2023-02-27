@@ -45,7 +45,7 @@
 
 <script setup lang="ts">
 import { computed, ref, useAttrs } from 'vue'
-import { uuid } from 'uuidv4'
+import uuid from 'uuidv4'
 import { BN } from '@distributedlab/utils'
 import { Icon } from '@/common'
 import { ICON_NAMES } from '@/enums'
