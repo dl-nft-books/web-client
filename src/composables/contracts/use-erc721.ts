@@ -1,77 +1,92 @@
-import { ref, watch, computed } from 'vue'
-import { Erc721, Erc721__factory } from '@/types'
+import { ref, computed } from 'vue'
+import { Erc721__factory, EthProviderRpcError } from '@/types'
 import { useWeb3ProvidersStore } from '@/store'
+import { handleEthError, sleep } from '@/helpers'
 
 export const useErc721 = (address?: string) => {
-  const _instance = ref<Erc721 | undefined>()
-  const _instance_rw = ref<Erc721 | undefined>()
-
   const web3ProvidersStore = useWeb3ProvidersStore()
   const provider = computed(() => web3ProvidersStore.provider)
 
-  watch(provider, () => {
-    if (address) init(address)
-  })
+  const contractAddress = ref(address || '')
 
-  if (
-    address &&
-    provider.value.currentProvider &&
-    provider.value.currentSigner
-  ) {
-    _instance.value = Erc721__factory.connect(
-      address,
-      provider.value.currentProvider,
-    )
-    _instance_rw.value = Erc721__factory.connect(
-      address,
-      provider.value.currentSigner,
-    )
-  }
+  const contractInstance = computed(
+    () =>
+      (!!provider.value &&
+        !!provider.value.currentProvider &&
+        !!contractAddress.value &&
+        Erc721__factory.connect(
+          contractAddress.value,
+          provider.value.currentProvider,
+        )) ||
+      undefined,
+  )
+
+  const contractInterface = Erc721__factory.createInterface()
 
   const init = (address: string) => {
-    if (
-      address &&
-      provider.value.currentProvider &&
-      provider.value.currentSigner
-    ) {
-      _instance.value = Erc721__factory.connect(
-        address,
-        provider.value.currentProvider,
-      )
-      _instance_rw.value = Erc721__factory.connect(
-        address,
-        provider.value.currentSigner,
-      )
+    if (!address) return
+
+    contractAddress.value = address
+  }
+
+  const approve = async (spender: string, tokenId: string) => {
+    if (!provider.value) return
+
+    try {
+      const data = contractInterface.encodeFunctionData('approve', [
+        spender,
+        tokenId,
+      ])
+
+      const receipt = await provider.value.signAndSendTx({
+        to: contractAddress.value,
+        data,
+      })
+
+      await sleep(1000)
+      return receipt
+    } catch (error) {
+      handleEthError(error as EthProviderRpcError)
     }
   }
 
-  const approve = async (to: string, tokenId: string) => {
-    const tx = await _instance_rw.value?.approve(to, tokenId)
-    await tx?.wait()
-    return tx
-  }
-
   const getBalanceOf = async (address: string) => {
-    const _balance = await _instance.value?.balanceOf(address)
+    if (!contractInstance.value) return
 
-    return _balance ? _balance.toString() : ''
-  }
-
-  const getName = async () => {
-    if (_instance.value?.name) {
-      return await _instance.value?.name()
+    try {
+      return contractInstance.value?.balanceOf(address)
+    } catch (error) {
+      handleEthError(error as EthProviderRpcError)
     }
   }
 
   const getOwner = async (tokenId: string) => {
-    if (_instance.value?.ownerOf) {
-      return await _instance.value?.ownerOf(tokenId)
+    if (!contractInstance.value) return
+
+    try {
+      return contractInstance.value?.ownerOf(tokenId)
+    } catch (error) {
+      handleEthError(error as EthProviderRpcError)
+    }
+  }
+
+  const getName = async () => {
+    if (!contractInstance.value) return
+
+    try {
+      return contractInstance.value?.name()
+    } catch (error) {
+      handleEthError(error as EthProviderRpcError)
     }
   }
 
   const getSymbol = async () => {
-    if (_instance.value?.symbol) {
-      return await _instance.value?.symbol()
+    if (!contractInstance.value) return
+
+    try {
+      return contractInstance.value?.symbol()
+    } catch (error) {
+      handleEthError(error as EthProviderRpcError)
     }
   }
   return {

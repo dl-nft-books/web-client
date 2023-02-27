@@ -192,19 +192,14 @@ const approveTokenSpend = async (
       if (!tokenAddress || !tokenAmount) return
       erc20.init(tokenAddress)
 
-      await erc20.approveSpend(
-        provider.value.selectedAddress,
-        tokenAmount,
-        props.book.contract_address,
-      )
+      await erc20.approve(provider.value.selectedAddress, tokenAmount)
       break
     case TOKEN_TYPES.voucher:
       erc20.init(props.book.voucher_token)
 
-      await erc20.approveSpend(
+      await erc20.approve(
         provider.value.selectedAddress,
         props.book.voucher_token_amount,
-        props.book.contract_address,
       )
       break
     case TOKEN_TYPES.nft:

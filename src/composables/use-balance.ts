@@ -20,7 +20,6 @@ export function useBalance(currentPlatform: Platform) {
 
   const web3ProvidersStore = useWeb3ProvidersStore()
   const provider = computed(() => web3ProvidersStore.provider)
-  const erc20 = useErc20()
 
   const getPrice = async (tokenAddress: string, tokenType: TOKEN_TYPES) => {
     try {
@@ -50,20 +49,28 @@ export function useBalance(currentPlatform: Platform) {
     }
   }
 
+  const getErc20Balance = async (tokenAddress: string) => {
+    if (!provider.value.selectedAddress) return
+
+    const erc20 = useErc20(tokenAddress)
+    const decimals = await erc20.getDecimals()
+    const balance = await erc20.getBalanceOf(provider.value.selectedAddress)
+
+    if (!balance) return
+
+    return new BN(balance.toString()).fromFraction(decimals).toString()
+  }
+
   const getBalance = async (tokenAddress: string, tokenType: TOKEN_TYPES) => {
-    let accountBalance: string
+    let accountBalance: string | undefined
 
     switch (tokenType) {
       case TOKEN_TYPES.erc20:
-        erc20.init(tokenAddress)
-        await erc20.getDecimals()
+        accountBalance = await getErc20Balance(tokenAddress)
 
-        accountBalance = await erc20.getBalanceOf(
-          provider.value.selectedAddress!,
-        )
-        balance.value = new BN(accountBalance)
-          .fromFraction(erc20.decimals.value)
-          .toString()
+        if (!accountBalance) return
+
+        balance.value = accountBalance
         break
       case TOKEN_TYPES.native:
         accountBalance = await provider.value.getBalance(

@@ -14,7 +14,7 @@
       <template v-else>
         <readonly-field
           :label="$t('purchase-book-form.voucher-token-lbl')"
-          :value="book.voucherToken"
+          :value="book.voucher_token"
         />
         <readonly-field
           :label="$t('purchase-book-form.voucher-token-amount-lbl')"
