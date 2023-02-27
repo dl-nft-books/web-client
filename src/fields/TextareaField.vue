@@ -32,7 +32,8 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, getCurrentInstance, useAttrs } from 'vue'
+import { computed, useAttrs } from 'vue'
+import { uuid } from 'uuidv4'
 
 const props = withDefaults(
   defineProps<{
@@ -57,7 +58,7 @@ const emit = defineEmits<{
 
 const attrs = useAttrs()
 
-const uid = getCurrentInstance()?.uid
+const uid = uuid()
 
 const isDisabled = computed(() =>
   ['', 'disabled', true].includes(attrs.disabled as string | boolean),

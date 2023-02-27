@@ -92,15 +92,9 @@
 
 <script lang="ts" setup>
 import { Icon } from '@/common'
+import { uuid } from 'uuidv4'
 
-import {
-  computed,
-  getCurrentInstance,
-  onMounted,
-  ref,
-  useAttrs,
-  watch,
-} from 'vue'
+import { computed, onMounted, ref, useAttrs, watch } from 'vue'
 import { useRouter } from '@/router'
 import { onClickOutside } from '@vueuse/core'
 
@@ -134,7 +128,7 @@ const attrs = useAttrs()
 const selectElement = ref<HTMLDivElement>()
 
 const isDropdownOpen = ref(false)
-const uid = getCurrentInstance()?.uid
+const uid = uuid()
 
 const router = useRouter()
 

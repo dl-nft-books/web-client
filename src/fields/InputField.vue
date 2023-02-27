@@ -44,7 +44,8 @@
 </template>
 
 <script setup lang="ts">
-import { computed, getCurrentInstance, ref, useAttrs } from 'vue'
+import { computed, ref, useAttrs } from 'vue'
+import { uuid } from 'uuidv4'
 import { BN } from '@distributedlab/utils'
 import { Icon } from '@/common'
 import { ICON_NAMES } from '@/enums'
@@ -82,7 +83,7 @@ const emit = defineEmits<{
 
 const attrs = useAttrs()
 
-const uid = getCurrentInstance()?.uid
+const uid = uuid()
 
 const isPasswordShown = ref(false)
 
