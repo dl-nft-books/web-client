@@ -1,11 +1,12 @@
 <template>
   <div class="input-field" :class="inputClasses">
-    <label v-if="label" class="input-field__label">
+    <label v-if="label" :for="`input-field--${uid}`" class="input-field__label">
       {{ label }}
     </label>
     <div class="input-field__input-wrp">
       <input
         class="input-field__input"
+        :id="`input-field--${uid}`"
         v-bind="$attrs"
         v-on="listeners"
         :value="modelValue"
@@ -44,6 +45,7 @@
 
 <script setup lang="ts">
 import { computed, ref, useAttrs } from 'vue'
+import uuid from 'uuidv4'
 import { BN } from '@distributedlab/utils'
 import { Icon } from '@/common'
 import { ICON_NAMES } from '@/enums'
@@ -80,6 +82,8 @@ const emit = defineEmits<{
 }>()
 
 const attrs = useAttrs()
+
+const uid = uuid()
 
 const isPasswordShown = ref(false)
 
