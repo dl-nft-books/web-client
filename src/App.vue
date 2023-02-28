@@ -34,27 +34,14 @@ const init = async () => {
     useNotifications()
     await web3Store.detectProviders()
 
-    // temporary
-    const metamaskProvider = web3Store.providers.find(
-      provider => provider.name === PROVIDERS.metamask,
-    )
-
     const metamaskFallBack: DesignatedProvider = {
       name: PROVIDERS.metamaskFallback,
       instance: undefined,
     }
 
-    if (metamaskProvider) {
-      await web3Store.provider.init(metamaskProvider)
-    } else {
-      /* if user has no extension or mobile metamask app we are using fallback 
-         provider to redirect him to app or to page where he can download it */
-      const fallbackProvider = web3Store.providers.find(
-        provider => provider.name === PROVIDERS.fallback,
-      )
+    web3Store.addProvider(metamaskFallBack)
 
-      if (fallbackProvider) await web3Store.provider.init(metamaskFallBack)
-    }
+    await web3Store.init()
 
     document.title = config.APP_NAME
   } catch (error) {

@@ -38,15 +38,8 @@ export const useWeb3 = () => {
     }
 
     async function handleProviders() {
-      if (!_browserProviders.value.length) {
-        providers.value = [
-          {
-            name: PROVIDERS.fallback,
-            instance: undefined,
-          },
-        ]
-        return
-      }
+      if (!_browserProviders.value.length) return
+
       providers.value = designateBrowserProviders()
     }
   }
