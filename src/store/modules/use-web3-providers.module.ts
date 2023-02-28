@@ -16,6 +16,13 @@ export const useWeb3ProvidersStore = defineStore('web3-providers-store', {
     },
 
     async init() {
+      const metamaskFallBack: DesignatedProvider = {
+        name: PROVIDERS.metamaskFallback,
+        instance: undefined,
+      }
+
+      this.addProvider(metamaskFallBack)
+
       // temporary
       const metamaskProvider = this.providers.find(
         provider => provider.name === PROVIDERS.metamask,

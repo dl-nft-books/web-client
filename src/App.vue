@@ -22,9 +22,7 @@ import { ref } from 'vue'
 import { useNotifications } from '@/composables'
 import { config } from '@config'
 import { useWeb3ProvidersStore } from '@/store'
-import { PROVIDERS } from '@/enums'
 import { Bus } from '@/helpers'
-import { DesignatedProvider } from '@/types'
 
 const isAppInitialized = ref(false)
 const web3Store = useWeb3ProvidersStore()
@@ -33,13 +31,6 @@ const init = async () => {
   try {
     useNotifications()
     await web3Store.detectProviders()
-
-    const metamaskFallBack: DesignatedProvider = {
-      name: PROVIDERS.metamaskFallback,
-      instance: undefined,
-    }
-
-    web3Store.addProvider(metamaskFallBack)
 
     await web3Store.init()
 
