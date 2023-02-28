@@ -4,11 +4,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [1.3.0-rc.1]
+## [1.3.0-rc.1] - 2023-02-28
 #### Added
 - Search on bookshelf page
 - Nft for nft exchange
 - useBook and useGenerator composable
+- fallback provider for metamask
 
 #### Changed
 - Typography refactored
@@ -17,6 +18,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Clean up and refactoring old code base
 - Purchase form is devided into different components to increase code readability
 - Refactored composable folder structure
+
+#### Fixed
+- Bug with showing filter and search together
+- Touch devices bug on FAQ page
 
 #### Removed
 - useContext hook
@@ -75,7 +80,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 #### Under the hood changes
 - merged from https://gitlab.com/distributed_lab/frontend/vue-template
 
-[Unreleased]: https://gitlab.com/tokend/nft-books/web-client-nft-books/compare/v1.2.0...main
+[Unreleased]: https://gitlab.com/tokend/nft-books/web-client-nft-books/compare/v1.3.0-rc.1...main
+[1.3.0-rc.1]: https://gitlab.com/tokend/nft-books/web-client-nft-books/compare/v1.2.0...v1.3.0-rc.1
 [1.2.0]: https://gitlab.com/tokend/nft-books/web-client-nft-books/compare/v1.1.0...v1.2.0
 [1.1.0]: https://gitlab.com/tokend/nft-books/web-client-nft-books/compare/v1.0.0...v1.1.0
 [1.0.0]: https://gitlab.com/tokend/nft-books/web-client-nft-books/tags/v1.0.0

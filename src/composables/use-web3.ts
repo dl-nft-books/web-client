@@ -39,6 +39,7 @@ export const useWeb3 = () => {
 
     async function handleProviders() {
       if (!_browserProviders.value.length) return
+
       providers.value = designateBrowserProviders()
     }
   }

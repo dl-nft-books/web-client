@@ -107,6 +107,7 @@ export async function switchNetwork(chainID: ChainId) {
     // if wallet has no chain added we need to add it and switch to it
     if (ethError?.code === EIP1193.walletMissingChain) {
       await provider.addNetwork(chainID)
+      return
     }
 
     ErrorHandler.process(error)

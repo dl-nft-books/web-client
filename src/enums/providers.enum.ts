@@ -1,6 +1,7 @@
 export enum PROVIDERS {
   fallback = 'fallback',
   metamask = 'metamask',
+  metamaskFallback = 'metamask-fallback',
   coinbase = 'coinbase',
   trust = 'trust',
   walletConnect = 'wallet-connect',

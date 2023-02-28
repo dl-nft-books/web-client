@@ -8,7 +8,7 @@
       </h3>
       <div class="bookshelf-page__actions">
         <bookshelf-network-switcher
-          v-if="isFilterVisible"
+          v-show="isFilterVisible"
           v-model="currentNetworkChainId"
         />
         <input-field

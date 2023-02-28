@@ -245,6 +245,10 @@ const setHeightCSSVar = (element: HTMLElement) => {
   .input-field--icon-left & {
     padding-right: var(--field-padding-right);
     padding-left: calc(var(--field-padding-right) * 3);
+
+    @include respond-to(small) {
+      padding-left: calc(var(--field-padding-right) * 2.2);
+    }
   }
 
   &:not(:read-only) {
@@ -280,6 +284,10 @@ const setHeightCSSVar = (element: HTMLElement) => {
     left: calc(var(--field-padding-right) * 3 / 2);
     transform: translate(-50%, -50%);
     width: max-content;
+
+    @include respond-to(small) {
+      transform: translate(-70%, -50%);
+    }
   }
 
   .input-field--dark & {
