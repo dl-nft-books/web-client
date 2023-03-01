@@ -179,6 +179,29 @@ const tokenTypesOptions = computed(() => {
   return defaultOptions
 })
 
+const isTokenApproved = async (
+  tokenAmount: string,
+  tokenAddress?: string,
+): Promise<boolean> => {
+  if (tokenAddress) erc20.init(tokenAddress)
+
+  const allowance = await erc20.getAllowance(
+    provider.value.selectedAddress!,
+    props.book.contract_address,
+  )
+
+  if (
+    new BN(allowance?.toString() || 0).compare(tokenAmount) === 1 ||
+    new BN(allowance?.toString() || 0).compare(tokenAmount) === 0
+  ) {
+    return true
+  } else if (new BN(allowance?.toString() || 0).compare(tokenAmount) === -1) {
+    await erc20.approve(props.book.contract_address, tokenAmount)
+  }
+
+  return isTokenApproved(tokenAmount)
+}
+
 const approveTokenSpend = async (
   tokenType: TOKEN_TYPES,
   tokenAmount?: string,
@@ -190,17 +213,14 @@ const approveTokenSpend = async (
   switch (tokenType) {
     case TOKEN_TYPES.erc20:
       if (!tokenAddress || !tokenAmount) return
-      erc20.init(tokenAddress)
-
-      await erc20.approve(props.book.contract_address, tokenAmount)
+      await isTokenApproved(tokenAmount, tokenAddress)
       break
     case TOKEN_TYPES.voucher:
-      erc20.init(props.book.voucher_token)
-
-      await erc20.approve(
-        props.book.contract_address,
+      await isTokenApproved(
         props.book.voucher_token_amount,
+        props.book.voucher_token,
       )
+
       break
     case TOKEN_TYPES.nft:
       if (!tokenAddress || !tokenId) return
