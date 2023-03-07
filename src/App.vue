@@ -44,10 +44,9 @@ const init = async () => {
 init()
 
 const isScrollEnabled = ref(true)
-Bus.on(
-  Bus.eventList.toggleScroll,
-  () => (isScrollEnabled.value = !isScrollEnabled.value),
-)
+Bus.on(Bus.eventList.toggleScroll, (payload: unknown) => {
+  isScrollEnabled.value = Boolean(payload)
+})
 </script>
 
 <style lang="scss" scoped>

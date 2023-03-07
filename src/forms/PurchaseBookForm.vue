@@ -26,6 +26,17 @@
       "
     />
 
+    <app-button :text="'EDIT COVER'" @click="isEditingImage = true" />
+
+    <modal v-model:is-shown="isEditingImage">
+      <template #default="{ modal }">
+        <div class="purchase-book-form__image-editor">
+          <image-editor />
+          <app-button :text="'CLOSE'" @click="modal.close" />
+        </div>
+      </template>
+    </modal>
+
     <select-field
       v-model="form.tokenType"
       class="purchase-book-form__select"
@@ -56,7 +67,7 @@ import {
 } from '@/types'
 import { TOKEN_TYPES } from '@/enums'
 
-import { Animation, BookPreview } from '@/common'
+import { Animation, BookPreview, ImageEditor, AppButton, Modal } from '@/common'
 
 import {
   NativeTemplate,
@@ -91,6 +102,8 @@ export type ExposedFormRef = {
   tokenPrice: Ref<TokenPrice | null>
   tokenId?: Ref<string>
 }
+
+const isEditingImage = ref(false)
 
 const TOKEN_AMOUNT_COEFFICIENT = 1.02
 
@@ -348,6 +361,24 @@ const submit = async () => {
   display: flex;
   flex-direction: column;
   gap: toRem(20);
+}
+
+.purchase-book-form__image-editor {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: toRem(30);
+  background-color: var(--background-primary);
+  border-radius: toRem(8);
+  padding: toRem(30);
+  width: clamp(toRem(300), 90vw, toRem(1000));
+  overflow-y: auto;
+  max-height: vh(100);
+
+  @include respond-to(small) {
+    width: 100vw;
+    padding: toRem(15);
+  }
 }
 
 .purchase-book-form__submitting-animation-wrp {
