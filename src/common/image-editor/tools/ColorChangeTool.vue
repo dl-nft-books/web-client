@@ -18,8 +18,14 @@ const DEFAULT_COLOR = 'black'
 const color = ref(DEFAULT_COLOR)
 
 const {
-  instance: { setColor },
+  instance: { setColor, activeObject },
 } = safeInject(EditorInstanceKey)
+
+watch(activeObject, () => {
+  if (!activeObject.value) return
+
+  color.value = activeObject.value.get('fill')
+})
 
 watch(color, () => {
   setColor(color.value)
@@ -27,6 +33,21 @@ watch(color, () => {
 </script>
 
 <style scoped lang="scss">
+.color-change-tool {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  gap: toRem(10);
+  background-color: var(--background-primary);
+  border-radius: toRem(8);
+  padding: toRem(10);
+  border: toRem(1) dashed var(--primary-main);
+
+  @include respond-to(medium) {
+    flex-direction: row;
+  }
+}
+
 .color-change-tool__color-picker {
   --size: #{toRem(40)};
 

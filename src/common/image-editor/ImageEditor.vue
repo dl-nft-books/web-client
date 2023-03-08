@@ -1,6 +1,8 @@
 <template>
-  <div ref="editorContainerRef" class="image-editor">
-    <canvas ref="editorCanvasRef" class="image-editor__canvas" />
+  <div class="image-editor">
+    <div ref="editorContainerRef" class="image-editor__canvas-wrapper">
+      <canvas ref="editorCanvasRef" class="image-editor__canvas" />
+    </div>
     <image-editor-tool-kit />
   </div>
 </template>
@@ -46,18 +48,32 @@ onMounted(() => {
   padding: toRem(20) 0;
   gap: toRem(20);
   border: toRem(1) solid var(--primary-main);
-  overflow-y: auto;
-  min-height: toRem(700);
 
   @include respond-to(medium) {
     flex-direction: column-reverse;
-    min-height: fit-content;
+  }
+}
+
+.image-editor__canvas-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: toRem(8);
+  width: 100%;
+  overflow-y: auto;
+  min-height: toRem(700);
+  padding: toRem(40);
+  background-color: var(--primary-light);
+
+  // box-shadow: inset 0 0 toRem(18) toRem(-8) rgba(0, 0, 0, 1);
+
+  @include respond-to(small) {
+    padding: toRem(20) 0;
+    min-height: vh(65);
   }
 }
 
 .image-editor__canvas {
-  border-radius: toRem(8);
-  padding: toRem(10);
-  box-shadow: inset 0 0 toRem(18) toRem(-8) rgba(0, 0, 0, 0.5);
+  border: toRem(1) dashed rgba(0, 0, 0, 0.2);
 }
 </style>

@@ -1,20 +1,23 @@
-import { fabric } from 'fabric'
+/**
+ * Calculates the scale factor needed to fit an image within a container while
+ * preserving aspect ratio.
+ * @param {number} imageWidth - Width of the image.
+ * @param {number} imageHeight - Height of the image.
+ * @param {number} containerWidth - Width of the container.
+ * @param {number} containerHeight - Height of the container.
+ *
+ * @returns {number} - The scale factor needed to fit the image within
+ * the container.
+ */
 
 export function getImageScaleFactor(
   imageWidth: number,
   imageHeight: number,
-  canvasInstance: fabric.Canvas,
+  containerWidth: number,
+  containerHeight: number,
 ) {
-  if (!canvasInstance.width || !canvasInstance.height) return
+  const widthRatio = containerWidth / imageWidth
+  const heightRatio = containerHeight / imageHeight
 
-  const imageAspectRatio = imageWidth / imageHeight
-  const canvasAspectRatio = canvasInstance.width / canvasInstance.height
-
-  let scaleFactor = canvasInstance.height / imageHeight
-
-  if (imageAspectRatio > canvasAspectRatio) {
-    scaleFactor = canvasInstance.width / imageWidth
-  }
-
-  return scaleFactor
+  return widthRatio < heightRatio ? widthRatio : heightRatio
 }

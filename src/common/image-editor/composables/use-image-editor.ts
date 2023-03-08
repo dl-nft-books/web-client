@@ -1,19 +1,32 @@
-import { Ref, watch } from 'vue'
+import { Ref, watch, ref } from 'vue'
 import { fabric } from 'fabric'
 import { useElementSize } from '@vueuse/core'
-import { getImageScaleFactor } from '@image-editor/helpers'
-import { UseImageEditor } from '@image-editor/types'
+import {
+  dataUriToBlob,
+  getImageScaleFactor,
+  keepObjectInBoundaries,
+  adjustObjectsSize,
+} from '@image-editor/helpers'
+import { UseImageEditor, ZoomType } from '@image-editor/types'
+import {
+  setDragListener,
+  setDeleteObjectListener,
+  setSelectionListeners,
+} from '@image-editor/listeners'
 
-// const MIN_CANVAS_HEIGHT = 500
+const DEFAULT_VIEWPORT = [1, 0, 0, 1, 0, 0]
+const DEFAULT_ZOOM = 1
 
 type FabricColor = string | fabric.Pattern | fabric.Gradient
 
 export function useImageEditor(
   canvasRef: Ref<HTMLCanvasElement | null>,
   canvasContainerRef: Ref<HTMLElement | null>,
-  // minHeight = MIN_CANVAS_HEIGHT,
 ): UseImageEditor {
   let canvas = null as fabric.Canvas | null
+
+  const currentZoom = ref(1)
+  const activeObject = ref<fabric.Object | null>(null)
 
   const imageConfig: fabric.IImageOptions = {
     crossOrigin: 'anonymous',
@@ -21,27 +34,34 @@ export function useImageEditor(
     centeredRotation: true,
   }
 
+  const setCanvasListeners = () => {
+    if (!canvas) return
+
+    const dragRestrictionRule = () => currentZoom.value === 1
+
+    setDragListener(canvas, dragRestrictionRule)
+    setDeleteObjectListener(canvas)
+    setSelectionListeners(canvas, activeObject)
+  }
+
   const { width: containerWidth, height: containerHeight } =
     useElementSize(canvasContainerRef)
 
   const init = (imageUrl: string, customOptions?: fabric.IImageOptions) => {
-    // wait until container initializes
-    const stopWatching = watch(containerWidth, () => {
-      if (containerWidth.value <= 0) return
+    // wait until container inititalizes then invoking init of canvas
+    const stopWatching = watch(containerWidth, async () => {
+      if (!containerWidth.value) return
+
+      stopWatching()
 
       canvas = new fabric.Canvas(canvasRef.value, {
         width: containerWidth.value,
         height: containerHeight.value,
       })
 
-      setBackgroundImage(imageUrl, customOptions)
-
-      stopWatching()
-
-      watch(
-        () => [containerWidth.value, containerHeight.value],
-        handleCanvasResize,
-      )
+      await setBackgroundImage(imageUrl, customOptions)
+      handleCanvasResize()
+      setCanvasListeners()
     })
   }
 
@@ -49,53 +69,19 @@ export function useImageEditor(
     imageUrl: string,
     customOptions?: fabric.IImageOptions,
   ) => {
-    fabric.Image.fromURL(imageUrl, (image: fabric.Image) => {
-      if (!image.width || !image.height || !canvas) return
+    return new Promise(resolve => {
+      fabric.Image.fromURL(imageUrl, (image: fabric.Image) => {
+        if (!image.width || !image.height || !canvas?.width || !canvas?.height)
+          return
 
-      const scaleFactor = getImageScaleFactor(image.width, image.height, canvas)
+        canvas.setBackgroundImage(image, canvas.renderAll.bind(canvas), {
+          ...imageConfig,
+          ...(customOptions ? customOptions : {}),
+        })
 
-      if (!scaleFactor) return
-
-      canvas.setBackgroundImage(image, canvas.renderAll.bind(canvas), {
-        ...imageConfig,
-        scaleX: scaleFactor,
-        scaleY: scaleFactor,
-        ...(customOptions ? customOptions : {}),
+        resolve(image)
       })
-
-      canvas.setHeight(image.height * scaleFactor)
-      canvas.setWidth(image.width * scaleFactor)
-
-      image.centerH()
     })
-  }
-
-  // works fine when scalling down
-  const handleCanvasResize = () => {
-    if (!canvas || !canvasContainerRef.value) return
-
-    const backgroundImage = canvas.backgroundImage as fabric.Image
-
-    if (!backgroundImage?.width || !backgroundImage?.height) return
-
-    canvas.setWidth(containerWidth.value)
-
-    const scaleFactor = getImageScaleFactor(
-      backgroundImage.width,
-      backgroundImage.height,
-      canvas,
-    )
-
-    if (!scaleFactor) return
-
-    canvas.setWidth(backgroundImage.width * scaleFactor)
-    canvas.setHeight(backgroundImage.height * scaleFactor)
-
-    backgroundImage.scaleX = scaleFactor
-    backgroundImage.scaleY = scaleFactor
-    backgroundImage.centerH()
-
-    canvas.renderAll()
   }
 
   const addText = (value: string, isEditable = true) => {
@@ -136,6 +122,50 @@ export function useImageEditor(
     canvas.renderAll()
   }
 
+  const switchBoldness = (object?: fabric.IText) => {
+    if (!canvas) return
+
+    const activeObject = object ?? canvas.getActiveObject()
+
+    if (!activeObject) return
+
+    if (activeObject instanceof fabric.IText) {
+      const isBold = activeObject.fontWeight === 'bold'
+
+      activeObject.set('fontWeight', !isBold ? 'bold' : 'normal')
+
+      canvas.renderAll()
+    }
+  }
+
+  const switchItalic = (object?: fabric.IText) => {
+    if (!canvas) return
+
+    const activeObject = object ?? canvas.getActiveObject()
+
+    if (!activeObject) return
+
+    if (activeObject instanceof fabric.IText) {
+      const isItalic = activeObject.fontStyle === 'italic'
+      activeObject.set('fontStyle', isItalic ? 'normal' : 'italic')
+
+      canvas.renderAll()
+    }
+  }
+
+  const changeFont = (font: string, object?: fabric.IText) => {
+    if (!canvas) return
+
+    const activeObject = object ?? canvas.getActiveObject()
+
+    if (!activeObject) return
+
+    if (activeObject instanceof fabric.IText) {
+      activeObject.set('fontFamily', font)
+      canvas.renderAll()
+    }
+  }
+
   const addRect = () => {
     if (!canvas) return
 
@@ -155,6 +185,118 @@ export function useImageEditor(
     canvas.add(rect)
   }
 
+  const preserveOriginalSize = () => {
+    if (!canvas?.width || !canvas.height) return
+
+    const currentWidth = canvas.width
+    const currentHeight = canvas.height
+
+    const backgroundImage = canvas.backgroundImage as fabric.Image
+
+    if (!backgroundImage.width || !backgroundImage.height) return
+
+    backgroundImage.scale(1)
+
+    canvas.setDimensions({
+      width: backgroundImage.width,
+      height: backgroundImage.height,
+    })
+
+    adjustObjectsSize(canvas, currentWidth, currentHeight)
+  }
+
+  const download = (options?: fabric.IDataURLOptions) => {
+    if (!canvas) return
+
+    resetZoom()
+
+    // scaling up image and all objects to initial sizes and to get max quality
+    preserveOriginalSize()
+
+    const dataURL = canvas.toDataURL(options)
+
+    const downloadLink = document.createElement('a')
+    downloadLink.setAttribute('download', 'test-image.png')
+
+    downloadLink.setAttribute('href', dataURL)
+
+    downloadLink.click()
+
+    // invoking this func to restore canvas state
+    handleCanvasResize()
+  }
+
+  const canvasToFormData = () => {
+    if (!canvas) return null
+
+    const base64 = canvas.toDataURL()
+    const blob = dataUriToBlob(base64, 'image/png')
+
+    const formData = new FormData()
+    formData.append('Document', blob)
+
+    return formData
+  }
+
+  const resetZoom = () => {
+    if (!canvas) return
+
+    canvas.setZoom(DEFAULT_ZOOM)
+    canvas.viewportTransform = DEFAULT_VIEWPORT
+    currentZoom.value = canvas.getZoom()
+  }
+
+  const zoom = (zoomType: ZoomType, scaleFactor?: number) => {
+    if (!canvas) return
+
+    switch (zoomType) {
+      case 'zoom':
+        if (!scaleFactor) return
+
+        canvas.setZoom(scaleFactor)
+        currentZoom.value = canvas.getZoom()
+
+        keepObjectInBoundaries(canvas, canvas.backgroundImage as fabric.Image)
+        break
+      case 'reset':
+      default:
+        resetZoom()
+    }
+  }
+
+  const handleCanvasResize = () => {
+    if (!canvas?.backgroundImage || !canvasContainerRef.value) return
+
+    const backgroundImage = canvas.backgroundImage as fabric.Image
+
+    if (!backgroundImage.width || !backgroundImage.height) return
+
+    const scaleFactor = getImageScaleFactor(
+      backgroundImage.width,
+      backgroundImage.height,
+      containerWidth.value,
+      containerHeight.value,
+    )
+
+    const originalWidth = canvas.width
+    const originalHeight = canvas.height
+
+    backgroundImage.scale(scaleFactor)
+
+    canvas.setDimensions({
+      height: backgroundImage.height * scaleFactor,
+      width: backgroundImage.width * scaleFactor,
+    })
+
+    backgroundImage.center()
+
+    adjustObjectsSize(canvas, originalWidth!, originalHeight!)
+
+    canvas.renderAll()
+  }
+
+  watch(() => [containerHeight.value, containerWidth.value], handleCanvasResize)
+
   return {
     canvas,
 
@@ -163,5 +305,16 @@ export function useImageEditor(
     addText,
     addRect,
     setColor,
+    switchBoldness,
+    switchItalic,
+    changeFont,
+
+    zoom,
+    currentZoom,
+
+    activeObject,
+
+    download,
+    canvasToFormData,
   }
 }
