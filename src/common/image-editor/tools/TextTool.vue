@@ -11,9 +11,6 @@
       class="text-tool__button"
       scheme="default"
       icon-size="large"
-      :class="{
-        'text-tool__button--picked': isBold,
-      }"
       :icon-left="$icons.boldText"
       @click="handleBoldSwitch"
     />
@@ -22,12 +19,21 @@
       scheme="default"
       icon-size="large"
       :icon-left="$icons.italicText"
-      :class="{
-        'text-tool__button--picked': isItalic,
-      }"
       @click="handleItalicSwitch"
     />
+    <app-button
+      class="text-tool__button"
+      scheme="default"
+      icon-size="large"
+      :icon-left="$icons.fire"
+      @click="handleFrameAdd"
+    />
     <select-field v-model="currentFont" :value-options="fonts" />
+    <select-field
+      v-model="currentFontSize"
+      class="text-tool__font-select"
+      :value-options="fontSizes"
+    />
     <!-- debug -->
     <app-button
       class="text-tool__button"
@@ -40,12 +46,13 @@
 </template>
 
 <script setup lang="ts">
-import { fabric } from 'fabric'
 import { ref, watch } from 'vue'
 import { AppButton } from '@/common'
 import { SelectField } from '@/fields'
 import { EditorInstanceKey } from '@image-editor/types'
 import { safeInject } from '@image-editor/helpers'
+
+// TODO: maybe think about showing styles of current selected text
 
 enum Fonts {
   arial = 'Arial',
@@ -55,6 +62,11 @@ enum Fonts {
   comicSans = 'Comic Sans',
 }
 
+const DEFAULT_TEXT = 'Your unique signature'
+const DEFAULT_FONT_SIZE = 24
+const TEXT_COUNT_RESTRICTION = 5
+const FONT_SIZE_STEP = 2
+const FONT_SIZES_START = 10
 // temporary
 const fonts = [
   {
@@ -78,13 +90,15 @@ const fonts = [
     value: Fonts.comicSans,
   },
 ]
-const DEFAULT_TEXT = 'Your unique signature'
-const TEXT_COUNT_RESTRICTION = 5
+
+const fontSizes = new Array(20).fill('').map((_, idx) => ({
+  label: `${idx * FONT_SIZE_STEP + FONT_SIZES_START} pt`,
+  value: idx * FONT_SIZE_STEP + FONT_SIZES_START,
+}))
 
 const textCount = ref(0)
 const currentFont = ref<Fonts>(Fonts.arial)
-const isBold = ref(false)
-const isItalic = ref(false)
+const currentFontSize = ref(DEFAULT_FONT_SIZE)
 
 const {
   instance: {
@@ -92,51 +106,39 @@ const {
     switchBoldness,
     switchItalic,
     changeFont,
+    changeFontSize,
+    addFrame,
     download,
-    activeObject,
   },
 } = safeInject(EditorInstanceKey)
+
+const handleFrameAdd = () => {
+  addFrame('#00000', 2, 10)
+}
 
 const handleTextAdd = () => {
   if (textCount.value > TEXT_COUNT_RESTRICTION) return
 
-  addText(DEFAULT_TEXT)
+  addText(DEFAULT_TEXT, {
+    fontSize: DEFAULT_FONT_SIZE,
+  })
   textCount.value++
 }
 
 const handleBoldSwitch = () => {
   switchBoldness()
-
-  isBold.value = !isBold.value
 }
 
 const handleItalicSwitch = () => {
   switchItalic()
-
-  isItalic.value = !isItalic.value
 }
-
-const resetSetting = () => {
-  currentFont.value = Fonts.arial
-  isBold.value = false
-  isItalic.value = false
-}
-
-watch(activeObject, () => {
-  if (!activeObject.value) {
-    resetSetting()
-    return
-  }
-
-  if (activeObject.value instanceof fabric.IText) {
-    currentFont.value = activeObject.value.fontFamily as Fonts
-    isBold.value = activeObject.value.fontWeight === 'bold'
-    isItalic.value = activeObject.value.fontStyle === 'italic'
-  }
-})
 
 watch(currentFont, () => {
   changeFont(currentFont.value)
+})
+
+watch(currentFontSize, () => {
+  changeFontSize(currentFontSize.value)
 })
 </script>
 
@@ -170,5 +172,9 @@ watch(currentFont, () => {
   &:hover {
     cursor: pointer;
   }
+}
+
+.text-tool__font-select {
+  min-width: toRem(95);
 }
 </style>

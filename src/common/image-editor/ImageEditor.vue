@@ -33,7 +33,7 @@ provide(EditorInstanceKey, { instance: editorInstance })
 const { init } = editorInstance
 
 onMounted(() => {
-  if (!editorCanvasRef.value) return
+  if (!editorCanvasRef.value || !editorContainerRef.value) return
 
   init(props.imageUrl)
 })

@@ -6,6 +6,7 @@ import {
   getImageScaleFactor,
   keepObjectInBoundaries,
   adjustObjectsSize,
+  modifyTextSelection,
 } from '@image-editor/helpers'
 import { UseImageEditor, ZoomType } from '@image-editor/types'
 import {
@@ -17,7 +18,8 @@ import {
 const DEFAULT_VIEWPORT = [1, 0, 0, 1, 0, 0]
 const DEFAULT_ZOOM = 1
 
-type FabricColor = string | fabric.Pattern | fabric.Gradient
+export type FabricColor = string | fabric.Pattern | fabric.Gradient
+export type FabricStyle = FabricColor | number
 
 export function useImageEditor(
   canvasRef: Ref<HTMLCanvasElement | null>,
@@ -25,7 +27,7 @@ export function useImageEditor(
 ): UseImageEditor {
   let canvas = null as fabric.Canvas | null
 
-  const currentZoom = ref(1)
+  const currentZoom = ref(DEFAULT_ZOOM)
   const activeObject = ref<fabric.Object | null>(null)
 
   const imageConfig: fabric.IImageOptions = {
@@ -33,6 +35,9 @@ export function useImageEditor(
     centeredScaling: true,
     centeredRotation: true,
   }
+
+  const { width: containerWidth, height: containerHeight } =
+    useElementSize(canvasContainerRef)
 
   const setCanvasListeners = () => {
     if (!canvas) return
@@ -43,9 +48,6 @@ export function useImageEditor(
     setDeleteObjectListener(canvas)
     setSelectionListeners(canvas, activeObject)
   }
-
-  const { width: containerWidth, height: containerHeight } =
-    useElementSize(canvasContainerRef)
 
   const init = (imageUrl: string, customOptions?: fabric.IImageOptions) => {
     // wait until container inititalizes then invoking init of canvas
@@ -84,19 +86,60 @@ export function useImageEditor(
     })
   }
 
-  const addText = (value: string, isEditable = true) => {
+  const setColor = (color: FabricColor, object?: fabric.Object) => {
     if (!canvas) return
 
-    const text = new fabric.IText(value, {
+    const activeObject = object ?? canvas.getActiveObject()
+
+    if (!activeObject) return
+
+    if (activeObject instanceof fabric.IText) {
+      modifyTextSelection(activeObject, 'fill', color, color)
+      canvas.renderAll()
+      return
+    }
+
+    activeObject.set('fill', color)
+
+    canvas.renderAll()
+  }
+
+  const setBackgroundColor = (color: string, object?: fabric.Object) => {
+    if (!canvas) return
+
+    const activeObject = object ?? canvas.getActiveObject()
+
+    if (!activeObject) return
+
+    if (activeObject instanceof fabric.IText) {
+      modifyTextSelection(activeObject, 'textBackgroundColor', color, color)
+      canvas.renderAll()
+      return
+    }
+
+    activeObject.set('backgroundColor', color)
+
+    canvas.renderAll()
+  }
+
+  const addText = (value: string, options?: fabric.ITextOptions) => {
+    if (!canvas) return
+
+    const defaultTextSettings: fabric.ITextOptions = {
       left: 50,
       top: 50,
       fill: '#000000',
       fontFamily: 'Arial',
       fontSize: 24,
       fontWeight: 'normal',
-      editable: isEditable,
+      editable: true,
       centeredRotation: true,
       padding: 10,
+    }
+
+    const text = new fabric.IText(value, {
+      ...defaultTextSettings,
+      ...(!options ? {} : options),
     })
 
     // removing ability to scale without maintaining aspect ratio
@@ -110,32 +153,37 @@ export function useImageEditor(
     canvas.add(text)
   }
 
-  const setColor = (color: FabricColor, object?: fabric.Object) => {
-    if (!canvas) return
-
-    const activeObject = object ?? canvas.getActiveObject()
-
-    if (!activeObject) return
-
-    activeObject.set('fill', color)
-
-    canvas.renderAll()
-  }
-
   const switchBoldness = (object?: fabric.IText) => {
     if (!canvas) return
 
     const activeObject = object ?? canvas.getActiveObject()
 
-    if (!activeObject) return
+    if (!activeObject || !(activeObject instanceof fabric.IText)) return
 
-    if (activeObject instanceof fabric.IText) {
-      const isBold = activeObject.fontWeight === 'bold'
+    const wholeTextStyle = (currentStyle: string | number) =>
+      currentStyle !== 'bold' ? 'bold' : 'normal'
 
-      activeObject.set('fontWeight', !isBold ? 'bold' : 'normal')
+    const selectionStyle = (currentSelection: unknown[]) => {
+      /* calculate amount of bold chars to decide which style should 
+         be applied */
+      const boldChars = (
+        currentSelection as { fontWeight: string | number }[]
+      ).reduce(
+        (count, value) => (value.fontWeight === 'bold' ? count + 1 : count),
+        0,
+      )
 
-      canvas.renderAll()
+      return boldChars === currentSelection.length ? 'normal' : 'bold'
     }
+
+    modifyTextSelection(
+      activeObject,
+      'fontWeight',
+      wholeTextStyle,
+      selectionStyle,
+    )
+
+    canvas.renderAll()
   }
 
   const switchItalic = (object?: fabric.IText) => {
@@ -143,14 +191,29 @@ export function useImageEditor(
 
     const activeObject = object ?? canvas.getActiveObject()
 
-    if (!activeObject) return
+    if (!activeObject || !(activeObject instanceof fabric.IText)) return
 
-    if (activeObject instanceof fabric.IText) {
-      const isItalic = activeObject.fontStyle === 'italic'
-      activeObject.set('fontStyle', isItalic ? 'normal' : 'italic')
+    const wholeTextStyle = (currentStyle: string | number) =>
+      currentStyle === 'italic' ? 'normal' : 'italic'
 
-      canvas.renderAll()
+    const selectionStyle = (currentSelection: unknown[]) => {
+      /* calculate amount of italic chars to decide which style should 
+           be applied */
+      const italicChars = (currentSelection as { fontStyle: string }[]).reduce(
+        (count, value) => (value.fontStyle === 'italic' ? count + 1 : count),
+        0,
+      )
+
+      return italicChars === currentSelection.length ? 'normal' : 'italic'
     }
+
+    modifyTextSelection(
+      activeObject,
+      'fontStyle',
+      wholeTextStyle,
+      selectionStyle,
+    )
+    canvas.renderAll()
   }
 
   const changeFont = (font: string, object?: fabric.IText) => {
@@ -158,12 +221,23 @@ export function useImageEditor(
 
     const activeObject = object ?? canvas.getActiveObject()
 
-    if (!activeObject) return
+    if (!activeObject || !(activeObject instanceof fabric.IText)) return
 
-    if (activeObject instanceof fabric.IText) {
-      activeObject.set('fontFamily', font)
-      canvas.renderAll()
-    }
+    modifyTextSelection(activeObject, 'fontFamily', font, font)
+
+    canvas.renderAll()
+  }
+
+  const changeFontSize = (size: number, object?: fabric.IText) => {
+    if (!canvas) return
+
+    const activeObject = object ?? canvas.getActiveObject()
+
+    if (!activeObject || !(activeObject instanceof fabric.IText)) return
+
+    modifyTextSelection(activeObject, 'fontSize', size, size)
+
+    canvas.renderAll()
   }
 
   const addRect = () => {
@@ -183,6 +257,41 @@ export function useImageEditor(
     })
 
     canvas.add(rect)
+  }
+
+  // FIX: text is no longer editable with frame
+  const addFrame = (
+    color: string,
+    width: number,
+    padding: number,
+    object?: fabric.IText,
+  ) => {
+    if (!canvas) return
+
+    const activeObject = object ?? canvas.getActiveObject()
+
+    if (!activeObject || !(activeObject instanceof fabric.IText)) return
+
+    const boundingBox = activeObject.getBoundingRect()
+
+    const frame = new fabric.Rect({
+      left: boundingBox.left - padding,
+      top: boundingBox.top - padding,
+      width: boundingBox.width + padding * 2,
+      height: boundingBox.height + padding * 2,
+      fill: 'transparent',
+      stroke: color,
+      strokeWidth: width,
+      selectable: false,
+    })
+
+    const group = new fabric.Group([frame, activeObject], {
+      selectable: true,
+    })
+
+    canvas.add(group)
+    canvas.sendToBack(frame)
+    canvas.discardActiveObject()
   }
 
   const preserveOriginalSize = () => {
@@ -226,14 +335,21 @@ export function useImageEditor(
     handleCanvasResize()
   }
 
-  const canvasToFormData = () => {
+  const canvasToFormData = (options?: fabric.IDataURLOptions) => {
     if (!canvas) return null
 
-    const base64 = canvas.toDataURL()
+    resetZoom()
+    // scaling up image and all objects to initial sizes and to get max quality
+    preserveOriginalSize()
+
+    const base64 = canvas.toDataURL(options)
     const blob = dataUriToBlob(base64, 'image/png')
 
     const formData = new FormData()
     formData.append('Document', blob)
+
+    // invoking this func to restore canvas state
+    handleCanvasResize()
 
     return formData
   }
@@ -304,10 +420,13 @@ export function useImageEditor(
 
     addText,
     addRect,
+    addFrame,
     setColor,
+    setBackgroundColor,
     switchBoldness,
     switchItalic,
     changeFont,
+    changeFontSize,
 
     zoom,
     currentZoom,

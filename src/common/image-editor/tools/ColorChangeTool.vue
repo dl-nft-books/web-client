@@ -1,8 +1,15 @@
 <template>
   <div class="color-change-tool">
+    <label>{{ $t('image-editor.color-tool-lbl') }}</label>
     <input
       class="color-change-tool__color-picker"
       v-model="color"
+      type="color"
+    />
+    <label>{{ $t('image-editor.background-color-tool-lbl') }}</label>
+    <input
+      class="color-change-tool__color-picker"
+      v-model="backgroundColor"
       type="color"
     />
   </div>
@@ -13,22 +20,22 @@ import { ref, watch } from 'vue'
 import { EditorInstanceKey } from '@image-editor/types'
 import { safeInject } from '@image-editor/helpers'
 
-const DEFAULT_COLOR = 'black'
+const DEFAULT_COLOR = '#000000'
+const DEFAULT_BACKGROUND_COLOR = 'transparent'
 
 const color = ref(DEFAULT_COLOR)
+const backgroundColor = ref(DEFAULT_BACKGROUND_COLOR)
 
 const {
-  instance: { setColor, activeObject },
+  instance: { setColor, setBackgroundColor },
 } = safeInject(EditorInstanceKey)
-
-watch(activeObject, () => {
-  if (!activeObject.value) return
-
-  color.value = activeObject.value.get('fill')
-})
 
 watch(color, () => {
   setColor(color.value)
+})
+
+watch(backgroundColor, () => {
+  setBackgroundColor(backgroundColor.value)
 })
 </script>
 
