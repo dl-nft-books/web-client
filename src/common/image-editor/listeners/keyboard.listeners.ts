@@ -10,13 +10,16 @@ import { fabric } from 'fabric'
  */
 
 export function setDeleteObjectListener(canvas: fabric.Canvas) {
-  document.addEventListener('keydown', event => {
+  document.addEventListener('keyup', event => {
     if (event.key !== 'Delete') return
 
-    const activeObject = canvas.getActiveObject()
+    const activeObjects = canvas.getActiveObjects()
+    if (!activeObjects.length) return
 
-    if (!activeObject) return
+    canvas.discardActiveObject()
 
-    canvas.remove(activeObject)
+    activeObjects.forEach(object => {
+      canvas.remove(object)
+    })
   })
 }

@@ -30,7 +30,9 @@
   },
   "image-editor": {
     "color-tool-lbl": "Color",
-    "background-color-tool-lbl": "BG Color"
+    "background-color-tool-lbl": "BG Color",
+    "brush-color-lbl": "Brush Color",
+    "brush-size-lbl": "Brush Size"
   },
   "notification": {
     "default-title-success": "Success",

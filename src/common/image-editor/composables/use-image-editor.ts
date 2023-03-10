@@ -8,7 +8,12 @@ import {
   adjustObjectsSize,
   modifyTextSelection,
 } from '@image-editor/helpers'
-import { UseImageEditor, ZoomType } from '@image-editor/types'
+import {
+  FabricColor,
+  UseImageEditor,
+  ZoomType,
+  BRUSHES,
+} from '@image-editor/types'
 import {
   setDragListener,
   setDeleteObjectListener,
@@ -17,9 +22,6 @@ import {
 
 const DEFAULT_VIEWPORT = [1, 0, 0, 1, 0, 0]
 const DEFAULT_ZOOM = 1
-
-export type FabricColor = string | fabric.Pattern | fabric.Gradient
-export type FabricStyle = FabricColor | number
 
 export function useImageEditor(
   canvasRef: Ref<HTMLCanvasElement | null>,
@@ -95,6 +97,19 @@ export function useImageEditor(
 
     if (activeObject instanceof fabric.IText) {
       modifyTextSelection(activeObject, 'fill', color, color)
+      canvas.renderAll()
+      return
+    }
+
+    if (activeObject instanceof fabric.Group) {
+      activeObject.getObjects().forEach(object => {
+        if (object instanceof fabric.IText) {
+          modifyTextSelection(object, 'fill', color, color)
+        }
+        if (object instanceof fabric.Rect) {
+          object.set('stroke', color as string)
+        }
+      })
       canvas.renderAll()
       return
     }
@@ -260,6 +275,21 @@ export function useImageEditor(
   }
 
   // FIX: text is no longer editable with frame
+  const ungroupObjects = (group: fabric.Group) => {
+    if (!canvas) return
+
+    const items = group.getObjects()
+
+    if (!items.length) return
+
+    group._restoreObjectsState()
+    canvas.remove(group)
+    items.forEach(item => {
+      canvas!.add(item)
+    })
+  }
+
+  // doesn't work properly
   const addFrame = (
     color: string,
     width: number,
@@ -290,8 +320,28 @@ export function useImageEditor(
     })
 
     canvas.add(group)
-    canvas.sendToBack(frame)
     canvas.discardActiveObject()
+
+    activeObject.lockMovementX = true
+    activeObject.lockMovementY = true
+    activeObject.lockRotation = true
+    activeObject.lockScalingX = true
+    activeObject.lockScalingY = true
+
+    activeObject.on('selection:cleared', () => {
+      const group = new fabric.Group([frame, activeObject], {
+        selectable: true,
+      })
+
+      canvas!.add(group)
+      canvas!.discardActiveObject()
+    })
+
+    group.on('mousedblclick', () => {
+      ungroupObjects(group)
+      canvas!.setActiveObject(activeObject)
+      activeObject.enterEditing()
+    })
   }
 
   const preserveOriginalSize = () => {
@@ -380,6 +430,46 @@ export function useImageEditor(
     }
   }
 
+  const startDraw = (brush: BRUSHES, options?: Partial<fabric.BaseBrush>) => {
+    if (!canvas) return
+
+    canvas.isDrawingMode = true
+    /* Due to bug with types in fabric library this constructors require 
+       canvas object, but types declaration says that it doesn't.
+       
+       TODO: remove ignore when bug is fixed */
+    switch (brush) {
+      case BRUSHES.spray:
+        // eslint-disable-next-line
+        // @ts-ignore
+        canvas.freeDrawingBrush = new fabric.SprayBrush(canvas)
+        break
+      case BRUSHES.circle:
+        // eslint-disable-next-line
+        // @ts-ignore
+        canvas.freeDrawingBrush = new fabric.CircleBrush(canvas)
+        break
+      case BRUSHES.pencil:
+      default:
+        canvas.freeDrawingBrush = new fabric.PencilBrush(canvas)
+        break
+    }
+
+    if (options) Object.assign(canvas.freeDrawingBrush, options)
+  }
+
+  const modifyBrush = (options: Partial<fabric.BaseBrush>) => {
+    if (!canvas || !canvas.isDrawingMode) return
+
+    Object.assign(canvas.freeDrawingBrush, options)
+  }
+
+  const stopDraw = () => {
+    if (!canvas) return
+
+    canvas.isDrawingMode = false
+  }
+
   const handleCanvasResize = () => {
     if (!canvas?.backgroundImage || !canvasContainerRef.value) return
 
@@ -435,5 +525,9 @@ export function useImageEditor(
 
     download,
     canvasToFormData,
+
+    startDraw,
+    stopDraw,
+    modifyBrush,
   }
 }

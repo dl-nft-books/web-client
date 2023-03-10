@@ -5,12 +5,18 @@
     <text-tool />
 
     <color-change-tool />
+    <draw-tool />
     <zoom-tool />
   </aside>
 </template>
 
 <script setup lang="ts">
-import { TextTool, ColorChangeTool, ZoomTool } from '@image-editor/tools'
+import {
+  TextTool,
+  ColorChangeTool,
+  ZoomTool,
+  DrawTool,
+} from '@image-editor/tools'
 </script>
 <style scoped lang="scss">
 .image-editor-tool-kit {

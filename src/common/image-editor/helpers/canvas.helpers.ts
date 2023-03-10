@@ -77,14 +77,14 @@ export function adjustObjectsSize(
   initialWidth: number,
   initialHeight: number,
 ) {
+  if (!canvas?.width || !canvas.height) return
+
   const canvasObjects = canvas.getObjects()
 
+  const scaleX = canvas.width / initialWidth
+  const scaleY = canvas.height / initialHeight
+
   canvasObjects.forEach(object => {
-    if (!canvas?.width || !canvas.height) return
-
-    const scaleX = canvas.width / initialWidth
-    const scaleY = canvas.height / initialHeight
-
     if (!object.left || !object.top || !object.width || !object.height) return
 
     const left = object.left * scaleX
@@ -92,11 +92,21 @@ export function adjustObjectsSize(
     const width = object.width * scaleX
     const height = object.height * scaleY
 
-    object.set({ left, top, width, height })
+    object.set({ left, top })
 
     if (object instanceof fabric.IText && object.fontSize) {
+      object.set({ width, height })
       object.set('fontSize', object.fontSize * Math.max(scaleX, scaleY))
     }
+
+    // for Pathes and Groups simple dimension changing won't do desirable effect
+    if (object instanceof fabric.Path || object instanceof fabric.Group) {
+      object.scaleX = object.scaleX! * scaleX
+      object.scaleY = object.scaleY! * scaleY
+    } else {
+      object.set({ width, height })
+    }
+
     object.setCoords()
   })
 

@@ -1,5 +1,5 @@
 import { fabric } from 'fabric'
-import { FabricStyle } from '@image-editor/composables'
+import { FabricStyle } from '@image-editor/types'
 
 /**
  * Modifies the selection of a Fabric.js IText object with a given style.

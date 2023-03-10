@@ -1,8 +1,15 @@
 import { fabric } from 'fabric'
 import { Ref } from 'vue'
-import { FabricColor } from '@image-editor/composables'
 
 export type ZoomType = 'zoom' | 'reset'
+export type FabricColor = string | fabric.Pattern | fabric.Gradient
+export type FabricStyle = FabricColor | number
+
+export enum BRUSHES {
+  pencil = 'pencil',
+  spray = 'spray',
+  circle = 'circle',
+}
 
 export interface UseImageEditor {
   canvas: fabric.Canvas | null
@@ -29,4 +36,8 @@ export interface UseImageEditor {
   ) => void
   download: (options?: fabric.IDataURLOptions) => void
   canvasToFormData: (options?: fabric.IDataURLOptions) => FormData | null
+
+  startDraw: (brush: BRUSHES, options?: Partial<fabric.BaseBrush>) => void
+  modifyBrush: (options: Partial<fabric.BaseBrush>) => void
+  stopDraw: () => void
 }

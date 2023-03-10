@@ -1,27 +1,22 @@
 <template>
   <div class="color-change-tool">
-    <label>{{ $t('image-editor.color-tool-lbl') }}</label>
-    <input
-      class="color-change-tool__color-picker"
-      v-model="color"
-      type="color"
-    />
-    <label>{{ $t('image-editor.background-color-tool-lbl') }}</label>
-    <input
-      class="color-change-tool__color-picker"
+    <color-field v-model="color" :label="$t('image-editor.color-tool-lbl')" />
+
+    <color-field
       v-model="backgroundColor"
-      type="color"
+      :label="$t('image-editor.background-color-tool-lbl')"
     />
   </div>
 </template>
 
 <script setup lang="ts">
 import { ref, watch } from 'vue'
+import { ColorField } from '@/fields'
 import { EditorInstanceKey } from '@image-editor/types'
 import { safeInject } from '@image-editor/helpers'
 
 const DEFAULT_COLOR = '#000000'
-const DEFAULT_BACKGROUND_COLOR = 'transparent'
+const DEFAULT_BACKGROUND_COLOR = '#000000'
 
 const color = ref(DEFAULT_COLOR)
 const backgroundColor = ref(DEFAULT_BACKGROUND_COLOR)
@@ -52,21 +47,6 @@ watch(backgroundColor, () => {
 
   @include respond-to(medium) {
     flex-direction: row;
-  }
-}
-
-.color-change-tool__color-picker {
-  --size: #{toRem(40)};
-
-  width: var(--size);
-  height: var(--size);
-  background-color: transparent;
-  border: none;
-  cursor: pointer;
-
-  &::-webkit-color-swatch {
-    border-radius: toRem(8);
-    border: toRem(2) solid var(--primary-main);
   }
 }
 </style>
