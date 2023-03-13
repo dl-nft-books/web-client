@@ -29,11 +29,17 @@
       @click="handleFrameAdd"
     />
     <select-field v-model="currentFont" :value-options="fonts" />
-    <select-field
+    <range-field
+      v-model="currentFontSize"
+      :min="FONT_SIZES_START"
+      :max="MAX_FONT_SIZE"
+      :label="$t('image-editor.font-size-lbl')"
+    />
+    <!-- <select-field
       v-model="currentFontSize"
       class="text-tool__font-select"
       :value-options="fontSizes"
-    />
+    /> -->
     <!-- debug -->
     <app-button
       class="text-tool__button"
@@ -48,7 +54,7 @@
 <script setup lang="ts">
 import { ref, watch } from 'vue'
 import { AppButton } from '@/common'
-import { SelectField } from '@/fields'
+import { SelectField, RangeField } from '@/fields'
 import { EditorInstanceKey } from '@image-editor/types'
 import { safeInject } from '@image-editor/helpers'
 
@@ -65,8 +71,9 @@ enum Fonts {
 const DEFAULT_TEXT = 'Your unique signature'
 const DEFAULT_FONT_SIZE = 24
 const TEXT_COUNT_RESTRICTION = 5
-const FONT_SIZE_STEP = 2
+// const FONT_SIZE_STEP = 2
 const FONT_SIZES_START = 10
+const MAX_FONT_SIZE = 60
 // temporary
 const fonts = [
   {
@@ -91,10 +98,10 @@ const fonts = [
   },
 ]
 
-const fontSizes = new Array(20).fill('').map((_, idx) => ({
-  label: `${idx * FONT_SIZE_STEP + FONT_SIZES_START} pt`,
-  value: idx * FONT_SIZE_STEP + FONT_SIZES_START,
-}))
+// const fontSizes = new Array(20).fill('').map((_, idx) => ({
+//   label: `${idx * FONT_SIZE_STEP + FONT_SIZES_START} pt`,
+//   value: idx * FONT_SIZE_STEP + FONT_SIZES_START,
+// }))
 
 const textCount = ref(0)
 const currentFont = ref<Fonts>(Fonts.arial)
@@ -117,10 +124,10 @@ const handleFrameAdd = () => {
 }
 
 const handleTextAdd = () => {
-  if (textCount.value > TEXT_COUNT_RESTRICTION) return
+  if (textCount.value >= TEXT_COUNT_RESTRICTION) return
 
   addText(DEFAULT_TEXT, {
-    fontSize: DEFAULT_FONT_SIZE,
+    fontSize: currentFontSize.value,
   })
   textCount.value++
 }

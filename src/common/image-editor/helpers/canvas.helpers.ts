@@ -94,15 +94,14 @@ export function adjustObjectsSize(
 
     object.set({ left, top })
 
-    if (object instanceof fabric.IText && object.fontSize) {
+    if (object instanceof fabric.IText) {
       object.set({ width, height })
-      object.set('fontSize', object.fontSize * Math.max(scaleX, scaleY))
+      adjustTextSize(object, scaleX, scaleY)
     }
 
     // for Pathes and Groups simple dimension changing won't do desirable effect
     if (object instanceof fabric.Path || object instanceof fabric.Group) {
-      object.scaleX = object.scaleX! * scaleX
-      object.scaleY = object.scaleY! * scaleY
+      adjustGroupSize(object, scaleX, scaleY)
     } else {
       object.set({ width, height })
     }
@@ -111,4 +110,99 @@ export function adjustObjectsSize(
   })
 
   canvas.renderAll()
+}
+
+const adjustTextSize = (
+  object: fabric.IText,
+  scaleX: number,
+  scaleY: number,
+) => {
+  if (!object.fontSize) return
+
+  const scaleFactor = Math.max(scaleX, scaleY)
+
+  object.set('fontSize', object.fontSize * scaleFactor)
+
+  /* if text has different styles on different chars it's styles won't be
+     affected by global parent style - need to specify for each char
+    */
+  if (object.styleHas('fontSize')) {
+    const charStyles = object.styles[0]
+
+    Object.entries(charStyles).forEach(([key, value]) => {
+      const charStyle = value as { [key: string]: unknown } & {
+        fontSize: number
+      }
+
+      if (!charStyle?.fontSize) return
+
+      object.setSelectionStyles(
+        {
+          ...charStyle,
+          fontSize: charStyle.fontSize * scaleFactor,
+        },
+        Number(key),
+        Number(key) + 1,
+      )
+    })
+  }
+}
+
+const adjustGroupSize = (
+  object: fabric.Group | fabric.Path,
+  scaleX: number,
+  scaleY: number,
+) => {
+  if (!object.scaleX || !object.scaleY) return
+
+  object.scaleX = object.scaleX * scaleX
+  object.scaleY = object.scaleY * scaleY
+}
+
+/**
+ * This function preserves the original size of the background image of a given
+ * fabric canvas, and adjusts the canvas and its objects to fit this size.
+ *
+ * @param canvas - The Fabric.js canvas object.
+ * @returns A function that can be called to restore the canvas to
+ *  its original size and scale.
+ *
+ * @remarks
+ * Main **use case** of this is **saving the original quality** of the image
+ * thas is being edited before saving it
+ */
+export function preserveOriginalSize(canvas: fabric.Canvas) {
+  if (!canvas?.width || !canvas.height) return
+
+  const currentWidth = canvas.width
+  const currentHeight = canvas.height
+
+  const backgroundImage = canvas.backgroundImage as fabric.Image
+  const currentScale = backgroundImage.scaleX
+
+  if (!backgroundImage.width || !backgroundImage.height) return
+
+  backgroundImage.scale(1)
+
+  canvas.setDimensions({
+    width: backgroundImage.width,
+    height: backgroundImage.height,
+  })
+
+  adjustObjectsSize(canvas, currentWidth, currentHeight)
+
+  const restoreSize = () => {
+    if (!currentScale) return
+
+    backgroundImage.scale(currentScale)
+
+    canvas.setDimensions({
+      width: currentWidth,
+      height: currentHeight,
+    })
+
+    adjustObjectsSize(canvas, backgroundImage.width!, backgroundImage.height!)
+  }
+
+  return restoreSize
 }

@@ -32,7 +32,9 @@
     "color-tool-lbl": "Color",
     "background-color-tool-lbl": "BG Color",
     "brush-color-lbl": "Brush Color",
-    "brush-size-lbl": "Brush Size"
+    "brush-size-lbl": "Brush Size",
+    "font-size-lbl": "Font Size",
+    "error-message": "Failed to initialize editor"
   },
   "notification": {
     "default-title-success": "Success",
