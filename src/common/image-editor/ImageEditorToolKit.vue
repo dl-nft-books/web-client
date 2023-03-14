@@ -3,8 +3,8 @@
     <!-- HERE WILL BE THE LIST OF COMPONENTS 
             THAT WILL REPRESENT EACH TOOL IN EDITOR-->
     <text-tool />
-
-    <color-change-tool />
+    <shapes-tool />
+    <mutation-tool />
     <draw-tool />
     <zoom-tool />
   </aside>
@@ -13,9 +13,10 @@
 <script setup lang="ts">
 import {
   TextTool,
-  ColorChangeTool,
+  MutationTool,
   ZoomTool,
   DrawTool,
+  ShapesTool,
 } from '@image-editor/tools'
 </script>
 <style scoped lang="scss">

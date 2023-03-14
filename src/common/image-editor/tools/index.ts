@@ -1,4 +1,5 @@
 export { default as TextTool } from '@image-editor/tools/TextTool.vue'
-export { default as ColorChangeTool } from '@image-editor/tools/ColorChangeTool.vue'
+export { default as MutationTool } from '@/common/image-editor/tools/MutationTool.vue'
 export { default as ZoomTool } from '@image-editor/tools/ZoomTool.vue'
 export { default as DrawTool } from '@image-editor/tools/DrawTool.vue'
+export { default as ShapesTool } from '@image-editor/tools/ShapesTool.vue'

@@ -13,6 +13,7 @@ import {
   useDrawing,
   useObjectMutations,
   useCanvasOperations,
+  useShapes,
 } from '@image-editor/composables'
 
 export function useImageEditor(
@@ -33,8 +34,10 @@ export function useImageEditor(
     addFrame,
   } = useText(canvas)
 
+  const { addRectangle, addTriangle, addCircle } = useShapes(canvas)
+
   const { startDraw, stopDraw, modifyBrush } = useDrawing(canvas)
-  const { setBackgroundColor, setColor } = useObjectMutations(canvas)
+  const { setBackgroundColor, setColor, setStroke } = useObjectMutations(canvas)
   const { download, canvasToFormData, zoom, currentZoom } =
     useCanvasOperations(canvas)
 
@@ -116,25 +119,6 @@ export function useImageEditor(
     })
   }
 
-  const addRect = () => {
-    if (!canvas) return
-
-    const rect = new fabric.Rect({
-      width: 50,
-      height: 50,
-      fill: '#77f',
-      top: 100,
-      left: 100,
-      selectable: true,
-      hasControls: true,
-      hasBorders: true,
-      lockScalingX: false,
-      lockScalingY: false,
-    })
-
-    canvas.add(rect)
-  }
-
   const adjustCanvasDimensions = () => {
     if (!canvas?.backgroundImage || !canvasContainerRef.value) return
 
@@ -173,24 +157,26 @@ export function useImageEditor(
 
   return {
     canvas,
-
+    activeObject,
     init,
 
+    addRectangle,
+    addTriangle,
+    addCircle,
+
     addText,
-    addRect,
     addFrame,
-    setColor,
-    setBackgroundColor,
     switchBoldness,
     switchItalic,
     changeFont,
     changeFontSize,
 
+    setColor,
+    setBackgroundColor,
+    setStroke,
+
     zoom,
     currentZoom,
-
-    activeObject,
-
     download,
     canvasToFormData,
 

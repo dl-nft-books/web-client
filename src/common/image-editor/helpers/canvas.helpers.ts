@@ -85,14 +85,16 @@ export function adjustObjectsSize(
   const scaleY = canvas.height / initialHeight
 
   canvasObjects.forEach(object => {
-    if (!object.left || !object.top || !object.width || !object.height) return
+    const left = Number(object.left) * scaleX
+    const top = Number(object.top) * scaleY
+    const width = Number(object.width) * scaleX
+    const height = Number(object.height) * scaleY
 
-    const left = object.left * scaleX
-    const top = object.top * scaleY
-    const width = object.width * scaleX
-    const height = object.height * scaleY
-
-    object.set({ left, top })
+    object.set({
+      left,
+      top,
+      strokeWidth: Number(object.strokeWidth) * Math.max(scaleX, scaleY),
+    })
 
     if (object instanceof fabric.IText) {
       object.set({ width, height })

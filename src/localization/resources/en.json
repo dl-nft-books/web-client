@@ -31,6 +31,8 @@
   "image-editor": {
     "color-tool-lbl": "Color",
     "background-color-tool-lbl": "BG Color",
+    "stroke-color-tool-lbl": "Stroke Color",
+    "stroke-width-tool-lbl": "Stroke Size",
     "brush-color-lbl": "Brush Color",
     "brush-size-lbl": "Brush Size",
     "font-size-lbl": "Font Size",

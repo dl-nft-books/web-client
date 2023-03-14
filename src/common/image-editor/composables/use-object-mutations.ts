@@ -1,7 +1,7 @@
 import { fabric } from 'fabric'
 
 import { UseObjectMutations, FabricColor } from '@image-editor/types'
-import { modifyTextSelection } from '@image-editor/helpers'
+import { modifyTextSelection, modifyGroup } from '@image-editor/helpers'
 
 export function useObjectMutations(canvas: fabric.Canvas): UseObjectMutations {
   const setColor = (color: FabricColor, object?: fabric.Object) => {
@@ -16,19 +16,20 @@ export function useObjectMutations(canvas: fabric.Canvas): UseObjectMutations {
     }
 
     if (activeObject instanceof fabric.Group) {
-      activeObject.getObjects().forEach(object => {
-        if (object instanceof fabric.IText) {
-          modifyTextSelection(object, 'fill', color, color)
-        }
-        if (object instanceof fabric.Rect) {
-          object.set('stroke', color as string)
-        }
-      })
+      modifyGroup(
+        activeObject,
+        {
+          default: 'stroke',
+          text: 'fill',
+        },
+        color,
+      )
+
       canvas.renderAll()
       return
     }
 
-    activeObject.set('fill', color)
+    activeObject.set('stroke', color as string)
 
     canvas.renderAll()
   }
@@ -44,10 +45,71 @@ export function useObjectMutations(canvas: fabric.Canvas): UseObjectMutations {
       return
     }
 
-    activeObject.set('backgroundColor', color)
+    if (activeObject instanceof fabric.Group) {
+      modifyGroup(
+        activeObject,
+        {
+          default: 'fill',
+          text: 'textBackgroundColor',
+        },
+        color,
+      )
+
+      canvas.renderAll()
+      return
+    }
+
+    activeObject.set('fill', color)
 
     canvas.renderAll()
   }
 
-  return { setBackgroundColor, setColor }
+  const setStroke = (
+    strokeOptions: Partial<
+      Pick<fabric.IObjectOptions, 'stroke' | 'strokeWidth'>
+    >,
+    object?: fabric.Object,
+  ) => {
+    const activeObject = object ?? canvas.getActiveObject()
+
+    if (!activeObject) return
+
+    if (activeObject instanceof fabric.IText) {
+      Object.entries(strokeOptions).forEach(([key, value]) => {
+        modifyTextSelection(
+          activeObject,
+          key as keyof fabric.IText,
+          value,
+          value,
+        )
+      })
+
+      canvas.renderAll()
+      return
+    }
+
+    if (activeObject instanceof fabric.Group) {
+      Object.entries(strokeOptions).forEach(([key, value]) => {
+        modifyGroup(
+          activeObject,
+          {
+            default: key as keyof fabric.Object,
+          },
+          value,
+        )
+      })
+
+      canvas.renderAll()
+      return
+    }
+
+    activeObject.set({
+      stroke: strokeOptions.stroke ?? activeObject.stroke,
+      strokeWidth: strokeOptions.strokeWidth ?? activeObject.strokeWidth,
+    })
+
+    canvas.renderAll()
+  }
+
+  return { setBackgroundColor, setColor, setStroke }
 }

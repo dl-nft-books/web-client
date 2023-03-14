@@ -93,3 +93,35 @@ export function modifyTextSelection(
     selectionEnd,
   )
 }
+
+/**
+ * Modifies the style of all objects in a Fabric.js group.
+ *
+ * @param group - The group object to modify.
+ * @param propertyKeys - An object containing the property key(s) to modify for
+ * both regular objects and IText objects.
+ * @param propertyValue - The value to set the property key(s) to.
+ */
+export function modifyGroup(
+  group: fabric.Group,
+  propertyKeys: {
+    default: keyof fabric.Object
+    text?: keyof fabric.IText
+  },
+  propertyValue: FabricStyle,
+) {
+  group.getObjects().forEach(object => {
+    if (object instanceof fabric.IText) {
+      modifyTextSelection(
+        object,
+        propertyKeys.text ?? propertyKeys.default,
+        propertyValue,
+        propertyValue,
+      )
+
+      return
+    }
+
+    object.set(propertyKeys.default, propertyValue)
+  })
+}

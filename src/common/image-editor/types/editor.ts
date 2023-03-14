@@ -13,6 +13,7 @@ export enum BRUSHES {
 
 export interface UseImageEditor
   extends UseText,
+    UseShapes,
     UseObjectMutations,
     UseCanvasOperations,
     UseDrawing {
@@ -23,7 +24,6 @@ export interface UseImageEditor
     customOptions?: fabric.IImageOptions,
   ) => Promise<void>
   activeObject: Ref<fabric.Object | null>
-  addRect: () => void
 }
 
 export interface UseText {
@@ -38,6 +38,12 @@ export interface UseText {
     padding: number,
     object?: fabric.IText,
   ) => void
+}
+
+export interface UseShapes {
+  addRectangle: (options?: fabric.IRectOptions) => void
+  addTriangle: (options?: fabric.ITriangleOptions) => void
+  addCircle: (options?: fabric.ICircleOptions) => void
 }
 
 export interface UseCanvasOperations {
@@ -56,4 +62,10 @@ export interface UseDrawing {
 export interface UseObjectMutations {
   setColor: (color: FabricColor, object?: fabric.Object) => void
   setBackgroundColor: (color: string, object?: fabric.Object) => void
+  setStroke: (
+    strokeOptions: Partial<
+      Pick<fabric.IObjectOptions, 'stroke' | 'strokeWidth'>
+    >,
+    object?: fabric.Object,
+  ) => void
 }
