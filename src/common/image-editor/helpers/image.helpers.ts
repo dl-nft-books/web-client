@@ -1,12 +1,12 @@
 /**
  * Calculates the scale factor needed to fit an image within a container while
  * preserving aspect ratio.
- * @param {number} imageWidth - Width of the image.
- * @param {number} imageHeight - Height of the image.
- * @param {number} containerWidth - Width of the container.
- * @param {number} containerHeight - Height of the container.
+ * @param imageWidth - Width of the image.
+ * @param imageHeight - Height of the image.
+ * @param containerWidth - Width of the container.
+ * @param containerHeight - Height of the container.
  *
- * @returns {number} - The scale factor needed to fit the image within
+ * @returns - The scale factor needed to fit the image within
  * the container.
  */
 

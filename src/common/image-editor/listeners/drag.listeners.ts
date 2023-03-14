@@ -7,9 +7,9 @@ type RestrictionRule = () => boolean
  * Sets up a drag listener for a Fabric.js canvas that allows the user to
  * navigate the canvas by dragging while holding the alt key.
  *
- * @param {fabric.Canvas} canvas
+ * @param canvas
  * - The Fabric.js canvas object to listen to for drag events.
- * @param {RestrictionRule} [restriction]
+ * @param restriction
  * - Optional function that determines whether drag should be restricted.
  */
 

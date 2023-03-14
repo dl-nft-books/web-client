@@ -5,7 +5,7 @@ import { fabric } from 'fabric'
  * If the active object on the given canvas exist,
  * it is removed from the canvas.
  *
- * @param {fabric.Canvas} canvas
+ * @param canvas
  * - The Fabric.js canvas object to add listner to.
  */
 
