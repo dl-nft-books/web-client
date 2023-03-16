@@ -108,6 +108,12 @@ export function adjustObjectsSize(
       object.set({ width, height })
     }
 
+    if (object instanceof fabric.Circle) {
+      object.set({
+        radius: object.radius! * Math.max(scaleX, scaleY),
+      })
+    }
+
     object.setCoords()
   })
 

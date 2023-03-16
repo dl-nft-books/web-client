@@ -78,7 +78,7 @@ watch(strokeWidth, () => {
 .mutation-tool {
   display: flex;
   align-items: center;
-  flex-direction: column;
+  flex-flow: wrap column;
   gap: toRem(10);
   background-color: var(--background-primary);
   border-radius: toRem(8);
