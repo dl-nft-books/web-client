@@ -117,6 +117,7 @@ export function useObjectMutations(canvas: fabric.Canvas): UseObjectMutations {
     if (!activeObject) return
 
     activeObject.bringToFront()
+    canvas.discardActiveObject()
   }
 
   const sendToBack = (object?: fabric.Object) => {
@@ -125,6 +126,7 @@ export function useObjectMutations(canvas: fabric.Canvas): UseObjectMutations {
     if (!activeObject) return
 
     activeObject.sendToBack()
+    canvas.discardActiveObject()
   }
 
   return { setBackgroundColor, setColor, setStroke, bringToFront, sendToBack }
