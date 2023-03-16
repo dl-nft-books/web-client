@@ -10,6 +10,7 @@ import {
   setCreationListener,
   setGuideLineIntersectionListener,
   setRightClickListener,
+  setMoveObjectsListener,
 } from '@image-editor/listeners'
 import {
   useText,
@@ -65,6 +66,7 @@ export function useImageEditor(
 
     setDragListener(canvas, dragRestrictionRule)
     setDeleteObjectListener(canvas)
+    setMoveObjectsListener(canvas)
     setSelectionListeners(canvas, activeObject)
     setCreationListener(canvas, activeObject)
     setGuideLineIntersectionListener(canvas)

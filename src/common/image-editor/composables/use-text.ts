@@ -111,20 +111,7 @@ export function useText(canvas: fabric.Canvas): UseText {
     canvas.renderAll()
   }
 
-  // FIX: text is no longer editable with frame
-  const ungroupObjects = (group: fabric.Group) => {
-    const items = group.getObjects()
-
-    if (!items.length) return
-
-    group._restoreObjectsState()
-    canvas.remove(group)
-    items.forEach(item => {
-      canvas!.add(item)
-    })
-  }
-
-  // doesn't work properly
+  // cant be edited after adding
   const addFrame = (
     color: string,
     width: number,
@@ -160,21 +147,6 @@ export function useText(canvas: fabric.Canvas): UseText {
     activeObject.lockRotation = true
     activeObject.lockScalingX = true
     activeObject.lockScalingY = true
-
-    activeObject.on('selection:cleared', () => {
-      const group = new fabric.Group([frame, activeObject], {
-        selectable: true,
-      })
-
-      canvas!.add(group)
-      canvas!.discardActiveObject()
-    })
-
-    group.on('mousedblclick', () => {
-      ungroupObjects(group)
-      canvas!.setActiveObject(activeObject)
-      activeObject.enterEditing()
-    })
   }
 
   return {
