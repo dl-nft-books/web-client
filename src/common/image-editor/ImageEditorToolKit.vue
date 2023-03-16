@@ -7,6 +7,23 @@
     <mutation-tool />
     <draw-tool />
     <zoom-tool />
+
+    <context-menu v-model:is-shown="isContextMenuShown">
+      <ul class="image-editor-tool-kit__context-menu">
+        <li
+          class="image-editor-tool-kit__context-menu-item"
+          @click="bringToFrontClick"
+        >
+          {{ $t('image-editor.context-menu.bring-to-front-lbl') }}
+        </li>
+        <li
+          class="image-editor-tool-kit__context-menu-item"
+          @click="sendToBackClick"
+        >
+          {{ $t('image-editor.context-menu.send-to-back-lbl') }}
+        </li>
+      </ul>
+    </context-menu>
   </aside>
 </template>
 
@@ -18,18 +35,63 @@ import {
   DrawTool,
   ShapesTool,
 } from '@image-editor/tools'
+
+import { ContextMenu } from '@/common'
+
+import { EditorInstanceKey } from '@image-editor/types'
+import { safeInject } from '@image-editor/helpers'
+
+const {
+  instance: { bringToFront, sendToBack, isContextMenuShown },
+} = safeInject(EditorInstanceKey)
+
+const bringToFrontClick = () => {
+  bringToFront()
+  isContextMenuShown.value = false
+}
+
+const sendToBackClick = () => {
+  sendToBack()
+  isContextMenuShown.value = false
+}
 </script>
 <style scoped lang="scss">
 .image-editor-tool-kit {
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
-  gap: toRem(10);
 
   @include respond-to(medium) {
     justify-content: center;
     align-items: center;
     flex-flow: row wrap;
+  }
+}
+
+.image-editor-tool-kit__context-menu {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  border-radius: toRem(8);
+}
+
+.image-editor-tool-kit__context-menu-item {
+  transition: 0.2 ease-in-out;
+  transition-property: background-color;
+  background-color: var(--background-primary);
+  padding: toRem(10) toRem(15);
+
+  &:first-child {
+    border-radius: toRem(8) toRem(8) 0 0;
+  }
+
+  &:last-child {
+    border-radius: 0 0 toRem(8) toRem(8);
+  }
+
+  &:hover {
+    cursor: pointer;
+    background-color: var(--background-tertiary);
   }
 }
 </style>

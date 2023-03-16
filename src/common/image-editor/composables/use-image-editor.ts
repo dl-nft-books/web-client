@@ -9,6 +9,7 @@ import {
   setSelectionListeners,
   setCreationListener,
   setGuideLineIntersectionListener,
+  setRightClickListener,
 } from '@image-editor/listeners'
 import {
   useText,
@@ -25,6 +26,8 @@ export function useImageEditor(
   const canvas = new fabric.Canvas(canvasRef.value, {
     width: canvasContainerRef.value.offsetWidth,
     height: canvasContainerRef.value.offsetHeight,
+    stopContextMenu: true,
+    fireRightClick: true,
   })
 
   const {
@@ -39,11 +42,13 @@ export function useImageEditor(
   const { addRectangle, addTriangle, addCircle } = useShapes(canvas)
 
   const { startDraw, stopDraw, modifyBrush } = useDrawing(canvas)
-  const { setBackgroundColor, setColor, setStroke } = useObjectMutations(canvas)
+  const { setBackgroundColor, setColor, setStroke, bringToFront, sendToBack } =
+    useObjectMutations(canvas)
   const { download, canvasToFormData, zoom, currentZoom } =
     useCanvasOperations(canvas)
 
   const activeObject = ref<fabric.Object | null>(null)
+  const isContextMenuShown = ref(false)
 
   const imageConfig: fabric.IImageOptions = {
     centeredScaling: true,
@@ -63,6 +68,7 @@ export function useImageEditor(
     setSelectionListeners(canvas, activeObject)
     setCreationListener(canvas, activeObject)
     setGuideLineIntersectionListener(canvas)
+    setRightClickListener(canvas, isContextMenuShown)
   }
 
   const init = (
@@ -162,6 +168,7 @@ export function useImageEditor(
   return {
     canvas,
     activeObject,
+    isContextMenuShown,
     init,
 
     addRectangle,
@@ -178,6 +185,8 @@ export function useImageEditor(
     setColor,
     setBackgroundColor,
     setStroke,
+    bringToFront,
+    sendToBack,
 
     zoom,
     currentZoom,

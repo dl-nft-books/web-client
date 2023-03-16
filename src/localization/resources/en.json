@@ -36,7 +36,11 @@
     "brush-color-lbl": "Brush Color",
     "brush-size-lbl": "Brush Size",
     "font-size-lbl": "Font Size",
-    "error-message": "Failed to initialize editor"
+    "error-message": "Failed to initialize editor",
+    "context-menu": {
+      "bring-to-front-lbl": "Bring to front",
+      "send-to-back-lbl": "Send to back"
+    }
   },
   "notification": {
     "default-title-success": "Success",

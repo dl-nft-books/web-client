@@ -24,6 +24,7 @@ export interface UseImageEditor
     customOptions?: fabric.IImageOptions,
   ) => Promise<void>
   activeObject: Ref<fabric.Object | null>
+  isContextMenuShown: Ref<boolean>
 }
 
 export interface UseText {
@@ -68,4 +69,6 @@ export interface UseObjectMutations {
     >,
     object?: fabric.Object,
   ) => void
+  bringToFront: (object?: fabric.Object) => void
+  sendToBack: (object?: fabric.Object) => void
 }

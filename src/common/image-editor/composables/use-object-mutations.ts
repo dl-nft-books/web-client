@@ -111,5 +111,21 @@ export function useObjectMutations(canvas: fabric.Canvas): UseObjectMutations {
     canvas.renderAll()
   }
 
-  return { setBackgroundColor, setColor, setStroke }
+  const bringToFront = (object?: fabric.Object) => {
+    const activeObject = object ?? canvas.getActiveObject()
+
+    if (!activeObject) return
+
+    activeObject.bringToFront()
+  }
+
+  const sendToBack = (object?: fabric.Object) => {
+    const activeObject = object ?? canvas.getActiveObject()
+
+    if (!activeObject) return
+
+    activeObject.sendToBack()
+  }
+
+  return { setBackgroundColor, setColor, setStroke, bringToFront, sendToBack }
 }
