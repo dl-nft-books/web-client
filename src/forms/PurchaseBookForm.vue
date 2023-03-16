@@ -31,7 +31,7 @@
     <modal v-model:is-shown="isEditingImage">
       <template #default="{ modal }">
         <div class="purchase-book-form__image-editor">
-          <image-editor :image-url="book.banner.attributes.url" />
+          <image-editor />
           <app-button :text="'CLOSE'" @click="modal.close" />
         </div>
       </template>
