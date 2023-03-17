@@ -25,42 +25,37 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
-
 import { AppButton } from '@/common'
 import { EditorInstanceKey } from '@image-editor/types'
 import { safeInject } from '@image-editor/helpers'
+import { ErrorHandler } from '@/helpers'
 
 enum SHAPES {
   rectangle = 'rect',
   triangle = 'triangle',
   circle = 'circle',
 }
-
-const SHAPES_LIMIT = 5
-const shapesAmount = ref(0)
-
 const {
   instance: { addRectangle, addTriangle, addCircle },
 } = safeInject(EditorInstanceKey)
 
 const handleShapeAdd = (shape: SHAPES) => {
-  if (shapesAmount.value >= SHAPES_LIMIT) return
-
-  switch (shape) {
-    case SHAPES.rectangle:
-      addRectangle()
-      break
-    case SHAPES.circle:
-      addCircle()
-      break
-    case SHAPES.triangle:
-    default:
-      addTriangle()
-      break
+  try {
+    switch (shape) {
+      case SHAPES.rectangle:
+        addRectangle()
+        break
+      case SHAPES.circle:
+        addCircle()
+        break
+      case SHAPES.triangle:
+      default:
+        addTriangle()
+        break
+    }
+  } catch (error) {
+    ErrorHandler.process(error)
   }
-
-  shapesAmount.value++
 }
 
 const handleRectAdd = () => {

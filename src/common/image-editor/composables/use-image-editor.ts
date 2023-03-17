@@ -1,8 +1,10 @@
 import { Ref, watch, ref } from 'vue'
 import { fabric } from 'fabric'
 import { useElementSize } from '@vueuse/core'
+
 import { getImageScaleFactor, adjustObjectsSize } from '@image-editor/helpers'
 import { UseImageEditor } from '@image-editor/types'
+
 import {
   setDragListener,
   setDeleteObjectListener,
@@ -11,7 +13,9 @@ import {
   setGuideLineIntersectionListener,
   setRightClickListener,
   setMoveObjectsListener,
+  setCopyPasteListeners,
 } from '@image-editor/listeners'
+
 import {
   useText,
   useDrawing,
@@ -45,8 +49,15 @@ export function useImageEditor(
   const { startDraw, stopDraw, modifyBrush } = useDrawing(canvas)
   const { setBackgroundColor, setColor, setStroke, bringToFront, sendToBack } =
     useObjectMutations(canvas)
-  const { download, canvasToFormData, zoom, currentZoom } =
-    useCanvasOperations(canvas)
+  const {
+    download,
+    canvasToFormData,
+    zoom,
+    currentZoom,
+    copyObjectToClipboard,
+    pasteObjectFromClipboard,
+    deleteObjects,
+  } = useCanvasOperations(canvas)
 
   const activeObject = ref<fabric.Object | null>(null)
   const isContextMenuShown = ref(false)
@@ -71,6 +82,7 @@ export function useImageEditor(
     setCreationListener(canvas, activeObject)
     setGuideLineIntersectionListener(canvas)
     setRightClickListener(canvas, isContextMenuShown)
+    setCopyPasteListeners(canvas)
   }
 
   const init = (
@@ -194,6 +206,9 @@ export function useImageEditor(
     currentZoom,
     download,
     canvasToFormData,
+    copyObjectToClipboard,
+    pasteObjectFromClipboard,
+    deleteObjects,
 
     startDraw,
     stopDraw,

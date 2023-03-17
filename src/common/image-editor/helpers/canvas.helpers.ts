@@ -214,3 +214,30 @@ export function preserveOriginalSize(canvas: fabric.Canvas) {
 
   return restoreSize
 }
+
+export function animateObjectAppearence(
+  canvas: fabric.Canvas,
+  object: fabric.Object,
+  duration = 400,
+) {
+  object.scale(0.1)
+  object.set({
+    opacity: 0,
+  })
+
+  canvas.add(object)
+
+  fabric.util.animate({
+    startValue: 0.1,
+    endValue: 1,
+    duration,
+    easing: fabric.util.ease.easeInOutCubic,
+    onChange: (value: number) => {
+      object.scale(value)
+      object.set({
+        opacity: value,
+      })
+      canvas.renderAll()
+    },
+  })
+}

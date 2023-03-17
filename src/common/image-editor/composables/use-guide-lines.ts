@@ -121,6 +121,10 @@ export function useGuideLines(canvas: fabric.Canvas) {
 
     const objectLeftX = objectCenterX - objectWidth / 2
     const objectTopY = objectCenterY - objectHeight / 2
+    // const XNastya =
+    //   objectCenterX -
+    //   (2 * Math.sin(90 - object.angle!)) / objectWidth -
+    //   Math.sin(object.angle!) / objectHeight
 
     const threshold = ((objectWidth + objectHeight) / 2) * thersholdFactor
 

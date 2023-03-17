@@ -1,6 +1,9 @@
 import { fabric } from 'fabric'
 import { UseText } from '@image-editor/types'
-import { modifyTextSelection } from '@image-editor/helpers'
+import {
+  animateObjectAppearence,
+  modifyTextSelection,
+} from '@image-editor/helpers'
 
 export function useText(canvas: fabric.Canvas): UseText {
   const addText = (value: string, options?: fabric.ITextOptions) => {
@@ -29,7 +32,7 @@ export function useText(canvas: fabric.Canvas): UseText {
       mr: false,
     })
 
-    canvas.add(text)
+    animateObjectAppearence(canvas, text)
   }
 
   const switchBoldness = (object?: fabric.IText) => {

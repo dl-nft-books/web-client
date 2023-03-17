@@ -1,6 +1,7 @@
 import { fabric } from 'fabric'
 
 import { UseShapes } from '@image-editor/types'
+import { animateObjectAppearence } from '@image-editor/helpers'
 
 export function useShapes(canvas: fabric.Canvas): UseShapes {
   const defaultShapePosition: fabric.IObjectOptions = {
@@ -25,7 +26,7 @@ export function useShapes(canvas: fabric.Canvas): UseShapes {
       ...(!options ? {} : options),
     })
 
-    canvas.add(rect)
+    animateObjectAppearence(canvas, rect)
   }
 
   const addTriangle = (options?: fabric.ITriangleOptions) => {
@@ -36,7 +37,7 @@ export function useShapes(canvas: fabric.Canvas): UseShapes {
       ...(!options ? {} : options),
     })
 
-    canvas.add(triangle)
+    animateObjectAppearence(canvas, triangle)
   }
 
   const addCircle = (options?: fabric.ICircleOptions) => {
@@ -47,7 +48,7 @@ export function useShapes(canvas: fabric.Canvas): UseShapes {
       ...(!options ? {} : options),
     })
 
-    canvas.add(circle)
+    animateObjectAppearence(canvas, circle)
   }
 
   return {

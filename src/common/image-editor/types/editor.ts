@@ -48,6 +48,9 @@ export interface UseShapes {
 }
 
 export interface UseCanvasOperations {
+  copyObjectToClipboard: (object?: fabric.Object) => void
+  pasteObjectFromClipboard: () => void
+  deleteObjects: (objects?: fabric.Object[]) => void
   download: (options?: fabric.IDataURLOptions) => void
   canvasToFormData: (options?: fabric.IDataURLOptions) => FormData | null
   zoom: (zoomType: ZoomType, scaleFactor?: number) => void
