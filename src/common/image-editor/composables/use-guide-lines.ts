@@ -106,6 +106,7 @@ export function useGuideLines(canvas: fabric.Canvas) {
     })
   }
 
+  // Under construction
   const snapObjectToGuideLines = (
     object: fabric.Object,
     lines: Array<LineWrapper>,
@@ -119,14 +120,10 @@ export function useGuideLines(canvas: fabric.Canvas) {
     const { width: objectWidth, height: objectHeight } =
       object.getBoundingRect()
 
+    const threshold = ((objectWidth + objectHeight) / 2) * thersholdFactor
+
     const objectLeftX = objectCenterX - objectWidth / 2
     const objectTopY = objectCenterY - objectHeight / 2
-    // const XNastya =
-    //   objectCenterX -
-    //   (2 * Math.sin(90 - object.angle!)) / objectWidth -
-    //   Math.sin(object.angle!) / objectHeight
-
-    const threshold = ((objectWidth + objectHeight) / 2) * thersholdFactor
 
     lines.forEach(line => {
       if (!line.value.oCoords || !object.oCoords) return
@@ -138,18 +135,34 @@ export function useGuideLines(canvas: fabric.Canvas) {
           if (line.isCentered) {
             if (Math.abs(lineX - objectCenterX) <= threshold) {
               object.set({
-                left: lineX - objectWidth / 2,
+                left:
+                  lineX -
+                  objectWidth / 2 +
+                  Math.sin((object.angle! * Math.PI) / 180) *
+                    object.getScaledHeight(),
               })
+              // console.log(
+              //   object.angle,
+              //   Math.sin((object.angle! * Math.PI) / 180),
+              //   objectHeight,
+              //   Math.sin((object.angle! * Math.PI) / 180) *
+              //     object.getScaledHeight(),
+              // )
             }
 
             return
           }
 
           // left side of the object
-          if (Math.abs(lineX - objectLeftX) <= threshold) {
+          if (
+            Math.abs(
+              lineX - objectLeftX - Math.sin(object.angle!) * objectHeight,
+            ) <= threshold
+          ) {
             object.set({
-              left: lineX,
+              left: lineX + Math.sin(object.angle!) * objectHeight,
             })
+            // console.log(lineX, object.left)
             // right side of the object
           } else if (
             Math.abs(lineX - (objectLeftX + objectWidth)) <= threshold
