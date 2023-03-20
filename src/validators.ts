@@ -15,6 +15,8 @@ import { ethers } from 'ethers'
 
 const { t } = i18n.global || i18n
 
+const UrlSymbolsRegex = new RegExp(/^[\w-.~]+$/i)
+
 const messagePath = ({ $validator }: MessageProps) =>
   `validations.field-error_${$validator}`
 
@@ -36,6 +38,10 @@ export const maxLength = (length: number): ValidationRule =>
 export const sameAs = (field: Ref): ValidationRule => {
   return <ValidationRule>withI18nMessage(_sameAs(field, get(field, '_key')))
 }
+
+export const urlSymbols = <ValidationRule>(
+  withI18nMessage((value: string) => UrlSymbolsRegex.test(value))
+)
 
 export const address = <ValidationRule>withI18nMessage({
   $validator: (address: string) => ethers.utils.isAddress(address),

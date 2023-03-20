@@ -5,7 +5,8 @@
     "field-error_email": "Field must be a valid email",
     "field-error_address": "Field must be a valid address",
     "field-error_minLength": "Value must be at least {min} chars",
-    "field-error_maxLength": "Value can't be greater than {max} chars"
+    "field-error_maxLength": "Value can't be greater than {max} chars",
+    "field-error_urlSymbols": "All unsafe and reserved url chars are restricted"
   },
   "errors": {
     "default": "Oops... Something went wrong",
