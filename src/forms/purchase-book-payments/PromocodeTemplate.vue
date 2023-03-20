@@ -35,7 +35,7 @@ import { InputField, MessageField } from '@/fields'
 import { Loader } from '@/common'
 import { useFormValidation, usePromocode, useBalance } from '@/composables'
 import { maxLength, minLength } from '@/validators'
-import { PROMOCODE_LENGTH } from '@/const'
+import { MAX_PROMOCODE_LENGTH, MIN_PROMOCODE_LENGTH } from '@/const'
 import { Promocode, TokenPrice, PurchaseFormKey } from '@/types'
 import { BN } from '@/utils/math.util'
 import { TOKEN_TYPES } from '@/enums'
@@ -69,8 +69,8 @@ const {
   isFormValid: isPromocodeValid,
 } = useFormValidation(form, {
   promocode: {
-    minLength: minLength(PROMOCODE_LENGTH),
-    maxLength: maxLength(PROMOCODE_LENGTH),
+    minLength: minLength(MIN_PROMOCODE_LENGTH),
+    maxLength: maxLength(MAX_PROMOCODE_LENGTH),
   },
 })
 

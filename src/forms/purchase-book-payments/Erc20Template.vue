@@ -76,9 +76,9 @@ import {
   TextareaField,
 } from '@/fields'
 import { useFormValidation, useBalance } from '@/composables'
-import { required, address, minLength, maxLength } from '@/validators'
+import { required, address } from '@/validators'
 
-import { PROMOCODE_LENGTH, MAX_FIELD_LENGTH } from '@/const'
+import { MAX_FIELD_LENGTH } from '@/const'
 import { Book, Promocode, PurchaseFormKey } from '@/types'
 import { ExposedPromocodeRef } from '@/forms/purchase-book-payments/PromocodeTemplate.vue'
 import { ExposedFormRef } from '@/forms//PurchaseBookForm.vue'
@@ -95,7 +95,6 @@ const { platform: currentPlatform, isFormDisabled } = inject(PurchaseFormKey)
 const form = reactive({
   tokenAddress: '',
   signature: '',
-  promocode: '',
 })
 
 const web3ProvidersStore = useWeb3ProvidersStore()
@@ -120,10 +119,6 @@ const { getFieldErrorMessage, touchField, isFormValid } = useFormValidation(
   form,
   {
     signature: { required },
-    promocode: {
-      minLength: minLength(PROMOCODE_LENGTH),
-      maxLength: maxLength(PROMOCODE_LENGTH),
-    },
     tokenAddress: { required, address },
   },
 )
