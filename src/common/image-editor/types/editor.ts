@@ -18,13 +18,13 @@ export interface UseImageEditor
     UseCanvasOperations,
     UseDrawing {
   canvas: fabric.Canvas | null
-
+  activeObject: Ref<fabric.Object | null>
+  isContextMenuShown: Ref<boolean>
   init: (
     imageUrl: string,
     customOptions?: fabric.IImageOptions,
   ) => Promise<void>
-  activeObject: Ref<fabric.Object | null>
-  isContextMenuShown: Ref<boolean>
+  unmountCleanUp: Ref<(() => void) | null>
 }
 
 export interface UseText {

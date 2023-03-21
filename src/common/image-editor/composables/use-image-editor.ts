@@ -66,6 +66,9 @@ export function useImageEditor(
   const activeObject = ref<fabric.Object | null>(null)
   const isContextMenuShown = ref(false)
 
+  // should be invoked in component`s onBeforeUnmount lifecycle hook
+  const unmountCleanUp = ref<(() => void) | null>(null)
+
   const imageConfig: fabric.IImageOptions = {
     centeredScaling: true,
     centeredRotation: true,
@@ -75,19 +78,28 @@ export function useImageEditor(
     useElementSize(canvasContainerRef)
 
   const setCanvasListeners = () => {
-    if (!canvas) return
-
     const dragRestrictionRule = () => currentZoom.value === 1
 
+    // listeners is attached to canvas
     setDragListener(canvas, dragRestrictionRule)
     setDeleteObjectListener(canvas)
-    setMoveObjectsListener(canvas)
     setSelectionListeners(canvas, activeObject)
     setCreationListener(canvas, activeObject)
     setGuideLineIntersectionListener(canvas)
     setRightClickListener(canvas, isContextMenuShown)
-    setCopyPasteListeners(canvas)
-    setHistoryNavigationListener(canvas)
+
+    // listeners is attached to Document and need to be removed after unmount
+    const removeMoveListener = setMoveObjectsListener(canvas)
+    const removeCopyPasteListener = setCopyPasteListeners(canvas)
+    const removeHistoryListener = setHistoryNavigationListener(canvas)
+
+    const removeListeners = () => {
+      removeCopyPasteListener()
+      removeMoveListener()
+      removeHistoryListener()
+    }
+
+    unmountCleanUp.value = removeListeners
   }
 
   const init = (
@@ -105,7 +117,6 @@ export function useImageEditor(
           await setBackgroundImage(imageUrl, customOptions)
           adjustCanvasDimensions()
           setCanvasListeners()
-
           resolve()
         } catch (error) {
           reject(error)
@@ -189,6 +200,7 @@ export function useImageEditor(
     activeObject,
     isContextMenuShown,
     init,
+    unmountCleanUp,
 
     addRectangle,
     addTriangle,

@@ -28,6 +28,7 @@
 </template>
 
 <script setup lang="ts">
+import { onBeforeUnmount } from 'vue'
 import {
   TextTool,
   MutationTool,
@@ -42,7 +43,7 @@ import { EditorInstanceKey } from '@image-editor/types'
 import { safeInject } from '@image-editor/helpers'
 
 const {
-  instance: { bringToFront, sendToBack, isContextMenuShown },
+  instance: { bringToFront, sendToBack, isContextMenuShown, unmountCleanUp },
 } = safeInject(EditorInstanceKey)
 
 const bringToFrontClick = () => {
@@ -54,6 +55,12 @@ const sendToBackClick = () => {
   sendToBack()
   isContextMenuShown.value = false
 }
+
+onBeforeUnmount(() => {
+  if (!unmountCleanUp.value) return
+
+  unmountCleanUp.value()
+})
 </script>
 <style scoped lang="scss">
 .image-editor-tool-kit {

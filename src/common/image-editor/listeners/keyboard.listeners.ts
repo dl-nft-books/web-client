@@ -21,28 +21,41 @@ enum KEYBOARD_KEYS {
  * it is removed from the canvas.
  *
  * @param canvas
- * - The Fabric.js canvas object to add listner to.
+ * The Fabric.js canvas object to add listner to.
+ *
+ * @returns
+ * Function, that removes this listener from the Document
  */
 
 export function setDeleteObjectListener(canvas: fabric.Canvas) {
   const { deleteObjects } = useCanvasOperations(canvas)
 
-  document.addEventListener('keyup', event => {
+  const listener = (event: KeyboardEvent) => {
     if (event.key !== 'Delete') return
 
     deleteObjects()
-  })
+  }
+
+  document.addEventListener('keyup', listener)
+
+  const removeListener = () => {
+    document.removeEventListener('keyup', listener)
+  }
+
+  return removeListener
 }
 
 /**
  * Sets a listener for moving objects using keyboard arrow keys.
  * @param canvas - The Fabric.js canvas object to add listner to.
  * @param moveStep- The amount of pixels to move the object by on each
- * arrow key press (default: 1)
+ * arrow key press (default=1)
+ * @returns
+ * Function, that removes this listener from the Document
  */
 
 export function setMoveObjectsListener(canvas: fabric.Canvas, moveStep = 1) {
-  document.addEventListener('keydown', event => {
+  const listener = (event: KeyboardEvent) => {
     if (!Object.values(ARROW_KEYS).includes(event.key as unknown as ARROW_KEYS))
       return
 
@@ -78,7 +91,15 @@ export function setMoveObjectsListener(canvas: fabric.Canvas, moveStep = 1) {
       }
       canvas.renderAll()
     })
-  })
+  }
+
+  document.addEventListener('keydown', listener)
+
+  const removeListener = () => {
+    document.removeEventListener('keydown', listener)
+  }
+
+  return removeListener
 }
 
 /**
@@ -86,25 +107,37 @@ export function setMoveObjectsListener(canvas: fabric.Canvas, moveStep = 1) {
  *
  * (CTRL + C / CTRL + V)
  * @param canvas - The Fabric.js canvas instance to attach the listeners to.
+ * @returns
+ * Function, that removes listeners from the Document
  */
 
 export function setCopyPasteListeners(canvas: fabric.Canvas) {
   const { copyObjectToClipboard, pasteObjectFromClipboard } =
     useCanvasOperations(canvas)
 
-  document.addEventListener('keydown', event => {
+  const copyListener = (event: KeyboardEvent) => {
     if (event.key !== KEYBOARD_KEYS.c || (!event.metaKey && !event.ctrlKey))
       return
 
     copyObjectToClipboard()
-  })
+  }
 
-  document.addEventListener('keydown', event => {
+  const pasteListener = (event: KeyboardEvent) => {
     if (event.key !== KEYBOARD_KEYS.v || (!event.metaKey && !event.ctrlKey))
       return
 
     pasteObjectFromClipboard()
-  })
+  }
+
+  document.addEventListener('keydown', copyListener)
+  document.addEventListener('keydown', pasteListener)
+
+  const removeListeners = () => {
+    document.removeEventListener('keydown', copyListener)
+    document.removeEventListener('keydown', pasteListener)
+  }
+
+  return removeListeners
 }
 
 /**
@@ -113,12 +146,13 @@ export function setCopyPasteListeners(canvas: fabric.Canvas) {
  *
  * (CTRL + Z / CTRL + SHIFT + Z)
  * @param canvas - The canvas object to attach the listener to.
+ * @returns
+ * Function, that removes this listener from the Document
  */
-
 export function setHistoryNavigationListener(canvas: fabric.Canvas) {
   const history = new History(canvas)
 
-  document.addEventListener('keydown', event => {
+  const listener = (event: KeyboardEvent) => {
     if (
       event.key.toLowerCase() !== KEYBOARD_KEYS.z ||
       (!event.metaKey && !event.ctrlKey)
@@ -131,5 +165,13 @@ export function setHistoryNavigationListener(canvas: fabric.Canvas) {
     }
 
     history.redo()
-  })
+  }
+
+  document.addEventListener('keydown', listener)
+
+  const removeListener = () => {
+    document.removeEventListener('keydown', listener)
+  }
+
+  return removeListener
 }
