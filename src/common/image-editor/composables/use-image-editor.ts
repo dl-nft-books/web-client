@@ -14,6 +14,7 @@ import {
   setRightClickListener,
   setMoveObjectsListener,
   setCopyPasteListeners,
+  setHistoryNavigationListener,
 } from '@image-editor/listeners'
 
 import {
@@ -28,6 +29,9 @@ export function useImageEditor(
   canvasRef: Ref<HTMLCanvasElement>,
   canvasContainerRef: Ref<HTMLElement>,
 ): UseImageEditor {
+  // Defines the number of fraction digits to use when serializing object
+  fabric.Object.NUM_FRACTION_DIGITS = 16
+
   const canvas = new fabric.Canvas(canvasRef.value, {
     width: canvasContainerRef.value.offsetWidth,
     height: canvasContainerRef.value.offsetHeight,
@@ -83,6 +87,7 @@ export function useImageEditor(
     setGuideLineIntersectionListener(canvas)
     setRightClickListener(canvas, isContextMenuShown)
     setCopyPasteListeners(canvas)
+    setHistoryNavigationListener(canvas)
   }
 
   const init = (

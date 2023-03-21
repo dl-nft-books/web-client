@@ -93,7 +93,6 @@ export function adjustObjectsSize(
     object.set({
       left,
       top,
-      strokeWidth: Number(object.strokeWidth) * Math.max(scaleX, scaleY),
     })
 
     if (object instanceof fabric.IText) {
@@ -215,17 +214,26 @@ export function preserveOriginalSize(canvas: fabric.Canvas) {
   return restoreSize
 }
 
+/**
+ * Animates the appearance of a fabric.Object on a fabric.Canvas.
+ * (scale up animation)
+ *
+ * @param canvas - The canvas on which to animate the object.
+ * @param object - The object to animate.
+ * @param duration - The duration of the animation in milliseconds.
+ * (default = 400 ms)
+ */
 export function animateObjectAppearence(
   canvas: fabric.Canvas,
   object: fabric.Object,
   duration = 400,
 ) {
+  canvas.add(object)
+
   object.scale(0.1)
   object.set({
     opacity: 0,
   })
-
-  canvas.add(object)
 
   fabric.util.animate({
     startValue: 0.1,

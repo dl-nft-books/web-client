@@ -1,5 +1,6 @@
 import { fabric } from 'fabric'
 import { useCanvasOperations } from '@image-editor/composables'
+import { History } from '@image-editor/helpers'
 
 enum ARROW_KEYS {
   left = 'ArrowLeft',
@@ -11,6 +12,7 @@ enum ARROW_KEYS {
 enum KEYBOARD_KEYS {
   c = 'c',
   v = 'v',
+  z = 'z',
 }
 
 /**
@@ -41,8 +43,6 @@ export function setDeleteObjectListener(canvas: fabric.Canvas) {
 
 export function setMoveObjectsListener(canvas: fabric.Canvas, moveStep = 1) {
   document.addEventListener('keydown', event => {
-    event.preventDefault()
-
     if (!Object.values(ARROW_KEYS).includes(event.key as unknown as ARROW_KEYS))
       return
 
@@ -76,7 +76,6 @@ export function setMoveObjectsListener(canvas: fabric.Canvas, moveStep = 1) {
         default:
           break
       }
-
       canvas.renderAll()
     })
   })
@@ -105,5 +104,32 @@ export function setCopyPasteListeners(canvas: fabric.Canvas) {
       return
 
     pasteObjectFromClipboard()
+  })
+}
+
+/**
+ * Sets up a listener for keyboard events that enables undo/redo functionality
+ * using the History class.
+ *
+ * (CTRL + Z / CTRL + SHIFT + Z)
+ * @param canvas - The canvas object to attach the listener to.
+ */
+
+export function setHistoryNavigationListener(canvas: fabric.Canvas) {
+  const history = new History(canvas)
+
+  document.addEventListener('keydown', event => {
+    if (
+      event.key.toLowerCase() !== KEYBOARD_KEYS.z ||
+      (!event.metaKey && !event.ctrlKey)
+    )
+      return
+
+    if (!event.shiftKey) {
+      history.undo()
+      return
+    }
+
+    history.redo()
   })
 }

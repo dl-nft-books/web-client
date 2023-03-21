@@ -1,5 +1,6 @@
-export * from '@image-editor/helpers/image.helpers'
+export * from '@/common/image-editor/helpers/calclulation.helpers'
 export * from '@image-editor/helpers/inject.helpers'
 export * from '@image-editor/helpers/canvas.helpers'
 export * from '@image-editor/helpers/convert.helpers'
 export * from '@image-editor/helpers/modify.helpers'
+export * from '@image-editor/helpers/history.helpers'

@@ -1,4 +1,5 @@
 import { fabric } from 'fabric'
+import { calcRotatedObjectOffset } from '@image-editor/helpers'
 
 enum LINE_TYPES {
   vertical = 'vertical',
@@ -106,7 +107,6 @@ export function useGuideLines(canvas: fabric.Canvas) {
     })
   }
 
-  // Under construction
   const snapObjectToGuideLines = (
     object: fabric.Object,
     lines: Array<LineWrapper>,
@@ -122,53 +122,35 @@ export function useGuideLines(canvas: fabric.Canvas) {
 
     const threshold = ((objectWidth + objectHeight) / 2) * thersholdFactor
 
-    const objectLeftX = objectCenterX - objectWidth / 2
-    const objectTopY = objectCenterY - objectHeight / 2
-
     lines.forEach(line => {
       if (!line.value.oCoords || !object.oCoords) return
 
       const { x: lineX, y: lineY } = line.value.oCoords.tl
+
+      const { objectLeftX, objectTopY } = calcRotatedObjectOffset(object)
 
       switch (line.type) {
         case LINE_TYPES.vertical:
           if (line.isCentered) {
             if (Math.abs(lineX - objectCenterX) <= threshold) {
               object.set({
-                left:
-                  lineX -
-                  objectWidth / 2 +
-                  Math.sin((object.angle! * Math.PI) / 180) *
-                    object.getScaledHeight(),
+                left: lineX + objectLeftX,
               })
-              // console.log(
-              //   object.angle,
-              //   Math.sin((object.angle! * Math.PI) / 180),
-              //   objectHeight,
-              //   Math.sin((object.angle! * Math.PI) / 180) *
-              //     object.getScaledHeight(),
-              // )
             }
-
             return
           }
 
           // left side of the object
-          if (
-            Math.abs(
-              lineX - objectLeftX - Math.sin(object.angle!) * objectHeight,
-            ) <= threshold
-          ) {
+          if (Math.abs(lineX + objectCenterX - objectWidth / 2) <= threshold) {
             object.set({
-              left: lineX + Math.sin(object.angle!) * objectHeight,
+              left: lineX + objectWidth / 2 + objectLeftX,
             })
-            // console.log(lineX, object.left)
             // right side of the object
           } else if (
-            Math.abs(lineX - (objectLeftX + objectWidth)) <= threshold
+            Math.abs(lineX - objectCenterX - objectWidth / 2) <= threshold
           ) {
             object.set({
-              left: lineX - objectWidth,
+              left: lineX - objectWidth / 2 + objectLeftX,
             })
           }
 
@@ -177,23 +159,23 @@ export function useGuideLines(canvas: fabric.Canvas) {
           if (line.isCentered) {
             if (Math.abs(lineY - objectCenterY) <= threshold) {
               object.set({
-                top: lineY - objectHeight / 2,
+                top: lineY - objectTopY,
               })
             }
             return
           }
 
           // top side of the object
-          if (Math.abs(lineY - objectTopY) <= threshold) {
+          if (Math.abs(lineY + objectCenterY - objectHeight / 2) <= threshold) {
             object.set({
-              top: lineY,
+              top: lineY - objectTopY + objectHeight / 2,
             })
             // bottom side of the object
           } else if (
-            Math.abs(lineY - (objectTopY + objectHeight)) <= threshold
+            Math.abs(lineY - objectCenterY - objectHeight / 2) <= threshold
           ) {
             object.set({
-              top: lineY - objectHeight,
+              top: lineY - objectTopY - objectHeight / 2,
             })
           }
           break
