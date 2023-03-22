@@ -1,7 +1,11 @@
 import { fabric } from 'fabric'
 
 import { UseObjectMutations, FabricColor } from '@image-editor/types'
-import { modifyTextSelection, modifyGroup } from '@image-editor/helpers'
+import {
+  modifyTextSelection,
+  modifyGroup,
+  triggerObjectModifiedEvent,
+} from '@image-editor/helpers'
 
 export function useObjectMutations(canvas: fabric.Canvas): UseObjectMutations {
   const setColor = (color: FabricColor, object?: fabric.Object) => {
@@ -11,6 +15,7 @@ export function useObjectMutations(canvas: fabric.Canvas): UseObjectMutations {
 
     if (activeObject instanceof fabric.IText) {
       modifyTextSelection(activeObject, 'fill', color, color)
+      triggerObjectModifiedEvent(canvas, activeObject)
       canvas.renderAll()
       return
     }
@@ -24,13 +29,13 @@ export function useObjectMutations(canvas: fabric.Canvas): UseObjectMutations {
         },
         color,
       )
-
+      triggerObjectModifiedEvent(canvas, activeObject)
       canvas.renderAll()
       return
     }
 
     activeObject.set('stroke', color as string)
-
+    triggerObjectModifiedEvent(canvas, activeObject)
     canvas.renderAll()
   }
 
@@ -41,6 +46,7 @@ export function useObjectMutations(canvas: fabric.Canvas): UseObjectMutations {
 
     if (activeObject instanceof fabric.IText) {
       modifyTextSelection(activeObject, 'textBackgroundColor', color, color)
+      triggerObjectModifiedEvent(canvas, activeObject)
       canvas.renderAll()
       return
     }
@@ -54,13 +60,13 @@ export function useObjectMutations(canvas: fabric.Canvas): UseObjectMutations {
         },
         color,
       )
-
+      triggerObjectModifiedEvent(canvas, activeObject)
       canvas.renderAll()
       return
     }
 
     activeObject.set('fill', color)
-
+    triggerObjectModifiedEvent(canvas, activeObject)
     canvas.renderAll()
   }
 
@@ -83,7 +89,7 @@ export function useObjectMutations(canvas: fabric.Canvas): UseObjectMutations {
           value,
         )
       })
-
+      triggerObjectModifiedEvent(canvas, activeObject)
       canvas.renderAll()
       return
     }
@@ -98,7 +104,7 @@ export function useObjectMutations(canvas: fabric.Canvas): UseObjectMutations {
           value,
         )
       })
-
+      triggerObjectModifiedEvent(canvas, activeObject)
       canvas.renderAll()
       return
     }
@@ -107,7 +113,7 @@ export function useObjectMutations(canvas: fabric.Canvas): UseObjectMutations {
       stroke: strokeOptions.stroke ?? activeObject.stroke,
       strokeWidth: strokeOptions.strokeWidth ?? activeObject.strokeWidth,
     })
-
+    triggerObjectModifiedEvent(canvas, activeObject)
     canvas.renderAll()
   }
 

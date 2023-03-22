@@ -3,6 +3,7 @@ import { UseText } from '@image-editor/types'
 import {
   animateObjectAppearence,
   modifyTextSelection,
+  triggerObjectModifiedEvent,
 } from '@image-editor/helpers'
 
 export function useText(canvas: fabric.Canvas): UseText {
@@ -63,6 +64,8 @@ export function useText(canvas: fabric.Canvas): UseText {
       selectionStyle,
     )
 
+    triggerObjectModifiedEvent(canvas, activeObject)
+
     canvas.renderAll()
   }
 
@@ -91,6 +94,9 @@ export function useText(canvas: fabric.Canvas): UseText {
       wholeTextStyle,
       selectionStyle,
     )
+
+    triggerObjectModifiedEvent(canvas, activeObject)
+
     canvas.renderAll()
   }
 
@@ -100,6 +106,8 @@ export function useText(canvas: fabric.Canvas): UseText {
     if (!activeObject || !(activeObject instanceof fabric.IText)) return
 
     modifyTextSelection(activeObject, 'fontFamily', font, font)
+
+    triggerObjectModifiedEvent(canvas, activeObject)
 
     canvas.renderAll()
   }

@@ -95,6 +95,7 @@ export function useGuideLines(canvas: fabric.Canvas) {
       if (!object.intersectsWithObject(line.value)) return
 
       line.value.visible = true
+
       intersectingLines.push(line)
     })
 

@@ -249,3 +249,25 @@ export function animateObjectAppearence(
     },
   })
 }
+
+/**
+ * Triggers 'object:modified' event on specified object
+ *
+ * @param canvas - The Fabric.js canvas object.
+ * @param object - The Fabric.js object.
+ *
+ * @remarks
+ * Not all modification of the objects trigger this event, and in some cases
+ * you need to manually trigger event if you want your changes to be tracked by
+ * canvas.on('object:modified') listeners
+ */
+export function triggerObjectModifiedEvent(
+  canvas: fabric.Canvas,
+  object: fabric.Object,
+) {
+  if (!canvas || !object) return
+
+  canvas.fire('object:modified', {
+    target: object,
+  })
+}
