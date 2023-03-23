@@ -39,9 +39,9 @@ export const sameAs = (field: Ref): ValidationRule => {
   return <ValidationRule>withI18nMessage(_sameAs(field, get(field, '_key')))
 }
 
-export const urlSymbols = <ValidationRule>(
-  withI18nMessage((value: string) => UrlSymbolsRegex.test(value))
-)
+export const urlSymbols = <ValidationRule>withI18nMessage((value: string) => {
+  return !value ? true : UrlSymbolsRegex.test(value)
+})
 
 export const address = <ValidationRule>withI18nMessage({
   $validator: (address: string) => ethers.utils.isAddress(address),
