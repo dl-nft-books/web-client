@@ -156,3 +156,11 @@ $media-breakpoints: (
     width: clamp(#{toRem(155)}, 20%, #{toRem(215)});
   }
 }
+
+@mixin chart-title {
+  color: var(--text-primary-invert-main);
+  font-size: toRem(24);
+  font-weight: 500;
+  text-transform: uppercase;
+  text-align: center;
+}

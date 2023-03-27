@@ -7,6 +7,7 @@ export enum ROUTE_NAMES {
   myNftItem = 'my-nft-item',
   faq = 'faq',
   technicalWork = 'technical-work',
+  statistics = 'statistics',
 }
 
 export enum ROUTE_METAS {

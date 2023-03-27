@@ -28,6 +28,7 @@ export enum ICON_NAMES {
   beaker = 'beaker',
   bell = 'bell',
   bookOpen = 'book-open',
+  booksPile = 'books-pile',
   bookmarkAlt = 'bookmark-alt',
   bookmark = 'bookmark',
   bookWithFeather = 'book-with-feather',

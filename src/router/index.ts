@@ -53,6 +53,12 @@ const routes: Array<RouteRecordRaw> = [
     name: ROUTE_NAMES.technicalWork,
     component: () => import('@/pages/TechnicalWork.vue'),
   },
+  {
+    path: '/statistics',
+    name: ROUTE_NAMES.statistics,
+    component: () => import('@/pages/statistics/StatisticsPage.vue'),
+    meta: { [ROUTE_METAS.isDarkPage]: true },
+  },
 ]
 
 const router = createRouter({

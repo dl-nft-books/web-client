@@ -87,6 +87,14 @@
     "book-description-title": "Every book with your",
     "book-description-subtitle": "personal sign inside"
   },
+  "statistics-page": {
+    "chains-popularity-lbl": "Chains Popularity",
+    "total-chains-lbl": "Total chains:",
+    "more-lbl": "More details",
+    "token-distribution-lbl": "Token distribution",
+    "token-total-lbl": "Total Spent - ",
+    "token-total-value": "{amount} USD"
+  },
   "about-us-page": {
     "title": "Distributed LAB",
     "subtitle": "THE biggest blockchain R&D center in EMEA",
