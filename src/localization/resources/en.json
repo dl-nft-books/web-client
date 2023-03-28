@@ -93,7 +93,11 @@
     "more-lbl": "More details",
     "token-distribution-lbl": "Token distribution",
     "token-total-lbl": "Total Spent - ",
-    "token-total-value": "{amount} USD"
+    "token-total-value": "{amount} USD",
+    "sales-title": "Sales during the time",
+    "sales-week-lbl": "Purchased this week",
+    "sales-month-lbl": "Purchased this month",
+    "sales-year-lbl": "Purchased this year"
   },
   "about-us-page": {
     "title": "Distributed LAB",

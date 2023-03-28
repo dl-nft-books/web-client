@@ -98,7 +98,7 @@ import { computed, onMounted, ref, useAttrs, watch } from 'vue'
 import { useRouter } from '@/router'
 import { onClickOutside } from '@vueuse/core'
 
-type MODIFICATIONS = 'border-rounded' | 'dark' | 'default'
+type MODIFICATIONS = 'border-rounded' | 'dark' | 'transparent-head' | 'default'
 
 const props = withDefaults(
   defineProps<{
@@ -243,6 +243,10 @@ $z-local-index: 1;
     --field-border: rgba(var(--white-rgb), 0.5);
     --field-text: var(--text-primary-invert-main);
   }
+
+  .select-field--transparent-head & {
+    --field-border: none;
+  }
 }
 
 .select-field__select-head {
@@ -264,6 +268,10 @@ $z-local-index: 1;
 
   .select-field--dark & {
     background-color: var(--black);
+  }
+
+  .select-field--transparent-head & {
+    background-color: transparent;
   }
 
   .select-field--error & {

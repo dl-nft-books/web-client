@@ -14,10 +14,17 @@
       :total-value="barChartTotal"
       :bar-chart-data="barChartData"
     />
+    <line-chart
+      v-model="lineChartFilter"
+      :chart-data="lineChartData"
+      :title="$t('statistics-page.sales-title')"
+    />
   </div>
 </template>
 <script setup lang="ts">
-import { DonutChart, BarChart } from '@/pages/statistics'
+import { ref, watch } from 'vue'
+import { DonutChart, BarChart, LineChart } from '@/pages/statistics'
+import { SalesPeriod } from '@/pages/statistics/LineChart.vue'
 
 /* All values in that component hard-coded for now */
 
@@ -68,6 +75,57 @@ const barChartData = {
     },
   ],
 }
+
+const lineChartDataWeek = {
+  name: 'Sales',
+  categories: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+  data: [25, 32, 18, 41, 29, 37, 24],
+}
+
+const lineChartDataMonth = {
+  name: 'Sales',
+  categories: ['Week 1', 'Week 2', 'Week 3', 'Week 4'],
+  data: [41, 29, 37, 24],
+}
+
+const lineChartDataYear = {
+  name: 'Sales',
+  categories: [
+    'Jan',
+    'Feb',
+    'Mar',
+    'Apr',
+    'May',
+    'June',
+    'July',
+    'Aug',
+    'Sept',
+    'Oct',
+    'Nov',
+    'Dec',
+  ],
+  data: [25, 32, 18, 41, 29, 37, 24, 32, 18, 41, 11, 15],
+}
+
+const lineChartFilter = ref<SalesPeriod>('week')
+const lineChartData = ref(lineChartDataWeek)
+
+// then it will be fetched from backend
+watch(lineChartFilter, () => {
+  switch (lineChartFilter.value) {
+    case 'month':
+      lineChartData.value = lineChartDataMonth
+      break
+    case 'year':
+      lineChartData.value = lineChartDataYear
+      break
+    case 'week':
+      lineChartData.value = lineChartDataWeek
+      break
+    default:
+      break
+  }
+})
 </script>
 
 <style scoped lang="scss">
