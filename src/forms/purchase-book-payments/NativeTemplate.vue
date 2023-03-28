@@ -53,8 +53,8 @@ import { useBalance, useFormValidation } from '@/composables'
 import { PromocodeTemplate } from '@/forms/purchase-book-payments'
 import { Book, Promocode, PurchaseFormKey } from '@/types'
 
-import { required, minLength, maxLength } from '@/validators'
-import { PROMOCODE_LENGTH, MAX_FIELD_LENGTH } from '@/const'
+import { required } from '@/validators'
+import { MAX_FIELD_LENGTH } from '@/const'
 import { useWeb3ProvidersStore } from '@/store'
 import { ExposedPromocodeRef } from '@/forms/purchase-book-payments/PromocodeTemplate.vue'
 import { ExposedFormRef } from '@/forms//PurchaseBookForm.vue'
@@ -80,7 +80,6 @@ const provider = computed(() => web3ProvidersStore.provider)
 const form = reactive({
   tokenAddress: '',
   signature: '',
-  promocode: '',
 })
 
 const promocodeRef = ref<ExposedPromocodeRef | null>(null)
@@ -90,10 +89,6 @@ const { getFieldErrorMessage, touchField, isFormValid } = useFormValidation(
   form,
   {
     signature: { required },
-    promocode: {
-      minLength: minLength(PROMOCODE_LENGTH),
-      maxLength: maxLength(PROMOCODE_LENGTH),
-    },
   },
 )
 const formattedTokenAmount = computed(() => {

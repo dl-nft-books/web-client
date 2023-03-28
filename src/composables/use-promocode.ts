@@ -6,7 +6,7 @@ import {
   PromocodeExpiredError,
   PromocodeFullyUsedError,
 } from '@/helpers'
-import { PROMOCODE_LENGTH } from '@/const'
+import { MAX_PROMOCODE_LENGTH, MIN_PROMOCODE_LENGTH } from '@/const'
 import { PROMOCODE_STATUSES } from '@/enums'
 
 export function usePromocode() {
@@ -32,7 +32,10 @@ export function usePromocode() {
   }
 
   const validatePromocode = async (promocode: string) => {
-    if (promocode.length !== PROMOCODE_LENGTH) {
+    if (
+      promocode.length > MAX_PROMOCODE_LENGTH ||
+      promocode.length < MIN_PROMOCODE_LENGTH
+    ) {
       promocodeInfo.promocode = null
       promocodeInfo.error = ''
       return
