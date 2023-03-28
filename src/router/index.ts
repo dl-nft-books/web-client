@@ -53,6 +53,11 @@ const routes: Array<RouteRecordRaw> = [
     name: ROUTE_NAMES.technicalWork,
     component: () => import('@/pages/TechnicalWork.vue'),
   },
+  {
+    path: '/test-editor',
+    name: 'test-editor',
+    component: () => import('@/pages/TestEditorPage.vue'),
+  },
 ]
 
 const router = createRouter({
