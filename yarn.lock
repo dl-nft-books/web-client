@@ -490,11 +490,6 @@
   resolved "https://registry.yarnpkg.com/@invisiburu/vue-picker/-/vue-picker-2.1.0.tgz#67b6c4cfc94ddc97ec6546b94ddafde49936c37c"
   integrity sha512-lbC5LT3KjI+qM/kbugWzbGbjI45SSLa0dAGCTkiwU4UJE+TimR+ozYQN0KHQRn6Ff0o4P2bH0NllQt5EAUYmXg==
 
-"@kurkle/color@^0.3.0":
-  version "0.3.2"
-  resolved "https://registry.yarnpkg.com/@kurkle/color/-/color-0.3.2.tgz#5acd38242e8bde4f9986e7913c8fdf49d3aa199f"
-  integrity sha512-fuscdXJ9G1qb7W8VdHi+IwRqij3lBkosAm4ydQtEmbY58OzHXqQhvlxqEkoz0yssNVn38bcpRWgA9PP+OGoisw==
-
 "@mapbox/stylelint-processor-arbitrary-tags@^0.4.0":
   version "0.4.0"
   resolved "https://registry.yarnpkg.com/@mapbox/stylelint-processor-arbitrary-tags/-/stylelint-processor-arbitrary-tags-0.4.0.tgz#da45723d8ce75140d08efe3bddd284eba3a3fe53"
@@ -1491,13 +1486,6 @@ chalk@^5.0.0:
   version "5.0.1"
   resolved "https://registry.yarnpkg.com/chalk/-/chalk-5.0.1.tgz#ca57d71e82bb534a296df63bbacc4a1c22b2a4b6"
   integrity sha512-Fo07WOYGqMfCWHOzSXOt2CxDbC6skS/jO9ynEcmpANMoPrD+W1r1K6Vx7iNm+AQmETU1Xr2t+n8nzkV9t6xh3w==
-
-chart.js@^4.2.1:
-  version "4.2.1"
-  resolved "https://registry.yarnpkg.com/chart.js/-/chart.js-4.2.1.tgz#d2bd5c98e9a0ae35408975b638f40513b067ba1d"
-  integrity sha512-6YbpQ0nt3NovAgOzbkSSeeAQu/3za1319dPUQTXn9WcOpywM8rGKxJHrhS8V8xEkAlk8YhEfjbuAPfUyp6jIsw==
-  dependencies:
-    "@kurkle/color" "^0.3.0"
 
 check-error@^1.0.2:
   version "1.0.2"
