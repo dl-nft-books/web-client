@@ -6,7 +6,7 @@ import { DesignatedProvider, ProviderInstance } from '@/types'
 export const useWeb3 = () => {
   const providers = ref<DesignatedProvider[]>([])
 
-  const _browserProviders = ref<ProviderInstance[]>([])
+  let _browserProviders: ProviderInstance[] = []
 
   const isEnabled = computed(() => providers.value.length)
 
@@ -23,14 +23,14 @@ export const useWeb3 = () => {
     const phantomProvider = window?.solana
     const solflareProvider = window?.solflare
 
-    _browserProviders.value = [
+    _browserProviders = [
       ...(ethProviders ? ethProviders : []),
       ...(phantomProvider ? [phantomProvider] : []),
       ...(solflareProvider ? [solflareProvider] : []),
     ]
   }
   const _defineProviders = async () => {
-    if (_browserProviders.value.length) {
+    if (_browserProviders.length) {
       await handleProviders()
     } else {
       await sleep(3000)
@@ -38,16 +38,16 @@ export const useWeb3 = () => {
     }
 
     async function handleProviders() {
-      if (!_browserProviders.value.length) return
+      if (!_browserProviders.length) return
 
       providers.value = designateBrowserProviders()
     }
   }
 
   const designateBrowserProviders = (): DesignatedProvider[] => {
-    if (!_browserProviders.value.length) return []
+    if (!_browserProviders.length) return []
 
-    const designatedProviders = _browserProviders.value.map(el => {
+    const designatedProviders = _browserProviders.map(el => {
       const appropriatedProviderName: PROVIDERS = getAppropriateProviderName(el)
 
       return {
