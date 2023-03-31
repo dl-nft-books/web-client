@@ -85,6 +85,11 @@ onMounted(() => {
   text-align: center;
   align-items: center;
   position: relative;
+
+  @include respond-to(small) {
+    padding-left: toRem(25);
+    padding-right: toRem(25);
+  }
 }
 
 .browser-support__subtitle {
