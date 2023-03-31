@@ -351,5 +351,10 @@
     "voucher-lbl": "Voucher Token",
     "nft": "NFT",
     "not-found-lbl": "Token type not found"
+  },
+  "browser-support": {
+    "title": "Make sure you are using the correct browser",
+    "subtitle": "For the best experience on our site, we recommend using Google Chrome, Opera, Opera GX, Microsoft Edge, Firefox or Brave. Please note that the site may not function properly on other browsers.",
+    "submit-btn": "Understood"
   }
 }
