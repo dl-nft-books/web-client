@@ -16,7 +16,12 @@ export function isMobile() {
 
 export function isChromeBrowser() {
   const res = detect()
+
   return res && res.name === 'chrome'
+}
+
+export function isMetamaskBrowser() {
+  return navigator.userAgent.includes('MetaMask')
 }
 
 export function isIosBrowser() {

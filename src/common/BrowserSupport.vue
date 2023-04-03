@@ -46,6 +46,7 @@ import {
   isFirefoxBrowser,
   isIosBrowser,
   isOperaBrowser,
+  isMetamaskBrowser,
 } from '@/helpers'
 
 const STORAGE_KEY = 'hasUserAcceptedBrowserSupport'
@@ -61,7 +62,8 @@ const isSupportedBrowser = () =>
   isEdgeBrowser() ||
   isFirefoxBrowser() ||
   isOperaBrowser() ||
-  isIosBrowser()
+  isIosBrowser() ||
+  isMetamaskBrowser()
 
 onMounted(() => {
   const hasAccepted = localStorage.getItem(STORAGE_KEY)
