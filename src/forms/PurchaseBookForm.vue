@@ -350,24 +350,6 @@ const submit = async () => {
   gap: toRem(20);
 }
 
-.purchase-book-form__image-editor {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: toRem(30);
-  background-color: var(--background-primary);
-  border-radius: toRem(8);
-  padding: toRem(30);
-  width: clamp(toRem(300), 90vw, toRem(1000));
-  overflow-y: auto;
-  max-height: vh(100);
-
-  @include respond-to(small) {
-    width: 100vw;
-    padding: toRem(15);
-  }
-}
-
 .purchase-book-form__submitting-animation-wrp {
   margin: 0 auto toRem(30);
   max-width: toRem(300);
