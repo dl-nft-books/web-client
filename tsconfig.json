@@ -24,8 +24,6 @@
       "@/*": ["src/*"],
       "@config": ["src/config.ts"],
       "@static": ["static"],
-      "@image-editor/*": ["src/common/image-editor/*"],
-      "@image-editor": ["src/common/image-editor"],
     },
     "lib": [
       "esnext",

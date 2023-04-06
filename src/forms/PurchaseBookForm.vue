@@ -26,17 +26,6 @@
       "
     />
 
-    <app-button :text="'EDIT COVER'" @click="isEditingImage = true" />
-
-    <modal v-model:is-shown="isEditingImage">
-      <template #default="{ modal }">
-        <div class="purchase-book-form__image-editor">
-          <image-editor />
-          <app-button :text="'CLOSE'" @click="modal.close" />
-        </div>
-      </template>
-    </modal>
-
     <select-field
       v-model="form.tokenType"
       class="purchase-book-form__select"
@@ -67,7 +56,7 @@ import {
 } from '@/types'
 import { TOKEN_TYPES } from '@/enums'
 
-import { Animation, BookPreview, ImageEditor, AppButton, Modal } from '@/common'
+import { Animation, BookPreview } from '@/common'
 
 import {
   NativeTemplate,
@@ -102,8 +91,6 @@ export type ExposedFormRef = {
   tokenPrice: Ref<TokenPrice | null>
   tokenId?: Ref<string>
 }
-
-const isEditingImage = ref(false)
 
 const TOKEN_AMOUNT_COEFFICIENT = 1.02
 

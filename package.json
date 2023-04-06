@@ -8,7 +8,7 @@
   "scripts": {
     "vite-dev-server": "vite",
     "vite-build": "vite build",
-    "start": "cross-env VITE_APP_ENVIRONMENT=development yarn vite-dev-server --host",
+    "start": "cross-env VITE_APP_ENVIRONMENT=development yarn vite-dev-server",
     "build": "cross-env VITE_APP_ENVIRONMENT=production yarn vite-build",
     "analyze": "cross-env VITE_APP_ENVIRONMENT=analyze yarn vite-build",
     "test": "yarn test:unit",
@@ -42,6 +42,7 @@
     "mitt": "^3.0.0",
     "pinia": "^2.0.21",
     "postcss": "^8.4.16",
+    "simple-fabric-vue-image-editor": "^1.0.1",
     "uuidv4": "^5.0.1",
     "vue": "^3.2.38",
     "vue-i18n": "^9.2.2",

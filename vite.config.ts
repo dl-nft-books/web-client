@@ -66,7 +66,6 @@ export default defineConfig(({ command, mode }) => {
         '@': `${root}/`,
         '@config': `${root}/config.ts`,
         '@static': `${root}/../static`,
-        '@image-editor': `${root}/common/image-editor/`,
       },
     },
   }
