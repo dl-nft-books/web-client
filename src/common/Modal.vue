@@ -46,7 +46,7 @@ onMounted(() => {
 
 watch(
   () => props.isShown,
-  () => Bus.emit(Bus.eventList.toggleScroll, !props.isShown),
+  () => Bus.emit(Bus.eventList.toggleScroll),
 )
 </script>
 

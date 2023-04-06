@@ -198,7 +198,6 @@ export enum ICON_NAMES {
   sortDescending = 'sort-descending',
   sparkles = 'sparkles',
   speakerphone = 'speakerphone',
-  spray = 'spray',
   star = 'star',
   statusOffline = 'status-offline',
   statusOnline = 'status-online',
