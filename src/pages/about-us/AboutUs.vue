@@ -15,19 +15,20 @@
       class="about-us__cubes about-us__cubes--right"
       :src="CUBES_IMAGES.RIGHT"
     />
+    <div class="about-us__quote-card-wrapper">
+      <about-us-quote-card
+        class="about-us__quote-card"
+        :title="$t('about-us-page.founder-title')"
+        :subtitle="$t('about-us-page.founder-subtitle')"
+        :image="FOUNDERS_IMAGES.KRAVCHENKO"
+        :quotes-list="KravchenkoQuotes"
+      />
 
-    <about-us-quote-card
-      class="about-us__quote-card"
-      :title="$t('about-us-page.founder-title')"
-      :subtitle="$t('about-us-page.founder-subtitle')"
-      :image="FOUNDERS_IMAGES.KRAVCHENKO"
-      :quotes-list="KravchenkoQuotes"
-    />
-
-    <img
-      class="about-us__cubes about-us__cubes--left"
-      :src="CUBES_IMAGES.LEFT"
-    />
+      <img
+        class="about-us__cubes about-us__cubes--left"
+        :src="CUBES_IMAGES.LEFT"
+      />
+    </div>
 
     <about-us-quote-card
       class="about-us__quote-card"
@@ -79,6 +80,18 @@ const KurbatovQuotes = [
   padding: 0;
   background-color: var(--background-quinary);
   position: relative;
+}
+
+.about-us__quote-card-wrapper {
+  overflow: hidden;
+  position: relative;
+  margin: toRem(60);
+  border-radius: toRem(30);
+
+  @include respond-to(medium) {
+    margin: 0;
+    border-radius: 0;
+  }
 }
 
 .about-us__quote-card {

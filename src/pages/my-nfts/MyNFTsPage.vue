@@ -1,6 +1,6 @@
 <template>
   <div class="my-nfts-page">
-    <h3>
+    <h3 class="my-nfts-page__title">
       {{ $t('my-nfts-page.title') }}
     </h3>
     <template v-if="provider.isConnected">
@@ -30,11 +30,11 @@
           @click="loadNextPage"
         />
       </template>
-
       <my-nfts-no-data v-else />
     </template>
 
     <my-nfts-no-data v-else is-not-connected />
+    <img class="my-nfts-page__cubes" src="/images/background-cubes.png" />
   </div>
 </template>
 
@@ -89,18 +89,50 @@ function onError(e: Error) {
 .my-nfts-page {
   display: flex;
   flex-direction: column;
-  flex: 1;
-  gap: toRem(34);
   padding-top: toRem(70);
   padding-bottom: toRem(200);
-  background: url('/images/background-cubes.png') no-repeat right center /
-    contain;
-  background-size: clamp(toRem(300), 30%, toRem(400));
+  overflow: hidden;
+  position: relative;
+  background-color: var(--background-quinary);
+  z-index: var(--z-index-layer-1);
+
+  /* Gray bg under the header */
+  &:after {
+    content: '';
+    position: absolute;
+    top: toRem(-500);
+    left: toRem(600);
+    transform: rotate(-10deg);
+    width: 120vw;
+    height: toRem(600);
+    background-size: 45%;
+    background-color: var(--background-secondary);
+    border-radius: toRem(300);
+    z-index: var(--z-index-layer-bottom);
+
+    @include respond-to(medium) {
+      left: toRem(-60);
+      width: 160vw;
+      top: toRem(-580);
+    }
+
+    @include respond-to(small) {
+      top: toRem(-250);
+      left: toRem(-60);
+      width: 160vw;
+      border-radius: toRem(200);
+      height: 205vw;
+    }
+  }
 
   @include respond-to(tablet) {
     padding-top: toRem(10);
     padding-bottom: toRem(80);
   }
+}
+
+.my-nfts-page__title {
+  color: var(--text-primary-invert-main);
 }
 
 .my-nfts-page__list {
@@ -111,5 +143,17 @@ function onError(e: Error) {
 
 .my-nfts-page__load-more-btn {
   margin: toRem(20) auto 0;
+}
+
+.my-nfts-page__cubes {
+  position: absolute;
+  max-width: min-content;
+  width: 40%;
+  right: 0;
+  bottom: toRem(-150);
+
+  @include respond-to(medium) {
+    display: none;
+  }
 }
 </style>

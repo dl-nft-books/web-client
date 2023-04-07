@@ -24,8 +24,39 @@
   display: flex;
   flex: 1;
   justify-content: center;
-  gap: toRem(100);
+  overflow: hidden;
   position: relative;
+  gap: toRem(100);
+  background-color: var(--background-quinary);
+
+  /* Gray bg under the header */
+  &:after {
+    content: '';
+    position: absolute;
+    top: toRem(-600);
+    left: toRem(600);
+    transform: rotate(-10deg);
+    width: 120vw;
+    height: toRem(600);
+    background-size: 45%;
+    background-color: var(--background-secondary);
+    border-radius: toRem(300);
+    z-index: var(--z-index-layer-1);
+
+    @include respond-to(medium) {
+      left: toRem(-60);
+      width: 160vw;
+      top: toRem(-580);
+    }
+
+    @include respond-to(small) {
+      top: toRem(-250);
+      left: toRem(-60);
+      width: 160vw;
+      border-radius: toRem(200);
+      height: 205vw;
+    }
+  }
 
   @include respond-to(tablet) {
     flex-direction: column;
@@ -38,13 +69,13 @@
 .technical-work__background {
   background: url('/images/technical-background.png') no-repeat left bottom /
     contain;
-  background-size: clamp(toRem(300), 50%, toRem(800));
+  background-size: 45vw;
   width: 100%;
   height: 100%;
   position: absolute;
   z-index: var(--z-index-layer-1);
   left: 0;
-  bottom: 0;
+  bottom: toRem(-150);
 }
 
 .technical-work__info {
@@ -65,6 +96,7 @@
 .technical-work__subtitle {
   font-size: toRem(24);
   font-weight: 500;
+  color: var(--white);
 
   @include respond-to(tablet) {
     font-size: toRem(18);
