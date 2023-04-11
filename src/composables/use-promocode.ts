@@ -1,6 +1,5 @@
-import { Promocode } from '@/types'
+import { Promocode, PromocodeValidation } from '@/types'
 import { reactive } from 'vue'
-import { validatePromocode as _validatePromocode } from '@/api'
 import {
   handlePromocodeError,
   PromocodeExpiredError,
@@ -8,6 +7,7 @@ import {
 } from '@/helpers'
 import { MAX_PROMOCODE_LENGTH, MIN_PROMOCODE_LENGTH } from '@/const'
 import { PROMOCODE_STATUSES } from '@/enums'
+import { api } from '@/api'
 
 export function usePromocode() {
   const promocodeInfo = reactive({
@@ -15,6 +15,12 @@ export function usePromocode() {
     promocode: null as Promocode | null,
     error: '',
   })
+
+  const _validatePromocode = (promocode: string) => {
+    return api.get<PromocodeValidation>(
+      `/integrations/core/promocodes/validate/${promocode}`,
+    )
+  }
 
   const checkStatus = (state: PROMOCODE_STATUSES) => {
     if (state !== PROMOCODE_STATUSES.ACTIVE) {

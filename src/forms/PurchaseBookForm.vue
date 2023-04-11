@@ -42,7 +42,7 @@
 
 <script lang="ts" setup>
 import { ref, reactive, computed, Ref, provide } from 'vue'
-import { useWeb3ProvidersStore } from '@/store'
+import { useWeb3ProvidersStore, useNetworksStore } from '@/store'
 import { BN } from '@/utils/math.util'
 
 import {
@@ -52,7 +52,6 @@ import {
   PurchaseFormKey,
   MintSignatureResponse,
   Task,
-  Book,
 } from '@/types'
 import { TOKEN_TYPES } from '@/enums'
 
@@ -68,10 +67,12 @@ import {
 import {
   useForm,
   useFormValidation,
-  useNftBookToken,
   useErc20,
   useErc721,
+  useMarketplace,
+  useContractRegistry,
   useGenerator,
+  FullBookInfo,
 } from '@/composables'
 
 import { SelectField } from '@/fields'
@@ -85,7 +86,6 @@ import { ethers } from 'ethers'
 export type ExposedFormRef = {
   isFormValid: () => boolean
   promocode: Ref<Promocode | null>
-  signature: Ref<string>
   tokenAddress: Ref<string>
   tokenAmount: Ref<string>
   tokenPrice: Ref<TokenPrice | null>
@@ -95,7 +95,7 @@ export type ExposedFormRef = {
 const TOKEN_AMOUNT_COEFFICIENT = 1.02
 
 const props = defineProps<{
-  book: Book
+  book: FullBookInfo
   currentPlatform: Platform
 }>()
 
@@ -105,11 +105,14 @@ const emit = defineEmits<{
 }>()
 
 const web3ProvidersStore = useWeb3ProvidersStore()
+const networkStore = useNetworksStore()
 const provider = computed(() => web3ProvidersStore.provider)
 
 const { createNewGenerationTask, getMintSignature, getGeneratedTask } =
   useGenerator()
-const nftBookToken = useNftBookToken(props.book.contract_address)
+
+const marketPlace = useMarketplace()
+const contractRegistry = useContractRegistry()
 const erc20 = useErc20()
 const erc721 = useErc721()
 
@@ -187,7 +190,7 @@ const isTokenApproved = async (
 
   const allowance = await erc20.getAllowance(
     provider.value.selectedAddress!,
-    props.book.contract_address,
+    props.book.tokenContract,
   )
 
   if (
@@ -196,7 +199,7 @@ const isTokenApproved = async (
   ) {
     return true
   } else if (new BN(allowance?.toString() || 0).compare(tokenAmount) === -1) {
-    await erc20.approve(props.book.contract_address, tokenAmount)
+    await erc20.approve(props.book.tokenContract, tokenAmount)
   }
 
   return isTokenApproved(tokenAmount)
@@ -210,6 +213,13 @@ const approveTokenSpend = async (
 ) => {
   if (!provider.value.selectedAddress) return
 
+  const bookContract = props.book.networks.find(
+    el => el.attributes.chain_id === Number(provider.value.chainId),
+  )
+
+  if (!bookContract)
+    throw new Error('No matching book contract found for that chain')
+
   switch (tokenType) {
     case TOKEN_TYPES.erc20:
       if (!tokenAddress || !tokenAmount) return
@@ -217,8 +227,8 @@ const approveTokenSpend = async (
       break
     case TOKEN_TYPES.voucher:
       await isTokenApproved(
-        props.book.voucher_token_amount,
-        props.book.voucher_token,
+        props.book.voucherTokensAmount as string,
+        props.book.voucherTokenContract as string,
       )
 
       break
@@ -226,7 +236,7 @@ const approveTokenSpend = async (
       if (!tokenAddress || !tokenId) return
       erc721.init(tokenAddress)
 
-      await erc721.approve(props.book.contract_address, tokenId)
+      await erc721.approve(bookContract.attributes.contract_address, tokenId)
       break
     default:
       break
@@ -241,8 +251,17 @@ const mintToken = async (
   tokenId?: string,
   nativeTokenAmount?: string,
 ) => {
+  const bookContract = props.book.networks.find(
+    el => el.attributes.chain_id === Number(provider.value.chainId),
+  )
+
+  if (!bookContract)
+    throw new Error('No matching book contract found for that chain')
+
   if (form.tokenType !== TOKEN_TYPES.nft) {
-    await nftBookToken.mintToken(
+    await marketPlace.mintToken(
+      bookContract.attributes.contract_address,
+      mintSignature.token_id.toString(),
       tokenAddress || ethers.constants.AddressZero,
       mintSignature.price,
       mintSignature.discount,
@@ -259,7 +278,9 @@ const mintToken = async (
 
   if (!tokenId) return
 
-  await nftBookToken.mintTokenByNFT(
+  await marketPlace.mintTokenByNFT(
+    bookContract.attributes.contract_address,
+    mintSignature.token_id.toString(),
     tokenAddress,
     mintSignature.price,
     tokenId,
@@ -269,6 +290,33 @@ const mintToken = async (
     mintSignature.signature.s,
     mintSignature.signature.v,
   )
+
+  // await nftBookToken.mintTokenByNFT(
+  //   tokenAddress,
+  //   mintSignature.price,
+  //   tokenId,
+  //   mintSignature.end_timestamp,
+  //   generatedTask!.metadata_ipfs_hash,
+  //   mintSignature.signature.r,
+  //   mintSignature.signature.s,
+  //   mintSignature.signature.v,
+  // )
+}
+
+const initMarketplace = async () => {
+  const registryAddress = networkStore.list.find(
+    el => el.chain_id === Number(provider.value.chainId),
+  )
+
+  if (!registryAddress) throw new Error('Failed to get registry address')
+
+  contractRegistry.init(registryAddress.factory_address)
+
+  const marketPlaceAddress = await contractRegistry.getMarketPlaceAddress()
+
+  if (!marketPlaceAddress) throw new Error('Failed to get marketplace address')
+
+  marketPlace.init(marketPlaceAddress)
 }
 
 const submit = async () => {
@@ -284,18 +332,19 @@ const submit = async () => {
     tokenPrice: paymentTemplateRef.value?.tokenPrice,
     tokenId: paymentTemplateRef.value.tokenId,
     tokenAmount: paymentTemplateRef.value?.tokenAmount,
-    signature: paymentTemplateRef.value?.signature,
     promocode: paymentTemplateRef.value.promocode,
   }
 
   disableForm()
   emit('submitting', true)
 
+  await initMarketplace()
+
   try {
     const currentTask = await createNewGenerationTask({
-      signature: paymentTemplateRef.value.signature,
       account: provider.value.selectedAddress,
       bookId: props.book.id,
+      chainId: Number(provider.value.chainId),
     })
 
     const generatedTask = await getGeneratedTask(currentTask.id)
@@ -311,7 +360,7 @@ const submit = async () => {
     const nativeTokenAmount =
       form.tokenType !== TOKEN_TYPES.native
         ? ''
-        : new BN(props.book.price, {
+        : new BN(props.book.pricePerOneToken, {
             decimals: dataForMint.tokenPrice.token.decimals,
           })
             .div(dataForMint.tokenPrice.price)
@@ -327,7 +376,7 @@ const submit = async () => {
 
     await mintToken(
       mintSignature,
-      generatedTask,
+      generatedTask!,
       dataForMint.tokenAddress,
       dataForMint.tokenId,
       nativeTokenAmount,

@@ -18,16 +18,6 @@
 
       <promocode-template ref="promocodeRef" />
 
-      <textarea-field
-        v-model="form.signature"
-        :placeholder="$t('purchase-book-form.signature-placeholder')"
-        :maxlength="MAX_FIELD_LENGTH.signature"
-        :label="$t('purchase-book-form.signature-lbl')"
-        :error-message="getFieldErrorMessage('signature')"
-        :disabled="isFormDisabled"
-        @blur="touchField('signature')"
-      />
-
       <!-- Starting NFT generation -->
       <app-button
         class="native-template__purchase-btn"
@@ -46,22 +36,20 @@ import { computed, reactive, watch, toRef, ref, inject } from 'vue'
 
 import { BN } from '@/utils/math.util'
 
-import { TextareaField, ReadonlyField } from '@/fields'
+import { ReadonlyField } from '@/fields'
 
 import { ErrorMessage, Loader, AppButton } from '@/common'
-import { useBalance, useFormValidation } from '@/composables'
+import { FullBookInfo, useBalance } from '@/composables'
 import { PromocodeTemplate } from '@/forms/purchase-book-payments'
-import { Book, Promocode, PurchaseFormKey } from '@/types'
+import { Promocode, PurchaseFormKey } from '@/types'
 
-import { required } from '@/validators'
-import { MAX_FIELD_LENGTH } from '@/const'
 import { useWeb3ProvidersStore } from '@/store'
 import { ExposedPromocodeRef } from '@/forms/purchase-book-payments/PromocodeTemplate.vue'
 import { ExposedFormRef } from '@/forms//PurchaseBookForm.vue'
 import { TOKEN_TYPES } from '@/enums'
 
 const props = defineProps<{
-  book: Book
+  book: FullBookInfo
 }>()
 
 const { platform: currentPlatform, isFormDisabled } = inject(PurchaseFormKey)
@@ -85,16 +73,12 @@ const form = reactive({
 const promocodeRef = ref<ExposedPromocodeRef | null>(null)
 const promocode = ref<Promocode | null>(null)
 
-const { getFieldErrorMessage, touchField, isFormValid } = useFormValidation(
-  form,
-  {
-    signature: { required },
-  },
-)
 const formattedTokenAmount = computed(() => {
   if (!tokenPrice.value) return ''
 
-  return new BN(props.book.price, { decimals: tokenPrice.value.token.decimals })
+  return new BN(props.book.pricePerOneToken, {
+    decimals: tokenPrice.value.token.decimals,
+  })
     .fromFraction(tokenPrice.value.token.decimals)
     .div(tokenPrice.value.price)
     .toString()
@@ -105,11 +89,10 @@ const isEnoughBalanceForBuy = computed(
 )
 
 defineExpose<ExposedFormRef>({
-  isFormValid: () => isFormValid() && promocodeRef.value?.isPromocodeValid(),
+  isFormValid: () => promocodeRef.value?.isPromocodeValid(),
   tokenAmount: formattedTokenAmount,
   tokenPrice: tokenPrice,
   tokenAddress: toRef(form, 'tokenAddress'),
-  signature: toRef(form, 'signature'),
   promocode,
 })
 

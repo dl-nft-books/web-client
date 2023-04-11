@@ -1,12 +1,21 @@
+import { config } from '@/config'
 import { router } from '@/router'
-import { ProviderWrapper } from '@/types'
+import { ChainId, ProviderWrapper } from '@/types'
+import { ethers } from 'ethers'
+import { computed, ref } from 'vue'
 
 export function useMetamaskFallback(): Pick<
   ProviderWrapper,
-  'connect' | 'init'
+  'connect' | 'init' | 'defaultProvider' | 'chainId'
 > {
+  const chainId = ref<ChainId>('')
+
+  const defaultProvider = computed(
+    () => new ethers.providers.JsonRpcProvider(config.DEFAULT_RPC_URL),
+  )
+
   const init = async () => {
-    return
+    chainId.value = config.DEFAULT_CHAIN_ID
   }
 
   const connect = async () => {
@@ -22,5 +31,7 @@ export function useMetamaskFallback(): Pick<
   return {
     init,
     connect,
+    defaultProvider,
+    chainId,
   }
 }

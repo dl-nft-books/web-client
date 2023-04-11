@@ -2,12 +2,11 @@ import { ref, computed } from 'vue'
 import { ethers } from 'ethers'
 import { errors } from '@/api/json-api'
 
-import { getPriceByPlatform, getNftPriceByPlatform } from '@/api'
 import { NftPrice, Platform, TokenPrice } from '@/types'
 import { TOKEN_TYPES } from '@/enums'
 import { BN } from '@/utils/math.util'
 import { useWeb3ProvidersStore } from '@/store'
-import { useErc20 } from '@/composables'
+import { useErc20, usePricer } from '@/composables'
 import { ErrorHandler } from '@/helpers'
 
 export function useBalance(currentPlatform: Platform) {
@@ -20,6 +19,8 @@ export function useBalance(currentPlatform: Platform) {
 
   const web3ProvidersStore = useWeb3ProvidersStore()
   const provider = computed(() => web3ProvidersStore.provider)
+
+  const { getPriceByPlatform, getNftPriceByPlatform } = usePricer()
 
   const getPrice = async (tokenAddress: string, tokenType: TOKEN_TYPES) => {
     try {

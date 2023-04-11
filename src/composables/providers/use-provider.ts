@@ -21,6 +21,7 @@ import { ethers } from 'ethers'
 export interface UseProvider {
   currentProvider: ComputedRef<ethers.providers.Web3Provider | undefined>
   currentSigner: ComputedRef<ethers.providers.JsonRpcSigner | undefined>
+  defaultProvider: ComputedRef<ethers.providers.JsonRpcProvider | undefined>
 
   selectedProvider: Ref<PROVIDERS | undefined>
   chainId: ComputedRef<ChainId | undefined>
@@ -58,6 +59,12 @@ export const useProvider = (): UseProvider => {
     () =>
       providerWrp.value
         ?.currentSigner as unknown as ethers.providers.JsonRpcSigner,
+  )
+
+  const defaultProvider = computed(
+    () =>
+      providerWrp.value
+        ?.defaultProvider as unknown as ethers.providers.JsonRpcProvider,
   )
 
   const selectedProvider = ref<PROVIDERS | undefined>()
@@ -178,6 +185,7 @@ export const useProvider = (): UseProvider => {
   return {
     currentProvider,
     currentSigner,
+    defaultProvider,
 
     selectedProvider,
     chainId,
