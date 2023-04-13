@@ -40,15 +40,6 @@
         :token-type="TOKEN_TYPES.erc20"
         :token-address="form.tokenAddress"
       />
-
-      <!-- Starting NFT generation -->
-      <app-button
-        class="erc20-template__purchase-btn"
-        size="small"
-        type="submit"
-        :text="$t('purchase-book-form.generate-btn')"
-        :disabled="isFormDisabled || !isEnoughBalanceForBuy"
-      />
     </template>
   </template>
 </template>
@@ -57,7 +48,7 @@
 import { reactive, ref, computed, watch, toRef, inject } from 'vue'
 import { debounce } from 'lodash'
 
-import { AppButton, Loader, ErrorMessage } from '@/common'
+import { Loader, ErrorMessage } from '@/common'
 import { PromocodeTemplate } from '@/forms/purchase-book-payments'
 import { InputField, MessageField, ReadonlyField } from '@/fields'
 import { useFormValidation, useBalance, FullBookInfo } from '@/composables'
@@ -126,7 +117,10 @@ const isEnoughBalanceForBuy = computed(
 )
 
 defineExpose<ExposedFormRef>({
-  isFormValid: () => isFormValid() && promocodeRef.value?.isPromocodeValid(),
+  isFormValid: () =>
+    isFormValid() &&
+    promocodeRef.value?.isPromocodeValid() &&
+    isEnoughBalanceForBuy.value,
   tokenAmount: formattedTokenAmount,
   tokenPrice: tokenPrice,
   tokenAddress: toRef(form, 'tokenAddress'),
@@ -162,12 +156,5 @@ watch(
   text-align: left;
   width: 100%;
   color: var(--error-main);
-}
-
-.erc20-template__purchase-btn {
-  margin-inline: auto;
-  margin-top: toRem(20);
-  min-width: toRem(144);
-  min-height: toRem(48);
 }
 </style>

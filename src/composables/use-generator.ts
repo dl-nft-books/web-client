@@ -34,7 +34,6 @@ export function useGenerator() {
     account: string
     bookId: string
     chainId: number
-    banner?: FormData
   }): Promise<CreateTaskResponse> => {
     const { data } = await api.post<CreateTaskResponse>(
       '/integrations/core/tasks',
@@ -48,6 +47,18 @@ export function useGenerator() {
           },
         },
       },
+    )
+
+    return data
+  }
+
+  const uploadBanner = async (
+    taskId: string,
+    banner: FormData,
+  ): Promise<Task> => {
+    const { data } = await api.post<Task>(
+      `/integrations/core/tasks/${taskId}/banner`,
+      banner,
     )
 
     return data
@@ -163,5 +174,7 @@ export function useGenerator() {
     isTokenWithRegularPayment,
     isExchangedToken,
     getGeneratedTokenById,
+
+    uploadBanner,
   }
 }

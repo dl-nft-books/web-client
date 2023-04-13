@@ -21,17 +21,6 @@
           :value="formattedVoucherTokenAmount"
         />
       </template>
-
-      <template v-if="isVoucherSupported && isEnoughVoucherTokensForBuy">
-        <!-- Starting NFT generation -->
-        <app-button
-          class="voucher-template__purchase-btn"
-          size="small"
-          type="submit"
-          :text="$t('purchase-book-form.generate-btn')"
-          :disabled="isFormDisabled"
-        />
-      </template>
     </template>
   </template>
   <loader v-else />
@@ -41,7 +30,7 @@
 import { computed, inject, reactive, ref, toRef, watch } from 'vue'
 import { ethers } from 'ethers'
 
-import { Loader, AppButton, ErrorMessage } from '@/common'
+import { Loader, ErrorMessage } from '@/common'
 import { MessageField, ReadonlyField } from '@/fields'
 
 import { PurchaseFormKey } from '@/types'
@@ -57,7 +46,7 @@ const props = defineProps<{
   book: FullBookInfo
 }>()
 
-const { platform: currentPlatform, isFormDisabled } = inject(PurchaseFormKey)
+const { platform: currentPlatform } = inject(PurchaseFormKey)
 
 const { t } = useI18n()
 
@@ -97,7 +86,8 @@ const isEnoughVoucherTokensForBuy = computed(
 )
 
 defineExpose<Omit<ExposedFormRef, 'promocode' | 'tokenPrice'>>({
-  isFormValid: () => true,
+  isFormValid: () =>
+    isVoucherSupported.value && isEnoughVoucherTokensForBuy.value,
   tokenAmount: formattedVoucherTokenAmount,
   tokenAddress: toRef(form, 'tokenAddress'),
 })
@@ -124,12 +114,3 @@ watch(
   },
 )
 </script>
-
-<style lang="scss" scoped>
-.voucher-template__purchase-btn {
-  margin-inline: auto;
-  margin-top: toRem(20);
-  min-width: toRem(144);
-  min-height: toRem(48);
-}
-</style>

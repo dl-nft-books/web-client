@@ -153,15 +153,15 @@ init()
 .purchasing-modal__pane {
   display: flex;
   flex-direction: column;
-  max-width: toRem(460);
   max-height: 100vh;
+  width: max-content;
   padding: toRem(32);
   background: var(--background-primary);
   border-radius: toRem(10);
-  min-width: toRem(460);
 
   @include respond-to(small) {
-    min-width: 100vw;
+    width: 100vw;
+    padding: toRem(32) toRem(15);
   }
 }
 
@@ -180,7 +180,6 @@ init()
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: toRem(20);
   gap: toRem(20);
   overflow-y: auto;
 

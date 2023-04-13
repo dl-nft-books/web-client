@@ -13,6 +13,27 @@ export type TokenParams = {
   isDisabled: boolean
 }
 
+export type PaymentDetails = {
+  paymentTokenAddress: string
+  paymentTokenPrice: string
+  discount: string
+  nftTokenId: string
+}
+
+export type BuyParams = {
+  paymentDetails: PaymentDetails
+  tokenContract: string
+  futureTokenId: string
+  endTimestamp: number
+  tokenURI: string
+}
+
+export type Signature = {
+  r: string
+  s: string
+  v: number
+}
+
 export const useMarketplace = (address?: string) => {
   const web3ProvidersStore = useWeb3ProvidersStore()
   const provider = computed(() => web3ProvidersStore.provider)
@@ -22,6 +43,7 @@ export const useMarketplace = (address?: string) => {
   const contractInstance = computed(
     () =>
       (!!provider.value &&
+        provider.value.isConnected &&
         !!provider.value.currentSigner &&
         !!contractAddress.value &&
         MarketPlace__factory.connect(
@@ -101,33 +123,17 @@ export const useMarketplace = (address?: string) => {
     }
   }
 
-  const mintToken = async (
-    tokenAddress: string,
-    tokenId: string,
-    paymentTokenAddress: string,
-    paymentTokenPrice: string,
-    discount: string,
-    endTimestamp: number,
-    tokenURI: string,
-    r: string,
-    s: string,
-    v: number,
+  const buyTokenWithETH = async (
+    buyParams: BuyParams,
+    signature: Signature,
     value?: string,
   ) => {
-    try {
-      if (!contractInstance.value) return
+    if (!contractInstance.value) return
 
-      const tx = await contractInstance.value.buyToken(
-        tokenAddress,
-        tokenId,
-        paymentTokenAddress,
-        paymentTokenPrice,
-        discount,
-        endTimestamp,
-        tokenURI,
-        r,
-        s,
-        v,
+    try {
+      const tx = await contractInstance.value.buyTokenWithETH(
+        buyParams,
+        signature,
         ...(value ? [{ value }] : []),
       )
 
@@ -139,30 +145,14 @@ export const useMarketplace = (address?: string) => {
     }
   }
 
-  const mintTokenByNFT = async (
-    tokenAddress: string,
-    tokenId: string,
-    nftAddress: string,
-    nftFloorPrice: string,
-    nftId: string,
-    endTimestamp: number,
-    tokenURI: string,
-    r: string,
-    s: string,
-    v: number,
+  const buyTokenWithERC20 = async (
+    buyParams: BuyParams,
+    signature: Signature,
   ) => {
     try {
-      const data = contractInterface.encodeFunctionData('buyTokenByNFT', [
-        tokenAddress,
-        tokenId,
-        nftAddress,
-        nftFloorPrice,
-        nftId,
-        endTimestamp,
-        tokenURI,
-        r,
-        s,
-        v,
+      const data = contractInterface.encodeFunctionData('buyTokenWithERC20', [
+        buyParams,
+        signature,
       ])
 
       const receipt = await provider.value.signAndSendTx({
@@ -176,13 +166,56 @@ export const useMarketplace = (address?: string) => {
     }
   }
 
+  const buyTokenWithNFT = async (
+    buyParams: BuyParams,
+    signature: Signature,
+  ) => {
+    try {
+      const data = contractInterface.encodeFunctionData('buyTokenWithNFT', [
+        buyParams,
+        signature,
+      ])
+
+      const receipt = await provider.value.signAndSendTx({
+        to: contractAddress.value,
+        data,
+      })
+
+      return receipt
+    } catch (error) {
+      handleEthError(error as EthProviderRpcError)
+    }
+  }
+
+  const getUserTokens = async (
+    userAddress: string,
+    limit: number,
+    offset: number,
+  ) => {
+    if (!contractInstance.value) return
+
+    try {
+      const data = await contractInstance.value.getUserTokensPart(
+        userAddress,
+        offset,
+        limit,
+      )
+
+      return data
+    } catch (error) {
+      handleEthError(error as EthProviderRpcError)
+    }
+  }
+
   return {
     init,
     getTokenParams,
     getTokenContractsCount,
     getBooksContracts,
     getBooksBatch,
-    mintToken,
-    mintTokenByNFT,
+    buyTokenWithERC20,
+    buyTokenWithETH,
+    buyTokenWithNFT,
+    getUserTokens,
   }
 }

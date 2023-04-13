@@ -17,15 +17,6 @@
       </p>
 
       <promocode-template ref="promocodeRef" />
-
-      <!-- Starting NFT generation -->
-      <app-button
-        class="native-template__purchase-btn"
-        size="small"
-        type="submit"
-        :text="$t('purchase-book-form.generate-btn')"
-        :disabled="isFormDisabled || !isEnoughBalanceForBuy"
-      />
     </template>
   </template>
   <loader v-else />
@@ -38,7 +29,7 @@ import { BN } from '@/utils/math.util'
 
 import { ReadonlyField } from '@/fields'
 
-import { ErrorMessage, Loader, AppButton } from '@/common'
+import { ErrorMessage, Loader } from '@/common'
 import { FullBookInfo, useBalance } from '@/composables'
 import { PromocodeTemplate } from '@/forms/purchase-book-payments'
 import { Promocode, PurchaseFormKey } from '@/types'
@@ -52,7 +43,7 @@ const props = defineProps<{
   book: FullBookInfo
 }>()
 
-const { platform: currentPlatform, isFormDisabled } = inject(PurchaseFormKey)
+const { platform: currentPlatform } = inject(PurchaseFormKey)
 
 const {
   balance,
@@ -89,7 +80,8 @@ const isEnoughBalanceForBuy = computed(
 )
 
 defineExpose<ExposedFormRef>({
-  isFormValid: () => promocodeRef.value?.isPromocodeValid(),
+  isFormValid: () =>
+    promocodeRef.value?.isPromocodeValid() && isEnoughBalanceForBuy.value,
   tokenAmount: formattedTokenAmount,
   tokenPrice: tokenPrice,
   tokenAddress: toRef(form, 'tokenAddress'),
@@ -121,12 +113,5 @@ watch(
   text-align: left;
   width: 100%;
   color: var(--error-main);
-}
-
-.native-template__purchase-btn {
-  margin-inline: auto;
-  margin-top: toRem(20);
-  min-width: toRem(144);
-  min-height: toRem(48);
 }
 </style>

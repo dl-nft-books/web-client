@@ -126,6 +126,11 @@
     "floor-price-explanation": "Floor price is the minimum NFT price that can be exchanged for a book",
     "voucher-explanation": "You can use the voucher token when you pay"
   },
+  "steps-form" : {
+    "next-step-lbl": "Next step",
+    "prev-step-lbl": "Back",
+    "step-lbl": "Step {number}"
+  },
   "networks": {
     "polygon": "Polygon Mainnet",
     "ethereum": "Ethereum Mainnet",
@@ -136,7 +141,7 @@
     "network-error": "Failed to load network list"
   },
   "my-nfts-page": {
-    "loading-error-msg": "This page is currently unavailable due to connection problems with IPFS. Please, try again later.",
+    "loading-error-msg": "This chain is unsupported",
     "no-data-msg": "Empty data, please add new",
     "title": "My NFTs",
     "details-btn": "Details",
