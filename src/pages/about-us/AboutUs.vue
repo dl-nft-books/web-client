@@ -15,24 +15,18 @@
       class="about-us__cubes about-us__cubes--right"
       :src="CUBES_IMAGES.RIGHT"
     />
-    <div class="about-us__quote-card-wrapper">
-      <about-us-quote-card
-        class="about-us__quote-card"
-        :title="$t('about-us-page.founder-title')"
-        :subtitle="$t('about-us-page.founder-subtitle')"
-        :image="FOUNDERS_IMAGES.KRAVCHENKO"
-        :quotes-list="KravchenkoQuotes"
-      />
 
-      <img
-        class="about-us__cubes about-us__cubes--left"
-        :src="CUBES_IMAGES.LEFT"
-      />
-    </div>
+    <about-us-quote-card
+      class="about-us__quote-card about-us__quote-card--with-bg"
+      scheme="dark"
+      :title="$t('about-us-page.founder-title')"
+      :subtitle="$t('about-us-page.founder-subtitle')"
+      :image="FOUNDERS_IMAGES.KRAVCHENKO"
+      :quotes-list="KravchenkoQuotes"
+    />
 
     <about-us-quote-card
       class="about-us__quote-card"
-      scheme="dark"
       modification="reverse"
       :title="$t('about-us-page.founder-title-2')"
       :subtitle="$t('about-us-page.founder-subtitle-2')"
@@ -82,21 +76,30 @@ const KurbatovQuotes = [
   position: relative;
 }
 
-.about-us__quote-card-wrapper {
-  overflow: hidden;
-  position: relative;
-  margin: toRem(60);
-  border-radius: toRem(30);
-
-  @include respond-to(medium) {
-    margin: 0;
-    border-radius: 0;
-  }
-}
-
 .about-us__quote-card {
   padding-top: toRem(140);
   padding-bottom: toRem(100);
+  position: relative;
+
+  &--with-bg {
+    --bg-height: #{toRem(560)};
+
+    &:before {
+      content: '';
+      position: absolute;
+      top: calc(var(--bg-height) / 14);
+      right: 0;
+      border-radius: toRem(30) 0 0 toRem(30);
+      background-color: var(--background-primary-main);
+      width: 90%;
+      height: var(--bg-height);
+
+      @include respond-to(medium) {
+        width: 100%;
+        border-radius: 0;
+      }
+    }
+  }
 }
 
 /* stylelint-disable */

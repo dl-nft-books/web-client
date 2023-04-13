@@ -8,7 +8,10 @@
   --black: #{$black};
   --black-rgb: #{$black-rgb};
 
-  --background-primary: #{$background-primary};
+  --background-primary-light: #{$background-primary-light};
+  --background-primary-main: #{$background-primary-main};
+  --background-primary-dark: #{$background-primary-dark};
+  
   --background-secondary: #{$background-secondary};
   --background-tertiary: #{$background-tertiary};
   --background-quaternary: #{$background-quaternary};
@@ -85,8 +88,7 @@
 
   /* App variables */
   --app-txt: #{$text-primary-main};
-  --app-font-family: 'Gilroy', sans-serif;
-  --app-font-family-secondary: 'Metropolis';
+  --app-font-family: 'Jakarta', sans-serif;
   --app-padding-right: #{toRem(100)};
   --app-padding-left: #{toRem(100)};
 

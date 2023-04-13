@@ -69,7 +69,7 @@
 .technical-work__background {
   background: url('/images/technical-background.png') no-repeat left bottom /
     contain;
-  background-size: 45vw;
+  background-size: clamp(toRem(300), 50%, toRem(750));
   width: 100%;
   height: 100%;
   position: absolute;
