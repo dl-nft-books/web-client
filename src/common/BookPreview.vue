@@ -4,12 +4,12 @@
       <img
         class="book-preview__img"
         :src="book.banner.attributes.url"
-        :alt="book.title"
+        :alt="book.tokenName"
       />
     </div>
     <div class="book-preview__details">
       <h4 class="book-preview__title">
-        {{ book.title }}
+        {{ book.tokenName }}
       </h4>
       <div class="book-preview__price-wrapper">
         <span
@@ -28,15 +28,15 @@
 
 <script setup lang="ts">
 import { computed } from 'vue'
-import { Book } from '@/types'
 import { formatFiatAssetFromWei } from '@/helpers'
 import { CURRENCIES } from '@/enums'
+import { FullBookInfo } from '@/composables'
 
 type MODIFICATIONS = 'floor-price' | 'default'
 
 const props = withDefaults(
   defineProps<{
-    book: Book
+    book: FullBookInfo
     modification?: MODIFICATIONS
   }>(),
   {
@@ -47,8 +47,8 @@ const props = withDefaults(
 const price = computed(() =>
   formatFiatAssetFromWei(
     props.modification === 'floor-price'
-      ? props.book.floor_price
-      : props.book.price,
+      ? props.book.minNFTFloorPrice
+      : props.book.pricePerOneToken,
     CURRENCIES.USD,
   ),
 )

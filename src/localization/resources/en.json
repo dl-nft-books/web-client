@@ -5,7 +5,8 @@
     "field-error_email": "Field must be a valid email",
     "field-error_address": "Field must be a valid address",
     "field-error_minLength": "Value must be at least {min} chars",
-    "field-error_maxLength": "Value can't be greater than {max} chars"
+    "field-error_maxLength": "Value can't be greater than {max} chars",
+    "field-error_urlSymbols": "All unsafe and reserved url chars are restricted"
   },
   "errors": {
     "default": "Oops... Something went wrong",
@@ -125,6 +126,11 @@
     "floor-price-explanation": "Floor price is the minimum NFT price that can be exchanged for a book",
     "voucher-explanation": "You can use the voucher token when you pay"
   },
+  "steps-form" : {
+    "next-step-lbl": "Next step",
+    "prev-step-lbl": "Back",
+    "step-lbl": "Step {number}"
+  },
   "networks": {
     "polygon": "Polygon Mainnet",
     "ethereum": "Ethereum Mainnet",
@@ -135,7 +141,7 @@
     "network-error": "Failed to load network list"
   },
   "my-nfts-page": {
-    "loading-error-msg": "This page is currently unavailable due to connection problems with IPFS. Please, try again later.",
+    "loading-error-msg": "This chain is unsupported",
     "no-data-msg": "Empty data, please add new",
     "title": "My NFTs",
     "details-btn": "Details",

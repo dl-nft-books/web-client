@@ -17,25 +17,6 @@
       </p>
 
       <promocode-template ref="promocodeRef" />
-
-      <textarea-field
-        v-model="form.signature"
-        :placeholder="$t('purchase-book-form.signature-placeholder')"
-        :maxlength="MAX_FIELD_LENGTH.signature"
-        :label="$t('purchase-book-form.signature-lbl')"
-        :error-message="getFieldErrorMessage('signature')"
-        :disabled="isFormDisabled"
-        @blur="touchField('signature')"
-      />
-
-      <!-- Starting NFT generation -->
-      <app-button
-        class="native-template__purchase-btn"
-        size="small"
-        type="submit"
-        :text="$t('purchase-book-form.generate-btn')"
-        :disabled="isFormDisabled || !isEnoughBalanceForBuy"
-      />
     </template>
   </template>
   <loader v-else />
@@ -46,25 +27,23 @@ import { computed, reactive, watch, toRef, ref, inject } from 'vue'
 
 import { BN } from '@/utils/math.util'
 
-import { TextareaField, ReadonlyField } from '@/fields'
+import { ReadonlyField } from '@/fields'
 
-import { ErrorMessage, Loader, AppButton } from '@/common'
-import { useBalance, useFormValidation } from '@/composables'
+import { ErrorMessage, Loader } from '@/common'
+import { FullBookInfo, useBalance } from '@/composables'
 import { PromocodeTemplate } from '@/forms/purchase-book-payments'
-import { Book, Promocode, PurchaseFormKey } from '@/types'
+import { Promocode, PurchaseFormKey } from '@/types'
 
-import { required, minLength, maxLength } from '@/validators'
-import { PROMOCODE_LENGTH, MAX_FIELD_LENGTH } from '@/const'
 import { useWeb3ProvidersStore } from '@/store'
 import { ExposedPromocodeRef } from '@/forms/purchase-book-payments/PromocodeTemplate.vue'
 import { ExposedFormRef } from '@/forms//PurchaseBookForm.vue'
 import { TOKEN_TYPES } from '@/enums'
 
 const props = defineProps<{
-  book: Book
+  book: FullBookInfo
 }>()
 
-const { platform: currentPlatform, isFormDisabled } = inject(PurchaseFormKey)
+const { platform: currentPlatform } = inject(PurchaseFormKey)
 
 const {
   balance,
@@ -80,26 +59,17 @@ const provider = computed(() => web3ProvidersStore.provider)
 const form = reactive({
   tokenAddress: '',
   signature: '',
-  promocode: '',
 })
 
 const promocodeRef = ref<ExposedPromocodeRef | null>(null)
 const promocode = ref<Promocode | null>(null)
 
-const { getFieldErrorMessage, touchField, isFormValid } = useFormValidation(
-  form,
-  {
-    signature: { required },
-    promocode: {
-      minLength: minLength(PROMOCODE_LENGTH),
-      maxLength: maxLength(PROMOCODE_LENGTH),
-    },
-  },
-)
 const formattedTokenAmount = computed(() => {
   if (!tokenPrice.value) return ''
 
-  return new BN(props.book.price, { decimals: tokenPrice.value.token.decimals })
+  return new BN(props.book.pricePerOneToken, {
+    decimals: tokenPrice.value.token.decimals,
+  })
     .fromFraction(tokenPrice.value.token.decimals)
     .div(tokenPrice.value.price)
     .toString()
@@ -110,11 +80,11 @@ const isEnoughBalanceForBuy = computed(
 )
 
 defineExpose<ExposedFormRef>({
-  isFormValid: () => isFormValid() && promocodeRef.value?.isPromocodeValid(),
+  isFormValid: () =>
+    promocodeRef.value?.isPromocodeValid() && isEnoughBalanceForBuy.value,
   tokenAmount: formattedTokenAmount,
   tokenPrice: tokenPrice,
   tokenAddress: toRef(form, 'tokenAddress'),
-  signature: toRef(form, 'signature'),
   promocode,
 })
 
@@ -143,12 +113,5 @@ watch(
   text-align: left;
   width: 100%;
   color: var(--error-main);
-}
-
-.native-template__purchase-btn {
-  margin-inline: auto;
-  margin-top: toRem(20);
-  min-width: toRem(144);
-  min-height: toRem(48);
 }
 </style>

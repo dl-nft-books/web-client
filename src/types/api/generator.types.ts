@@ -1,16 +1,14 @@
-import { Book, JsonApiRecordBase } from '@/types'
+import { JsonApiRecordBase } from '@/types'
 
 export type Task = JsonApiRecordBase<'files'> & {
   id: string
-  token_id: string | number
+  token_name: string
   book_id: string
-  signature: string
-  ipfs_hash: string
+  chain_id: string | number
   status: number
-  file_ipfs_hash: string
+  banner_ipfs_hash: string
   metadata_ipfs_hash: string
   uri: string
-  book: Book
 }
 
 export type BookPayment = JsonApiRecordBase<'payment'> & {
@@ -50,6 +48,7 @@ export type Token = JsonApiRecordBase<'tokens'> & {
 
 export type MintSignatureResponse = JsonApiRecordBase<'prices'> & {
   price: string
+  token_id: string | number
   discount: string
   end_timestamp: number
   signature: {

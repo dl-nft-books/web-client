@@ -31,19 +31,19 @@ type ExchangedToken = Token & {
 
 export function useGenerator() {
   const createNewGenerationTask = async (opts: {
-    signature: string
     account: string
     bookId: string
+    chainId: number
   }): Promise<CreateTaskResponse> => {
     const { data } = await api.post<CreateTaskResponse>(
-      '/integrations/generator/tasks',
+      '/integrations/core/tasks',
       {
         data: {
           type: 'tasks',
           attributes: {
-            signature: opts.signature,
             account: opts.account,
             book_id: +opts.bookId,
+            chain_id: opts.chainId,
           },
         },
       },
@@ -52,8 +52,20 @@ export function useGenerator() {
     return data
   }
 
+  const uploadBanner = async (
+    taskId: string,
+    banner: FormData,
+  ): Promise<Task> => {
+    const { data } = await api.post<Task>(
+      `/integrations/core/tasks/${taskId}/banner`,
+      banner,
+    )
+
+    return data
+  }
+
   const getGenerationTaskById = async (id: string | number): Promise<Task> => {
-    const { data } = await api.get<Task>(`/integrations/generator/tasks/${id}`)
+    const { data } = await api.get<Task>(`/integrations/core/tasks/${id}`)
 
     return data
   }
@@ -87,8 +99,8 @@ export function useGenerator() {
     isNft = false,
   ): Promise<MintSignatureResponse> => {
     const apiEndpoint = isNft
-      ? '/integrations/generator/signature/mint/nft'
-      : '/integrations/generator/signature/mint'
+      ? '/integrations/core/signature/mint/nft'
+      : '/integrations/core/signature/mint'
 
     const { data } = await api.get<MintSignatureResponse>(apiEndpoint, {
       platform,
@@ -106,7 +118,7 @@ export function useGenerator() {
     pageLimit?: number
     pageOrder?: PageOrder
   }) => {
-    return api.get<Token[]>('/integrations/generator/tokens', {
+    return api.get<Token[]>('/integrations/core/tokens', {
       page: {
         limit: opts?.pageLimit || config.DEFAULT_PAGE_LIMIT,
         order: opts?.pageOrder || 'desc',
@@ -119,9 +131,7 @@ export function useGenerator() {
   }
 
   const getGeneratedTokenById = async (id: string | number): Promise<Token> => {
-    const { data } = await api.get<Token>(
-      `/integrations/generator/tokens/${id}`,
-    )
+    const { data } = await api.get<Token>(`/integrations/core/tokens/${id}`)
 
     return data
   }
@@ -164,5 +174,7 @@ export function useGenerator() {
     isTokenWithRegularPayment,
     isExchangedToken,
     getGeneratedTokenById,
+
+    uploadBanner,
   }
 }

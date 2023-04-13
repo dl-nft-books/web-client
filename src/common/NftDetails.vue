@@ -77,10 +77,12 @@ const getDetails = () => {
     commonDetails = commonDetails.concat([
       {
         label: t('nft-details.token-amount-lbl'),
-        value: formatAssetFromWei(
-          props.nftToken.payment.amount,
-          props.nftToken.payment.erc20_data.decimals,
-        ),
+        value: !Number(props.nftToken.payment.amount)
+          ? '0.0'
+          : formatAssetFromWei(
+              props.nftToken.payment.amount,
+              props.nftToken.payment.erc20_data.decimals,
+            ),
       },
       {
         label: t('nft-details.your-token-lbl'),

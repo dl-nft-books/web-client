@@ -34,8 +34,8 @@ import { debounce } from 'lodash'
 import { InputField, MessageField } from '@/fields'
 import { Loader } from '@/common'
 import { useFormValidation, usePromocode, useBalance } from '@/composables'
-import { maxLength, minLength } from '@/validators'
-import { PROMOCODE_LENGTH } from '@/const'
+import { maxLength, minLength, urlSymbols } from '@/validators'
+import { MAX_PROMOCODE_LENGTH, MIN_PROMOCODE_LENGTH } from '@/const'
 import { Promocode, TokenPrice, PurchaseFormKey } from '@/types'
 import { BN } from '@/utils/math.util'
 import { TOKEN_TYPES } from '@/enums'
@@ -69,8 +69,9 @@ const {
   isFormValid: isPromocodeValid,
 } = useFormValidation(form, {
   promocode: {
-    minLength: minLength(PROMOCODE_LENGTH),
-    maxLength: maxLength(PROMOCODE_LENGTH),
+    minLength: minLength(MIN_PROMOCODE_LENGTH),
+    maxLength: maxLength(MAX_PROMOCODE_LENGTH),
+    urlSymbols,
   },
 })
 
@@ -78,6 +79,8 @@ const { promocodeInfo, validatePromocode } = usePromocode()
 const { getPrice, tokenPrice } = useBalance(currentPlatform)
 
 const onPromocodeInput = async () => {
+  if (!isPromocodeValid()) return
+
   await validatePromocode(form.promocode)
 
   //in order to always calculate new price based on initial price

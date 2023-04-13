@@ -32,14 +32,14 @@
 import { AppButton, BookCardNetwork } from '@/common'
 import { formatFiatAssetFromWei, getNetworkScheme } from '@/helpers'
 import { computed } from 'vue'
-import { useGenerator } from '@/composables'
-import { Network, Book, Token } from '@/types'
+import { BaseBookInfo, useGenerator } from '@/composables'
+import { Network, Token } from '@/types'
 import { ROUTE_NAMES, CURRENCIES } from '@/enums'
 import { useI18n } from 'vue-i18n'
 
 const props = withDefaults(
   defineProps<{
-    book: Book | Token
+    book: BaseBookInfo | Token
     modification?: 'centered' | 'default'
     backgroundColor?: 'primary' | 'secondary' | 'tertiary'
     actionBtnText?: string
@@ -80,10 +80,12 @@ const bannerUrl = computed(() =>
 )
 
 const title = computed(() =>
-  isToken(props.book) ? props.book.name : props.book.title,
+  isToken(props.book) ? props.book.name : props.book.tokenName,
 )
 
-const price = computed(() => (isToken(props.book) ? '' : props.book.price))
+const price = computed(() =>
+  isToken(props.book) ? '' : props.book.pricePerOneToken,
+)
 </script>
 
 <style lang="scss" scoped>

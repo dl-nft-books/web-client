@@ -14,32 +14,11 @@
       <template v-else>
         <readonly-field
           :label="$t('purchase-book-form.voucher-token-lbl')"
-          :value="book.voucher_token"
+          :value="book.voucherTokenContract"
         />
         <readonly-field
           :label="$t('purchase-book-form.voucher-token-amount-lbl')"
           :value="formattedVoucherTokenAmount"
-        />
-      </template>
-
-      <template v-if="isVoucherSupported && isEnoughVoucherTokensForBuy">
-        <textarea-field
-          v-model="form.signature"
-          :placeholder="$t('purchase-book-form.signature-placeholder')"
-          :maxlength="MAX_FIELD_LENGTH.signature"
-          :label="$t('purchase-book-form.signature-lbl')"
-          :error-message="getFieldErrorMessage('signature')"
-          :disabled="isFormDisabled"
-          @blur="touchField('signature')"
-        />
-
-        <!-- Starting NFT generation -->
-        <app-button
-          class="voucher-template__purchase-btn"
-          size="small"
-          type="submit"
-          :text="$t('purchase-book-form.generate-btn')"
-          :disabled="isFormDisabled"
         />
       </template>
     </template>
@@ -51,25 +30,23 @@
 import { computed, inject, reactive, ref, toRef, watch } from 'vue'
 import { ethers } from 'ethers'
 
-import { Loader, AppButton, ErrorMessage } from '@/common'
-import { MessageField, ReadonlyField, TextareaField } from '@/fields'
+import { Loader, ErrorMessage } from '@/common'
+import { MessageField, ReadonlyField } from '@/fields'
 
-import { Book, PurchaseFormKey } from '@/types'
-import { MAX_FIELD_LENGTH } from '@/const'
-import { useBalance, useFormValidation } from '@/composables'
+import { PurchaseFormKey } from '@/types'
+import { FullBookInfo, useBalance } from '@/composables'
 import { ErrorHandler, formatAssetFromWei } from '@/helpers'
 import { BN } from '@/utils/math.util'
-import { required } from '@/validators'
 import { useWeb3ProvidersStore } from '@/store'
 import { ExposedFormRef } from '@/forms//PurchaseBookForm.vue'
 import { TOKEN_TYPES } from '@/enums'
 import { useI18n } from 'vue-i18n'
 
 const props = defineProps<{
-  book: Book
+  book: FullBookInfo
 }>()
 
-const { platform: currentPlatform, isFormDisabled } = inject(PurchaseFormKey)
+const { platform: currentPlatform } = inject(PurchaseFormKey)
 
 const { t } = useI18n()
 
@@ -79,27 +56,20 @@ const provider = computed(() => web3ProvidersStore.provider)
 const { getBalance, isLoadFailed, balance } = useBalance(currentPlatform)
 
 const form = reactive({
-  tokenAddress: props.book.voucher_token,
+  tokenAddress: props.book.voucherTokenContract,
   signature: '',
   promocode: '',
 })
 
-const { getFieldErrorMessage, touchField, isFormValid } = useFormValidation(
-  form,
-  {
-    signature: { required },
-  },
-)
-
 const isLoading = ref(true)
 
 const isVoucherSupported = computed(
-  () => props.book.voucher_token !== ethers.constants.AddressZero,
+  () => props.book.voucherTokenContract !== ethers.constants.AddressZero,
 )
 
 const formattedVoucherTokenAmount = computed(() =>
-  props.book.voucher_token_amount
-    ? formatAssetFromWei(props.book.voucher_token_amount, 2)
+  props.book.voucherTokensAmount
+    ? formatAssetFromWei(props.book.voucherTokensAmount, 2)
     : '',
 )
 
@@ -116,10 +86,10 @@ const isEnoughVoucherTokensForBuy = computed(
 )
 
 defineExpose<Omit<ExposedFormRef, 'promocode' | 'tokenPrice'>>({
-  isFormValid,
+  isFormValid: () =>
+    isVoucherSupported.value && isEnoughVoucherTokensForBuy.value,
   tokenAmount: formattedVoucherTokenAmount,
   tokenAddress: toRef(form, 'tokenAddress'),
-  signature: toRef(form, 'signature'),
 })
 
 watch(
@@ -132,7 +102,7 @@ watch(
 
     isLoading.value = true
     try {
-      await getBalance(props.book.voucher_token, TOKEN_TYPES.erc20)
+      await getBalance(props.book.voucherTokenContract, TOKEN_TYPES.erc20)
     } catch (error) {
       ErrorHandler.processWithoutFeedback(error)
       isLoadFailed.value = true
@@ -144,12 +114,3 @@ watch(
   },
 )
 </script>
-
-<style lang="scss" scoped>
-.voucher-template__purchase-btn {
-  margin-inline: auto;
-  margin-top: toRem(20);
-  min-width: toRem(144);
-  min-height: toRem(48);
-}
-</style>

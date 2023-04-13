@@ -51,28 +51,9 @@
     :title="nftErrorMessage"
   />
 
-  <textarea-field
-    v-model="form.signature"
-    :placeholder="$t('purchase-book-form.signature-placeholder')"
-    :maxlength="MAX_FIELD_LENGTH.signature"
-    :label="$t('purchase-book-form.signature-lbl')"
-    :error-message="getFieldErrorMessage('signature')"
-    :disabled="isFormDisabled"
-    @blur="touchField('signature')"
-  />
-
   <checkbox-field
     v-model="form.isAgreedWithTerms"
     :label="$t('nft-template.buy-terms')"
-  />
-
-  <!-- Starting NFT generation -->
-  <app-button
-    class="nft-template__purchase-btn"
-    size="small"
-    type="submit"
-    :text="$t('purchase-book-form.generate-btn')"
-    :disabled="isGenerateButtonDisabled"
   />
 </template>
 
@@ -82,19 +63,17 @@ import { computed, reactive, watch, toRef, ref, inject } from 'vue'
 import { BN } from '@/utils/math.util'
 
 import {
-  TextareaField,
   InputField,
   CheckboxField,
   ReadonlyField,
   MessageField,
 } from '@/fields'
 
-import { ErrorMessage, Loader, AppButton } from '@/common'
+import { ErrorMessage, Loader } from '@/common'
 import { useBalance, useFormValidation, useErc721 } from '@/composables'
 import { Book, PurchaseFormKey } from '@/types'
 
 import { required, address } from '@/validators'
-import { MAX_FIELD_LENGTH } from '@/const'
 import { useWeb3ProvidersStore } from '@/store'
 import { ExposedFormRef } from '@/forms//PurchaseBookForm.vue'
 import { TOKEN_TYPES } from '@/enums'
@@ -132,7 +111,6 @@ const form = reactive({
 const { getFieldErrorMessage, touchField, isFormValid } = useFormValidation(
   form,
   {
-    signature: { required },
     tokenId: { required },
     tokenAddress: { required, address },
   },
@@ -194,9 +172,8 @@ const onTokenIdInput = async () => {
 }
 
 defineExpose<Omit<ExposedFormRef, 'promocode' | 'tokenAmount' | 'tokenPrice'>>({
-  isFormValid,
+  isFormValid: () => isFormValid() && !isGenerateButtonDisabled.value,
   tokenAddress: toRef(form, 'tokenAddress'),
-  signature: toRef(form, 'signature'),
   tokenId: toRef(form, 'tokenId'),
 })
 
@@ -221,12 +198,5 @@ watch(
   text-align: left;
   width: 100%;
   color: var(--error-main);
-}
-
-.nft-template__purchase-btn {
-  margin-inline: auto;
-  margin-top: toRem(20);
-  min-width: toRem(144);
-  min-height: toRem(48);
 }
 </style>
