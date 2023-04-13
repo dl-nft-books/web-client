@@ -29,34 +29,7 @@
   gap: toRem(100);
   background-color: var(--background-quinary);
 
-  /* Gray bg under the header */
-  &:after {
-    content: '';
-    position: absolute;
-    top: toRem(-600);
-    left: toRem(600);
-    transform: rotate(-10deg);
-    width: 120vw;
-    height: toRem(600);
-    background-size: 45%;
-    background-color: var(--background-secondary);
-    border-radius: toRem(300);
-    z-index: var(--z-index-layer-1);
-
-    @include respond-to(medium) {
-      left: toRem(-60);
-      width: 160vw;
-      top: toRem(-580);
-    }
-
-    @include respond-to(small) {
-      top: toRem(-250);
-      left: toRem(-60);
-      width: 160vw;
-      border-radius: toRem(200);
-      height: 205vw;
-    }
-  }
+  @include gray-background-curve;
 
   @include respond-to(tablet) {
     flex-direction: column;

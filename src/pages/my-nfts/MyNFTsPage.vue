@@ -34,7 +34,7 @@
     </template>
 
     <my-nfts-no-data v-else is-not-connected />
-    <img class="my-nfts-page__cubes" src="/images/background-cubes.png" />
+    <img class="my-nfts-page__background" src="/images/fancy-lines.png" />
   </div>
 </template>
 
@@ -90,38 +90,12 @@ function onError(e: Error) {
   padding-top: toRem(70);
   padding-bottom: toRem(200);
   overflow: hidden;
+  flex: 1;
   position: relative;
   background-color: var(--background-quinary);
-  z-index: var(--z-index-layer-1);
+  z-index: var(--z-index-layer-2);
 
-  /* Gray bg under the header */
-  &:after {
-    content: '';
-    position: absolute;
-    top: toRem(-500);
-    left: toRem(600);
-    transform: rotate(-10deg);
-    width: 120vw;
-    height: toRem(600);
-    background-size: 45%;
-    background-color: var(--background-secondary);
-    border-radius: toRem(300);
-    z-index: var(--z-index-layer-bottom);
-
-    @include respond-to(medium) {
-      left: toRem(-60);
-      width: 160vw;
-      top: toRem(-580);
-    }
-
-    @include respond-to(small) {
-      top: toRem(-250);
-      left: toRem(-60);
-      width: 160vw;
-      border-radius: toRem(200);
-      height: 205vw;
-    }
-  }
+  // @include gray-background-curve;
 
   @include respond-to(tablet) {
     padding-top: toRem(10);
@@ -131,27 +105,33 @@ function onError(e: Error) {
 
 .my-nfts-page__title {
   color: var(--text-primary-invert-main);
+  margin-bottom: toRem(18);
 }
 
 .my-nfts-page__list {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(toRem(292), 1fr));
+  grid-template-columns: repeat(auto-fill, toRem(292));
   grid-gap: toRem(20);
+  justify-content: space-evenly;
 }
 
 .my-nfts-page__load-more-btn {
-  margin: toRem(20) auto 0;
+  margin: toRem(40) auto 0;
 }
 
-.my-nfts-page__cubes {
+.my-nfts-page__background {
   position: absolute;
-  max-width: min-content;
-  width: 40%;
+  width: 100%;
   right: 0;
-  bottom: toRem(-150);
+  top: 0;
+  z-index: var(--z-index-layer-bottom);
+  opacity: 0.1;
+  object-fit: fill;
+  object-position: center;
+  max-height: toRem(650);
 
   @include respond-to(medium) {
-    display: none;
+    top: toRem(200);
   }
 }
 </style>

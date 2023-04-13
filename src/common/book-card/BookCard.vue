@@ -14,17 +14,13 @@
     <h4 v-if="price" class="book-card__price">
       {{ formatFiatAssetFromWei(price, CURRENCIES.USD) }}
     </h4>
-    <template v-if="$slots.actionButton">
-      <slot name="actionButton" />
-    </template>
-    <template v-else>
-      <app-button
-        class="book-card__purchase-btn"
-        size="x-small"
-        :text="actionButtonText"
-        :route="actionButtonLink"
-      />
-    </template>
+
+    <app-button
+      class="book-card__purchase-btn"
+      size="x-small"
+      :text="actionButtonText"
+      :route="actionButtonLink"
+    />
   </div>
 </template>
 
@@ -41,7 +37,6 @@ const props = withDefaults(
   defineProps<{
     book: BaseBookInfo | TokenBaseInfo
     modification?: 'centered' | 'default'
-    backgroundColor?: 'primary' | 'secondary' | 'tertiary'
     actionBtnText?: string
     network?: Network | null
   }>(),
@@ -60,7 +55,6 @@ const bookCardClasses = computed(() =>
   [
     'book-card',
     `book-card--${props.modification}`,
-    `book-card--${props.backgroundColor}`,
     ...(price.value ? [] : ['book-card--right']),
   ].join(' '),
 )
@@ -100,22 +94,10 @@ const price = computed(() =>
   align-items: center;
   justify-content: space-between;
   row-gap: toRem(24);
-  border: toRem(1) solid var(--border-black);
   border-radius: toRem(12);
   padding: toRem(16) toRem(16) toRem(20);
-
-  &--primary {
-    background: var(--background-secondary);
-  }
-
-  &--secondary {
-    background: var(--background-quaternary);
-  }
-
-  &--tertiary {
-    background: var(--background-tertiary);
-    border: toRem(1) solid var(--border-primary-main);
-  }
+  background-color: var(--background-primary-main);
+  border: toRem(1) solid var(--border-primary-main);
 
   &--right {
     justify-content: flex-end;
@@ -132,7 +114,7 @@ const price = computed(() =>
 .book-card__cover {
   object-fit: cover;
   object-position: top center;
-  max-height: toRem(280);
+  max-height: toRem(220);
   border-radius: toRem(12);
   width: 100%;
   height: 100%;
@@ -146,33 +128,17 @@ const price = computed(() =>
   .book-card--centered & {
     text-align: center;
   }
-
-  .book-card--primary & {
-    color: var(--text-primary-invert-light);
-  }
-
-  .book-card--secondary & {
-    color: var(--text-primary-invert-main);
-  }
 }
 
 .book-card__price {
   width: 45%;
 
   @include text-ellipsis;
-
-  .book-card--primary & {
-    color: var(--text-primary-invert-light);
-  }
-
-  .book-card--secondary & {
-    color: var(--text-primary-invert-main);
-  }
 }
 
 .book-card__purchase-btn {
-  min-width: toRem(110);
-  width: 45%;
+  width: 100%;
+  height: toRem(38);
   text-transform: uppercase;
   font-weight: 700;
 }
