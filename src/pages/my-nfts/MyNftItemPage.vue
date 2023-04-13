@@ -49,12 +49,19 @@ import {
 } from '@/common'
 
 import { ErrorHandler } from '@/helpers'
-import { ref } from 'vue'
-import { useNftTokens, TokenFullInfo } from '@/composables'
+import { ref, computed } from 'vue'
+import { useNftTokens, TokenFullInfo, useErc721 } from '@/composables'
 import { useI18n } from 'vue-i18n'
+import { useWeb3ProvidersStore } from '@/store'
+import { router } from '@/router'
+import { ROUTE_NAMES } from '@/enums'
 
 const { t } = useI18n()
 const { getNft } = useNftTokens()
+const { init: initErc721, getOwner } = useErc721()
+
+const web3Store = useWeb3ProvidersStore()
+const provider = computed(() => web3Store.provider)
 
 const TABS = {
   myPurchase: {
@@ -81,6 +88,16 @@ const nftToken = ref<TokenFullInfo | undefined>()
 const init = async () => {
   try {
     const data = await getNft(props.contract, props.id)
+    initErc721(data.tokenContract)
+
+    const owner = await getOwner(data.tokenId)
+
+    // not showing this page if its not owner of nft
+    if (provider.value.selectedAddress !== owner) {
+      router.push({ name: ROUTE_NAMES.myNfts })
+      return
+    }
+
     nftToken.value = data
   } catch (error) {
     ErrorHandler.processWithoutFeedback(error)
