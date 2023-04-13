@@ -37,8 +37,7 @@ import {
 } from '@/helpers'
 
 import { CURRENCIES } from '@/enums'
-import { useGenerator } from '@/composables'
-import { Token } from '@/types'
+import { TokenFullInfo } from '@/composables'
 import { useI18n } from 'vue-i18n'
 
 type NftDetails = {
@@ -47,10 +46,9 @@ type NftDetails = {
   isUrl?: boolean
 }
 
-const props = defineProps<{ nftToken: Token }>()
+const props = defineProps<{ nftToken: TokenFullInfo }>()
 
 const { t } = useI18n()
-const { isExchangedToken, isTokenWithRegularPayment } = useGenerator()
 
 const getDetails = () => {
   if (!props.nftToken.payment) return []
@@ -67,51 +65,41 @@ const getDetails = () => {
         CURRENCIES.USD,
       ),
     },
-    {
-      label: t('nft-details.token-id-lbl'),
-      value: props.nftToken.token_id,
-    },
   ]
-
-  if (isTokenWithRegularPayment(props.nftToken)) {
-    commonDetails = commonDetails.concat([
-      {
-        label: t('nft-details.token-amount-lbl'),
-        value: !Number(props.nftToken.payment.amount)
-          ? '0.0'
-          : formatAssetFromWei(
-              props.nftToken.payment.amount,
-              props.nftToken.payment.erc20_data.decimals,
-            ),
-      },
-      {
-        label: t('nft-details.your-token-lbl'),
-        value: props.nftToken.payment.erc20_data.symbol,
-      },
-    ] as NftDetails[])
-  }
-
-  if (isExchangedToken(props.nftToken)) {
-    commonDetails = commonDetails.concat([
-      {
-        label: t('nft-details.exchanged-nft-address'),
-        value: props.nftToken.payment.nft_address,
-      },
-      {
-        label: t('nft-details.exchanged-nft-id'),
-        value: props.nftToken.payment.nft_id,
-      },
-    ] as NftDetails[])
-  }
 
   commonDetails = commonDetails.concat([
     {
-      label: t('nft-details.signature-lbl'),
-      value: props.nftToken.signature,
+      label: t('nft-details.token-amount-lbl'),
+      value: !Number(props.nftToken.payment.amount)
+        ? '0.0'
+        : formatAssetFromWei(
+            props.nftToken.payment.amount,
+            props.nftToken.payment.erc20_data.decimals,
+          ),
     },
     {
+      label: t('nft-details.your-token-lbl'),
+      value: props.nftToken.payment.erc20_data.symbol,
+    },
+  ] as NftDetails[])
+
+  // if (isExchangedToken(props.nftToken)) {
+  //   commonDetails = commonDetails.concat([
+  //     {
+  //       label: t('nft-details.exchanged-nft-address'),
+  //       value: props.nftToken.payment.nft_address,
+  //     },
+  //     {
+  //       label: t('nft-details.exchanged-nft-id'),
+  //       value: props.nftToken.payment.nft_id,
+  //     },
+  //   ] as NftDetails[])
+  // }
+
+  commonDetails = commonDetails.concat([
+    {
       label: t('nft-details.document-lbl'),
-      value: props.nftToken.payment.book_url,
+      value: props.nftToken.metadata.external_url,
       isUrl: true,
     },
   ])

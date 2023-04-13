@@ -12,7 +12,7 @@
         <div v-if="nftList.length" class="my-nfts-page__list">
           <book-card
             v-for="book in nftList"
-            :key="book.id"
+            :key="`${book.tokenContract}${book.tokenId}`"
             background-color="tertiary"
             :book="book"
             :action-btn-text="$t('my-nfts-page.details-btn')"
@@ -55,11 +55,11 @@ const provider = computed(() => web3ProvidersStore.provider)
 const isLoadFailed = ref(false)
 const nftList = ref<TokenBaseInfo[]>([])
 
-const { getNfts } = useNftTokens()
+const { getNftList } = useNftTokens()
 
 const loadList = computed(
   () => (limit: number, offset: number) =>
-    getNfts(provider.value.selectedAddress, limit, offset),
+    getNftList(provider.value.selectedAddress, limit, offset),
 )
 
 const { loadNextPage, isLoading, isLoadMoreBtnShown } = useContractPagination(
@@ -71,7 +71,6 @@ const { loadNextPage, isLoading, isLoadMoreBtnShown } = useContractPagination(
 
 function setList(chunk: TokenBaseInfo[]) {
   nftList.value = chunk ?? []
-  // books.value = chunk ?? []
 }
 
 function concatList(chunk: TokenBaseInfo[]) {

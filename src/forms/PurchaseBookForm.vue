@@ -87,8 +87,6 @@ import {
 import {
   useForm,
   useFormValidation,
-  useErc20,
-  useErc721,
   useNftTokens,
   useGenerator,
   FullBookInfo,
@@ -131,10 +129,8 @@ const provider = computed(() => web3ProvidersStore.provider)
 
 const { createNewGenerationTask, getMintSignature, uploadBanner } =
   useGenerator()
-const { mintWithErc20, mintWithEth, mintWithNft } = useNftTokens()
-
-const erc20 = useErc20()
-const erc721 = useErc721()
+const { mintWithErc20, mintWithEth, mintWithNft, approveTokenSpend } =
+  useNftTokens()
 
 const form = reactive({
   tokenType: TOKEN_TYPES.native,
@@ -184,10 +180,6 @@ const tokenTypesOptions = computed(() => {
       label: globalizeTokenType(TOKEN_TYPES.voucher),
       value: TOKEN_TYPES.voucher,
     },
-    {
-      label: globalizeTokenType(TOKEN_TYPES.nft),
-      value: TOKEN_TYPES.nft,
-    },
   ]
 
   /* 
@@ -203,76 +195,15 @@ const tokenTypesOptions = computed(() => {
     })
   }
 
+  if (props.book.isNFTBuyable) {
+    defaultOptions.push({
+      label: globalizeTokenType(TOKEN_TYPES.nft),
+      value: TOKEN_TYPES.nft,
+    })
+  }
+
   return defaultOptions
 })
-
-const isTokenApproved = async (
-  tokenAmount: string,
-  bookContract: string,
-  tokenAddress?: string,
-): Promise<boolean> => {
-  if (!provider.value.selectedAddress) return false
-
-  if (tokenAddress) erc20.init(tokenAddress)
-
-  const allowance = await erc20.getAllowance(
-    provider.value.selectedAddress,
-    bookContract,
-  )
-
-  if (
-    new BN(allowance?.toString() || 0).compare(tokenAmount) === 1 ||
-    new BN(allowance?.toString() || 0).compare(tokenAmount) === 0
-  ) {
-    return true
-  } else if (new BN(allowance?.toString() || 0).compare(tokenAmount) === -1) {
-    await erc20.approve(bookContract, tokenAmount)
-  }
-
-  return isTokenApproved(tokenAmount, bookContract)
-}
-
-const approveTokenSpend = async (
-  tokenType: TOKEN_TYPES,
-  tokenAmount?: string,
-  tokenAddress?: string,
-  tokenId?: string,
-) => {
-  if (!provider.value.selectedAddress) return
-
-  const bookContract = props.book.networks.find(
-    el => el.attributes.chain_id === Number(provider.value.chainId),
-  )
-
-  if (!bookContract)
-    throw new Error('No matching book contract found for that chain')
-
-  switch (tokenType) {
-    case TOKEN_TYPES.erc20:
-      if (!tokenAddress || !tokenAmount) return
-      await isTokenApproved(
-        tokenAmount,
-        bookContract.attributes.contract_address,
-        tokenAddress,
-      )
-      break
-    case TOKEN_TYPES.voucher:
-      await isTokenApproved(
-        props.book.voucherTokensAmount as string,
-        props.book.voucherTokenContract as string,
-      )
-
-      break
-    case TOKEN_TYPES.nft:
-      if (!tokenAddress || !tokenId) return
-      erc721.init(tokenAddress)
-
-      await erc721.approve(bookContract.attributes.contract_address, tokenId)
-      break
-    default:
-      break
-  }
-}
 
 // Minting with ERC721 requires to invoke different mint function on contract
 const mintToken = async (
@@ -448,11 +379,15 @@ const submit = async (editorFromTemplate: UseImageEditor | null) => {
 
 <style lang="scss" scoped>
 .purchase-book-form {
-  width: 100%;
   display: flex;
   flex-direction: column;
   gap: toRem(20);
-  min-width: toRem(350);
+  width: toRem(350);
+  padding: 0 toRem(5);
+
+  @include respond-to(small) {
+    width: 100%;
+  }
 }
 
 .purchase-book-form__submitting-animation-wrp {
