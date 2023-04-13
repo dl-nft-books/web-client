@@ -2,7 +2,7 @@
   <div class="my-nft-item-page">
     <template v-if="isLoaded">
       <error-message
-        v-if="isLoadFailed"
+        v-if="errorMsg"
         class="my-nft-item-page__error"
         :message="$t('my-nft-item-page.loading-error-msg')"
       />
@@ -10,14 +10,14 @@
       <template v-else-if="nftToken">
         <div class="my-nft-item-page__cover-wrp">
           <img
-            :src="nftToken.image_url"
-            :alt="nftToken.name"
+            :src="nftToken.metadata.image"
+            :alt="nftToken.metadata.name"
             class="my-nft-item-page__cover"
           />
         </div>
         <div class="my-nft-item-page__details">
           <h2 class="my-nft-item-page__title">
-            {{ nftToken.name }}
+            {{ nftToken.metadata.name }}
           </h2>
           <tabs
             v-model="currentTab"
@@ -26,7 +26,7 @@
           />
           <nft-description
             v-if="currentTab === TABS.bookDescription.id"
-            :description="nftToken.description"
+            :description="nftToken.metadata.description"
           />
           <nft-details
             v-if="currentTab === TABS.myPurchase.id"
@@ -50,12 +50,11 @@ import {
 
 import { ErrorHandler } from '@/helpers'
 import { ref } from 'vue'
-import { useGenerator } from '@/composables'
-import { Token } from '@/types'
+import { useNftTokens, TokenFullInfo } from '@/composables'
 import { useI18n } from 'vue-i18n'
 
 const { t } = useI18n()
-const { getGeneratedTokenById } = useGenerator()
+const { getNft } = useNftTokens()
 
 const TABS = {
   myPurchase: {
@@ -70,21 +69,22 @@ const TABS = {
 
 const props = defineProps<{
   id: string
+  contract: string
 }>()
 
 const isLoaded = ref(false)
-const isLoadFailed = ref(false)
+const errorMsg = ref('')
 const currentTab = ref(TABS.myPurchase.id)
 
-const nftToken = ref<Token | undefined>()
+const nftToken = ref<TokenFullInfo | undefined>()
 
 const init = async () => {
   try {
-    const data = await getGeneratedTokenById(props.id)
+    const data = await getNft(props.contract, props.id)
     nftToken.value = data
   } catch (error) {
     ErrorHandler.processWithoutFeedback(error)
-    isLoadFailed.value = true
+    if (error instanceof Error) errorMsg.value = error.message
   }
   isLoaded.value = true
 }

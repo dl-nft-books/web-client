@@ -154,7 +154,7 @@ init()
   display: flex;
   flex-direction: column;
   max-height: 100vh;
-  width: max-content;
+  width: fit-content;
   padding: toRem(32);
   background: var(--background-primary);
   border-radius: toRem(10);

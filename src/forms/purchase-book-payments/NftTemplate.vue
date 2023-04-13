@@ -70,8 +70,13 @@ import {
 } from '@/fields'
 
 import { ErrorMessage, Loader } from '@/common'
-import { useBalance, useFormValidation, useErc721 } from '@/composables'
-import { Book, PurchaseFormKey } from '@/types'
+import {
+  useBalance,
+  useFormValidation,
+  useErc721,
+  FullBookInfo,
+} from '@/composables'
+import { PurchaseFormKey } from '@/types'
 
 import { required, address } from '@/validators'
 import { useWeb3ProvidersStore } from '@/store'
@@ -82,7 +87,7 @@ import { ErrorHandler, formatAssetFromWei } from '@/helpers'
 import { useI18n } from 'vue-i18n'
 
 const props = defineProps<{
-  book: Book
+  book: FullBookInfo
 }>()
 
 const { platform: currentPlatform, isFormDisabled } = inject(PurchaseFormKey)
@@ -140,7 +145,10 @@ const nftErrorMessage = computed(() => {
 })
 
 const isFloorPriceAcceptable = computed(() => {
-  const formattedBookFloorPrice = formatAssetFromWei(props.book.floor_price, 2)
+  const formattedBookFloorPrice = formatAssetFromWei(
+    props.book.minNFTFloorPrice,
+    2,
+  )
 
   return new BN(nftPrice.value?.usd).compare(formattedBookFloorPrice) >= 1
 })

@@ -32,14 +32,14 @@
 import { AppButton, BookCardNetwork } from '@/common'
 import { formatFiatAssetFromWei, getNetworkScheme } from '@/helpers'
 import { computed } from 'vue'
-import { BaseBookInfo, useGenerator } from '@/composables'
-import { Network, Token } from '@/types'
+import { BaseBookInfo, TokenBaseInfo, useNftTokens } from '@/composables'
+import { Network } from '@/types'
 import { ROUTE_NAMES, CURRENCIES } from '@/enums'
 import { useI18n } from 'vue-i18n'
 
 const props = withDefaults(
   defineProps<{
-    book: BaseBookInfo | Token
+    book: BaseBookInfo | TokenBaseInfo
     modification?: 'centered' | 'default'
     backgroundColor?: 'primary' | 'secondary' | 'tertiary'
     actionBtnText?: string
@@ -54,7 +54,7 @@ const props = withDefaults(
 )
 
 const { t } = useI18n()
-const { isToken } = useGenerator()
+const { isNftToken } = useNftTokens()
 
 const bookCardClasses = computed(() =>
   [
@@ -70,21 +70,26 @@ const actionButtonText = computed(
 )
 
 const actionButtonLink = computed(() =>
-  isToken(props.book)
-    ? { name: ROUTE_NAMES.myNftItem, params: { id: props.book.id } }
+  isNftToken(props.book)
+    ? {
+        name: ROUTE_NAMES.myNftItem,
+        params: { id: props.book.tokenId, contract: props.book.tokenContract },
+      }
     : { name: ROUTE_NAMES.bookshelfItem, params: { id: props.book.id } },
 )
 
 const bannerUrl = computed(() =>
-  isToken(props.book) ? props.book.image_url : props.book.banner.attributes.url,
+  isNftToken(props.book)
+    ? props.book.metadata.image
+    : props.book.banner.attributes.url,
 )
 
 const title = computed(() =>
-  isToken(props.book) ? props.book.name : props.book.tokenName,
+  isNftToken(props.book) ? props.book.metadata.name : props.book.tokenName,
 )
 
 const price = computed(() =>
-  isToken(props.book) ? '' : props.book.pricePerOneToken,
+  isNftToken(props.book) ? '' : props.book.pricePerOneToken,
 )
 </script>
 
