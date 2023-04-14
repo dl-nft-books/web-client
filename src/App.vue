@@ -11,11 +11,12 @@
       </transition>
     </router-view>
     <app-footer />
+    <browser-support />
   </div>
 </template>
 
 <script lang="ts" setup>
-import { AppNavbar, AppFooter } from '@/common'
+import { AppNavbar, AppFooter, BrowserSupport } from '@/common'
 
 import { ErrorHandler } from '@/helpers/error-handler'
 import { ref } from 'vue'
