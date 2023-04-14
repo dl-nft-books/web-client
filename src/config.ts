@@ -9,6 +9,8 @@ export const config = {
   FAQ_LINK: import.meta.env.VITE_APP_FAQ_LINK,
   HELP_LINK: import.meta.env.VITE_APP_HELP_LINK,
   BLOG_LINK: import.meta.env.VITE_APP_BLOG_LINK,
+  DOCS_LINK: import.meta.env.VITE_APP_DOCS_LINK,
+  INSTAGRAM_LINK: import.meta.env.VITE_APP_INSTAGRAM_LINK,
   DEPLOY_ENVIRONMENT: import.meta.env.VITE_APP_DEPLOY_ENVIRONMENT,
   API_URL: import.meta.env.VITE_APP_API_URL,
   APP_NAME: import.meta.env.VITE_APP_APP_NAME,

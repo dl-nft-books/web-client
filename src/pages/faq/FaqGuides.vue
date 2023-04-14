@@ -110,9 +110,9 @@ onMounted(() => {
   height: vh(80);
   position: absolute;
   z-index: var(--z-index-layer-1);
-  background: url('/images/cube-left.png') no-repeat left top / contain;
-  background-size: 23%;
-  opacity: 0.5;
+  background: url('/images/fancy-lines.png') no-repeat left top / contain;
+  background-size: 100%;
+  opacity: 0.1;
   left: 0;
   top: 0;
 }

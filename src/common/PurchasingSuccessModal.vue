@@ -65,7 +65,7 @@ const emit = defineEmits<{
   flex-direction: column;
   max-width: toRem(452);
   padding: toRem(32);
-  background: var(--background-primary);
+  background: var(--background-primary-light);
   border-radius: toRem(10);
 }
 

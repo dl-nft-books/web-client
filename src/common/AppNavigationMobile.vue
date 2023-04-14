@@ -133,7 +133,7 @@ $z-local: 10;
   position: fixed;
   top: 0;
   left: 0;
-  background: var(--background-quaternary);
+  background: var(--background-primary-light);
   overflow-y: auto;
   z-index: $z-local;
 
@@ -183,7 +183,7 @@ $z-local: 10;
 .app-navigation-mobile__social-icon {
   display: flex;
   align-items: center;
-  color: var(--text-primary-main);
+  color: var(--background-primary-light);
   transition: color 0.3s;
 }
 
@@ -200,7 +200,7 @@ $z-local: 10;
 .app-navigation-mobile__close-btn {
   width: toRem(20);
   height: toRem(20);
-  color: var(--text-primary-invert-main);
+  color: var(--text-primary-light);
   transition: color 0.3s;
 }
 
@@ -213,7 +213,6 @@ $z-local: 10;
 }
 
 .app-navigation-mobile__text-link {
-  font-family: var(--app-font-family-secondary);
   font-size: toRem(24);
   line-height: 120%;
   text-align: center;
@@ -243,7 +242,7 @@ $z-local: 10;
   text-transform: uppercase;
   padding: toRem(9) toRem(16);
   font-weight: 500;
-  color: var(--text-primary-invert-main);
+  color: var(--text-primary-light);
 
   &:deep(.app-button__icon-left) {
     width: toRem(30);

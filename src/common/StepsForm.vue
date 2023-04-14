@@ -110,13 +110,14 @@ const switchStep = (type: STEPS) => {
   justify-content: space-between;
   margin-bottom: toRem(36);
   gap: toRem(12);
+  padding: 0 toRem(5);
 }
 
 .steps-form__header-status {
   display: flex;
   flex-direction: column;
   width: 100%;
-  gap: toRem(4);
+  gap: toRem(6);
 }
 
 .steps-form__header-status-lbl {
@@ -125,7 +126,7 @@ const switchStep = (type: STEPS) => {
 
 .steps-form__header-indicator {
   height: toRem(4);
-  background-color: var(--background-quaternary);
+  background-color: var(--background-primary-main);
   border-radius: toRem(5);
   width: 100%;
   transition: 0.2s ease-in-out;
@@ -147,5 +148,15 @@ const switchStep = (type: STEPS) => {
 .steps-form__actions-btn {
   text-transform: uppercase;
   border-radius: toRem(9);
+  margin-bottom: toRem(10);
+  height: toRem(46);
+  min-width: toRem(144);
+  font-weight: 600;
+
+  @include respond-to(small) {
+    &:first-child:last-child {
+      min-width: 100%;
+    }
+  }
 }
 </style>

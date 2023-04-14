@@ -117,8 +117,8 @@ const handleProviderClick = () => {
 }
 
 .app-navbar__provider-btn {
-  --app-button-bg-hover: var(--background-quaternary);
-  --app-button-bg: var(--background-quinary);
+  --app-button-bg-hover: var(--background-primary-light);
+  --app-button-bg: var(--background-primary-dark);
   --app-button-flat-border: #{toRem(1)} solid var(--border-primary-light);
   --app-button-flat-text-hover: var(--text-primary-invert-main);
 

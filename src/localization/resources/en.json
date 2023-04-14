@@ -81,12 +81,18 @@
   "app-footer": {
     "faq-link": "faq",
     "help-link": "Help & Support",
-    "blog-link": "blog"
+    "blog-link": "blog",
+    "docs-link": "Documentation"
   },
   "bookshelf-header": {
     "title": "Create your nft library",
-    "book-description-title": "Every book with your",
-    "book-description-subtitle": "personal sign inside"
+    "subtitle": "Every book with your personal sign inside"
+  },
+  "book-details": {
+    "voucher-token-lbl": "Buy with a voucher token",
+    "nft-lbl": "Buy with NFT",
+    "floor-price-lbl": "Floor price",
+    "price-lbl": "Price"
   },
   "about-us-page": {
     "title": "Distributed LAB",
@@ -263,7 +269,8 @@
     "badge-1": "For any acceptable token",
     "badge-2": "Add your personal sign",
     "network-title": "Supported by",
-    "connect-btn": "Connect Wallet"
+    "connect-btn": "Connect Wallet",
+    "description-lbl": "Show full description"
   },
   "purchasing-modal": {
     "title": "Purchasing",
@@ -323,7 +330,7 @@
   "my-nft-item-page": {
     "loading-error-msg": "This page is currently unavailable due to connection problems with IPFS. Please, try again later.",
     "purchase-btn": "Buy",
-    "my-purchase-tab": "My Purchase",
+    "my-purchase-tab": "My NFT",
     "book-description-tab": "Book Description"
   },
   "nft-description": {

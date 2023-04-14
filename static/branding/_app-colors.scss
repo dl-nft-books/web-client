@@ -4,21 +4,12 @@ $black: #000000;
 $black-rgb: hexToRGB($black);
 
 $background-primary-light: #383838;
+$background-primary-light-rgb: hexToRGB($background-primary-light);
 $background-primary-main: #232323;
 $background-primary-dark: #111010;
+$background-primary-dark-rgb: hexToRGB($background-primary-dark);
 
-$background-secondary: #1c1c1c;
-$background-tertiary: #fafafa;
-$background-quaternary: #313131;
-$background-quinary: #111010;
-$background-quinary-rgb: hexToRGB($background-quinary);
-
-$background-error: #ffedf3;
-$background-success: #F2FFED;
-
-$background-switcher: #F1F3F8;
-$background-switcher-picked: #2dceff;
-$background-switcher-picked-rgb: hexToRGB($background-switcher-picked); 
+$background-secondary: #313131;
 
 /* status colors */
 
@@ -63,19 +54,19 @@ $text-secondary-invert-light: #ffffff;
 $text-secondary-invert-main: #ffffff;
 $text-secondary-invert-dark: #ffffff;
 
-$text-success: #4E975A;
 $text-diclaimer: #98D0F5;
-$text-guides: #3BA2B1;
 
 /* border colors */
 
 $border-primary-light: #FFFFFF;
 $border-primary-main: #545656;
 $border-primary-dark: #3E3E3E;
-$border-secondary-light: #e4e7e7;
-$border-secondary-main: #e4e7e7;
-$border-secondary-dark: #978d8d;
-$border-black: #3E3E3E;
+
+/* disable colors */
+
+$disable-primary-light: #D7DADB;
+$disable-primary-main: #8D9097;
+$disable-primary-dark: #696B70;
 
 /* other colors */
 
@@ -86,5 +77,3 @@ $network-green: #87FF65;
 $drop-down-shadow: #b6b6b7;
 $drop-down-shadow-rgb: hexToRGB($drop-down-shadow);
 $shadow-color: #96969d;
-$guide-card-color: #6B82B0;
-$guide-card-color-rgb: hexToRGB($guide-card-color);

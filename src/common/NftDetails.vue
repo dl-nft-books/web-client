@@ -133,9 +133,11 @@ const details: NftDetails[] = getDetails()
 }
 
 .nft-details__row-label {
-  font-size: toRem(20);
-  line-height: 120%;
-  color: var(--text-secondary-main);
+  background-color: var(--background-primary-main);
+  border-radius: toRem(6);
+  padding: toRem(10) toRem(14);
+  display: flex;
+  align-items: center;
 
   @include respond-to(small) {
     font-size: toRem(16);
@@ -143,8 +145,11 @@ const details: NftDetails[] = getDetails()
 }
 
 .nft-details__row-value {
-  font-size: toRem(24);
-  line-height: 120%;
+  background-color: var(--background-primary-main);
+  border-radius: toRem(6);
+  padding: toRem(10) toRem(14);
+  display: flex;
+  align-items: center;
   max-width: 100%;
   word-break: break-word;
 

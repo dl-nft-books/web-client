@@ -11,16 +11,18 @@
     <h5 class="book-card__title">
       {{ title }}
     </h5>
-    <h4 v-if="price" class="book-card__price">
-      {{ formatFiatAssetFromWei(price, CURRENCIES.USD) }}
-    </h4>
+    <footer class="book-card__footer">
+      <h4 v-if="price" class="book-card__price">
+        {{ formatFiatAssetFromWei(price, CURRENCIES.USD) }}
+      </h4>
 
-    <app-button
-      class="book-card__purchase-btn"
-      size="x-small"
-      :text="actionButtonText"
-      :route="actionButtonLink"
-    />
+      <app-button
+        class="book-card__purchase-btn"
+        size="x-small"
+        :text="actionButtonText"
+        :route="actionButtonLink"
+      />
+    </footer>
   </div>
 </template>
 
@@ -33,11 +35,14 @@ import { Network } from '@/types'
 import { ROUTE_NAMES, CURRENCIES } from '@/enums'
 import { useI18n } from 'vue-i18n'
 
+type SCHEME = 'book' | 'nft'
+
 const props = withDefaults(
   defineProps<{
     book: BaseBookInfo | TokenBaseInfo
     modification?: 'centered' | 'default'
     actionBtnText?: string
+    scheme?: SCHEME
     network?: Network | null
   }>(),
   {
@@ -45,6 +50,7 @@ const props = withDefaults(
     backgroundColor: 'primary',
     actionBtnText: '',
     network: null,
+    scheme: 'nft',
   },
 )
 
@@ -55,6 +61,7 @@ const bookCardClasses = computed(() =>
   [
     'book-card',
     `book-card--${props.modification}`,
+    `book-card--${props.scheme}`,
     ...(price.value ? [] : ['book-card--right']),
   ].join(' '),
 )
@@ -124,6 +131,8 @@ const price = computed(() =>
   text-transform: uppercase;
   width: 100%;
   word-wrap: break-word;
+  line-height: toRem(20);
+  font-weight: 700;
 
   .book-card--centered & {
     text-align: center;
@@ -132,6 +141,7 @@ const price = computed(() =>
 
 .book-card__price {
   width: 45%;
+  font-weight: 700;
 
   @include text-ellipsis;
 }
@@ -141,5 +151,15 @@ const price = computed(() =>
   height: toRem(38);
   text-transform: uppercase;
   font-weight: 700;
+}
+
+.book-card__footer {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+
+  & > *:nth-child(2) {
+    flex-basis: 45%;
+  }
 }
 </style>

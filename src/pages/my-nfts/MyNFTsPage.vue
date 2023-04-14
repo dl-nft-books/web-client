@@ -92,7 +92,7 @@ function onError(e: Error) {
   overflow: hidden;
   flex: 1;
   position: relative;
-  background-color: var(--background-quinary);
+  background-color: var(--background-primary-dark);
   z-index: var(--z-index-layer-2);
 
   // @include gray-background-curve;
@@ -120,18 +120,6 @@ function onError(e: Error) {
 }
 
 .my-nfts-page__background {
-  position: absolute;
-  width: 100%;
-  right: 0;
-  top: 0;
-  z-index: var(--z-index-layer-bottom);
-  opacity: 0.1;
-  object-fit: fill;
-  object-position: center;
-  max-height: toRem(650);
-
-  @include respond-to(medium) {
-    top: toRem(200);
-  }
+  @include background-image;
 }
 </style>

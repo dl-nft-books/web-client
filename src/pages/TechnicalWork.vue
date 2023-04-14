@@ -1,7 +1,7 @@
 <template>
   <div class="technical-work">
     <img
-      class="technical-work__image technical-work__image--medium"
+      class="technical-work__image"
       src="/images/technical-work.png"
       :alt="$t('technical-work-page.alt-technical-work')"
     />
@@ -9,11 +9,11 @@
       <h3 class="technical-work__title">
         {{ $t('technical-work-page.title') }}
       </h3>
-      <p class="technical-work__subtitle">
+      <h4 class="technical-work__subtitle">
         {{ $t('technical-work-page.subtitle') }}
-      </p>
+      </h4>
     </section>
-    <div class="technical-work__background" />
+    <img class="technical-work__background" src="/images/fancy-lines.png" />
   </div>
 </template>
 
@@ -26,10 +26,9 @@
   justify-content: center;
   overflow: hidden;
   position: relative;
+  z-index: var(--z-index-layer-1);
   gap: toRem(100);
-  background-color: var(--background-quinary);
-
-  @include gray-background-curve;
+  background-color: var(--background-primary-dark);
 
   @include respond-to(tablet) {
     flex-direction: column;
@@ -40,15 +39,7 @@
 }
 
 .technical-work__background {
-  background: url('/images/technical-background.png') no-repeat left bottom /
-    contain;
-  background-size: clamp(toRem(300), 50%, toRem(750));
-  width: 100%;
-  height: 100%;
-  position: absolute;
-  z-index: var(--z-index-layer-1);
-  left: 0;
-  bottom: toRem(-150);
+  @include background-image;
 }
 
 .technical-work__info {
@@ -67,9 +58,7 @@
 }
 
 .technical-work__subtitle {
-  font-size: toRem(24);
-  font-weight: 500;
-  color: var(--white);
+  font-weight: 700;
 
   @include respond-to(tablet) {
     font-size: toRem(18);

@@ -24,31 +24,36 @@
             ]"
           />
 
-          <section class="bookshelf-item-page__prices">
-            <bookshelf-prices
-              :price="
-                formatFiatAssetFromWei(book.pricePerOneToken, CURRENCIES.USD)
-              "
-              :floor-price="
-                formatFiatAssetFromWei(book.minNFTFloorPrice, CURRENCIES.USD)
-              "
-              :voucher-link="
-                book.voucherTokenContract !== ethers.constants.AddressZero
-                  ? getBlockExplorerLink(book.chain_id, book.voucher_token)
-                  : undefined
-              "
-            />
-          </section>
+          <collapse>
+            <template #head="{ collapse }">
+              <div
+                class="bookshelf-item-page__description-wrapper"
+                @click="collapse.toggle"
+              >
+                <p>
+                  {{ $t('bookshelf-item-page.description-lbl') }}
+                </p>
+                <icon
+                  class="bookshelf-item-page__description-icon"
+                  :class="{
+                    'bookshelf-item-page__description-icon--rotated':
+                      collapse.isOpen,
+                  }"
+                  :name="$icons.chevronDown"
+                />
+              </div>
+            </template>
+            <p class="bookshelf-item-page__description">
+              {{ book.description }}
+            </p>
+          </collapse>
+
+          <book-details :book="book" />
 
           <p>
             {{ book.networks.map(el => el.attributes.chain_id).join(', ') }}
           </p>
 
-          <bookshelf-network-info
-            v-if="bookNetwork"
-            :name="bookNetwork.name"
-            :scheme="getNetworkScheme(bookNetwork.chain_id.toString())"
-          />
           <app-button
             v-if="provider.isConnected"
             class="bookshelf-item-page__purchase-btn"
@@ -64,11 +69,6 @@
             :text="$t('bookshelf-item-page.connect-btn')"
             @click="provider.connect"
           />
-
-          <hr class="bookshelf-item-page__devider" />
-          <p class="bookshelf-item-page__description">
-            {{ book.description }}
-          </p>
         </div>
 
         <purchasing-modal
@@ -84,6 +84,10 @@
       </template>
     </template>
     <loader v-else class="bookshelf-item-page__loader" />
+    <img
+      class="bookshelf-item-page__background"
+      src="/images/fancy-lines.png"
+    />
   </div>
 </template>
 
@@ -95,21 +99,17 @@ import {
   PurchasingModal,
   PurchasingSuccessModal,
   Marquee,
+  Collapse,
+  Icon,
 } from '@/common'
 
-import { BookshelfNetworkInfo, BookshelfPrices } from '@/pages/bookshelf'
-import { ref, watch, computed } from 'vue'
-import {
-  formatFiatAssetFromWei,
-  ErrorHandler,
-  getNetworkScheme,
-  getBlockExplorerLink,
-} from '@/helpers'
-import { CURRENCIES } from '@/enums'
+import { BookDetails } from '@/pages/bookshelf'
+import { ref, watch } from 'vue'
+import { ErrorHandler } from '@/helpers'
+
 import { FullBookInfo, useBooks } from '@/composables'
-import { useWeb3ProvidersStore, useNetworksStore } from '@/store'
+import { useWeb3ProvidersStore } from '@/store'
 import { storeToRefs } from 'pinia'
-import { ethers } from 'ethers'
 
 const props = defineProps<{
   id: string
@@ -121,12 +121,7 @@ const isLoadFailed = ref(false)
 const isPurchaseModalShown = ref(false)
 const isPurchaseSuccessModalShown = ref(false)
 
-const networkStore = useNetworksStore()
 const { getBookById } = useBooks()
-
-const bookNetwork = computed(() =>
-  networkStore.getNetworkByID(book.value?.chain_id),
-)
 
 const book = ref<FullBookInfo | undefined>()
 
@@ -176,9 +171,9 @@ init()
   padding-top: toRem(40);
   padding-bottom: toRem(150);
   justify-content: center;
-  background: url('/images/background-cubes.png') no-repeat right center /
-    contain;
-  background-size: clamp(toRem(300), 30%, toRem(500));
+  background-color: var(--background-primary-dark);
+  position: relative;
+  z-index: var(--z-index-layer-1);
 
   @include respond-to(medium) {
     display: flex;
@@ -220,11 +215,11 @@ init()
 .bookshelf-item-page__details {
   display: flex;
   flex-direction: column;
+  gap: toRem(20);
 }
 
 .bookshelf-item-page__title {
   text-transform: uppercase;
-  margin-bottom: toRem(34);
   max-width: 100%;
   word-wrap: break-word;
 
@@ -233,49 +228,52 @@ init()
   }
 }
 
-.bookshelf-item-page__prices {
-  width: 70%;
-  margin: toRem(49) 0;
-
-  @include respond-to(tablet) {
-    width: 90%;
-    margin: toRem(49) 0 toRem(30) 0;
-  }
-}
-
-.bookshelf-item-page__info {
-  display: flex;
-  flex-direction: column;
-  text-align: right;
-  user-select: none;
-  gap: toRem(5);
-}
-
 .bookshelf-item-page__purchase-btn {
   text-transform: uppercase;
   width: 100%;
   height: toRem(60);
-  font-size: toRem(22);
+  font-size: toRem(24);
+  font-weight: 700;
   line-height: 120%;
 }
 
-.bookshelf-item-page__devider {
-  width: 100%;
-  height: toRem(1);
-  margin-top: toRem(45);
-  border: none;
-  background-color: var(--border-secondary-main);
+.bookshelf-item-page__description-wrapper {
+  background-color: var(--background-primary-main);
+  border-radius: toRem(6);
+  padding: toRem(10) toRem(14);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  user-select: none;
+  transition: 0.2s ease-in-out;
+  transition-property: background-color;
+
+  &:hover {
+    cursor: pointer;
+    background-color: var(--background-primary-light);
+  }
 }
 
 .bookshelf-item-page__description {
-  color: var(--text-secondary-main);
-  margin-top: toRem(10);
-  word-wrap: break-word;
-  white-space: pre-wrap;
-  font-size: toRem(24);
+  padding: toRem(20);
+  max-width: 100%;
+  word-break: break-all;
+}
 
-  @include respond-to(medium) {
-    font-size: toRem(18);
+.bookshelf-item-page__description-icon {
+  --size: #{toRem(20)};
+
+  max-width: var(--size);
+  max-height: var(--size);
+  transition: 0.2s ease-in-out;
+  transition-property: transform;
+
+  &--rotated {
+    transform: rotate(180deg);
   }
+}
+
+.bookshelf-item-page__background {
+  @include background-image;
 }
 </style>

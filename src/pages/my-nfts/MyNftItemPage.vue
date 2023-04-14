@@ -24,18 +24,23 @@
             :tabs="Object.values(TABS)"
             class="my-nft-item-page__tabs"
           />
-          <nft-description
-            v-if="currentTab === TABS.bookDescription.id"
-            :description="nftToken.metadata.description"
-          />
-          <nft-details
-            v-if="currentTab === TABS.myPurchase.id"
-            :nft-token="nftToken"
-          />
+          <transition name="tabs">
+            <nft-description
+              v-if="currentTab === TABS.bookDescription.id"
+              :description="nftToken.metadata.description"
+            />
+          </transition>
+          <transition name="tabs">
+            <nft-details
+              v-if="currentTab === TABS.myPurchase.id"
+              :nft-token="nftToken"
+            />
+          </transition>
         </div>
       </template>
     </template>
     <loader v-else class="my-nft-item-page__loader" />
+    <img class="my-nfts-item-page__background" src="/images/fancy-lines.png" />
   </div>
 </template>
 
@@ -122,17 +127,13 @@ init()
   padding-top: toRem(40);
   padding-bottom: toRem(100);
   justify-content: center;
-  background: url('/images/background-cubes.png') no-repeat right center /
-    contain;
-  background-size: clamp(toRem(300), 30%, toRem(400));
+  position: relative;
+  z-index: var(--z-index-layer-1);
 
   @include respond-to(medium) {
     display: flex;
     flex-direction: column;
     row-gap: toRem(40);
-    background: url('/images/background-cubes.png') no-repeat right top /
-      contain;
-    background-size: clamp(toRem(300), 50%, toRem(500));
   }
 
   @include respond-to(small) {
@@ -181,5 +182,21 @@ init()
 
 .my-nft-item-page__tabs {
   margin-bottom: toRem(40);
+}
+
+.tabs-enter-active,
+.tabs-leave-active {
+  transition: 0.25s ease;
+  transition-property: opacity, transform;
+}
+
+.tabs-enter-from,
+.tabs-leave-to {
+  opacity: 0;
+  transform: translateX(toRem(-50));
+}
+
+.my-nfts-item-page__background {
+  @include background-image;
 }
 </style>

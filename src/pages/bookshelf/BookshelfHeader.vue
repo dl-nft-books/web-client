@@ -1,95 +1,81 @@
 <template>
   <header class="bookshelf-header">
-    <h1 class="bookshelf-header__title">
-      {{ $t('bookshelf-header.title') }}
-    </h1>
-    <div class="bookshelf-header__description">
-      <icon class="bookshelf-header__icon" :name="$icons.bookWithFeather" />
-      <div class="bookshelf-header__book-desctiption">
-        <p
-          :class="[
-            'bookshelf-header__text',
-            'bookshelf-header__text--shadow-color-invert',
-          ]"
-        >
-          {{ $t('bookshelf-header.book-description-title') }}
-        </p>
-        <p
-          :class="[
-            'bookshelf-header__text',
-            'bookshelf-header__text--bold-italic',
-            'bookshelf-header__text--shadow-color-invert',
-          ]"
-        >
-          {{ $t('bookshelf-header.book-description-subtitle') }}
-        </p>
-      </div>
+    <div class="bookshelf-header__wrapper">
+      <h1 class="bookshelf-header__title">
+        {{ $t('bookshelf-header.title') }}
+      </h1>
+      <h3 class="bookshelf-header__subtitle">
+        {{ $t('bookshelf-header.subtitle') }}
+      </h3>
     </div>
+    <img
+      class="bookshelf-header__background"
+      src="/images/book-background.png"
+      :alt="$t('bookshelf-header.title')"
+    />
   </header>
 </template>
 
-<script setup lang="ts">
-import { Icon } from '@/common'
-</script>
-
 <style lang="scss" scoped>
 .bookshelf-header {
-  padding: toRem(80) 0;
+  display: flex;
   position: relative;
-  z-index: var(--z-index-layer-2);
+  justify-content: center;
+  background: url('/images/floating-letters.png') no-repeat right top / contain;
+  background-size: clamp(toRem(250), 50%, toRem(800));
 
   @include respond-to(small) {
     padding-top: toRem(20);
   }
 }
 
-.bookshelf-header__title {
-  margin-bottom: toRem(5);
-  color: var(--text-primary-invert-main);
-
-  @include text-shadow;
-}
-
-.bookshelf-header__description {
-  display: flex;
-  align-items: center;
-  gap: toRem(20);
-  margin: toRem(40) 0 toRem(80);
-  width: fit-content;
-
-  @include respond-to(xmedium) {
-    margin-left: toRem(60);
-  }
-
-  @include respond-to(small) {
-    margin-left: toRem(20);
-  }
-}
-
-.bookshelf-header__book-desctiption {
-  display: flex;
-  flex-direction: column;
-}
-
-.bookshelf-header__text {
-  font-size: toRem(22);
-  line-height: 120%;
-
-  &--bold-italic {
-    font-weight: 500;
-    font-style: italic;
-  }
-
-  @include text-shadow;
-}
-
-.bookshelf-header__icon {
-  max-width: toRem(50);
-  max-height: toRem(60);
+.bookshelf-header__background {
+  object-fit: cover;
+  object-position: top;
+  width: clamp(toRem(250), 70%, toRem(900));
+  user-select: none;
+  pointer-events: none;
+  margin-top: toRem(-200);
 
   @include respond-to(medium) {
-    max-width: toRem(35);
-    max-height: toRem(30);
+    margin-top: 0;
   }
+}
+
+.bookshelf-header__title {
+  text-transform: uppercase;
+  font-weight: 800;
+  font-size: clamp(toRem(24), 6vw, toRem(64));
+  line-height: 110%;
+  letter-spacing: 0.055em;
+
+  @include respond-to(medium) {
+    font-size: clamp(toRem(24), 6vw, toRem(40));
+  }
+}
+
+.bookshelf-header__subtitle {
+  font-size: clamp(toRem(16), 6vw, toRem(22));
+  line-height: 120%;
+  color: var(--primary-main);
+
+  @include respond-to(small) {
+    font-size: toRem(16);
+  }
+}
+
+.bookshelf-header__wrapper {
+  background-color: var(--background-primary-dark);
+  height: min-content;
+  position: absolute;
+  z-index: var(--z-index-layer-1);
+  top: 21%;
+  padding: toRem(18) toRem(40);
+  border-radius: toRem(10);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: toRem(15);
+  text-align: center;
 }
 </style>

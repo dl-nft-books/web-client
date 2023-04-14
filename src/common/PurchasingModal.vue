@@ -6,7 +6,7 @@
     <template #default="{ modal }">
       <div class="purchasing-modal__pane">
         <div class="purchasing-modal__head">
-          <h4>
+          <h4 class="purchasing-modal__head-title">
             {{ title }}
           </h4>
           <app-button
@@ -156,12 +156,12 @@ init()
   max-height: 100vh;
   width: fit-content;
   padding: toRem(32);
-  background: var(--background-primary);
+  background: var(--background-primary-light);
   border-radius: toRem(10);
 
   @include respond-to(small) {
     width: 100vw;
-    padding: toRem(32) toRem(15);
+    padding: toRem(32) toRem(24);
   }
 }
 
@@ -208,5 +208,9 @@ init()
   &:hover {
     transform: rotate(90deg);
   }
+}
+
+.purchasing-modal__head-title {
+  font-weight: 700;
 }
 </style>

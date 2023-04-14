@@ -98,11 +98,11 @@ onMounted(() => {
   --background-head-color: var(--background-primary);
   --background-body-color: var(--background-primary);
   --border-color: var(--text-secondary-main);
-  --background-hover-color: var(--background-tertiary);
+  --background-hover-color: var(--background-primary-light);
 
   &--dark-mode {
     --background-head-color: transparent;
-    --background-body-color: var(--background-quaternary);
+    --background-body-color: var(--background-secondary);
     --border-color: var(--white);
     --background-hover-color: rgba(var(--drop-down-shadow-rgb), 0.2);
   }

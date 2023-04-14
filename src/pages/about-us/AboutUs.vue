@@ -72,7 +72,7 @@ const KurbatovQuotes = [
 .about-us {
   max-width: 100%;
   padding: 0;
-  background-color: var(--background-quinary);
+  background-color: var(--background-primary-dark);
   position: relative;
 }
 
@@ -109,9 +109,9 @@ const KurbatovQuotes = [
     var(--app-padding-left);
   background-image: linear-gradient(
       360deg,
-      var(--background-quinary) 0.12%,
-      rgba(var(--background-quinary-rgb), 0.9) 55.52%,
-      rgba(var(--background-quinary-rgb), 0.5) 100%
+      var(--background-primary-dark) 0.12%,
+      rgba(var(--background-primary-dark-rgb), 0.9) 55.52%,
+      rgba(var(--background-primary-dark-rgb), 0.5) 100%
     ),
     url('/images/backround-about-us.png');
   background-size: cover;

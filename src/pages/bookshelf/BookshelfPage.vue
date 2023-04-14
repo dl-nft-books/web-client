@@ -1,12 +1,10 @@
 <template>
   <div class="bookshelf-page">
-    <bookshelf-cubes />
     <bookshelf-header />
-    <section class="bookshelf-page__title-wrapper">
-      <h3 class="bookshelf-page__title">
-        {{ $t('bookshelf-page.title') }}
-      </h3>
-    </section>
+    <h1 class="bookshelf-page__title">
+      {{ $t('bookshelf-page.title') }}
+    </h1>
+
     <error-message
       v-if="isLoadFailed"
       :message="$t('bookshelf-page.loading-error-msg')"
@@ -21,7 +19,9 @@
         />
       </div>
 
-      <loader v-if="isLoading" />
+      <div class="bookshelf-page__loader">
+        <loader v-if="isLoading" />
+      </div>
 
       <app-button
         v-if="isLoadMoreBtnShown"
@@ -34,6 +34,10 @@
       />
     </template>
     <no-data-message v-else :message="$t('bookshelf-page.no-data-msg')" />
+    <img
+      class="bookshelf-page__background bookshelf-page__background--bottom"
+      src="/images/fancy-lines.png"
+    />
   </div>
 </template>
 
@@ -51,7 +55,7 @@ import {
 
 import { ErrorHandler } from '@/helpers'
 import { BaseBookInfo, useBooks, useContractPagination } from '@/composables'
-import { BookshelfHeader, BookshelfCubes } from '@/pages/bookshelf'
+import { BookshelfHeader } from '@/pages/bookshelf'
 import { useNetworksStore, useWeb3ProvidersStore } from '@/store'
 import { config } from '@/config'
 
@@ -112,112 +116,47 @@ watch(
   gap: toRem(34);
   padding-top: toRem(200);
   padding-bottom: toRem(200);
+  margin-top: toRem(-220);
+  background-color: var(--background-primary-dark);
   position: relative;
   z-index: var(--z-index-layer-2);
-  margin-top: toRem(-220);
-  background-color: var(--black);
   overflow: hidden;
   display: flex;
   flex-direction: column;
 
-  /* Chain image */
-  &:before {
-    content: '';
-    position: absolute;
-    width: 100vw;
-    top: toRem(110);
-    left: 0;
-    z-index: var(--z-index-layer-1);
-    height: vh(100);
-    background: url('/images/cubes.png') no-repeat right top / contain;
-    background-size: clamp(toRem(250), 45%, toRem(800));
+  // /* Chain image */
+  // &:before {
+  //   content: '';
+  //   position: absolute;
+  //   width: 100vw;
+  //   top: toRem(110);
+  //   left: 0;
+  //   z-index: var(--z-index-layer-1);
+  //   height: vh(100);
+  //   background: url('/images/cubes.png') no-repeat right top / contain;
+  //   background-size: clamp(toRem(250), 45%, toRem(800));
 
-    @include respond-to(medium) {
-      background-size: toRem(450);
-      top: toRem(280);
-    }
+  //   @include respond-to(medium) {
+  //     background-size: toRem(450);
+  //     top: toRem(280);
+  //   }
 
-    @include respond-to(small) {
-      background-size: toRem(250);
-      top: toRem(400);
-    }
-  }
-
-  /* White bg under the header */
-  &:after {
-    content: '';
-    position: absolute;
-    top: toRem(-600);
-    left: toRem(-42);
-    transform: rotate(-10deg);
-    width: 120vw;
-    height: toRem(1100);
-    background-size: 45%;
-    background-color: var(--white);
-    border-radius: toRem(300);
-    z-index: var(--z-index-layer-bottom);
-
-    @include respond-to(medium) {
-      left: toRem(-60);
-      width: 160vw;
-      top: toRem(-580);
-    }
-
-    @include respond-to(small) {
-      top: toRem(-250);
-      left: toRem(-60);
-      width: 160vw;
-      border-radius: toRem(200);
-      height: 205vw;
-    }
-  }
-}
-
-.bookshelf-page__title-wrapper {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: toRem(20);
-
-  @include respond-to(small) {
-    flex-direction: column;
-    align-items: flex-start;
-  }
+  //   @include respond-to(small) {
+  //     background-size: toRem(250);
+  //     top: toRem(400);
+  //   }
+  // }
 }
 
 .bookshelf-page__title {
   text-transform: uppercase;
-  position: relative;
-  color: var(--text-primary-invert-main);
-
-  @include text-shadow;
-
-  &:after {
-    content: ' ';
-    position: absolute;
-    top: toRem(50);
-    left: 0;
-    width: toRem(120);
-    height: toRem(2);
-    background-color: var(--primary-main);
-
-    @include respond-to(medium) {
-      width: toRem(60);
-      top: toRem(40);
-    }
-  }
-
-  @include respond-to(medium) {
-    font-size: toRem(24);
-  }
 }
 
 .bookshelf-page__list {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(toRem(292), 1fr));
+  grid-template-columns: repeat(auto-fill, toRem(292));
   grid-gap: toRem(20);
-  position: relative;
-  z-index: var(--z-index-layer-2);
+  justify-content: space-evenly;
 }
 
 .bookshelf-page__load-more-btn {
@@ -228,5 +167,9 @@ watch(
 
   --app-button-flat-text-hover: var(--primary-light);
   --app-button-flat-border: #{toRem(2)} solid var(--primary-light);
+}
+
+.bookshelf-page__background {
+  @include background-image;
 }
 </style>

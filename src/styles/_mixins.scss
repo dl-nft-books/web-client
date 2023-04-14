@@ -157,6 +157,31 @@ $media-breakpoints: (
   }
 }
 
+@mixin background-image {
+  position: absolute;
+  width: 100%;
+  right: 0;
+  top: 0;
+  z-index: var(--z-index-layer-bottom);
+  opacity: 0.1;
+  object-fit: fill;
+  object-position: center;
+  max-height: toRem(650);
+
+  @include respond-to(medium) {
+    top: toRem(200);
+  }
+
+  &--bottom {
+    top: unset;
+    bottom: 0;
+
+    @include respond-to(medium) {
+      bottom: toRem(200);
+    }
+  }
+}
+
 @mixin gray-background-curve {
   &:after {
     content: '';
@@ -167,7 +192,7 @@ $media-breakpoints: (
     width: 120vw;
     height: toRem(600);
     background-size: 45%;
-    background-color: var(--background-secondary);
+    background-color: var(--background-primary-main);
     border-radius: toRem(300);
     z-index: var(--z-index-layer-bottom);
 
