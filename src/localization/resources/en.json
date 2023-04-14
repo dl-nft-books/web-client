@@ -333,15 +333,13 @@
   },
   "nft-details": {
     "price-lbl": "Price",
-    "floor-price-lbl": "Exchanged NFT Floor Price",
     "exchanged-nft-address": "Exchanged NFT address",
-    "exchanged-nft-id": "Exchanged NFT ID",
     "purchase-date-lbl": "Purchase Date",
     "your-token-lbl": "Your Token",
     "token-amount-lbl": "Amount of Your Token",
-    "signature-lbl": "Your Signature",
     "document-lbl": "Document",
-    "token-id-lbl": "Token ID"
+    "token-id-lbl": "Token ID",
+    "payment-type-lbl": "Payment type"
   },
   "my-nfts-no-data": {
     "message-first": "Your bookshelf is still empty.",

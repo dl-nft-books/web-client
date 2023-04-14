@@ -10,7 +10,7 @@ import {
 import { config } from '@/config'
 import { TOKEN_TYPES } from '@/enums'
 import { useNetworksStore, useWeb3ProvidersStore } from '@/store'
-import { JsonApiRecordBase, PageOrder } from '@/types'
+import { PageOrder } from '@/types'
 import { IMarketplace } from '@/types/contracts/MarketPlace'
 import { BN } from '@/utils/math.util'
 import { computed, ref, watch } from 'vue'
@@ -37,7 +37,7 @@ export type NftMetadata = {
   external_url: string
 }
 
-type Payment = JsonApiRecordBase<'payment'> & {
+type Payment = {
   amount: string
   book_id: number
   contract_address: string
@@ -52,6 +52,7 @@ type Payment = JsonApiRecordBase<'payment'> & {
     name: string
     decimals: number
   }
+  type: TOKEN_TYPES
 }
 
 export function useNftTokens() {
