@@ -34,10 +34,12 @@ import {
   formatFiatAssetFromWei,
   formatAssetFromWei,
   formatMDY,
+  globalizeTokenType,
 } from '@/helpers'
 
 import { CURRENCIES } from '@/enums'
 import { TokenFullInfo } from '@/composables'
+import { TOKEN_TYPES } from '@/enums'
 import { useI18n } from 'vue-i18n'
 
 type NftDetails = {
@@ -65,36 +67,38 @@ const getDetails = () => {
         CURRENCIES.USD,
       ),
     },
+    {
+      label: t('nft-details.payment-type-lbl'),
+      value: globalizeTokenType(props.nftToken.payment.type),
+    },
   ]
 
-  commonDetails = commonDetails.concat([
-    {
-      label: t('nft-details.token-amount-lbl'),
-      value: !Number(props.nftToken.payment.amount)
-        ? '0.0'
-        : formatAssetFromWei(
-            props.nftToken.payment.amount,
-            props.nftToken.payment.erc20_data.decimals,
-          ),
-    },
-    {
-      label: t('nft-details.your-token-lbl'),
-      value: props.nftToken.payment.erc20_data.symbol,
-    },
-  ] as NftDetails[])
+  if (props.nftToken.payment.type !== TOKEN_TYPES.nft) {
+    commonDetails = commonDetails.concat([
+      {
+        label: t('nft-details.token-amount-lbl'),
+        value: !Number(props.nftToken.payment.amount)
+          ? '0.0'
+          : formatAssetFromWei(
+              props.nftToken.payment.amount,
+              props.nftToken.payment.erc20_data.decimals,
+            ),
+      },
+      {
+        label: t('nft-details.your-token-lbl'),
+        value: props.nftToken.payment.erc20_data.symbol,
+      },
+    ] as NftDetails[])
+  }
 
-  // if (isExchangedToken(props.nftToken)) {
-  //   commonDetails = commonDetails.concat([
-  //     {
-  //       label: t('nft-details.exchanged-nft-address'),
-  //       value: props.nftToken.payment.nft_address,
-  //     },
-  //     {
-  //       label: t('nft-details.exchanged-nft-id'),
-  //       value: props.nftToken.payment.nft_id,
-  //     },
-  //   ] as NftDetails[])
-  // }
+  if (props.nftToken.payment.type === TOKEN_TYPES.nft) {
+    commonDetails = commonDetails.concat([
+      {
+        label: t('nft-details.exchanged-nft-address'),
+        value: props.nftToken.payment.erc20_data.address,
+      },
+    ] as NftDetails[])
+  }
 
   commonDetails = commonDetails.concat([
     {
