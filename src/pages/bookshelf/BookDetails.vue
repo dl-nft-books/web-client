@@ -32,6 +32,8 @@ import { formatFiatAssetFromWei } from '@/helpers'
 
 import { CURRENCIES, ICON_NAMES } from '@/enums'
 import { FullBookInfo } from '@/composables'
+import { getNetworkScheme, getIconByScheme } from '@/helpers'
+import { useNetworksStore } from '@/store'
 import { useI18n } from 'vue-i18n'
 import { ethers } from 'ethers'
 
@@ -45,9 +47,26 @@ type BookDetails = {
 const props = defineProps<{ book: FullBookInfo }>()
 
 const { t } = useI18n()
+const networkStore = useNetworksStore()
+
+const getNetworkName = (chainId: number) => {
+  const network = networkStore.list.find(el => el.chain_id === chainId)
+  return network?.name || 'Unsupported network'
+}
+
+const getNetworkIcon = (chainId: number): ICON_NAMES => {
+  const scheme = getNetworkScheme(chainId)
+
+  return getIconByScheme(scheme)
+}
 
 const getDetails = (): BookDetails[] => {
   return [
+    ...props.book.networks.map(el => ({
+      label: t('book-details.network-lbl'),
+      value: getNetworkName(el.attributes.chain_id),
+      icon: getNetworkIcon(el.attributes.chain_id),
+    })),
     {
       label: t('book-details.voucher-token-lbl'),
       icon:
@@ -121,6 +140,7 @@ const details: BookDetails[] = getDetails().filter(
   display: flex;
   align-items: center;
   justify-content: center;
+  gap: toRem(7);
   max-width: 100%;
   word-break: break-word;
 
@@ -140,6 +160,6 @@ const details: BookDetails[] = getDetails().filter(
   width: toRem(24);
   height: toRem(24);
   min-width: toRem(24);
-  color: var(--primary-main);
+  color: var(--primary-light);
 }
 </style>

@@ -17,7 +17,7 @@ import { ChainId, ChainUrlInfo, EthProviderRpcError } from '@/types'
 import { ErrorHandler } from '@/helpers'
 import { useWeb3ProvidersStore } from '@/store'
 
-export function getNetworkScheme(chainID: ChainId): string {
+export function getNetworkScheme(chainID: ChainId): NETWORKS {
   switch (chainID?.toString()) {
     case ETHEREUM_CHAINS.ethereum:
     case ETHEREUM_CHAINS.goerli:

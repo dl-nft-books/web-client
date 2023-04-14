@@ -50,10 +50,6 @@
 
           <book-details :book="book" />
 
-          <p>
-            {{ book.networks.map(el => el.attributes.chain_id).join(', ') }}
-          </p>
-
           <app-button
             v-if="provider.isConnected"
             class="bookshelf-item-page__purchase-btn"
@@ -235,6 +231,7 @@ init()
   font-size: toRem(24);
   font-weight: 700;
   line-height: 120%;
+  margin-top: toRem(25);
 }
 
 .bookshelf-item-page__description-wrapper {

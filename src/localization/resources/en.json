@@ -92,7 +92,8 @@
     "voucher-token-lbl": "Buy with a voucher token",
     "nft-lbl": "Buy with NFT",
     "floor-price-lbl": "Floor price",
-    "price-lbl": "Price"
+    "price-lbl": "Price",
+    "network-lbl": "Supported network"
   },
   "about-us-page": {
     "title": "Distributed LAB",
