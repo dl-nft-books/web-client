@@ -16,7 +16,7 @@
         {{ $t('purchase-book-form.not-enough-balance-msg') }}
       </p>
 
-      <promocode-template ref="promocodeRef" />
+      <promocode-template ref="promocodeRef" :book-id="book.id" />
     </template>
   </template>
   <loader v-else />

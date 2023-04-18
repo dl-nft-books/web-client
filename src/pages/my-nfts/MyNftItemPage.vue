@@ -127,6 +127,7 @@ init()
   padding-top: toRem(40);
   padding-bottom: toRem(100);
   justify-content: center;
+  background-color: var(--background-primary-dark);
   position: relative;
   z-index: var(--z-index-layer-1);
 

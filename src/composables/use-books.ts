@@ -118,17 +118,19 @@ export function useBooks(contractRegistryAddress?: string) {
     backendInfoPart: Book[],
     contractInfoPart: IMarketplace.BaseTokenParamsStructOutput[],
   ): BaseBookInfo[] => {
-    return contractInfoPart.map(book => {
+    const formattedArray = contractInfoPart.map(book => {
       const matchingInfo = backendInfoPart.find(el =>
         el.networks.find(
           network => network.attributes.contract_address === book.tokenContract,
         ),
       )
 
-      if (!matchingInfo) throw new Error('Info parts does not match')
+      if (!matchingInfo) return null
 
       return _formatBaseParams(matchingInfo, book)
     })
+
+    return formattedArray.filter(book => Boolean(book)) as BaseBookInfo[]
   }
 
   const getBooksFromContract = async (

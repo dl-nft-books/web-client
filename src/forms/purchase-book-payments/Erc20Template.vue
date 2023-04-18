@@ -37,6 +37,7 @@
 
       <promocode-template
         ref="promocodeRef"
+        :book-id="book.id"
         :token-type="TOKEN_TYPES.erc20"
         :token-address="form.tokenAddress"
       />

@@ -16,9 +16,12 @@ export function usePromocode() {
     error: '',
   })
 
-  const _validatePromocode = (promocode: string) => {
+  const _validatePromocode = (promocode: string, bookId: number) => {
     return api.get<PromocodeValidation>(
       `/integrations/core/promocodes/validate/${promocode}`,
+      {
+        book_id: bookId,
+      },
     )
   }
 
@@ -37,7 +40,7 @@ export function usePromocode() {
     }
   }
 
-  const validatePromocode = async (promocode: string) => {
+  const validatePromocode = async (promocode: string, bookId: number) => {
     if (
       promocode.length > MAX_PROMOCODE_LENGTH ||
       promocode.length < MIN_PROMOCODE_LENGTH
@@ -49,7 +52,7 @@ export function usePromocode() {
     promocodeInfo.isLoading = true
 
     try {
-      const { data } = await _validatePromocode(promocode)
+      const { data } = await _validatePromocode(promocode, bookId)
 
       checkStatus(data.state)
 

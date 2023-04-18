@@ -50,6 +50,7 @@ const props = withDefaults(
   defineProps<{
     tokenAddress?: string
     tokenType?: TOKEN_TYPES
+    bookId: string
   }>(),
   {
     tokenAddress: '',
@@ -81,7 +82,7 @@ const { getPrice, tokenPrice } = useBalance(currentPlatform)
 const onPromocodeInput = async () => {
   if (!isPromocodeValid()) return
 
-  await validatePromocode(form.promocode)
+  await validatePromocode(form.promocode, Number(props.bookId))
 
   //in order to always calculate new price based on initial price
   await getPrice(props.tokenAddress, props.tokenType)
