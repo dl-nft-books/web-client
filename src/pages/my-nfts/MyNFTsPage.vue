@@ -42,7 +42,7 @@
 import { Loader, ErrorMessage, BookCard, AppButton } from '@/common'
 import { MyNftsNoData } from '@/pages/my-nfts'
 import { ErrorHandler } from '@/helpers'
-import { ref, computed } from 'vue'
+import { ref, computed, watch } from 'vue'
 import { useWeb3ProvidersStore } from '@/store'
 import {
   useContractPagination,
@@ -62,12 +62,8 @@ const loadList = computed(
     getNftList(provider.value.selectedAddress, limit, offset),
 )
 
-const { loadNextPage, isLoading, isLoadMoreBtnShown } = useContractPagination(
-  loadList,
-  setList,
-  concatList,
-  onError,
-)
+const { loadNextPage, isLoading, isLoadMoreBtnShown, loadFirstPage } =
+  useContractPagination(loadList, setList, concatList, onError)
 
 function setList(chunk: TokenBaseInfo[]) {
   nftList.value = chunk ?? []
@@ -81,6 +77,14 @@ function onError(e: Error) {
   ErrorHandler.processWithoutFeedback(e)
   isLoadFailed.value = true
 }
+
+watch(
+  () => provider.value.chainId,
+  () => {
+    isLoadFailed.value = false
+    loadFirstPage()
+  },
+)
 </script>
 
 <style lang="scss" scoped>

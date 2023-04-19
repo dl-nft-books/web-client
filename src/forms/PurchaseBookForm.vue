@@ -52,7 +52,10 @@
     </template>
 
     <template #step2>
-      <image-editor ref="editorInstance" :image-url="testImage" />
+      <image-editor
+        ref="editorInstance"
+        :image-url="book.banner.attributes.url"
+      />
     </template>
   </steps-form>
 </template>
@@ -99,9 +102,6 @@ import { required } from '@/validators'
 
 import loaderAnimation from '@/assets/animations/loader.json'
 import { ethers } from 'ethers'
-
-const testImage =
-  'https://tokend-nftbooks.s3.us-east-2.amazonaws.com/f6391766-11b1-48cf-aa55-811948c26bd9.png'
 
 export type ExposedFormRef = {
   isFormValid: () => boolean
@@ -204,8 +204,6 @@ const tokenTypesOptions = computed(() => {
 
   return defaultOptions
 })
-
-// Minting with ERC721 requires to invoke different mint function on contract
 const mintToken = async (
   mintSignature: MintSignatureResponse,
   generatedTask: Task,
@@ -332,8 +330,6 @@ const submit = async (editorFromTemplate: UseImageEditor | null) => {
     })
 
     const generatedTask = await uploadBanner(currentTask.id, banner)
-
-    //  = await getGeneratedTask(currentTask.id)
 
     const mintSignature = await getMintSignature(
       props.currentPlatform.id,

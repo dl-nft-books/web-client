@@ -65,7 +65,7 @@ import { AppButton, Modal, Animation, Loader, ErrorMessage } from '@/common'
 import { useWeb3ProvidersStore } from '@/store'
 import { storeToRefs } from 'pinia'
 import { ErrorHandler, switchNetwork } from '@/helpers'
-import { ref, computed } from 'vue'
+import { ref, computed, watch } from 'vue'
 import { PurchaseBookForm } from '@/forms'
 
 import disableChainAnimation from '@/assets/animations/disable-chain.json'
@@ -146,7 +146,9 @@ async function init() {
   isLoaded.value = true
 }
 
-init()
+watch(() => provider.value.chainId, init, {
+  immediate: true,
+})
 </script>
 
 <style lang="scss" scoped>

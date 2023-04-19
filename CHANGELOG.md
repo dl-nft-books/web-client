@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 #### Changed
 - Promocode now can be different length and can be 100%
 - On unsupported browsers will be shown corresponding message
+- Redesign of all pages
 
 #### Fixed
 - Bug with provider detection in Brave Browser

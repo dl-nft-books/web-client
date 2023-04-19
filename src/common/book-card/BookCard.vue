@@ -3,9 +3,8 @@
     <div class="book-card__cover-wrp">
       <img :src="bannerUrl" :alt="title" class="book-card__cover" />
       <book-card-network
-        v-if="network"
-        :name="network.name"
-        :scheme="getNetworkScheme(network.chain_id)"
+        v-if="!isNftToken(book)"
+        :networks="formatNetworks()"
       />
     </div>
     <h5 class="book-card__title">
@@ -31,8 +30,7 @@ import { AppButton, BookCardNetwork } from '@/common'
 import { formatFiatAssetFromWei, getNetworkScheme } from '@/helpers'
 import { computed } from 'vue'
 import { BaseBookInfo, TokenBaseInfo, useNftTokens } from '@/composables'
-import { Network } from '@/types'
-import { ROUTE_NAMES, CURRENCIES } from '@/enums'
+import { ROUTE_NAMES, CURRENCIES, NETWORKS } from '@/enums'
 import { useI18n } from 'vue-i18n'
 
 type SCHEME = 'book' | 'nft'
@@ -43,7 +41,6 @@ const props = withDefaults(
     modification?: 'centered' | 'default'
     actionBtnText?: string
     scheme?: SCHEME
-    network?: Network | null
   }>(),
   {
     modification: 'default',
@@ -92,6 +89,14 @@ const title = computed(() =>
 const price = computed(() =>
   isNftToken(props.book) ? '' : props.book.pricePerOneToken,
 )
+
+const formatNetworks = (): NETWORKS[] => {
+  return isNftToken(props.book)
+    ? []
+    : props.book.networks.map(network =>
+        getNetworkScheme(network.attributes.chain_id),
+      )
+}
 </script>
 
 <style lang="scss" scoped>
@@ -122,7 +127,7 @@ const price = computed(() =>
   object-fit: cover;
   object-position: top center;
   max-height: toRem(220);
-  border-radius: toRem(12);
+  border-radius: toRem(5);
   width: 100%;
   height: 100%;
 }
