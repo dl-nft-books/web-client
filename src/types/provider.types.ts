@@ -78,6 +78,11 @@ export interface ProviderWrapper {
   getAddressUrl: (explorerUrl: string, address: string) => string
   getBalance?: (address: string) => Promise<string>
   addNetwork?: (chainID: ChainId) => Promise<void>
+  signTypedData?: (
+    domain: ethers.TypedDataDomain,
+    types: Record<string, ethers.TypedDataField[]>,
+    value: Record<string, unknown>,
+  ) => Promise<string | undefined>
 }
 
 export type { UseProvider } from '@/composables'

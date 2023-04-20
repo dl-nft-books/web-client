@@ -45,6 +45,11 @@ export interface UseProvider {
   getAddressUrl: (explorerUrl: string, address: string) => string
   getBalance: (address: string) => Promise<string>
   addNetwork: (chainID: ChainId) => Promise<void>
+  signTypedData: (
+    domain: ethers.TypedDataDomain,
+    types: Record<string, ethers.TypedDataField[]>,
+    value: Record<string, unknown>,
+  ) => Promise<string | undefined>
 }
 
 export const useProvider = (): UseProvider => {
@@ -182,6 +187,17 @@ export const useProvider = (): UseProvider => {
     return providerWrp.value.getBalance(address)
   }
 
+  const signTypedData = (
+    domain: ethers.TypedDataDomain,
+    types: Record<string, ethers.TypedDataField[]>,
+    value: Record<string, unknown>,
+  ) => {
+    if (!providerWrp.value?.signTypedData)
+      throw new errors.ProviderWrapperMethodNotFoundError()
+
+    return providerWrp.value.signTypedData(domain, types, value)
+  }
+
   return {
     currentProvider,
     currentSigner,
@@ -203,5 +219,6 @@ export const useProvider = (): UseProvider => {
     getAddressUrl,
     getBalance,
     addNetwork,
+    signTypedData,
   }
 }

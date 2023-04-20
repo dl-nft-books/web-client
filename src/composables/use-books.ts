@@ -10,9 +10,12 @@ import { switchNetwork } from '@/helpers'
 
 // Info about book gathering partly from backend and partly from contract
 export type FullBookInfo = Book &
-  Omit<IMarketplace.DetailedTokenParamsStruct, 'tokenParams'> &
+  IMarketplace.BaseTokenDataStruct &
   IMarketplace.TokenParamsStruct
-export type BaseBookInfo = Book & IMarketplace.BaseTokenParamsStruct
+
+export type BaseBookInfo = Book &
+  Pick<IMarketplace.BriefTokenInfoStruct, 'pricePerOneToken' | 'isDisabled'> &
+  IMarketplace.BaseTokenDataStruct
 
 export function useBooks(contractRegistryAddress?: string) {
   const networkStore = useNetworksStore()
@@ -54,20 +57,21 @@ export function useBooks(contractRegistryAddress?: string) {
 
   const _formatBaseParams = (
     backendData: Book,
-    contractData: IMarketplace.BaseTokenParamsStructOutput,
+    contractData: IMarketplace.BriefTokenInfoStructOutput,
   ): BaseBookInfo => {
     return {
       ...backendData,
       pricePerOneToken: new BN(contractData.pricePerOneToken._hex).toString(),
-      tokenName: contractData.tokenName,
-      tokenContract: contractData.tokenContract,
+      tokenName: contractData.baseTokenData.tokenName,
+      tokenContract: contractData.baseTokenData.tokenContract,
       isDisabled: contractData.isDisabled,
+      tokenSymbol: contractData.baseTokenData.tokenSymbol,
     }
   }
 
   const _formatDetailedParams = (
     backendData: Book,
-    contractData: IMarketplace.DetailedTokenParamsStructOutput,
+    contractData: IMarketplace.DetailedTokenInfoStructOutput,
   ): FullBookInfo => {
     return {
       ...backendData,
@@ -84,9 +88,10 @@ export function useBooks(contractRegistryAddress?: string) {
       fundsRecipient: contractData.tokenParams.fundsRecipient,
       isNFTBuyable: contractData.tokenParams.isNFTBuyable,
       isDisabled: contractData.tokenParams.isDisabled,
-      tokenName: contractData.tokenName,
-      tokenSymbol: contractData.tokenSymbol,
-      tokenContract: contractData.tokenContract,
+      tokenName: contractData.baseTokenData.tokenName,
+      tokenSymbol: contractData.baseTokenData.tokenSymbol,
+      tokenContract: contractData.baseTokenData.tokenContract,
+      isVoucherBuyable: contractData.tokenParams.isVoucherBuyable,
     }
   }
 
@@ -116,12 +121,14 @@ export function useBooks(contractRegistryAddress?: string) {
 
   const _gatherBaseBookData = (
     backendInfoPart: Book[],
-    contractInfoPart: IMarketplace.BaseTokenParamsStructOutput[],
+    contractInfoPart: IMarketplace.BriefTokenInfoStructOutput[],
   ): BaseBookInfo[] => {
     const formattedArray = contractInfoPart.map(book => {
       const matchingInfo = backendInfoPart.find(el =>
         el.networks.find(
-          network => network.attributes.contract_address === book.tokenContract,
+          network =>
+            network.attributes.contract_address ===
+            book.baseTokenData.tokenContract,
         ),
       )
 
@@ -186,7 +193,7 @@ export function useBooks(contractRegistryAddress?: string) {
     if (!bookContractsList?.length) return []
 
     const booksFromBackend = await _fetchBooksList(
-      bookContractsList.map(book => book.tokenContract).join(','),
+      bookContractsList.map(book => book.baseTokenData.tokenContract).join(','),
       limit,
     )
 

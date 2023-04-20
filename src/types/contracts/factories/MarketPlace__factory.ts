@@ -25,6 +25,81 @@ const _abi = [
     inputs: [
       {
         indexed: true,
+        internalType: "uint256",
+        name: "requestId",
+        type: "uint256",
+      },
+    ],
+    name: "NFTRequestCanceled",
+    type: "event",
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: true,
+        internalType: "uint256",
+        name: "requestId",
+        type: "uint256",
+      },
+      {
+        indexed: true,
+        internalType: "address",
+        name: "requester",
+        type: "address",
+      },
+      {
+        indexed: true,
+        internalType: "address",
+        name: "tokenContract",
+        type: "address",
+      },
+      {
+        indexed: false,
+        internalType: "address",
+        name: "nftContract",
+        type: "address",
+      },
+      {
+        indexed: false,
+        internalType: "uint256",
+        name: "nftId",
+        type: "uint256",
+      },
+    ],
+    name: "NFTRequestCreated",
+    type: "event",
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: true,
+        internalType: "address",
+        name: "nftAddr",
+        type: "address",
+      },
+      {
+        indexed: false,
+        internalType: "address",
+        name: "recipient",
+        type: "address",
+      },
+      {
+        indexed: false,
+        internalType: "uint256[]",
+        name: "tokenIDs",
+        type: "uint256[]",
+      },
+    ],
+    name: "NFTTokensWithdrawn",
+    type: "event",
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: true,
         internalType: "address",
         name: "tokenAddr",
         type: "address",
@@ -116,6 +191,11 @@ const _abi = [
             name: "isDisabled",
             type: "bool",
           },
+          {
+            internalType: "bool",
+            name: "isVoucherBuyable",
+            type: "bool",
+          },
         ],
         indexed: false,
         internalType: "struct IMarketplace.TokenParams",
@@ -134,18 +214,6 @@ const _abi = [
         internalType: "address",
         name: "tokenContract",
         type: "address",
-      },
-      {
-        indexed: false,
-        internalType: "string",
-        name: "tokenName",
-        type: "string",
-      },
-      {
-        indexed: false,
-        internalType: "string",
-        name: "tokenSymbol",
-        type: "string",
       },
       {
         components: [
@@ -184,6 +252,11 @@ const _abi = [
             name: "isDisabled",
             type: "bool",
           },
+          {
+            internalType: "bool",
+            name: "isVoucherBuyable",
+            type: "bool",
+          },
         ],
         indexed: false,
         internalType: "struct IMarketplace.TokenParams",
@@ -191,18 +264,87 @@ const _abi = [
         type: "tuple",
       },
     ],
-    name: "TokenContractParamsUpdated",
+    name: "TokenParamsUpdated",
     type: "event",
   },
   {
     anonymous: false,
     inputs: [
       {
-        indexed: true,
-        internalType: "address",
-        name: "recipient",
-        type: "address",
+        components: [
+          {
+            internalType: "uint256",
+            name: "requestId",
+            type: "uint256",
+          },
+          {
+            internalType: "address",
+            name: "recipient",
+            type: "address",
+          },
+          {
+            components: [
+              {
+                internalType: "uint256",
+                name: "tokenId",
+                type: "uint256",
+              },
+              {
+                internalType: "string",
+                name: "tokenURI",
+                type: "string",
+              },
+            ],
+            internalType: "struct IERC721MintableToken.TokenMintData",
+            name: "tokenData",
+            type: "tuple",
+          },
+        ],
+        indexed: false,
+        internalType: "struct IMarketplace.AcceptRequestParams",
+        name: "acceptRequestParams",
+        type: "tuple",
       },
+      {
+        components: [
+          {
+            internalType: "address",
+            name: "requester",
+            type: "address",
+          },
+          {
+            internalType: "address",
+            name: "tokenContract",
+            type: "address",
+          },
+          {
+            internalType: "address",
+            name: "nftContract",
+            type: "address",
+          },
+          {
+            internalType: "uint256",
+            name: "nftId",
+            type: "uint256",
+          },
+          {
+            internalType: "enum IMarketplace.NFTRequestStatus",
+            name: "status",
+            type: "uint8",
+          },
+        ],
+        indexed: false,
+        internalType: "struct IMarketplace.NFTRequestInfo",
+        name: "nftRequestInfo",
+        type: "tuple",
+      },
+    ],
+    name: "TokenSuccessfullyExchanged",
+    type: "event",
+  },
+  {
+    anonymous: false,
+    inputs: [
       {
         indexed: false,
         internalType: "uint256",
@@ -217,6 +359,16 @@ const _abi = [
       },
       {
         components: [
+          {
+            internalType: "address",
+            name: "tokenContract",
+            type: "address",
+          },
+          {
+            internalType: "address",
+            name: "recipient",
+            type: "address",
+          },
           {
             components: [
               {
@@ -245,24 +397,21 @@ const _abi = [
             type: "tuple",
           },
           {
-            internalType: "address",
-            name: "tokenContract",
-            type: "address",
-          },
-          {
-            internalType: "uint256",
-            name: "futureTokenId",
-            type: "uint256",
-          },
-          {
-            internalType: "uint256",
-            name: "endTimestamp",
-            type: "uint256",
-          },
-          {
-            internalType: "string",
-            name: "tokenURI",
-            type: "string",
+            components: [
+              {
+                internalType: "uint256",
+                name: "tokenId",
+                type: "uint256",
+              },
+              {
+                internalType: "string",
+                name: "tokenURI",
+                type: "string",
+              },
+            ],
+            internalType: "struct IERC721MintableToken.TokenMintData",
+            name: "tokenData",
+            type: "tuple",
           },
         ],
         indexed: false,
@@ -302,6 +451,75 @@ const _abi = [
       },
     ],
     name: "__Marketplace_init",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        components: [
+          {
+            internalType: "uint256",
+            name: "requestId",
+            type: "uint256",
+          },
+          {
+            internalType: "address",
+            name: "recipient",
+            type: "address",
+          },
+          {
+            components: [
+              {
+                internalType: "uint256",
+                name: "tokenId",
+                type: "uint256",
+              },
+              {
+                internalType: "string",
+                name: "tokenURI",
+                type: "string",
+              },
+            ],
+            internalType: "struct IERC721MintableToken.TokenMintData",
+            name: "tokenData",
+            type: "tuple",
+          },
+        ],
+        internalType: "struct IMarketplace.AcceptRequestParams",
+        name: "requestParams_",
+        type: "tuple",
+      },
+      {
+        components: [
+          {
+            internalType: "uint256",
+            name: "endSigTimestamp",
+            type: "uint256",
+          },
+          {
+            internalType: "bytes32",
+            name: "r",
+            type: "bytes32",
+          },
+          {
+            internalType: "bytes32",
+            name: "s",
+            type: "bytes32",
+          },
+          {
+            internalType: "uint8",
+            name: "v",
+            type: "uint8",
+          },
+        ],
+        internalType: "struct IMarketplace.SigData",
+        name: "sig_",
+        type: "tuple",
+      },
+    ],
+    name: "acceptRequest",
     outputs: [],
     stateMutability: "nonpayable",
     type: "function",
@@ -355,6 +573,11 @@ const _abi = [
             name: "isDisabled",
             type: "bool",
           },
+          {
+            internalType: "bool",
+            name: "isVoucherBuyable",
+            type: "bool",
+          },
         ],
         internalType: "struct IMarketplace.TokenParams",
         name: "tokenParams_",
@@ -390,6 +613,16 @@ const _abi = [
       {
         components: [
           {
+            internalType: "address",
+            name: "tokenContract",
+            type: "address",
+          },
+          {
+            internalType: "address",
+            name: "recipient",
+            type: "address",
+          },
+          {
             components: [
               {
                 internalType: "address",
@@ -417,24 +650,21 @@ const _abi = [
             type: "tuple",
           },
           {
-            internalType: "address",
-            name: "tokenContract",
-            type: "address",
-          },
-          {
-            internalType: "uint256",
-            name: "futureTokenId",
-            type: "uint256",
-          },
-          {
-            internalType: "uint256",
-            name: "endTimestamp",
-            type: "uint256",
-          },
-          {
-            internalType: "string",
-            name: "tokenURI",
-            type: "string",
+            components: [
+              {
+                internalType: "uint256",
+                name: "tokenId",
+                type: "uint256",
+              },
+              {
+                internalType: "string",
+                name: "tokenURI",
+                type: "string",
+              },
+            ],
+            internalType: "struct IERC721MintableToken.TokenMintData",
+            name: "tokenData",
+            type: "tuple",
           },
         ],
         internalType: "struct IMarketplace.BuyParams",
@@ -443,6 +673,11 @@ const _abi = [
       },
       {
         components: [
+          {
+            internalType: "uint256",
+            name: "endSigTimestamp",
+            type: "uint256",
+          },
           {
             internalType: "bytes32",
             name: "r",
@@ -459,7 +694,7 @@ const _abi = [
             type: "uint8",
           },
         ],
-        internalType: "struct IMarketplace.Sig",
+        internalType: "struct IMarketplace.SigData",
         name: "sig_",
         type: "tuple",
       },
@@ -474,6 +709,16 @@ const _abi = [
       {
         components: [
           {
+            internalType: "address",
+            name: "tokenContract",
+            type: "address",
+          },
+          {
+            internalType: "address",
+            name: "recipient",
+            type: "address",
+          },
+          {
             components: [
               {
                 internalType: "address",
@@ -501,24 +746,21 @@ const _abi = [
             type: "tuple",
           },
           {
-            internalType: "address",
-            name: "tokenContract",
-            type: "address",
-          },
-          {
-            internalType: "uint256",
-            name: "futureTokenId",
-            type: "uint256",
-          },
-          {
-            internalType: "uint256",
-            name: "endTimestamp",
-            type: "uint256",
-          },
-          {
-            internalType: "string",
-            name: "tokenURI",
-            type: "string",
+            components: [
+              {
+                internalType: "uint256",
+                name: "tokenId",
+                type: "uint256",
+              },
+              {
+                internalType: "string",
+                name: "tokenURI",
+                type: "string",
+              },
+            ],
+            internalType: "struct IERC721MintableToken.TokenMintData",
+            name: "tokenData",
+            type: "tuple",
           },
         ],
         internalType: "struct IMarketplace.BuyParams",
@@ -527,6 +769,11 @@ const _abi = [
       },
       {
         components: [
+          {
+            internalType: "uint256",
+            name: "endSigTimestamp",
+            type: "uint256",
+          },
           {
             internalType: "bytes32",
             name: "r",
@@ -543,7 +790,7 @@ const _abi = [
             type: "uint8",
           },
         ],
-        internalType: "struct IMarketplace.Sig",
+        internalType: "struct IMarketplace.SigData",
         name: "sig_",
         type: "tuple",
       },
@@ -558,6 +805,16 @@ const _abi = [
       {
         components: [
           {
+            internalType: "address",
+            name: "tokenContract",
+            type: "address",
+          },
+          {
+            internalType: "address",
+            name: "recipient",
+            type: "address",
+          },
+          {
             components: [
               {
                 internalType: "address",
@@ -585,24 +842,21 @@ const _abi = [
             type: "tuple",
           },
           {
-            internalType: "address",
-            name: "tokenContract",
-            type: "address",
-          },
-          {
-            internalType: "uint256",
-            name: "futureTokenId",
-            type: "uint256",
-          },
-          {
-            internalType: "uint256",
-            name: "endTimestamp",
-            type: "uint256",
-          },
-          {
-            internalType: "string",
-            name: "tokenURI",
-            type: "string",
+            components: [
+              {
+                internalType: "uint256",
+                name: "tokenId",
+                type: "uint256",
+              },
+              {
+                internalType: "string",
+                name: "tokenURI",
+                type: "string",
+              },
+            ],
+            internalType: "struct IERC721MintableToken.TokenMintData",
+            name: "tokenData",
+            type: "tuple",
           },
         ],
         internalType: "struct IMarketplace.BuyParams",
@@ -611,6 +865,11 @@ const _abi = [
       },
       {
         components: [
+          {
+            internalType: "uint256",
+            name: "endSigTimestamp",
+            type: "uint256",
+          },
           {
             internalType: "bytes32",
             name: "r",
@@ -627,7 +886,7 @@ const _abi = [
             type: "uint8",
           },
         ],
-        internalType: "struct IMarketplace.Sig",
+        internalType: "struct IMarketplace.SigData",
         name: "sig_",
         type: "tuple",
       },
@@ -642,6 +901,16 @@ const _abi = [
       {
         components: [
           {
+            internalType: "address",
+            name: "tokenContract",
+            type: "address",
+          },
+          {
+            internalType: "address",
+            name: "recipient",
+            type: "address",
+          },
+          {
             components: [
               {
                 internalType: "address",
@@ -669,24 +938,21 @@ const _abi = [
             type: "tuple",
           },
           {
-            internalType: "address",
-            name: "tokenContract",
-            type: "address",
-          },
-          {
-            internalType: "uint256",
-            name: "futureTokenId",
-            type: "uint256",
-          },
-          {
-            internalType: "uint256",
-            name: "endTimestamp",
-            type: "uint256",
-          },
-          {
-            internalType: "string",
-            name: "tokenURI",
-            type: "string",
+            components: [
+              {
+                internalType: "uint256",
+                name: "tokenId",
+                type: "uint256",
+              },
+              {
+                internalType: "string",
+                name: "tokenURI",
+                type: "string",
+              },
+            ],
+            internalType: "struct IERC721MintableToken.TokenMintData",
+            name: "tokenData",
+            type: "tuple",
           },
         ],
         internalType: "struct IMarketplace.BuyParams",
@@ -695,6 +961,11 @@ const _abi = [
       },
       {
         components: [
+          {
+            internalType: "uint256",
+            name: "endSigTimestamp",
+            type: "uint256",
+          },
           {
             internalType: "bytes32",
             name: "r",
@@ -711,13 +982,82 @@ const _abi = [
             type: "uint8",
           },
         ],
-        internalType: "struct IMarketplace.Sig",
+        internalType: "struct IMarketplace.SigData",
         name: "sig_",
+        type: "tuple",
+      },
+      {
+        components: [
+          {
+            internalType: "uint256",
+            name: "endSigTimestamp",
+            type: "uint256",
+          },
+          {
+            internalType: "bytes32",
+            name: "r",
+            type: "bytes32",
+          },
+          {
+            internalType: "bytes32",
+            name: "s",
+            type: "bytes32",
+          },
+          {
+            internalType: "uint8",
+            name: "v",
+            type: "uint8",
+          },
+        ],
+        internalType: "struct IMarketplace.SigData",
+        name: "permitSig_",
         type: "tuple",
       },
     ],
     name: "buyTokenWithVoucher",
     outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "uint256",
+        name: "requestId_",
+        type: "uint256",
+      },
+    ],
+    name: "cancelNFTRequest",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "address",
+        name: "tokenContract_",
+        type: "address",
+      },
+      {
+        internalType: "address",
+        name: "nftContract_",
+        type: "address",
+      },
+      {
+        internalType: "uint256",
+        name: "nftId_",
+        type: "uint256",
+      },
+    ],
+    name: "createNFTRequest",
+    outputs: [
+      {
+        internalType: "uint256",
+        name: "requestId_",
+        type: "uint256",
+      },
+    ],
     stateMutability: "nonpayable",
     type: "function",
   },
@@ -735,26 +1075,51 @@ const _abi = [
     type: "function",
   },
   {
+    inputs: [],
+    name: "getAllPendingRequestsCount",
+    outputs: [
+      {
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
     inputs: [
       {
         internalType: "address[]",
-        name: "tokenContract_",
+        name: "tokenContracts_",
         type: "address[]",
       },
     ],
-    name: "getBaseTokenParams",
+    name: "getBriefTokenInfo",
     outputs: [
       {
         components: [
           {
-            internalType: "address",
-            name: "tokenContract",
-            type: "address",
-          },
-          {
-            internalType: "bool",
-            name: "isDisabled",
-            type: "bool",
+            components: [
+              {
+                internalType: "address",
+                name: "tokenContract",
+                type: "address",
+              },
+              {
+                internalType: "string",
+                name: "tokenName",
+                type: "string",
+              },
+              {
+                internalType: "string",
+                name: "tokenSymbol",
+                type: "string",
+              },
+            ],
+            internalType: "struct IMarketplace.BaseTokenData",
+            name: "baseTokenData",
+            type: "tuple",
           },
           {
             internalType: "uint256",
@@ -762,12 +1127,12 @@ const _abi = [
             type: "uint256",
           },
           {
-            internalType: "string",
-            name: "tokenName",
-            type: "string",
+            internalType: "bool",
+            name: "isDisabled",
+            type: "bool",
           },
         ],
-        internalType: "struct IMarketplace.BaseTokenParams[]",
+        internalType: "struct IMarketplace.BriefTokenInfo[]",
         name: "baseTokenParams_",
         type: "tuple[]",
       },
@@ -788,19 +1153,31 @@ const _abi = [
         type: "uint256",
       },
     ],
-    name: "getBaseTokenParamsPart",
+    name: "getBriefTokenInfoPart",
     outputs: [
       {
         components: [
           {
-            internalType: "address",
-            name: "tokenContract",
-            type: "address",
-          },
-          {
-            internalType: "bool",
-            name: "isDisabled",
-            type: "bool",
+            components: [
+              {
+                internalType: "address",
+                name: "tokenContract",
+                type: "address",
+              },
+              {
+                internalType: "string",
+                name: "tokenName",
+                type: "string",
+              },
+              {
+                internalType: "string",
+                name: "tokenSymbol",
+                type: "string",
+              },
+            ],
+            internalType: "struct IMarketplace.BaseTokenData",
+            name: "baseTokenData",
+            type: "tuple",
           },
           {
             internalType: "uint256",
@@ -808,12 +1185,12 @@ const _abi = [
             type: "uint256",
           },
           {
-            internalType: "string",
-            name: "tokenName",
-            type: "string",
+            internalType: "bool",
+            name: "isDisabled",
+            type: "bool",
           },
         ],
-        internalType: "struct IMarketplace.BaseTokenParams[]",
+        internalType: "struct IMarketplace.BriefTokenInfo[]",
         name: "",
         type: "tuple[]",
       },
@@ -829,14 +1206,31 @@ const _abi = [
         type: "address[]",
       },
     ],
-    name: "getDetailedTokenParams",
+    name: "getDetailedTokenInfo",
     outputs: [
       {
         components: [
           {
-            internalType: "address",
-            name: "tokenContract",
-            type: "address",
+            components: [
+              {
+                internalType: "address",
+                name: "tokenContract",
+                type: "address",
+              },
+              {
+                internalType: "string",
+                name: "tokenName",
+                type: "string",
+              },
+              {
+                internalType: "string",
+                name: "tokenSymbol",
+                type: "string",
+              },
+            ],
+            internalType: "struct IMarketplace.BaseTokenData",
+            name: "baseTokenData",
+            type: "tuple",
           },
           {
             components: [
@@ -875,23 +1269,18 @@ const _abi = [
                 name: "isDisabled",
                 type: "bool",
               },
+              {
+                internalType: "bool",
+                name: "isVoucherBuyable",
+                type: "bool",
+              },
             ],
             internalType: "struct IMarketplace.TokenParams",
             name: "tokenParams",
             type: "tuple",
           },
-          {
-            internalType: "string",
-            name: "tokenName",
-            type: "string",
-          },
-          {
-            internalType: "string",
-            name: "tokenSymbol",
-            type: "string",
-          },
         ],
-        internalType: "struct IMarketplace.DetailedTokenParams[]",
+        internalType: "struct IMarketplace.DetailedTokenInfo[]",
         name: "detailedTokenParams_",
         type: "tuple[]",
       },
@@ -912,14 +1301,31 @@ const _abi = [
         type: "uint256",
       },
     ],
-    name: "getDetailedTokenParamsPart",
+    name: "getDetailedTokenInfoPart",
     outputs: [
       {
         components: [
           {
-            internalType: "address",
-            name: "tokenContract",
-            type: "address",
+            components: [
+              {
+                internalType: "address",
+                name: "tokenContract",
+                type: "address",
+              },
+              {
+                internalType: "string",
+                name: "tokenName",
+                type: "string",
+              },
+              {
+                internalType: "string",
+                name: "tokenSymbol",
+                type: "string",
+              },
+            ],
+            internalType: "struct IMarketplace.BaseTokenData",
+            name: "baseTokenData",
+            type: "tuple",
           },
           {
             components: [
@@ -958,23 +1364,18 @@ const _abi = [
                 name: "isDisabled",
                 type: "bool",
               },
+              {
+                internalType: "bool",
+                name: "isVoucherBuyable",
+                type: "bool",
+              },
             ],
             internalType: "struct IMarketplace.TokenParams",
             name: "tokenParams",
             type: "tuple",
           },
-          {
-            internalType: "string",
-            name: "tokenName",
-            type: "string",
-          },
-          {
-            internalType: "string",
-            name: "tokenSymbol",
-            type: "string",
-          },
         ],
-        internalType: "struct IMarketplace.DetailedTokenParams[]",
+        internalType: "struct IMarketplace.DetailedTokenInfo[]",
         name: "",
         type: "tuple[]",
       },
@@ -990,6 +1391,76 @@ const _abi = [
         internalType: "address",
         name: "injector_",
         type: "address",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "uint256[]",
+        name: "requestsId_",
+        type: "uint256[]",
+      },
+    ],
+    name: "getNFTRequestsInfo",
+    outputs: [
+      {
+        components: [
+          {
+            internalType: "address",
+            name: "requester",
+            type: "address",
+          },
+          {
+            internalType: "address",
+            name: "tokenContract",
+            type: "address",
+          },
+          {
+            internalType: "address",
+            name: "nftContract",
+            type: "address",
+          },
+          {
+            internalType: "uint256",
+            name: "nftId",
+            type: "uint256",
+          },
+          {
+            internalType: "enum IMarketplace.NFTRequestStatus",
+            name: "status",
+            type: "uint8",
+          },
+        ],
+        internalType: "struct IMarketplace.NFTRequestInfo[]",
+        name: "nftRequestsInfo_",
+        type: "tuple[]",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "uint256",
+        name: "offset_",
+        type: "uint256",
+      },
+      {
+        internalType: "uint256",
+        name: "limit_",
+        type: "uint256",
+      },
+    ],
+    name: "getPendingRequestsPart",
+    outputs: [
+      {
+        internalType: "uint256[]",
+        name: "",
+        type: "uint256[]",
       },
     ],
     stateMutability: "view",
@@ -1039,6 +1510,54 @@ const _abi = [
         name: "userAddr_",
         type: "address",
       },
+    ],
+    name: "getUserPendingRequestsCount",
+    outputs: [
+      {
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "address",
+        name: "userAddr_",
+        type: "address",
+      },
+      {
+        internalType: "uint256",
+        name: "offset_",
+        type: "uint256",
+      },
+      {
+        internalType: "uint256",
+        name: "limit_",
+        type: "uint256",
+      },
+    ],
+    name: "getUserPendingRequestsPart",
+    outputs: [
+      {
+        internalType: "uint256[]",
+        name: "",
+        type: "uint256[]",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "address",
+        name: "userAddr_",
+        type: "address",
+      },
       {
         internalType: "uint256",
         name: "offset_",
@@ -1068,6 +1587,19 @@ const _abi = [
         internalType: "struct IMarketplace.UserTokens[]",
         name: "userTokens_",
         type: "tuple[]",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "nextRequestId",
+    outputs: [
+      {
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
       },
     ],
     stateMutability: "view",
@@ -1186,16 +1718,6 @@ const _abi = [
         type: "address",
       },
       {
-        internalType: "string",
-        name: "name_",
-        type: "string",
-      },
-      {
-        internalType: "string",
-        name: "symbol_",
-        type: "string",
-      },
-      {
         components: [
           {
             internalType: "uint256",
@@ -1232,13 +1754,18 @@ const _abi = [
             name: "isDisabled",
             type: "bool",
           },
+          {
+            internalType: "bool",
+            name: "isVoucherBuyable",
+            type: "bool",
+          },
         ],
         internalType: "struct IMarketplace.TokenParams",
         name: "newTokenParams_",
         type: "tuple",
       },
     ],
-    name: "updateAllParams",
+    name: "updateTokenParams",
     outputs: [],
     stateMutability: "nonpayable",
     type: "function",
@@ -1255,8 +1782,41 @@ const _abi = [
         name: "recipient_",
         type: "address",
       },
+      {
+        internalType: "uint256",
+        name: "desiredAmount_",
+        type: "uint256",
+      },
+      {
+        internalType: "bool",
+        name: "withdrawAll_",
+        type: "bool",
+      },
     ],
     name: "withdrawCurrency",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "contract IERC721",
+        name: "nft_",
+        type: "address",
+      },
+      {
+        internalType: "address",
+        name: "recipient_",
+        type: "address",
+      },
+      {
+        internalType: "uint256[]",
+        name: "tokenIds_",
+        type: "uint256[]",
+      },
+    ],
+    name: "withdrawNFTs",
     outputs: [],
     stateMutability: "nonpayable",
     type: "function",
