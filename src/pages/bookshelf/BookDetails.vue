@@ -35,7 +35,6 @@ import { FullBookInfo } from '@/composables'
 import { getNetworkScheme, getIconByScheme } from '@/helpers'
 import { useNetworksStore } from '@/store'
 import { useI18n } from 'vue-i18n'
-import { ethers } from 'ethers'
 
 type BookDetails = {
   label: string
@@ -69,10 +68,9 @@ const getDetails = (): BookDetails[] => {
     })),
     {
       label: t('book-details.voucher-token-lbl'),
-      icon:
-        props.book.voucherTokenContract !== ethers.constants.AddressZero
-          ? ICON_NAMES.okCircle
-          : ICON_NAMES.deleteCircle,
+      icon: props.book.isVoucherBuyable
+        ? ICON_NAMES.okCircle
+        : ICON_NAMES.deleteCircle,
     },
     {
       label: t('book-details.nft-lbl'),
