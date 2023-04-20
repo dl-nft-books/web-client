@@ -34,7 +34,10 @@
               "
               :voucher-link="
                 book.voucherTokenContract !== ethers.constants.AddressZero
-                  ? getBlockExplorerLink(book.chain_id, book.voucher_token)
+                  ? getBlockExplorerLink(
+                    provider.chainId!,
+                    book.voucherTokenContract,
+                  )
                   : undefined
               "
             />

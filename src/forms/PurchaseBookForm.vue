@@ -52,7 +52,10 @@
     </template>
 
     <template #step2>
-      <image-editor ref="editorInstance" :image-url="testImage" />
+      <image-editor
+        ref="editorInstance"
+        :image-url="book.banner.attributes.url"
+      />
     </template>
   </steps-form>
 </template>
@@ -100,9 +103,6 @@ import { required } from '@/validators'
 import loaderAnimation from '@/assets/animations/loader.json'
 import { ethers } from 'ethers'
 
-const testImage =
-  'https://tokend-nftbooks.s3.us-east-2.amazonaws.com/f6391766-11b1-48cf-aa55-811948c26bd9.png'
-
 export type ExposedFormRef = {
   isFormValid: () => boolean
   promocode: Ref<Promocode | null>
@@ -127,8 +127,12 @@ const emit = defineEmits<{
 const web3ProvidersStore = useWeb3ProvidersStore()
 const provider = computed(() => web3ProvidersStore.provider)
 
-const { createNewGenerationTask, getMintSignature, uploadBanner } =
-  useGenerator()
+const {
+  createNewGenerationTask,
+  getMintSignature,
+  uploadBanner,
+  sendBuyWithVoucherRequest,
+} = useGenerator()
 const { mintWithErc20, mintWithEth, mintWithNft, approveTokenSpend } =
   useNftTokens()
 
@@ -204,8 +208,6 @@ const tokenTypesOptions = computed(() => {
 
   return defaultOptions
 })
-
-// Minting with ERC721 requires to invoke different mint function on contract
 const mintToken = async (
   mintSignature: MintSignatureResponse,
   generatedTask: Task,
@@ -213,6 +215,8 @@ const mintToken = async (
   tokenId?: string,
   nativeTokenAmount?: string,
 ) => {
+  if (!provider.value.selectedAddress) return
+
   const bookContract = props.book.networks.find(
     el => el.attributes.chain_id === Number(provider.value.chainId),
   )
@@ -227,9 +231,11 @@ const mintToken = async (
       await mintWithEth(
         {
           tokenContract: bookContract.attributes.contract_address,
-          tokenURI: generatedTask.metadata_ipfs_hash,
-          endTimestamp: mintSignature.end_timestamp,
-          futureTokenId: mintSignature.token_id.toString(),
+          recipient: provider.value.selectedAddress,
+          tokenData: {
+            tokenId: mintSignature.token_id.toString(),
+            tokenURI: generatedTask.metadata_ipfs_hash,
+          },
           paymentDetails: {
             paymentTokenAddress: ethers.constants.AddressZero,
             paymentTokenPrice: mintSignature.price,
@@ -237,7 +243,10 @@ const mintToken = async (
             discount: mintSignature.discount,
           },
         },
-        mintSignature.signature,
+        {
+          ...mintSignature.signature,
+          endSigTimestamp: mintSignature.end_timestamp,
+        },
         nativeTokenAmount,
       )
       break
@@ -247,9 +256,11 @@ const mintToken = async (
       await mintWithErc20(
         {
           tokenContract: bookContract.attributes.contract_address,
-          tokenURI: generatedTask.metadata_ipfs_hash,
-          endTimestamp: mintSignature.end_timestamp,
-          futureTokenId: mintSignature.token_id.toString(),
+          recipient: provider.value.selectedAddress,
+          tokenData: {
+            tokenId: mintSignature.token_id.toString(),
+            tokenURI: generatedTask.metadata_ipfs_hash,
+          },
           paymentDetails: {
             paymentTokenAddress: tokenAddress,
             paymentTokenPrice: mintSignature.price,
@@ -257,7 +268,10 @@ const mintToken = async (
             discount: mintSignature.discount,
           },
         },
-        mintSignature.signature,
+        {
+          ...mintSignature.signature,
+          endSigTimestamp: mintSignature.end_timestamp,
+        },
       )
       break
     case TOKEN_TYPES.nft: {
@@ -266,9 +280,11 @@ const mintToken = async (
       await mintWithNft(
         {
           tokenContract: bookContract.attributes.contract_address,
-          tokenURI: generatedTask.metadata_ipfs_hash,
-          endTimestamp: mintSignature.end_timestamp,
-          futureTokenId: mintSignature.token_id.toString(),
+          recipient: provider.value.selectedAddress,
+          tokenData: {
+            tokenId: mintSignature.token_id.toString(),
+            tokenURI: generatedTask.metadata_ipfs_hash,
+          },
           paymentDetails: {
             paymentTokenAddress: tokenAddress,
             paymentTokenPrice: mintSignature.price,
@@ -276,7 +292,10 @@ const mintToken = async (
             discount: mintSignature.discount,
           },
         },
-        mintSignature.signature,
+        {
+          ...mintSignature.signature,
+          endSigTimestamp: mintSignature.end_timestamp,
+        },
       )
       break
     }
@@ -333,8 +352,17 @@ const submit = async (editorFromTemplate: UseImageEditor | null) => {
 
     const generatedTask = await uploadBanner(currentTask.id, banner)
 
-    //  = await getGeneratedTask(currentTask.id)
+    if (form.tokenType === TOKEN_TYPES.voucher) {
+      await sendBuyWithVoucherRequest(
+        props.book.voucherTokenContract,
+        props.book.voucherTokensAmount,
+        Number(generatedTask.id),
+      )
+      emit('submitting', false)
+      emit('submit')
 
+      return
+    }
     const mintSignature = await getMintSignature(
       props.currentPlatform.id,
       generatedTask.id,

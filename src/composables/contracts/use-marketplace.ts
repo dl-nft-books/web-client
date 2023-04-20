@@ -11,6 +11,7 @@ export type TokenParams = {
   fundsRecipient: string
   isNFTBuyable: boolean
   isDisabled: boolean
+  isVoucherBuyable: boolean
 }
 
 export type PaymentDetails = {
@@ -23,8 +24,12 @@ export type PaymentDetails = {
 export type BuyParams = {
   paymentDetails: PaymentDetails
   tokenContract: string
-  futureTokenId: string
-  endTimestamp: number
+  recipient: string
+  tokenData: TokenMintData
+}
+
+export type TokenMintData = {
+  tokenId: string
   tokenURI: string
 }
 
@@ -32,6 +37,7 @@ export type Signature = {
   r: string
   s: string
   v: number
+  endSigTimestamp: number
 }
 
 export const useMarketplace = (address?: string) => {
@@ -71,7 +77,7 @@ export const useMarketplace = (address?: string) => {
     try {
       if (!contractInstance.value) return
 
-      const data = await contractInstance.value.getDetailedTokenParams(
+      const data = await contractInstance.value.getDetailedTokenInfo(
         tokenContracts,
       )
 
@@ -112,7 +118,7 @@ export const useMarketplace = (address?: string) => {
     try {
       if (!contractInstance.value) return
 
-      const data = await contractInstance.value.getBaseTokenParamsPart(
+      const data = await contractInstance.value.getBriefTokenInfoPart(
         offset,
         limit,
       )
