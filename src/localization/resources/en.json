@@ -86,7 +86,7 @@
   },
   "bookshelf-header": {
     "title": "Create your nft library",
-    "subtitle": "Every book with your personal sign inside"
+    "subtitle": "Buy a book and get it as NFT with a personalised design"
   },
   "book-details": {
     "voucher-token-lbl": "Buy with a voucher token",
@@ -268,7 +268,7 @@
     "loading-error-msg": "Oops.... Something went wrong",
     "purchase-btn": "BUY",
     "badge-1": "For any acceptable token",
-    "badge-2": "Add your personal sign",
+    "badge-2": "Draw your personal banner",
     "network-title": "Supported by",
     "connect-btn": "Connect Wallet",
     "description-lbl": "Show full description"

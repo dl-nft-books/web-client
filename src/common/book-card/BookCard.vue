@@ -1,5 +1,5 @@
 <template>
-  <div :class="bookCardClasses">
+  <div :class="bookCardClasses" @click="redirect">
     <div class="book-card__cover-wrp">
       <img :src="bannerUrl" :alt="title" class="book-card__cover" />
       <book-card-network
@@ -32,6 +32,7 @@ import { computed } from 'vue'
 import { BaseBookInfo, TokenBaseInfo, useNftTokens } from '@/composables'
 import { ROUTE_NAMES, CURRENCIES, NETWORKS } from '@/enums'
 import { useI18n } from 'vue-i18n'
+import { router } from '@/router'
 
 type SCHEME = 'book' | 'nft'
 
@@ -76,6 +77,21 @@ const actionButtonLink = computed(() =>
     : { name: ROUTE_NAMES.bookshelfItem, params: { id: props.book.id } },
 )
 
+const redirect = () => {
+  if (isNftToken(props.book)) {
+    router.push({
+      name: ROUTE_NAMES.myNftItem,
+      params: { id: props.book.tokenId, contract: props.book.tokenContract },
+    })
+    return
+  }
+
+  router.push({
+    name: ROUTE_NAMES.bookshelfItem,
+    params: { id: props.book.id },
+  })
+}
+
 const bannerUrl = computed(() =>
   isNftToken(props.book)
     ? props.book.metadata.image
@@ -110,6 +126,13 @@ const formatNetworks = (): NETWORKS[] => {
   padding: toRem(16) toRem(16) toRem(20);
   background-color: var(--background-primary-main);
   border: toRem(1) solid var(--border-primary-main);
+  transition: 0.2s ease-in-out;
+  transition-property: transform;
+
+  &:hover {
+    cursor: pointer;
+    transform: scale(1.02);
+  }
 
   &--right {
     justify-content: flex-end;
