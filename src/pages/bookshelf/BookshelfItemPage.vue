@@ -100,17 +100,19 @@ import {
 } from '@/common'
 
 import { BookDetails } from '@/pages/bookshelf'
-import { ref, watch } from 'vue'
+import { ref, watch, computed } from 'vue'
 import { ErrorHandler } from '@/helpers'
 
 import { FullBookInfo, useBooks } from '@/composables'
-import { useWeb3ProvidersStore } from '@/store'
-import { storeToRefs } from 'pinia'
+import { useWeb3ProvidersStore, useNetworksStore } from '@/store'
 
 const props = defineProps<{
   id: string
 }>()
-const { provider } = storeToRefs(useWeb3ProvidersStore())
+
+const networkStore = useNetworksStore()
+const web3Store = useWeb3ProvidersStore()
+const provider = computed(() => web3Store.provider)
 
 const isLoaded = ref(false)
 const isLoadFailed = ref(false)
@@ -131,6 +133,7 @@ const submit = async () => {
 }
 
 const init = async () => {
+  isLoaded.value = false
   try {
     const data = await getBookById(props.id)
 
@@ -148,6 +151,20 @@ watch(
     if (!value) {
       isPurchaseModalShown.value = false
     }
+  },
+)
+
+watch(
+  () => provider.value.chainId,
+  () => {
+    if (
+      !networkStore.list.some(
+        network => network.chain_id === Number(provider.value.chainId),
+      )
+    )
+      return
+
+    init()
   },
 )
 
