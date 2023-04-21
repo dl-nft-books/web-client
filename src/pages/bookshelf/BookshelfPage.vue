@@ -77,7 +77,9 @@ const loadList = computed(
     getBooksFromContract(
       limit,
       offset,
-      provider.value.chainId ?? config.DEFAULT_CHAIN_ID,
+      provider.value.isConnected
+        ? provider.value.chainId
+        : config.DEFAULT_CHAIN_ID,
     ),
 )
 
