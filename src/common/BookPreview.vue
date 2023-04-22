@@ -69,6 +69,7 @@ const price = computed(() =>
   flex: 1;
   justify-content: space-between;
   align-items: center;
+  gap: toRem(10);
   padding-top: toRem(40);
 }
 
@@ -81,6 +82,8 @@ const price = computed(() =>
   filter: drop-shadow(0 toRem(4) toRem(8) rgba(var(--shadow-color), 0.25));
   max-width: toRem(120);
   max-height: toRem(120);
+  min-width: toRem(100);
+  min-height: toRem(100);
 }
 
 .book-preview__img {
@@ -94,7 +97,6 @@ const price = computed(() =>
 .book-preview__details {
   display: flex;
   flex-direction: column;
-  width: 100%;
 }
 
 .book-preview__title {
@@ -117,5 +119,8 @@ const price = computed(() =>
   line-height: 1.2;
   font-weight: 900;
   color: var(--primary-main);
+  max-width: toRem(120);
+
+  @include text-ellipsis;
 }
 </style>

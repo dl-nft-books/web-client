@@ -193,6 +193,7 @@ watch(
 watch(
   () => [provider.value.selectedAddress, form.tokenAddress],
   () => {
+    nftPrice.value = null
     loadBalanceAndPrice()
     form.tokenId = ''
   },

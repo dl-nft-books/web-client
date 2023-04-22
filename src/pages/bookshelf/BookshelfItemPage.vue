@@ -265,6 +265,7 @@ init()
   padding: toRem(20);
   max-width: 100%;
   word-break: break-all;
+  white-space: pre-wrap;
 }
 
 .bookshelf-item-page__description-icon {
