@@ -58,6 +58,7 @@ import { BaseBookInfo, useBooks, useContractPagination } from '@/composables'
 import { BookshelfHeader } from '@/pages/bookshelf'
 import { useNetworksStore, useWeb3ProvidersStore } from '@/store'
 import { config } from '@/config'
+import { DateUtil } from '@distributedlab/utils'
 
 const networkStore = useNetworksStore()
 const webProvidersStore = useWeb3ProvidersStore()
@@ -90,14 +91,21 @@ const { loadNextPage, isLoading, isLoadMoreBtnShown } = useContractPagination(
   onError,
 )
 
+// filtering disabled books and sorting to show user the newest books first
+const processBookList = (bookList: BaseBookInfo[]) => {
+  return bookList
+    .filter(book => !book.isDisabled)
+    .sort((oneBook, anotherBook) =>
+      DateUtil.isBefore(oneBook.created_at, anotherBook.created_at) ? 1 : -1,
+    )
+}
+
 function setList(chunk: BaseBookInfo[]) {
-  books.value = chunk ? chunk.filter(book => !book.isDisabled) : []
+  books.value = chunk.length ? processBookList(chunk) : []
 }
 
 function concatList(chunk: BaseBookInfo[]) {
-  books.value = books.value.concat(
-    chunk ? chunk.filter(book => !book.isDisabled) : [],
-  )
+  books.value = processBookList(books.value.concat(chunk.length ? chunk : []))
 }
 
 function onError(e: Error) {

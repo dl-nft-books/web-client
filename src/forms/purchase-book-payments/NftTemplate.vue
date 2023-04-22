@@ -17,7 +17,7 @@
       :subtitle="$t('nft-template.unsupported-token-subtitle')"
     />
 
-    <error-message v-else :message="$t('nft-template.loading-error-msg')" />
+    <message-field v-else :title="$t('nft-template.loading-error-msg')" />
   </template>
 
   <template v-else-if="nftPrice">
@@ -69,7 +69,7 @@ import {
   MessageField,
 } from '@/fields'
 
-import { ErrorMessage, Loader } from '@/common'
+import { Loader } from '@/common'
 import {
   useBalance,
   useFormValidation,
@@ -180,7 +180,7 @@ const onTokenIdInput = async () => {
 }
 
 defineExpose<Omit<ExposedFormRef, 'promocode' | 'tokenAmount' | 'tokenPrice'>>({
-  isFormValid: () => isFormValid() && !isGenerateButtonDisabled.value,
+  isFormValid: () => !isGenerateButtonDisabled.value && isFormValid(),
   tokenAddress: toRef(form, 'tokenAddress'),
   tokenId: toRef(form, 'tokenId'),
 })

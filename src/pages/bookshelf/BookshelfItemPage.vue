@@ -1,11 +1,7 @@
 <template>
   <div class="bookshelf-item-page">
     <template v-if="isLoaded">
-      <error-message
-        v-if="isLoadFailed"
-        :message="$t('bookshelf-item-page.loading-error-msg')"
-      />
-      <template v-else-if="book">
+      <template v-if="book">
         <div class="bookshelf-item-page__cover-wrp">
           <img
             :src="book.banner.attributes.url"
@@ -90,7 +86,6 @@
 <script lang="ts" setup>
 import {
   Loader,
-  ErrorMessage,
   AppButton,
   PurchasingModal,
   PurchasingSuccessModal,
@@ -105,6 +100,8 @@ import { ErrorHandler } from '@/helpers'
 
 import { FullBookInfo, useBooks } from '@/composables'
 import { useWeb3ProvidersStore, useNetworksStore } from '@/store'
+import { router } from '@/router'
+import { ROUTE_NAMES } from '@/enums'
 
 const props = defineProps<{
   id: string
@@ -115,7 +112,6 @@ const web3Store = useWeb3ProvidersStore()
 const provider = computed(() => web3Store.provider)
 
 const isLoaded = ref(false)
-const isLoadFailed = ref(false)
 const isPurchaseModalShown = ref(false)
 const isPurchaseSuccessModalShown = ref(false)
 
@@ -140,7 +136,7 @@ const init = async () => {
     book.value = data
   } catch (error) {
     ErrorHandler.processWithoutFeedback(error)
-    isLoadFailed.value = true
+    router.push({ name: ROUTE_NAMES.bookshelf })
   }
   isLoaded.value = true
 }
@@ -192,9 +188,6 @@ init()
     display: flex;
     flex-direction: column;
     row-gap: toRem(40);
-    background: url('/images/background-cubes.png') no-repeat right top /
-      contain;
-    background-size: clamp(toRem(300), 50%, toRem(500));
   }
 
   @include respond-to(small) {

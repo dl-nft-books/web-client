@@ -180,10 +180,6 @@ const tokenTypesOptions = computed(() => {
       label: globalizeTokenType(TOKEN_TYPES.native),
       value: TOKEN_TYPES.native,
     },
-    {
-      label: globalizeTokenType(TOKEN_TYPES.voucher),
-      value: TOKEN_TYPES.voucher,
-    },
   ]
 
   /* 
@@ -196,6 +192,13 @@ const tokenTypesOptions = computed(() => {
     defaultOptions.push({
       label: globalizeTokenType(TOKEN_TYPES.erc20),
       value: TOKEN_TYPES.erc20,
+    })
+  }
+
+  if (props.book.isVoucherBuyable) {
+    defaultOptions.push({
+      label: globalizeTokenType(TOKEN_TYPES.voucher),
+      value: TOKEN_TYPES.voucher,
     })
   }
 

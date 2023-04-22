@@ -45,6 +45,6 @@ defineProps<{
 .book-card-network__icon {
   max-width: toRem(22);
   max-height: toRem(22);
-  color: var(--primary-main);
+  color: var(--text-primary-light);
 }
 </style>

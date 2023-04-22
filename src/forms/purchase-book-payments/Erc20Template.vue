@@ -119,9 +119,9 @@ const isEnoughBalanceForBuy = computed(
 
 defineExpose<ExposedFormRef>({
   isFormValid: () =>
-    isFormValid() &&
     promocodeRef.value?.isPromocodeValid() &&
-    isEnoughBalanceForBuy.value,
+    isEnoughBalanceForBuy.value &&
+    isFormValid(),
   tokenAmount: formattedTokenAmount,
   tokenPrice: tokenPrice,
   tokenAddress: toRef(form, 'tokenAddress'),

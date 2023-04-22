@@ -95,8 +95,10 @@ const KurbatovQuotes = [
       height: var(--bg-height);
 
       @include respond-to(medium) {
+        --bg-height: #{toRem(600)};
+
         width: 100%;
-        border-radius: 0;
+        border-radius: toRem(30);
       }
     }
   }

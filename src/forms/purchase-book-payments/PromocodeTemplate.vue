@@ -101,7 +101,7 @@ const onPromocodeInput = async () => {
 const handlePromocodeInput = debounce(onPromocodeInput, 400)
 
 defineExpose<ExposedPromocodeRef>({
-  isPromocodeValid,
+  isPromocodeValid: () => isPromocodeValid() && !promocodeInfo.error,
   tokenPrice,
   promocode: toRef(promocodeInfo, 'promocode'),
 })

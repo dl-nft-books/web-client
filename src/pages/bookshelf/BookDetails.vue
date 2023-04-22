@@ -18,7 +18,11 @@
           class="book-details__row-icon"
           :name="item.icon"
         />
-        <p v-if="item.value">
+        <p
+          v-if="item.value"
+          class="book-details__row-value-item"
+          :class="{ 'book-details__row-value-item--iconed': item.icon }"
+        >
           {{ item.value }}
         </p>
       </div>
@@ -112,11 +116,6 @@ const details: BookDetails[] = getDetails().filter(
   display: grid;
   grid-template-columns: 70% 1fr;
   grid-gap: toRem(20);
-
-  @include respond-to(small) {
-    grid-template-columns: 1fr;
-    grid-gap: toRem(10);
-  }
 }
 
 .book-details__row-label {
@@ -159,5 +158,13 @@ const details: BookDetails[] = getDetails().filter(
   height: toRem(24);
   min-width: toRem(24);
   color: var(--primary-light);
+}
+
+.book-details__row-value-item {
+  &--iconed {
+    @include respond-to(small) {
+      display: none;
+    }
+  }
 }
 </style>

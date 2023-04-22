@@ -87,7 +87,7 @@ const SOCIAL_LINKS = [
 
   @include respond-to(medium) {
     flex-direction: column;
-    row-gap: toRem(25);
+    gap: toRem(15);
   }
 }
 
@@ -101,12 +101,17 @@ const SOCIAL_LINKS = [
   @include respond-to(small) {
     flex-direction: column;
     align-items: center;
+    margin-bottom: toRem(15);
   }
 }
 
 .app-footer__text-link {
   font-weight: 500;
   color: var(--text-primary-light);
+
+  @include respond-to(small) {
+    padding: toRem(12) 0;
+  }
 }
 
 .app-footer__social-links {

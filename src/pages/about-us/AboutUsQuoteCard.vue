@@ -98,7 +98,7 @@ const cardClasses = computed(() => [
 .about-us-quote-card__image-wrapper {
   display: flex;
   flex-direction: column;
-  align-content: flex-end;
+  align-content: flex-start;
   width: max-content;
   transform: translate(toRem(-65), toRem(-40));
 
@@ -122,6 +122,10 @@ const cardClasses = computed(() => [
   align-self: flex-end;
   border-radius: toRem(10);
 
+  .about-us-quote-card--reverse & {
+    align-self: flex-start;
+  }
+
   @include respond-to(medium) {
     align-self: center;
     max-width: toRem(200);
@@ -132,11 +136,15 @@ const cardClasses = computed(() => [
   text-transform: uppercase;
   margin-top: toRem(25);
   align-self: flex-end;
-  text-align: center;
+  text-align: right;
   width: toRem(300);
 
   @include respond-to(medium) {
     align-self: center;
+  }
+
+  .about-us-quote-card--reverse & {
+    text-align: left;
   }
 
   .about-us-quote-card__wrapper--dark & {
@@ -154,14 +162,17 @@ const cardClasses = computed(() => [
   line-height: 120%;
   text-transform: uppercase;
   margin-top: toRem(10);
-  text-align: center;
+  text-align: right;
 
   @include respond-to(medium) {
     align-self: center;
   }
 
+  .about-us-quote-card--reverse & {
+    text-align: left;
+  }
+
   .about-us-quote-card__wrapper--dark & {
-    align-self: flex-start;
     color: var(--text-primary-invert-main);
 
     @include respond-to(medium) {
