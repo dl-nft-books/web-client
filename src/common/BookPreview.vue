@@ -97,6 +97,7 @@ const price = computed(() =>
 .book-preview__details {
   display: flex;
   flex-direction: column;
+  max-width: 60%;
 }
 
 .book-preview__title {
@@ -104,13 +105,8 @@ const price = computed(() =>
   font-size: toRem(18);
   line-height: 1.2;
   font-weight: 600;
-  max-width: toRem(300);
 
   @include text-ellipsis;
-
-  @include respond-to(medium) {
-    max-width: toRem(200);
-  }
 }
 
 .book-preview__price {
@@ -119,7 +115,6 @@ const price = computed(() =>
   line-height: 1.2;
   font-weight: 900;
   color: var(--primary-main);
-  max-width: toRem(120);
 
   @include text-ellipsis;
 }
