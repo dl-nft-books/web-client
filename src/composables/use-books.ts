@@ -104,8 +104,6 @@ export function useBooks(contractRegistryAddress?: string) {
       el => el.attributes.chain_id === Number(provider.value.chainId),
     )
 
-    // console.log(bookNetwork, provider.value.chainId)
-
     if (!bookNetwork) throw new Error('failed to get appropriate info source')
 
     _initContractRegistry(bookNetwork.attributes.chain_id)

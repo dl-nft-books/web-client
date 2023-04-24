@@ -38,8 +38,7 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, computed, watch } from 'vue'
-import { debounce } from 'lodash'
+import { ref, computed } from 'vue'
 
 import {
   Loader,
@@ -64,9 +63,6 @@ const { getBooksFromContract } = useBooks()
 
 const isLoadFailed = ref(false)
 const books = ref<BaseBookInfo[]>([])
-
-const searchByString = ref('')
-const searchModel = ref('')
 
 const loadList = computed(
   () => (limit: number, offset: number) =>
@@ -98,13 +94,6 @@ function onError(e: Error) {
   ErrorHandler.processWithoutFeedback(e)
   isLoadFailed.value = true
 }
-
-watch(
-  searchModel,
-  debounce(() => {
-    searchByString.value = searchModel.value
-  }, 200),
-)
 </script>
 
 <style lang="scss" scoped>
