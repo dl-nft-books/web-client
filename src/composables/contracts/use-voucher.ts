@@ -4,7 +4,7 @@ import { Voucher__factory, EthProviderRpcError } from '@/types'
 import { handleEthError } from '@/helpers'
 import { DateUtil } from '@distributedlab/utils'
 import { ethers } from 'ethers'
-import { Signature } from '@/composables'
+import { Signature } from '@/types'
 
 const CONTRACT_VERSION = '1'
 const CONTRACT_NAME = 'Voucher'

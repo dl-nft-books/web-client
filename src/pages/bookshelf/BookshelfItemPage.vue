@@ -109,7 +109,8 @@ import {
   getBlockExplorerLink,
 } from '@/helpers'
 import { CURRENCIES } from '@/enums'
-import { FullBookInfo, useBooks } from '@/composables'
+import { useBooks } from '@/composables'
+import { FullBookInfo } from '@/types'
 import { useWeb3ProvidersStore, useNetworksStore } from '@/store'
 import { storeToRefs } from 'pinia'
 import { ethers } from 'ethers'

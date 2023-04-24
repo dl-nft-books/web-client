@@ -73,7 +73,10 @@ const actionButtonLink = computed(() =>
   isNftToken(props.book)
     ? {
         name: ROUTE_NAMES.myNftItem,
-        params: { id: props.book.tokenId, contract: props.book.tokenContract },
+        params: {
+          id: props.book.tokenId,
+          contractAddress: props.book.tokenContract,
+        },
       }
     : { name: ROUTE_NAMES.bookshelfItem, params: { id: props.book.id } },
 )

@@ -50,11 +50,12 @@ import {
 
 import { ErrorHandler } from '@/helpers'
 import { ref, computed } from 'vue'
-import { useNftTokens, TokenFullInfo, useErc721 } from '@/composables'
+import { useNftTokens, useErc721 } from '@/composables'
 import { useI18n } from 'vue-i18n'
 import { useWeb3ProvidersStore } from '@/store'
 import { router } from '@/router'
 import { ROUTE_NAMES } from '@/enums'
+import { TokenFullInfo } from '@/types'
 
 const { t } = useI18n()
 const { getNft } = useNftTokens()
@@ -76,7 +77,7 @@ const TABS = {
 
 const props = defineProps<{
   id: string
-  contract: string
+  contractAddress: string
 }>()
 
 const isLoaded = ref(false)
@@ -87,7 +88,7 @@ const nftToken = ref<TokenFullInfo | undefined>()
 
 const init = async () => {
   try {
-    const data = await getNft(props.contract, props.id)
+    const data = await getNft(props.contractAddress, props.id)
     initErc721(data.tokenContract)
 
     const owner = await getOwner(data.tokenId)

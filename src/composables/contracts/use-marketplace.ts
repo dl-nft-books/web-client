@@ -3,24 +3,6 @@ import { computed, ref } from 'vue'
 import { MarketPlace__factory, EthProviderRpcError } from '@/types'
 import { handleEthError } from '@/helpers'
 
-export type TokenParams = {
-  pricePerOneToken: string
-  minNFTFloorPrice: string
-  voucherTokensAmount: string
-  voucherTokenContract: string
-  fundsRecipient: string
-  isNFTBuyable: boolean
-  isDisabled: boolean
-  isVoucherBuyable: boolean
-}
-
-export type PaymentDetails = {
-  paymentTokenAddress: string
-  paymentTokenPrice: string
-  discount: string
-  nftTokenId: string
-}
-
 export type BuyParams = {
   paymentDetails: PaymentDetails
   tokenContract: string
@@ -28,16 +10,23 @@ export type BuyParams = {
   tokenData: TokenMintData
 }
 
-export type TokenMintData = {
-  tokenId: string
-  tokenURI: string
-}
-
 export type Signature = {
   r: string
   s: string
   v: number
   endSigTimestamp: number
+}
+
+type PaymentDetails = {
+  paymentTokenAddress: string
+  paymentTokenPrice: string
+  discount: string
+  nftTokenId: string
+}
+
+type TokenMintData = {
+  tokenId: string
+  tokenURI: string
 }
 
 export const useMarketplace = (address?: string) => {

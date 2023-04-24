@@ -70,9 +70,9 @@ import { PurchaseBookForm } from '@/forms'
 
 import disableChainAnimation from '@/assets/animations/disable-chain.json'
 import { ETHEREUM_CHAINS, POLYGON_CHAINS, Q_CHAINS } from '@/enums'
-import { Platform } from '@/types'
+import { Platform, FullBookInfo } from '@/types'
 import { useI18n } from 'vue-i18n'
-import { FullBookInfo, usePricer } from '@/composables'
+import { usePricer } from '@/composables'
 
 const props = defineProps<{
   isShown: boolean

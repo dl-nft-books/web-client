@@ -117,8 +117,7 @@ onMounted(() => {
 }
 
 .browser-support__close-btn {
-  transition: 0.2s ease-in-out;
-  transition-property: transform;
+  transition: transform 0.2s ease-in-out;
   position: absolute;
   top: toRem(15);
   right: toRem(5);

@@ -4,21 +4,14 @@ import {
   useContractRegistry,
   useErc721,
   useErc20,
-  BuyParams,
-  Signature,
 } from '@/composables'
 import { config } from '@/config'
 import { TOKEN_TYPES } from '@/enums'
 import { useNetworksStore, useWeb3ProvidersStore } from '@/store'
-import { PageOrder } from '@/types'
+import { PageOrder, Signature, BuyParams } from '@/types'
 import { IMarketplace } from '@/types/contracts/MarketPlace'
 import { BN } from '@/utils/math.util'
 import { computed, ref, watch } from 'vue'
-
-export type TokensRaw = {
-  tokenContract: string
-  tokenIds: Array<string>
-}
 
 export type TokenBaseInfo = {
   tokenContract: string
@@ -30,7 +23,12 @@ export type TokenFullInfo = TokenBaseInfo & {
   payment: Payment
 }
 
-export type NftMetadata = {
+type TokensRaw = {
+  tokenContract: string
+  tokenIds: Array<string>
+}
+
+type NftMetadata = {
   name: string
   description: string
   image: string
