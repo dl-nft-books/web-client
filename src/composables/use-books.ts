@@ -7,6 +7,7 @@ import { BN } from '@/utils/math.util'
 
 import { IMarketplace } from '@/types/contracts/MarketPlace'
 import { switchNetwork } from '@/helpers'
+import { config } from '@/config'
 
 // Info about book gathering partly from backend and partly from contract
 export type FullBookInfo = Book &
@@ -95,21 +96,16 @@ export function useBooks(contractRegistryAddress?: string) {
     }
   }
 
-  const _gatherDetailedBookData = async (book: Book): Promise<FullBookInfo> => {
-    if (!networkStore.list.length) {
-      await networkStore.loadNetworks()
-    }
-
+  const _gatherDetailedBookData = async (
+    book: Book,
+    chainId: number,
+  ): Promise<FullBookInfo> => {
     const bookNetwork = book.networks.find(
-      el => el.attributes.chain_id === Number(provider.value.chainId),
+      el => el.attributes.chain_id === chainId,
     )
-
-    // console.log(bookNetwork, provider.value.chainId)
 
     if (!bookNetwork) throw new Error('failed to get appropriate info source')
 
-    _initContractRegistry(bookNetwork.attributes.chain_id)
-    await _initMarketPlace()
     const bookParams = await getTokenParams([
       bookNetwork.attributes.contract_address,
     ])
@@ -185,6 +181,7 @@ export function useBooks(contractRegistryAddress?: string) {
     }
 
     if (provider.value.isConnected) await switchNetwork(chainId)
+
     await _initContractRegistry(Number(chainId))
     await _initMarketPlace()
 
@@ -206,12 +203,16 @@ export function useBooks(contractRegistryAddress?: string) {
   }
 
   const getBookById = async (id: number | string): Promise<FullBookInfo> => {
-    await _initContractRegistry(Number(provider.value.chainId))
+    const chainId = provider.value.isConnected
+      ? Number(provider.value.chainId)
+      : Number(config.DEFAULT_CHAIN_ID)
+
+    await _initContractRegistry(chainId)
     await _initMarketPlace()
 
     const { data } = await api.get<Book>(`/integrations/books/${id}`)
 
-    const bookData = await _gatherDetailedBookData(data)
+    const bookData = await _gatherDetailedBookData(data, chainId)
 
     return bookData
   }

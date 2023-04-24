@@ -12,6 +12,7 @@ export const useContractRegistry = (address?: string) => {
   const contractInstance = computed(
     () =>
       (!!provider.value &&
+        provider.value.isConnected &&
         !!provider.value.currentProvider &&
         !!contractAddress.value &&
         ContractRegistry__factory.connect(
