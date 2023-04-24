@@ -13,15 +13,21 @@
         class="book-details__row-value"
         :class="{ 'book-details__row-value--highlighted': item.hightlighted }"
       >
-        <icon
-          v-if="item.icon"
-          class="book-details__row-icon"
-          :name="item.icon"
-        />
+        <template v-if="item.icons?.length">
+          <icon
+            v-for="icon in item.icons"
+            :key="icon"
+            class="book-details__row-icon"
+            :name="icon"
+          />
+        </template>
+
         <p
           v-if="item.value"
           class="book-details__row-value-item"
-          :class="{ 'book-details__row-value-item--iconed': item.icon }"
+          :class="{
+            'book-details__row-value-item--iconed': item.icons?.length,
+          }"
         >
           {{ item.value }}
         </p>
@@ -37,25 +43,18 @@ import { formatFiatAssetFromWei } from '@/helpers'
 import { CURRENCIES, ICON_NAMES } from '@/enums'
 import { FullBookInfo } from '@/composables'
 import { getNetworkScheme, getIconByScheme } from '@/helpers'
-import { useNetworksStore } from '@/store'
 import { useI18n } from 'vue-i18n'
 
 type BookDetails = {
   label: string
   value?: string
-  icon?: ICON_NAMES
+  icons?: ICON_NAMES[]
   hightlighted?: boolean
 }
 
 const props = defineProps<{ book: FullBookInfo }>()
 
 const { t } = useI18n()
-const networkStore = useNetworksStore()
-
-const getNetworkName = (chainId: number) => {
-  const network = networkStore.list.find(el => el.chain_id === chainId)
-  return network?.name || 'Unsupported network'
-}
 
 const getNetworkIcon = (chainId: number): ICON_NAMES => {
   const scheme = getNetworkScheme(chainId)
@@ -65,22 +64,25 @@ const getNetworkIcon = (chainId: number): ICON_NAMES => {
 
 const getDetails = (): BookDetails[] => {
   return [
-    ...props.book.networks.map(el => ({
+    {
       label: t('book-details.network-lbl'),
-      value: getNetworkName(el.attributes.chain_id),
-      icon: getNetworkIcon(el.attributes.chain_id),
-    })),
+      icons: props.book.networks.map(el =>
+        getNetworkIcon(el.attributes.chain_id),
+      ),
+    },
     {
       label: t('book-details.voucher-token-lbl'),
-      icon: props.book.isVoucherBuyable
-        ? ICON_NAMES.okCircle
-        : ICON_NAMES.deleteCircle,
+      icons: [
+        props.book.isVoucherBuyable
+          ? ICON_NAMES.okCircle
+          : ICON_NAMES.deleteCircle,
+      ],
     },
     {
       label: t('book-details.nft-lbl'),
-      icon: props.book.isNFTBuyable
-        ? ICON_NAMES.okCircle
-        : ICON_NAMES.deleteCircle,
+      icons: [
+        props.book.isNFTBuyable ? ICON_NAMES.okCircle : ICON_NAMES.deleteCircle,
+      ],
     },
 
     {
@@ -101,7 +103,7 @@ const getDetails = (): BookDetails[] => {
 }
 
 const details: BookDetails[] = getDetails().filter(
-  el => Boolean(el.value) || Boolean(el.icon),
+  el => Boolean(el.value) || Boolean(el.icons?.length),
 )
 </script>
 
@@ -135,9 +137,10 @@ const details: BookDetails[] = getDetails().filter(
   border-radius: toRem(6);
   padding: toRem(10) toRem(14);
   display: flex;
+  flex-flow: row wrap;
   align-items: center;
   justify-content: center;
-  gap: toRem(7);
+  gap: toRem(15);
   max-width: 100%;
   word-break: break-word;
 
