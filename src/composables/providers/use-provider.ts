@@ -21,7 +21,6 @@ import { ethers } from 'ethers'
 export interface UseProvider {
   currentProvider: ComputedRef<ethers.providers.Web3Provider | undefined>
   currentSigner: ComputedRef<ethers.providers.JsonRpcSigner | undefined>
-  defaultProvider: ComputedRef<ethers.providers.JsonRpcProvider | undefined>
 
   selectedProvider: Ref<PROVIDERS | undefined>
   chainId: ComputedRef<ChainId | undefined>
@@ -66,12 +65,6 @@ export const useProvider = (): UseProvider => {
         ?.currentSigner as unknown as ethers.providers.JsonRpcSigner,
   )
 
-  const defaultProvider = computed(
-    () =>
-      providerWrp.value
-        ?.defaultProvider as unknown as ethers.providers.JsonRpcProvider,
-  )
-
   const selectedProvider = ref<PROVIDERS | undefined>()
   const chainId = computed(
     () => providerWrp.value?.chainId as ChainId | undefined,
@@ -98,7 +91,7 @@ export const useProvider = (): UseProvider => {
         providerWrp.value = useSolflare(provider.instance)
         break
       case PROVIDERS.metamaskFallback:
-        providerWrp.value = useMetamaskFallback() as ProviderWrapper
+        providerWrp.value = useMetamaskFallback(provider.instance)
         break
       default:
         throw new Error('Invalid Provider')
@@ -153,7 +146,7 @@ export const useProvider = (): UseProvider => {
   const signAndSendTx = async (
     txRequestBody: TxRequestBody,
   ): Promise<TransactionResponse> => {
-    if (!providerWrp.value)
+    if (!providerWrp.value || !providerWrp.value?.signAndSendTransaction)
       throw new errors.ProviderWrapperMethodNotFoundError()
 
     return providerWrp.value.signAndSendTransaction(txRequestBody)
@@ -201,7 +194,6 @@ export const useProvider = (): UseProvider => {
   return {
     currentProvider,
     currentSigner,
-    defaultProvider,
 
     selectedProvider,
     chainId,

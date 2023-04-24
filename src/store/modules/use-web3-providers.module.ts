@@ -2,6 +2,8 @@ import { defineStore } from 'pinia'
 import { useProvider, useWeb3 } from '@/composables'
 import { DesignatedProvider } from '@/types'
 import { PROVIDERS } from '@/enums'
+import { ethers } from 'ethers'
+import { config } from '@/config'
 
 export const useWeb3ProvidersStore = defineStore('web3-providers-store', {
   state: () => ({
@@ -16,30 +18,29 @@ export const useWeb3ProvidersStore = defineStore('web3-providers-store', {
     },
 
     async init() {
-      const metamaskFallBack: DesignatedProvider = {
-        name: PROVIDERS.metamaskFallback,
-        instance: undefined,
-      }
-
-      this.addProvider(metamaskFallBack)
-
       // temporary
       const metamaskProvider = this.providers.find(
         provider => provider.name === PROVIDERS.metamask,
       )
 
-      if (metamaskProvider) {
-        await this.provider.init(metamaskProvider)
-      } else {
-        /* if user has no extension or mobile metamask app we are using 
-           fallback provider to redirect him to app or to page where 
-           he can download it */
-        const fallbackProvider = this.providers.find(
-          provider => provider.name === PROVIDERS.metamaskFallback,
-        )
+      if (metamaskProvider) await this.provider.init(metamaskProvider)
 
-        if (fallbackProvider) await this.provider.init(fallbackProvider)
+      if (!metamaskProvider || !this.provider.isConnected) {
+        await this.setupFallbackProvider()
+        return
       }
+    },
+
+    /* if user has no extension or mobile metamask app we are using 
+      fallback provider to redirect him to app or to page where 
+      he can download it */
+    async setupFallbackProvider() {
+      const metamaskFallBack: DesignatedProvider = {
+        name: PROVIDERS.metamaskFallback,
+        instance: new ethers.providers.JsonRpcProvider(config.DEFAULT_RPC_URL),
+      }
+
+      await this.provider.init(metamaskFallBack)
     },
 
     addProvider(provider: DesignatedProvider) {

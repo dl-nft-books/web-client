@@ -23,7 +23,6 @@ import {
 import { Deferrable } from '@ethersproject/properties'
 import { TransactionRequest } from '@ethersproject/abstract-provider'
 import { useNetworksStore } from '@/store'
-import { config } from '@/config'
 
 export const useMetamask = (provider: ProviderInstance): ProviderWrapper => {
   const chainId = ref<ChainId>('')
@@ -37,9 +36,6 @@ export const useMetamask = (provider: ProviderInstance): ProviderWrapper => {
       ),
   )
   const currentSigner = computed(() => currentProvider.value.getSigner())
-  const defaultProvider = computed(
-    () => new ethers.providers.JsonRpcProvider(config.DEFAULT_RPC_URL),
-  )
 
   const isConnected = computed(() =>
     Boolean(selectedAddress.value && chainId.value),
@@ -195,7 +191,6 @@ export const useMetamask = (provider: ProviderInstance): ProviderWrapper => {
   return {
     currentProvider,
     currentSigner,
-    defaultProvider,
 
     chainId,
     selectedAddress,

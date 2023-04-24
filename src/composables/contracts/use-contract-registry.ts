@@ -18,12 +18,6 @@ export const useContractRegistry = (address?: string) => {
           contractAddress.value,
           provider.value.currentProvider,
         )) ||
-      (!!provider.value.defaultProvider &&
-        !!contractAddress.value &&
-        ContractRegistry__factory.connect(
-          contractAddress.value,
-          provider.value.defaultProvider,
-        )) ||
       undefined,
   )
 

@@ -54,7 +54,6 @@ export type TransactionResponse =
 export interface ProviderWrapper {
   currentProvider?: ComputedRef<ethers.providers.Web3Provider>
   currentSigner?: ComputedRef<ethers.providers.JsonRpcSigner>
-  defaultProvider?: ComputedRef<ethers.providers.JsonRpcProvider>
 
   chainId: Ref<ChainId>
   selectedAddress: Ref<string>
@@ -70,7 +69,7 @@ export interface ProviderWrapper {
     nativeCurrency: NativeCurrency,
     blockExplorerUrl: string,
   ) => Promise<void>
-  signAndSendTransaction: (
+  signAndSendTransaction?: (
     txRequestBody: TxRequestBody,
   ) => Promise<TransactionResponse>
   getHashFromTxResponse: (txResponse: TransactionResponse) => string

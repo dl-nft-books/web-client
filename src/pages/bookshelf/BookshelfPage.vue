@@ -52,7 +52,6 @@ import { ErrorHandler } from '@/helpers'
 import { BaseBookInfo, useBooks, useContractPagination } from '@/composables'
 import { BookshelfHeader, BookshelfCubes } from '@/pages/bookshelf'
 import { useNetworksStore, useWeb3ProvidersStore } from '@/store'
-import { config } from '@/config'
 
 const networkStore = useNetworksStore()
 const webProvidersStore = useWeb3ProvidersStore()
@@ -66,11 +65,7 @@ const books = ref<BaseBookInfo[]>([])
 
 const loadList = computed(
   () => (limit: number, offset: number) =>
-    getBooksFromContract(
-      limit,
-      offset,
-      provider.value.chainId ?? config.DEFAULT_CHAIN_ID,
-    ),
+    getBooksFromContract(limit, offset, provider.value.chainId),
 )
 
 const { loadNextPage, isLoading, isLoadMoreBtnShown } = useContractPagination(
