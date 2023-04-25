@@ -72,6 +72,8 @@
 
         <purchasing-success-modal
           v-model:is-shown="isPurchaseSuccessModalShown"
+          :message="successBuyMessage"
+          :link="linkToTx"
         />
       </template>
     </template>
@@ -96,16 +98,19 @@ import {
 
 import { BookDetails } from '@/pages/bookshelf'
 import { ref, watch, computed } from 'vue'
-import { ErrorHandler } from '@/helpers'
+import { ErrorHandler, getBlockExplorerLink } from '@/helpers'
 
 import { FullBookInfo, useBooks } from '@/composables'
 import { useWeb3ProvidersStore, useNetworksStore } from '@/store'
 import { router } from '@/router'
 import { ROUTE_NAMES } from '@/enums'
+import { useI18n } from 'vue-i18n'
 
 const props = defineProps<{
   id: string
 }>()
+
+const { t } = useI18n()
 
 const networkStore = useNetworksStore()
 const web3Store = useWeb3ProvidersStore()
@@ -114,13 +119,27 @@ const provider = computed(() => web3Store.provider)
 const isLoaded = ref(false)
 const isPurchaseModalShown = ref(false)
 const isPurchaseSuccessModalShown = ref(false)
+const successBuyMessage = ref('')
+const linkToTx = ref('')
 
 const { getBookById } = useBooks()
 
 const book = ref<FullBookInfo | undefined>()
 
-const submit = async () => {
+const submit = async (message?: string) => {
   try {
+    if (message) {
+      successBuyMessage.value = t('bookshelf-item-page.voucher-payment-msg')
+      linkToTx.value = getBlockExplorerLink(
+        provider.value.chainId!,
+        message,
+        'tx',
+      )
+    } else {
+      successBuyMessage.value = t('purchasing-success-modal.message')
+      linkToTx.value = ''
+    }
+
     isPurchaseModalShown.value = false
     isPurchaseSuccessModalShown.value = true
   } catch (error) {

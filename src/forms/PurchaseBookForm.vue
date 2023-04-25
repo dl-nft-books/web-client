@@ -120,7 +120,7 @@ const props = defineProps<{
 }>()
 
 const emit = defineEmits<{
-  (event: 'submit'): void
+  (event: 'submit', message?: string): void
   (event: 'submitting', value: boolean): void
 }>()
 
@@ -356,13 +356,14 @@ const submit = async (editorFromTemplate: UseImageEditor | null) => {
     const generatedTask = await uploadBanner(currentTask.id, banner)
 
     if (form.tokenType === TOKEN_TYPES.voucher) {
-      await sendBuyWithVoucherRequest(
+      const txHash = await sendBuyWithVoucherRequest(
         props.book.voucherTokenContract,
         props.book.voucherTokensAmount,
         Number(generatedTask.id),
       )
+
       emit('submitting', false)
-      emit('submit')
+      emit('submit', txHash)
 
       return
     }

@@ -82,7 +82,7 @@ const voucherErrorTitle = computed(() =>
 )
 
 const isEnoughVoucherTokensForBuy = computed(
-  () => new BN(balance.value).compare(formattedVoucherTokenAmount.value) >= 1,
+  () => new BN(balance.value).compare(formattedVoucherTokenAmount.value) >= 0,
 )
 
 defineExpose<Omit<ExposedFormRef, 'promocode' | 'tokenPrice'>>({

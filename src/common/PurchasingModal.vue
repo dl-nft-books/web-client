@@ -30,7 +30,7 @@
                 :book="props.book"
                 :current-platform="currentPlatform"
                 @submitting="isSubmitting = $event"
-                @submit="emit('submit')"
+                @submit="emit('submit', $event)"
               />
               <template v-else>
                 <div class="purchasing-modal__wrong-network-animation-wrp">
@@ -81,7 +81,7 @@ const props = defineProps<{
 
 const emit = defineEmits<{
   (event: 'update:is-shown', value: boolean): void
-  (event: 'submit'): void
+  (event: 'submit', message?: string): void
 }>()
 
 const { t } = useI18n()

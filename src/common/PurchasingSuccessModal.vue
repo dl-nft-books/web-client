@@ -31,8 +31,16 @@
             {{ $t('purchasing-success-modal.title') }}
           </h5>
           <p class="purchasing-success-modal__message">
-            {{ $t('purchasing-success-modal.message') }}
+            {{ message }}
           </p>
+          <a
+            v-if="link"
+            class="purchasing-success-modal__link"
+            target="_blank"
+            :href="link"
+          >
+            {{ $t('purchasing-success-modal.link') }}
+          </a>
           <app-button
             class="purchasing-success-modal__purchase-btn"
             :text="$t('purchasing-success-modal.ok-btn')"
@@ -50,9 +58,17 @@ import { AppButton, Modal, Animation } from '@/common'
 
 import success from '@/assets/animations/success.json'
 
-defineProps<{
-  isShown: boolean
-}>()
+withDefaults(
+  defineProps<{
+    isShown: boolean
+    message?: string
+    link?: string
+  }>(),
+  {
+    message: '',
+    link: '',
+  },
+)
 
 const emit = defineEmits<{
   (event: 'update:is-shown', value: boolean): void
@@ -103,5 +119,9 @@ const emit = defineEmits<{
 .purchasing-success-modal__purchase-btn {
   min-width: toRem(144);
   text-transform: uppercase;
+}
+
+.purchasing-success-modal__link {
+  margin-bottom: toRem(40);
 }
 </style>

@@ -271,7 +271,8 @@
     "badge-2": "Draw your personal banner",
     "network-title": "Supported by",
     "connect-btn": "Connect Wallet",
-    "description-lbl": "Show full description"
+    "description-lbl": "Show full description",
+    "voucher-payment-msg": "Transaction has been sent. It may take a while. You can check transaction status by this link"
   },
   "purchasing-modal": {
     "title": "Purchasing",
@@ -302,7 +303,7 @@
     "submitting-message": "As soon as NFT book generates you will need to pay",
     "not-enough-balance-msg": "You don't have enough tokens to buy this NFT",
     "voucher-token-unsupported-msg": "This payment method is not supported for the purchase of this book",
-    "not-enough-voucher-tokens-msg": "You don't have enough voucher tokens to buy this NFT. Required amount: {amount}." 
+    "not-enough-voucher-tokens-msg": "You don't have enough voucher tokens to buy this NFT. Required amount: {amount}."
   },
   "nft-template": {
     "token-address-lbl": "Token Address",
@@ -326,7 +327,8 @@
     "head-title": "Purchasing",
     "title": "Your payment was successful.",
     "message": "As soon as the NFT book is minted, it will appear in your wallet and in the My NFTs tab.",
-    "ok-btn": "Ok"
+    "ok-btn": "Ok",
+    "link": "Check on block explorer"
   },
   "my-nft-item-page": {
     "loading-error-msg": "This page is currently unavailable due to connection problems with IPFS. Please, try again later.",

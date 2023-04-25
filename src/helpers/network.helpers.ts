@@ -79,22 +79,33 @@ export function getChainFromNetwork(network: NETWORKS): string {
   }
 }
 
-export function getBlockExplorerLink(chainId: ChainId, token: string): string {
+enum LINK_TYPE {
+  token = 'token',
+  tx = 'tx',
+}
+
+export function getBlockExplorerLink(
+  chainId: ChainId,
+  token: string,
+  linkType = LINK_TYPE.token,
+): string {
   switch (chainId?.toString()) {
     case POLYGON_CHAINS.mumbai:
-      return `https://mumbai.polygonscan.com/token/${token}`
+      return `https://mumbai.polygonscan.com/${linkType}/${token}`
     case POLYGON_CHAINS.mainnet:
-      return `https://polygonscan.com/token/${token}`
+      return `https://polygonscan.com/${linkType}/${token}`
+    case ETHEREUM_CHAINS.sepolia:
+      return `https://sepolia.etherscan.io/${linkType}/${token}`
     case ETHEREUM_CHAINS.goerli:
-      return `https://goerli.etherscan.io/token/${token}`
+      return `https://goerli.etherscan.io/${linkType}/${token}`
     case ETHEREUM_CHAINS.ethereum:
-      return `https://etherscan.io/token/${token}`
+      return `https://etherscan.io/${linkType}/${token}`
     case Q_CHAINS.testnet:
-      return `https://explorer.qtestnet.org/token/${token}`
+      return `https://explorer.qtestnet.org/${linkType}/${token}`
     case Q_CHAINS.mainet:
-      return `https://explorer.q.org/token/${token}`
+      return `https://explorer.q.org/${linkType}/${token}`
     default:
-      return `https://etherscan.io/token/${token}`
+      return `https://etherscan.io/${linkType}/${token}`
   }
 }
 
