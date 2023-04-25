@@ -4818,10 +4818,10 @@ simple-concat@^1.0.0:
   resolved "https://registry.yarnpkg.com/simple-concat/-/simple-concat-1.0.1.tgz#f46976082ba35c2263f1c8ab5edfe26c41c9552f"
   integrity sha512-cSFtAPtRhljv69IK0hTVZQ+OfE9nePi/rtJmw5UjHeVyVroEqJXP1sFztKUy1qU+xvz3u/sfYJLa947b7nAN2Q==
 
-simple-fabric-vue-image-editor@^1.0.9:
-  version "1.0.9"
-  resolved "https://registry.yarnpkg.com/simple-fabric-vue-image-editor/-/simple-fabric-vue-image-editor-1.0.9.tgz#c57f635c9206806a3d64ef21ba5482ab3c50e234"
-  integrity sha512-F7EuLNWAlde9EN/Lg/tW7CwZ44hdbeJaAOx22nJcogUcGMjK2d9M/spExzoKLHtv0ualZJuR7NveTa2wNleqqQ==
+simple-fabric-vue-image-editor@^1.0.10:
+  version "1.0.10"
+  resolved "https://registry.yarnpkg.com/simple-fabric-vue-image-editor/-/simple-fabric-vue-image-editor-1.0.10.tgz#bc0fae938bce586c5cfcbf7a6267c5e6201aed54"
+  integrity sha512-jpt7CMgRwrxXVnZ1VcsB24HugeLchy2w60mOXnEpeXphfN84qKg8EE7gjtHkwQ6QXIchhbGti53yLGIHJtlOKQ==
   dependencies:
     "@vueuse/core" "^9.13.0"
     buffer "^6.0.3"
