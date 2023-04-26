@@ -1,6 +1,6 @@
 <template>
   <div :class="accountClasses">
-    <header-network-switcher :modification="modification" />
+    <network-switcher :modification="modification" />
     <drop-down :right="0">
       <template #head="{ menu }">
         <app-button
@@ -40,7 +40,7 @@
 import { computed } from 'vue'
 import { cropAddress, copyToClipboard, ErrorHandler } from '@/helpers'
 import { useWeb3ProvidersStore } from '@/store'
-import { AppButton, Icon, DropDown, HeaderNetworkSwitcher } from '@/common'
+import { AppButton, Icon, DropDown, NetworkSwitcher } from '@/common'
 
 type MODIFICATIONS = 'dark-mode' | 'default'
 

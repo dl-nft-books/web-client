@@ -2,14 +2,14 @@ import { ref, computed } from 'vue'
 import { ethers } from 'ethers'
 import { errors } from '@/api/json-api'
 
-import { NftPrice, Platform, TokenPrice } from '@/types'
+import { NftPrice, TokenPrice } from '@/types'
 import { TOKEN_TYPES } from '@/enums'
 import { BN } from '@/utils/math.util'
 import { useWeb3ProvidersStore } from '@/store'
 import { useErc20, usePricer } from '@/composables'
 import { ErrorHandler } from '@/helpers'
 
-export function useBalance(currentPlatform: Platform) {
+export function useBalance() {
   const tokenPrice = ref<TokenPrice | null>(null)
   const nftPrice = ref<NftPrice | null>(null)
   const isTokenAddressUnsupported = ref(false)
@@ -20,24 +20,23 @@ export function useBalance(currentPlatform: Platform) {
   const web3ProvidersStore = useWeb3ProvidersStore()
   const provider = computed(() => web3ProvidersStore.provider)
 
-  const { getPriceByPlatform, getNftPriceByPlatform } = usePricer()
+  const { getPrice: _getPrice, getNftPrice } = usePricer()
 
   const getPrice = async (tokenAddress: string, tokenType: TOKEN_TYPES) => {
     try {
       if (tokenType !== TOKEN_TYPES.nft) {
         const contract = tokenType === TOKEN_TYPES.erc20 ? tokenAddress : ''
-        const { data } = await getPriceByPlatform(
-          currentPlatform.id,
-          contract,
+        const { data } = await _getPrice(
           Number(provider.value.chainId),
+          contract,
         )
 
         tokenPrice.value = data
         return
       }
 
-      const { data } = await getNftPriceByPlatform(
-        currentPlatform.id,
+      const { data } = await getNftPrice(
+        Number(provider.value.chainId),
         tokenAddress,
       )
 

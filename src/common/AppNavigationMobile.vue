@@ -49,7 +49,7 @@
           @click="provider.connect"
         />
         <div class="app-navigation-mobile__network">
-          <header-network-switcher modification="dark-mode" />
+          <network-switcher modification="dark-mode" />
         </div>
       </div>
 
@@ -74,7 +74,7 @@
 
 <script lang="ts" setup>
 import { computed, ref } from 'vue'
-import { Icon, AppButton, AppLogo, HeaderNetworkSwitcher } from '@/common'
+import { Icon, AppButton, AppLogo, NetworkSwitcher } from '@/common'
 import { Bus, cropAddress } from '@/helpers'
 import { ICON_NAMES } from '@/enums'
 import { config } from '@config'

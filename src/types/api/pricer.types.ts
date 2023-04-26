@@ -1,11 +1,5 @@
 import { JsonApiRecordBase } from '@/types'
 
-export type Platform = JsonApiRecordBase<'platforms'> & {
-  chain_identifier: number
-  name: string
-  shortname: string
-}
-
 export type TokenPrice = JsonApiRecordBase<'prices'> & {
   price: string
   token: {
@@ -16,6 +10,5 @@ export type TokenPrice = JsonApiRecordBase<'prices'> & {
 }
 
 export type NftPrice = JsonApiRecordBase<'nft-price'> & {
-  native_currency: number
-  usd: number
+  floor_price: number
 }

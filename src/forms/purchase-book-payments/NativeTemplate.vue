@@ -23,7 +23,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, reactive, watch, toRef, ref, inject } from 'vue'
+import { computed, reactive, watch, toRef, ref } from 'vue'
 
 import { BN } from '@/utils/math.util'
 
@@ -32,7 +32,7 @@ import { ReadonlyField } from '@/fields'
 import { ErrorMessage, Loader } from '@/common'
 import { FullBookInfo, useBalance } from '@/composables'
 import { PromocodeTemplate } from '@/forms/purchase-book-payments'
-import { Promocode, PurchaseFormKey } from '@/types'
+import { Promocode } from '@/types'
 
 import { useWeb3ProvidersStore } from '@/store'
 import { ExposedPromocodeRef } from '@/forms/purchase-book-payments/PromocodeTemplate.vue'
@@ -42,16 +42,13 @@ import { TOKEN_TYPES } from '@/enums'
 const props = defineProps<{
   book: FullBookInfo
 }>()
-
-const { platform: currentPlatform } = inject(PurchaseFormKey)
-
 const {
   balance,
   isLoadFailed,
   isPriceAndBalanceLoaded,
   tokenPrice,
   loadBalanceAndPrice,
-} = useBalance(currentPlatform)
+} = useBalance()
 
 const web3ProvidersStore = useWeb3ProvidersStore()
 const provider = computed(() => web3ProvidersStore.provider)

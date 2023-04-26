@@ -42,8 +42,7 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, computed, watch } from 'vue'
-import { debounce } from 'lodash'
+import { ref, computed } from 'vue'
 
 import {
   Loader,
@@ -69,9 +68,6 @@ const { getBooksFromContract } = useBooks()
 
 const isLoadFailed = ref(false)
 const books = ref<BaseBookInfo[]>([])
-
-const searchByString = ref('')
-const searchModel = ref('')
 
 const loadList = computed(
   () => (limit: number, offset: number) =>
@@ -112,13 +108,6 @@ function onError(e: Error) {
   ErrorHandler.processWithoutFeedback(e)
   isLoadFailed.value = true
 }
-
-watch(
-  searchModel,
-  debounce(() => {
-    searchByString.value = searchModel.value
-  }, 200),
-)
 </script>
 
 <style lang="scss" scoped>
@@ -133,29 +122,6 @@ watch(
   overflow: hidden;
   display: flex;
   flex-direction: column;
-
-  // /* Chain image */
-  // &:before {
-  //   content: '';
-  //   position: absolute;
-  //   width: 100vw;
-  //   top: toRem(110);
-  //   left: 0;
-  //   z-index: var(--z-index-layer-1);
-  //   height: vh(100);
-  //   background: url('/images/cubes.png') no-repeat right top / contain;
-  //   background-size: clamp(toRem(250), 45%, toRem(800));
-
-  //   @include respond-to(medium) {
-  //     background-size: toRem(450);
-  //     top: toRem(280);
-  //   }
-
-  //   @include respond-to(small) {
-  //     background-size: toRem(250);
-  //     top: toRem(400);
-  //   }
-  // }
 }
 
 .bookshelf-page__title {

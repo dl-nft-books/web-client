@@ -107,7 +107,6 @@ export function useGenerator() {
   }
 
   const getMintSignature = async (
-    platform: string,
     taskId: string | number,
     tokenAddress?: string,
     promocodeId?: string,
@@ -118,7 +117,6 @@ export function useGenerator() {
       : '/integrations/core/signature/mint'
 
     const { data } = await api.get<MintSignatureResponse>(apiEndpoint, {
-      platform,
       task_id: taskId,
       ...(promocodeId ? { promocode_id: promocodeId } : {}),
       ...(tokenAddress ? { token_address: tokenAddress } : {}),

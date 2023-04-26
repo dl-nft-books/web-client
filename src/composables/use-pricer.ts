@@ -1,33 +1,23 @@
 import { api } from '@/api'
-import { NftPrice, Platform, TokenPrice } from '@/types'
+import { NftPrice, TokenPrice } from '@/types'
 
 export function usePricer() {
-  const getPlatformsList = () => {
-    return api.get<Platform[]>('/integrations/pricer/platforms')
-  }
-
-  const getPriceByPlatform = (
-    platform: string,
-    contract?: string,
-    chainID?: number,
-  ) => {
+  const getPrice = (chainId: number, erc20Address?: string) => {
     return api.get<TokenPrice>('/integrations/pricer/price', {
-      platform,
-      ...(contract ? { contract } : {}),
-      ...(chainID ? { chain_id: chainID } : {}),
+      ...(erc20Address ? { contract: erc20Address } : {}),
+      chain_id: chainId,
     })
   }
 
-  const getNftPriceByPlatform = (platform: string, contract: string) => {
+  const getNftPrice = (chainId: number, nftAddress: string) => {
     return api.get<NftPrice>('/integrations/pricer/nft', {
-      platform,
-      contract,
+      contract: nftAddress,
+      chain_id: chainId,
     })
   }
 
   return {
-    getNftPriceByPlatform,
-    getPriceByPlatform,
-    getPlatformsList,
+    getNftPrice,
+    getPrice,
   }
 }

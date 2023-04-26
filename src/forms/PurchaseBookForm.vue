@@ -69,14 +69,13 @@ import { BN } from '@/utils/math.util'
 import { ImageEditor, UseImageEditor } from 'simple-fabric-vue-image-editor'
 
 import {
-  Platform,
   Promocode,
   TokenPrice,
   PurchaseFormKey,
   MintSignatureResponse,
   Task,
 } from '@/types'
-import { TOKEN_TYPES } from '@/enums'
+import { Q_CHAINS, TOKEN_TYPES } from '@/enums'
 
 import { Animation, BookPreview, StepsForm } from '@/common'
 
@@ -116,7 +115,6 @@ const TOKEN_AMOUNT_COEFFICIENT = 1.02
 
 const props = defineProps<{
   book: FullBookInfo
-  currentPlatform: Platform
 }>()
 
 const emit = defineEmits<{
@@ -149,10 +147,7 @@ const { getFieldErrorMessage, touchField, isFormValid } = useFormValidation(
 )
 
 // to avoid props drilling - passing necessary info using provide -> inject
-provide(PurchaseFormKey, {
-  platform: props.currentPlatform,
-  isFormDisabled,
-})
+provide(PurchaseFormKey, { isFormDisabled })
 
 const paymentTemplateRef = ref<ExposedFormRef | null>(null)
 
@@ -186,9 +181,10 @@ const tokenTypesOptions = computed(() => {
     Temporary solution because of missing price for Q on backend
     Will be fixed in future updates
   */
-  const qNetworkIdentifier = 'q'
-
-  if (props.currentPlatform.id !== qNetworkIdentifier) {
+  if (
+    provider.value.chainId !== Number(Q_CHAINS.mainet) &&
+    provider.value.chainId !== Number(Q_CHAINS.testnet)
+  ) {
     defaultOptions.push({
       label: globalizeTokenType(TOKEN_TYPES.erc20),
       value: TOKEN_TYPES.erc20,
@@ -211,6 +207,7 @@ const tokenTypesOptions = computed(() => {
 
   return defaultOptions
 })
+
 const mintToken = async (
   mintSignature: MintSignatureResponse,
   generatedTask: Task,
@@ -369,7 +366,6 @@ const submit = async (editorFromTemplate: UseImageEditor | null) => {
     }
 
     const mintSignature = await getMintSignature(
-      props.currentPlatform.id,
       generatedTask.id,
       dataForMint.tokenAddress,
       dataForMint.promocode ? dataForMint.promocode.id : undefined,

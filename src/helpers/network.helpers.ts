@@ -4,6 +4,7 @@ import {
   POLYGON_MUMBAI_CHAIN,
   Q_MAINNET_CHAIN,
   Q_TESTNET_CHAIN,
+  SEPOLIA_CHAIN,
 } from '@/const'
 import {
   ETHEREUM_CHAINS,
@@ -34,14 +35,17 @@ export function getNetworkScheme(chainID: ChainId): NETWORKS {
   }
 }
 
-export function getIconByScheme(scheme: NETWORKS): ICON_NAMES {
+export function getIconByScheme(
+  scheme: NETWORKS,
+  type = 'default' as 'default' | 'circle',
+): ICON_NAMES {
   switch (scheme) {
     case NETWORKS.POLYGON:
-      return ICON_NAMES.polygon
+      return type === 'circle' ? ICON_NAMES.polygonCircle : ICON_NAMES.polygon
     case NETWORKS.ETHEREUM:
-      return ICON_NAMES.ethereum
+      return type === 'circle' ? ICON_NAMES.ethereumCircle : ICON_NAMES.ethereum
     case NETWORKS.Q:
-      return ICON_NAMES.q
+      return type === 'circle' ? ICON_NAMES.qCircle : ICON_NAMES.q
     case NETWORKS.UNSUPPORTED:
     default:
       return ICON_NAMES.ban
@@ -59,6 +63,8 @@ export function getNetworkInfo(chainID: ChainId): ChainUrlInfo | null {
       return Q_TESTNET_CHAIN
     case Q_CHAINS.mainet:
       return Q_MAINNET_CHAIN
+    case ETHEREUM_CHAINS.sepolia:
+      return SEPOLIA_CHAIN
     default:
       return null
   }

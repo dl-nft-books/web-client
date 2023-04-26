@@ -18,6 +18,14 @@ html {
   }
 }
 
+/* for IOS */
+.body-scroll-disabled {
+  touch-action: none;
+  -webkit-overflow-scrolling: none;
+  overflow: hidden;
+  overscroll-behavior: none;
+}
+
 /* stylelint-disable-next-line */
 body, #app {
   display: flex;

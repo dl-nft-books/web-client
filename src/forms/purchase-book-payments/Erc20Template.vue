@@ -66,7 +66,7 @@ const props = defineProps<{
   book: FullBookInfo
 }>()
 
-const { platform: currentPlatform, isFormDisabled } = inject(PurchaseFormKey)
+const { isFormDisabled } = inject(PurchaseFormKey)
 
 const form = reactive({
   tokenAddress: '',
@@ -83,7 +83,7 @@ const {
   isTokenAddressUnsupported,
   tokenPrice,
   loadBalanceAndPrice: _loadBalanceAndPrice,
-} = useBalance(currentPlatform)
+} = useBalance()
 
 const loadBalanceAndPrice = debounce(async () => {
   isLoading.value = true

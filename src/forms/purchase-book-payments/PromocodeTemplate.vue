@@ -58,7 +58,7 @@ const props = withDefaults(
   },
 )
 
-const { platform: currentPlatform, isFormDisabled } = inject(PurchaseFormKey)
+const { isFormDisabled } = inject(PurchaseFormKey)
 
 const form = reactive({
   promocode: '',
@@ -77,7 +77,7 @@ const {
 })
 
 const { promocodeInfo, validatePromocode } = usePromocode()
-const { getPrice, tokenPrice } = useBalance(currentPlatform)
+const { getPrice, tokenPrice } = useBalance()
 
 const onPromocodeInput = async () => {
   if (!isPromocodeValid()) return

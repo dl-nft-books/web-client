@@ -11,11 +11,6 @@
 
     <about-us-decription />
 
-    <img
-      class="about-us__cubes about-us__cubes--right"
-      :src="CUBES_IMAGES.RIGHT"
-    />
-
     <about-us-quote-card
       class="about-us__quote-card about-us__quote-card--with-bg"
       scheme="dark"
@@ -35,8 +30,8 @@
     />
 
     <img
-      class="about-us__cubes about-us__cubes--bottom"
-      :src="CUBES_IMAGES.BOTTOM"
+      class="about-us__background about-us__background--bottom"
+      src="/images/fancy-lines.png"
     />
   </div>
 </template>
@@ -46,12 +41,6 @@ import { AboutUsDecription, AboutUsQuoteCard } from '@/pages/about-us'
 import { useI18n } from 'vue-i18n'
 
 const { t } = useI18n()
-
-const CUBES_IMAGES = {
-  LEFT: '/images/about-us-left.png',
-  RIGHT: '/images/about-us-right.png',
-  BOTTOM: '/images/about-us-right-back.png',
-}
 
 const FOUNDERS_IMAGES = {
   KURBATOV: '/images/olexandr-kurbatov.png',
@@ -74,6 +63,7 @@ const KurbatovQuotes = [
   padding: 0;
   background-color: var(--background-primary-dark);
   position: relative;
+  z-index: var(--z-index-layer-2);
 }
 
 .about-us__quote-card {
@@ -166,5 +156,9 @@ const KurbatovQuotes = [
     right: 0;
     bottom: 0;
   }
+}
+
+.about-us__background {
+  @include background-image;
 }
 </style>

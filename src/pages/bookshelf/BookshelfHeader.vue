@@ -11,6 +11,7 @@
     <img
       class="bookshelf-header__background"
       src="/images/book-background.png"
+      :draggable="false"
       :alt="$t('bookshelf-header.title')"
     />
   </header>

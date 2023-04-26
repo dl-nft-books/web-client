@@ -5,13 +5,21 @@
       :key="index"
       class="book-details__row"
     >
-      <p class="book-details__row-label">
+      <p
+        class="book-details__row-label"
+        :class="{
+          'book-details__row-label--row-span': item.rowSpan,
+        }"
+      >
         {{ item.label }}
       </p>
 
       <div
         class="book-details__row-value"
-        :class="{ 'book-details__row-value--highlighted': item.hightlighted }"
+        :class="{
+          'book-details__row-value--highlighted': item.hightlighted,
+          'book-details__row-value--row-span': item.rowSpan,
+        }"
       >
         <template v-if="item.icons?.length">
           <icon
@@ -50,6 +58,7 @@ type BookDetails = {
   value?: string
   icons?: ICON_NAMES[]
   hightlighted?: boolean
+  rowSpan?: boolean
 }
 
 const props = defineProps<{ book: FullBookInfo }>()
@@ -59,10 +68,20 @@ const { t } = useI18n()
 const getNetworkIcon = (chainId: number): ICON_NAMES => {
   const scheme = getNetworkScheme(chainId)
 
-  return getIconByScheme(scheme)
+  return getIconByScheme(scheme, 'circle')
 }
 
+const MAX_PRICE_LENGTH = 5
+
 const getDetails = (): BookDetails[] => {
+  const formattedFloorPrice = props.book.isNFTBuyable
+    ? formatFiatAssetFromWei(props.book.minNFTFloorPrice, CURRENCIES.USD)
+    : ''
+  const formattedPrice = formatFiatAssetFromWei(
+    props.book.pricePerOneToken,
+    CURRENCIES.USD,
+  )
+
   return [
     {
       label: t('book-details.network-lbl'),
@@ -87,17 +106,14 @@ const getDetails = (): BookDetails[] => {
 
     {
       label: t('book-details.floor-price-lbl'),
-      value: props.book.isNFTBuyable
-        ? formatFiatAssetFromWei(props.book.minNFTFloorPrice, CURRENCIES.USD)
-        : '',
+      value: formattedFloorPrice,
+      rowSpan: formattedFloorPrice.length > MAX_PRICE_LENGTH,
     },
     {
       label: t('book-details.price-lbl'),
-      value: formatFiatAssetFromWei(
-        props.book.pricePerOneToken,
-        CURRENCIES.USD,
-      ),
+      value: formattedPrice,
       hightlighted: true,
+      rowSpan: formattedPrice.length > MAX_PRICE_LENGTH,
     },
   ]
 }
@@ -128,6 +144,12 @@ const details: BookDetails[] = getDetails().filter(
   align-items: center;
 
   @include respond-to(small) {
+    &--row-span {
+      grid-column: 1 / -1;
+    }
+  }
+
+  @include respond-to(small) {
     font-size: toRem(16);
   }
 }
@@ -150,16 +172,22 @@ const details: BookDetails[] = getDetails().filter(
     background-color: var(--highlighted-color);
   }
 
+  @include respond-to(small) {
+    &--row-span {
+      grid-column: 1 / -1;
+    }
+  }
+
   &--shortened {
     @include text-ellipsis;
   }
 }
 
 .book-details__row-icon {
-  display: inline-block;
-  width: toRem(24);
-  height: toRem(24);
-  min-width: toRem(24);
+  --icon-size: #{toRem(24)};
+
+  width: var(--icon-size);
+  height: var(--icon-size);
   color: var(--primary-light);
 }
 

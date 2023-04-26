@@ -19,7 +19,7 @@
 import { AppNavbar, AppFooter, BrowserSupport } from '@/common'
 
 import { ErrorHandler } from '@/helpers/error-handler'
-import { ref } from 'vue'
+import { ref, watch } from 'vue'
 import { useNotifications } from '@/composables'
 import { config } from '@config'
 import { useWeb3ProvidersStore } from '@/store'
@@ -27,6 +27,8 @@ import { Bus } from '@/helpers'
 
 const isAppInitialized = ref(false)
 const web3Store = useWeb3ProvidersStore()
+
+const body = ref<HTMLBodyElement | null>(document.querySelector('body'))
 
 const init = async () => {
   try {
@@ -45,10 +47,22 @@ const init = async () => {
 init()
 
 const isScrollEnabled = ref(true)
+
 Bus.on(
   Bus.eventList.toggleScroll,
   () => (isScrollEnabled.value = !isScrollEnabled.value),
 )
+
+watch(isScrollEnabled, () => {
+  if (!body.value) return
+
+  if (!isScrollEnabled.value) {
+    body.value.classList.add('body-scroll-disabled')
+    return
+  }
+
+  body.value.classList.remove('body-scroll-disabled')
+})
 </script>
 
 <style lang="scss" scoped>
