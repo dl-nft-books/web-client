@@ -85,15 +85,12 @@ export function getChainFromNetwork(network: NETWORKS): string {
   }
 }
 
-enum LINK_TYPE {
-  token = 'token',
-  tx = 'tx',
-}
+type LinkType = 'token' | 'tx'
 
 export function getBlockExplorerLink(
   chainId: ChainId,
   token: string,
-  linkType = LINK_TYPE.token,
+  linkType = 'token' as LinkType,
 ): string {
   switch (chainId?.toString()) {
     case POLYGON_CHAINS.mumbai:

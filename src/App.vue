@@ -50,7 +50,7 @@ const isScrollEnabled = ref(true)
 
 Bus.on(
   Bus.eventList.toggleScroll,
-  () => (isScrollEnabled.value = !isScrollEnabled.value),
+  scrollState => (isScrollEnabled.value = Boolean(scrollState)),
 )
 
 watch(isScrollEnabled, () => {
