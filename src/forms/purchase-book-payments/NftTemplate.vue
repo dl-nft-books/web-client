@@ -23,7 +23,7 @@
   <template v-else-if="nftPrice">
     <readonly-field
       :label="$t('nft-template.collection-price')"
-      :value="$t('nft-template.price', { price: nftPrice.usd })"
+      :value="$t('nft-template.price', { price: nftPrice.floor_price })"
     />
 
     <p
