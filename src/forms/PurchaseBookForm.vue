@@ -385,7 +385,11 @@ const submit = async (editorFromTemplate: UseImageEditor | null) => {
 
     await approveTokenSpend(
       form.tokenType,
-      new BN(dataForMint.tokenAmount).toWei().toString(),
+      new BN(dataForMint.tokenAmount, {
+        decimals: dataForMint.tokenPrice?.token.decimals,
+      })
+        .toWei()
+        .toString(),
       dataForMint.tokenAddress,
       dataForMint.tokenId,
     )
