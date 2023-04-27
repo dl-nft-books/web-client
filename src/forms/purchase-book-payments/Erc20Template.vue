@@ -106,9 +106,9 @@ const formattedTokenAmount = computed(() => {
   if (!tokenPrice.value) return ''
 
   return new BN(props.book.pricePerOneToken, {
-    decimals: tokenPrice.value.token.decimals,
+    decimals: 18,
   })
-    .fromFraction(tokenPrice.value.token.decimals)
+    .fromFraction(18)
     .div(tokenPrice.value.price)
     .toString()
 })
