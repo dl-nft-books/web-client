@@ -388,8 +388,9 @@ const submit = async (editorFromTemplate: UseImageEditor | null) => {
       new BN(dataForMint.tokenAmount, {
         decimals: dataForMint.tokenPrice?.token.decimals,
       })
-        .toWei()
-        .toString(),
+        .toFraction(dataForMint.tokenPrice?.token.decimals)
+        .toString()
+        .split('.')[0],
       dataForMint.tokenAddress,
       dataForMint.tokenId,
     )
