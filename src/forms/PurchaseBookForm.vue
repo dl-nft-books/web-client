@@ -101,6 +101,7 @@ import { required } from '@/validators'
 
 import loaderAnimation from '@/assets/animations/loader.json'
 import { ethers } from 'ethers'
+import { ProviderUserRejectedRequest } from '@/errors/runtime.errors'
 
 export type ExposedFormRef = {
   isFormValid: () => boolean
@@ -384,7 +385,7 @@ const submit = async (editorFromTemplate: UseImageEditor | null) => {
 
     await approveTokenSpend(
       form.tokenType,
-      dataForMint.tokenAmount,
+      new BN(dataForMint.tokenAmount).toWei().toString(),
       dataForMint.tokenAddress,
       dataForMint.tokenId,
     )
@@ -400,6 +401,10 @@ const submit = async (editorFromTemplate: UseImageEditor | null) => {
     emit('submitting', false)
     emit('submit')
   } catch (e) {
+    if (e instanceof ProviderUserRejectedRequest) {
+      ErrorHandler.processWithoutFeedback(e)
+      return
+    }
     ErrorHandler.process(e)
   }
   enableForm()
