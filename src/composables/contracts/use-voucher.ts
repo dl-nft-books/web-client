@@ -8,7 +8,7 @@ import { Signature } from '@/composables'
 
 const CONTRACT_VERSION = '1'
 const CONTRACT_NAME = 'Voucher'
-const SIG_END_OFFSET = 5 // minutes
+const SIG_END_OFFSET = 5 // hours
 
 export const useVoucher = (address?: string) => {
   const web3ProvidersStore = useWeb3ProvidersStore()
@@ -73,9 +73,7 @@ export const useVoucher = (address?: string) => {
         provider.value.chainId,
       ])
 
-      const endSigTimestamp = DateUtil.now()
-        .add(SIG_END_OFFSET, 'minutes')
-        .unix()
+      const endSigTimestamp = DateUtil.now().add(SIG_END_OFFSET, 'hours').unix()
 
       const signedData = await provider.value.signTypedData(
         {
