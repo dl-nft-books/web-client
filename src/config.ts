@@ -20,6 +20,7 @@ export const config = {
   TECHNICAL_STATE: import.meta.env.VITE_APP_TECHNICAL_STATE,
   DEFAULT_RPC_URL: import.meta.env.VITE_APP_DEFAULT_RPC_URL,
   DEFAULT_CHAIN_ID: import.meta.env.VITE_APP_DEFAULT_CHAIN_ID,
+  SIGNATURE_EXPIRATION_TIME: import.meta.env.VITE_APP_SIGNATURE_EXPIRATION_TIME,
 } as const
 
 Object.assign(config, _mapEnvCfg(import.meta.env))

@@ -5,10 +5,11 @@ import { handleEthError } from '@/helpers'
 import { DateUtil } from '@distributedlab/utils'
 import { ethers } from 'ethers'
 import { Signature } from '@/composables'
+import { config } from '@/config'
 
 const CONTRACT_VERSION = '1'
 const CONTRACT_NAME = 'Voucher'
-const SIG_END_OFFSET = 5 // hours
+const SIG_END_OFFSET = Number(config.SIGNATURE_EXPIRATION_TIME) // hours
 
 export const useVoucher = (address?: string) => {
   const web3ProvidersStore = useWeb3ProvidersStore()
