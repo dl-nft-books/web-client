@@ -31,6 +31,7 @@ export function useBooks(contractRegistryAddress?: string) {
     init: initMarketPlace,
     getTokenParams,
     getBooksBatch,
+    getTokenContractsCount,
   } = useMarketplace()
 
   const _initMarketPlace = async (address?: string) => {
@@ -150,6 +151,8 @@ export function useBooks(contractRegistryAddress?: string) {
       },
     )
 
+    if (!dataWithoutNetworks.length) return []
+
     const { data } = await api.get<Book[]>('/integrations/books', {
       filter: {
         id: dataWithoutNetworks.map(book => book.id).join(','),
@@ -202,6 +205,29 @@ export function useBooks(contractRegistryAddress?: string) {
     return formattedBooks
   }
 
+  const getTotalBooksAmount = async (chainId: ChainId) => {
+    if (!networkStore.list.length) {
+      await networkStore.loadNetworks()
+    }
+
+    if (
+      !networkStore.list.some(network => network.chain_id === Number(chainId))
+    ) {
+      return
+    }
+
+    if (provider.value.isConnected) await switchNetwork(chainId)
+
+    await _initContractRegistry(Number(chainId))
+    await _initMarketPlace()
+
+    const amount = await getTokenContractsCount()
+
+    if (!amount) return
+
+    return new BN(amount._hex).toString()
+  }
+
   const getBookById = async (id: number | string): Promise<FullBookInfo> => {
     const chainId = provider.value.isConnected
       ? Number(provider.value.chainId)
@@ -220,5 +246,6 @@ export function useBooks(contractRegistryAddress?: string) {
   return {
     getBookById,
     getBooksFromContract,
+    getTotalBooksAmount,
   }
 }

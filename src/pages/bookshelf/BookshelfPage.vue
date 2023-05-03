@@ -5,35 +5,8 @@
       {{ $t('bookshelf-page.title') }}
     </h1>
 
-    <error-message
-      v-if="isLoadFailed"
-      :message="$t('bookshelf-page.loading-error-msg')"
-    />
-    <template v-else-if="books.length || isLoading">
-      <div v-if="books.length" class="bookshelf-page__list">
-        <book-card
-          v-for="book in books"
-          :key="book.id"
-          :book="book"
-          :network="networkStore.getNetworkByID(book.chain_id)"
-        />
-      </div>
-
-      <div class="bookshelf-page__loader">
-        <loader v-if="isLoading" />
-      </div>
-
-      <app-button
-        v-if="isLoadMoreBtnShown"
-        class="bookshelf-page__load-more-btn"
-        size="small"
-        scheme="flat"
-        color="primary"
-        :text="$t('bookshelf-page.load-more-btn')"
-        @click="loadNextPage"
-      />
-    </template>
-    <no-data-message v-else :message="$t('bookshelf-page.no-data-msg')" />
+    <book-list v-if="totalAmount !== -1" :total-amount="totalAmount" />
+    <loader v-else />
     <img
       class="bookshelf-page__background bookshelf-page__background--bottom"
       src="/images/fancy-lines.png"
@@ -42,72 +15,33 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, computed } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 
-import {
-  Loader,
-  ErrorMessage,
-  NoDataMessage,
-  BookCard,
-  AppButton,
-} from '@/common'
-
-import { ErrorHandler } from '@/helpers'
-import { BaseBookInfo, useBooks, useContractPagination } from '@/composables'
-import { BookshelfHeader } from '@/pages/bookshelf'
-import { useNetworksStore, useWeb3ProvidersStore } from '@/store'
+import { Loader } from '@/common'
+import { useBooks } from '@/composables'
+import { BookshelfHeader, BookList } from '@/pages/bookshelf'
+import { useWeb3ProvidersStore } from '@/store'
 import { config } from '@/config'
-import { DateUtil } from '@distributedlab/utils'
 
-const networkStore = useNetworksStore()
 const webProvidersStore = useWeb3ProvidersStore()
 
 const provider = computed(() => webProvidersStore.provider)
 
-const { getBooksFromContract } = useBooks()
+const totalAmount = ref(-1)
 
-const isLoadFailed = ref(false)
-const books = ref<BaseBookInfo[]>([])
+const { getTotalBooksAmount } = useBooks()
 
-const loadList = computed(
-  () => (limit: number, offset: number) =>
-    getBooksFromContract(
-      limit,
-      offset,
-      provider.value.isConnected
-        ? provider.value.chainId
-        : config.DEFAULT_CHAIN_ID,
-    ),
-)
+onMounted(async () => {
+  const data = await getTotalBooksAmount(
+    provider.value.isConnected
+      ? provider.value.chainId
+      : config.DEFAULT_CHAIN_ID,
+  )
 
-const { loadNextPage, isLoading, isLoadMoreBtnShown } = useContractPagination(
-  loadList,
-  setList,
-  concatList,
-  onError,
-)
+  if (!data) return
 
-// filtering disabled books and sorting to show user the newest books first
-const processBookList = (bookList: BaseBookInfo[]) => {
-  return bookList
-    .filter(book => !book.isDisabled)
-    .sort((oneBook, anotherBook) =>
-      DateUtil.isBefore(oneBook.created_at, anotherBook.created_at) ? 1 : -1,
-    )
-}
-
-function setList(chunk: BaseBookInfo[]) {
-  books.value = chunk.length ? processBookList(chunk) : []
-}
-
-function concatList(chunk: BaseBookInfo[]) {
-  books.value = processBookList(books.value.concat(chunk.length ? chunk : []))
-}
-
-function onError(e: Error) {
-  ErrorHandler.processWithoutFeedback(e)
-  isLoadFailed.value = true
-}
+  totalAmount.value = Number(data)
+})
 </script>
 
 <style lang="scss" scoped>
@@ -126,23 +60,11 @@ function onError(e: Error) {
 
 .bookshelf-page__title {
   text-transform: uppercase;
-}
 
-.bookshelf-page__list {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, toRem(292));
-  grid-gap: toRem(20);
-  justify-content: space-evenly;
-}
-
-.bookshelf-page__load-more-btn {
-  margin: toRem(20) auto 0;
-  width: toRem(240);
-  color: var(--white);
-  border: toRem(2) solid var(--white);
-
-  --app-button-flat-text-hover: var(--primary-light);
-  --app-button-flat-border: #{toRem(2)} solid var(--primary-light);
+  @include respond-to(tablet) {
+    text-align: center;
+    font-size: toRem(26);
+  }
 }
 
 .bookshelf-page__background {
