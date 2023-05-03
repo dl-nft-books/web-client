@@ -81,7 +81,6 @@ const { loadNextPage, isLoading, isLoadMoreBtnShown } = useContractPagination(
   {
     isReverted: true,
     totalAmount: props.totalAmount,
-    pageLimit: 2,
   },
 )
 
