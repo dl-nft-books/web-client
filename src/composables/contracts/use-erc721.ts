@@ -89,6 +89,17 @@ export const useErc721 = (address?: string) => {
       handleEthError(error as EthProviderRpcError)
     }
   }
+
+  const tokenURI = async (tokenId: string) => {
+    if (!contractInstance.value) return
+
+    try {
+      return contractInstance.value.tokenURI(tokenId)
+    } catch (error) {
+      handleEthError(error as EthProviderRpcError)
+    }
+  }
+
   return {
     init,
 
@@ -98,5 +109,6 @@ export const useErc721 = (address?: string) => {
     getName,
     getOwner,
     getSymbol,
+    tokenURI,
   }
 }

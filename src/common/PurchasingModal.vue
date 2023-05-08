@@ -47,7 +47,7 @@
                   size="small"
                   :text="$t('networks.switch-btn-lbl')"
                   :icon-left="$icons.refresh"
-                  @click="switchNetwork(book.chain_id)"
+                  @click="switchNetwork(book.networks[0].attributes.chain_id)"
                 />
               </template>
             </template>
@@ -66,17 +66,17 @@ import { useWeb3ProvidersStore } from '@/store'
 import { storeToRefs } from 'pinia'
 import { ErrorHandler, switchNetwork } from '@/helpers'
 import { ref, computed } from 'vue'
-import { getPlatformsList } from '@/api'
 import { PurchaseBookForm } from '@/forms'
 
 import disableChainAnimation from '@/assets/animations/disable-chain.json'
 import { ETHEREUM_CHAINS, POLYGON_CHAINS, Q_CHAINS } from '@/enums'
-import { Book, Platform } from '@/types'
+import { Platform, FullBookInfo } from '@/types'
 import { useI18n } from 'vue-i18n'
+import { usePricer } from '@/composables'
 
 const props = defineProps<{
   isShown: boolean
-  book: Book
+  book: FullBookInfo
 }>()
 
 const emit = defineEmits<{
@@ -85,6 +85,7 @@ const emit = defineEmits<{
 }>()
 
 const { t } = useI18n()
+const { getPlatformsList } = usePricer()
 
 const isLoaded = ref(false)
 const isSubmitting = ref(false)
@@ -93,8 +94,11 @@ const isLoadFailed = ref(false)
 
 const { provider } = storeToRefs(useWeb3ProvidersStore())
 
-const isValidChain = computed(
-  () => props.book.chain_id === Number(provider.value.chainId),
+const isValidChain = computed(() =>
+  props.book.networks.some(
+    ({ attributes: { chain_id } }) =>
+      chain_id === Number(provider.value.chainId),
+  ),
 )
 
 const title = computed(() => {
@@ -112,6 +116,7 @@ function formatChain(chainId: number): string {
     case POLYGON_CHAINS.mainnet:
       return POLYGON_CHAINS.mainnet
     case ETHEREUM_CHAINS.goerli:
+    case ETHEREUM_CHAINS.sepolia:
     case ETHEREUM_CHAINS.ethereum:
       return ETHEREUM_CHAINS.ethereum
     case Q_CHAINS.testnet:
@@ -127,9 +132,12 @@ async function init() {
   try {
     const { data: platforms } = await getPlatformsList()
 
-    currentPlatform.value = platforms.find(
-      platform =>
-        platform.chain_identifier === Number(formatChain(props.book.chain_id)),
+    currentPlatform.value = platforms.find(platform =>
+      isValidChain.value
+        ? platform.chain_identifier ===
+          Number(formatChain(provider.value.chainId))
+        : platform.chain_identifier ===
+          Number(formatChain(props.book.networks[0].attributes.chain_id)),
     )
   } catch (e) {
     isLoadFailed.value = true
@@ -145,15 +153,15 @@ init()
 .purchasing-modal__pane {
   display: flex;
   flex-direction: column;
-  max-width: toRem(460);
   max-height: 100vh;
+  width: fit-content;
   padding: toRem(32);
   background: var(--background-primary);
   border-radius: toRem(10);
-  min-width: toRem(460);
 
   @include respond-to(small) {
-    min-width: 100vw;
+    width: 100vw;
+    padding: toRem(32) toRem(15);
   }
 }
 
@@ -172,7 +180,6 @@ init()
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: toRem(20);
   gap: toRem(20);
   overflow-y: auto;
 

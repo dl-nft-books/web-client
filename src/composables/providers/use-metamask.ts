@@ -162,9 +162,30 @@ export const useMetamask = (provider: ProviderInstance): ProviderWrapper => {
   const getAddressUrl = (explorerUrl: string, address: string) => {
     return getEthExplorerAddressUrl(explorerUrl, address)
   }
+
   const getBalance = async (address: string) => {
     const balance = await currentProvider.value.getBalance(address)
     return balance.toString()
+  }
+
+  const signTypedData = async (
+    domain: ethers.TypedDataDomain,
+    types: Record<string, ethers.TypedDataField[]>,
+    value: Record<string, unknown>,
+  ) => {
+    if (!currentSigner.value) return
+
+    try {
+      const signedString = await currentSigner.value._signTypedData(
+        domain,
+        types,
+        value,
+      )
+
+      return signedString
+    } catch (error) {
+      handleEthError(error as EthProviderRpcError)
+    }
   }
 
   return {
@@ -185,5 +206,6 @@ export const useMetamask = (provider: ProviderInstance): ProviderWrapper => {
     getAddressUrl,
     getBalance,
     addNetwork,
+    signTypedData,
   }
 }

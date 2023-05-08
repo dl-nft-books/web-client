@@ -1,15 +1,8 @@
 import { api } from '@/api'
-import { config } from '@/config'
-import { GENERATED_NFT_STATUSES } from '@/enums'
-import {
-  BookPayment,
-  BookPaymentNftExchange,
-  CreateTaskResponse,
-  MintSignatureResponse,
-  PageOrder,
-  Task,
-  Token,
-} from '@/types'
+import { computed } from 'vue'
+import { CreateTaskResponse, MintSignatureResponse, Task } from '@/types'
+import { useVoucher, useContractRegistry } from '@/composables'
+import { useNetworksStore, useWeb3ProvidersStore } from '@/store'
 
 enum TASK_STATUS {
   pending = 1,
@@ -21,29 +14,42 @@ enum TASK_STATUS {
 
 const DEFAULT_CALL_INTERVAL = 3000 // ms
 
-type TokenWithRegularPayment = Token & {
-  payment: BookPayment
-}
-
-type ExchangedToken = Token & {
-  payment: BookPaymentNftExchange
-}
-
 export function useGenerator() {
+  const networkStore = useNetworksStore()
+  const web3Store = useWeb3ProvidersStore()
+  const provider = computed(() => web3Store.provider)
+
+  const { init: initRegistry, getMarketPlaceAddress } = useContractRegistry()
+
+  const _initContractRegistry = async () => {
+    if (!networkStore.list.length) {
+      await networkStore.loadNetworks()
+    }
+
+    const appropriateRegistryAddress = networkStore.list.find(
+      network => network.chain_id === Number(provider.value.chainId),
+    )?.factory_address
+
+    if (!appropriateRegistryAddress)
+      throw new Error('failed to get registry address')
+
+    initRegistry(appropriateRegistryAddress)
+  }
+
   const createNewGenerationTask = async (opts: {
-    signature: string
     account: string
     bookId: string
+    chainId: number
   }): Promise<CreateTaskResponse> => {
     const { data } = await api.post<CreateTaskResponse>(
-      '/integrations/generator/tasks',
+      '/integrations/core/tasks',
       {
         data: {
           type: 'tasks',
           attributes: {
-            signature: opts.signature,
             account: opts.account,
             book_id: +opts.bookId,
+            chain_id: opts.chainId,
           },
         },
       },
@@ -52,8 +58,20 @@ export function useGenerator() {
     return data
   }
 
+  const uploadBanner = async (
+    taskId: string,
+    banner: FormData,
+  ): Promise<Task> => {
+    const { data } = await api.post<Task>(
+      `/integrations/core/tasks/${taskId}/banner`,
+      banner,
+    )
+
+    return data
+  }
+
   const getGenerationTaskById = async (id: string | number): Promise<Task> => {
-    const { data } = await api.get<Task>(`/integrations/generator/tasks/${id}`)
+    const { data } = await api.get<Task>(`/integrations/core/tasks/${id}`)
 
     return data
   }
@@ -87,8 +105,8 @@ export function useGenerator() {
     isNft = false,
   ): Promise<MintSignatureResponse> => {
     const apiEndpoint = isNft
-      ? '/integrations/generator/signature/mint/nft'
-      : '/integrations/generator/signature/mint'
+      ? '/integrations/core/signature/mint/nft'
+      : '/integrations/core/signature/mint'
 
     const { data } = await api.get<MintSignatureResponse>(apiEndpoint, {
       platform,
@@ -100,58 +118,45 @@ export function useGenerator() {
     return data
   }
 
-  const getGeneratedTokens = (opts?: {
-    account?: string[]
-    status?: GENERATED_NFT_STATUSES[]
-    pageLimit?: number
-    pageOrder?: PageOrder
-  }) => {
-    return api.get<Token[]>('/integrations/generator/tokens', {
-      page: {
-        limit: opts?.pageLimit || config.DEFAULT_PAGE_LIMIT,
-        order: opts?.pageOrder || 'desc',
-      },
-      filter: {
-        ...(opts?.account?.length ? { account: opts.account.join(',') } : {}),
-        ...(opts?.status?.length ? { status: opts.status.join(',') } : {}),
+  const sendBuyWithVoucherRequest = async (
+    voucherAddress: string,
+    voucherAmount: string,
+    taskId: number,
+  ) => {
+    if (!provider.value.selectedAddress) return
+
+    await _initContractRegistry()
+
+    const spender = await getMarketPlaceAddress()
+
+    if (!spender) throw new Error('failed to get marketplace address')
+
+    const { getPermitSignature } = useVoucher(voucherAddress)
+
+    const permitSignature = await getPermitSignature(
+      provider.value.selectedAddress,
+      spender,
+      voucherAmount,
+    )
+
+    if (!permitSignature) throw new Error('failed to form signature')
+
+    await api.post('/integrations/core/buy/voucher', {
+      data: {
+        attributes: {
+          voucher_address: voucherAddress,
+          task_id: taskId,
+          end_sig_timestamp: permitSignature.endSigTimestamp,
+          permit_sig: {
+            attributes: {
+              r: permitSignature.r,
+              s: permitSignature.s,
+              v: permitSignature.v,
+            },
+          },
+        },
       },
     })
-  }
-
-  const getGeneratedTokenById = async (id: string | number): Promise<Token> => {
-    const { data } = await api.get<Token>(
-      `/integrations/generator/tokens/${id}`,
-    )
-
-    return data
-  }
-
-  const isToken = (object: unknown): object is Token => {
-    return (
-      typeof object === 'object' &&
-      object !== null &&
-      object !== undefined &&
-      'payment' in object &&
-      (object as Token).payment !== undefined
-    )
-  }
-
-  const isTokenWithRegularPayment = (
-    object: unknown,
-  ): object is TokenWithRegularPayment => {
-    return (
-      isToken(object) &&
-      object.payment !== undefined &&
-      'erc20_data' in object.payment
-    )
-  }
-
-  const isExchangedToken = (object: unknown): object is ExchangedToken => {
-    return (
-      isToken(object) &&
-      object.payment !== undefined &&
-      'nft_address' in object.payment
-    )
   }
 
   return {
@@ -159,10 +164,7 @@ export function useGenerator() {
     getGenerationTaskById,
     getMintSignature,
     getGeneratedTask,
-    getGeneratedTokens,
-    isToken,
-    isTokenWithRegularPayment,
-    isExchangedToken,
-    getGeneratedTokenById,
+    uploadBanner,
+    sendBuyWithVoucherRequest,
   }
 }

@@ -69,7 +69,7 @@ export interface ProviderWrapper {
     nativeCurrency: NativeCurrency,
     blockExplorerUrl: string,
   ) => Promise<void>
-  signAndSendTransaction: (
+  signAndSendTransaction?: (
     txRequestBody: TxRequestBody,
   ) => Promise<TransactionResponse>
   getHashFromTxResponse: (txResponse: TransactionResponse) => string
@@ -77,6 +77,11 @@ export interface ProviderWrapper {
   getAddressUrl: (explorerUrl: string, address: string) => string
   getBalance?: (address: string) => Promise<string>
   addNetwork?: (chainID: ChainId) => Promise<void>
+  signTypedData?: (
+    domain: ethers.TypedDataDomain,
+    types: Record<string, ethers.TypedDataField[]>,
+    value: Record<string, unknown>,
+  ) => Promise<string | undefined>
 }
 
 export type { UseProvider } from '@/composables'

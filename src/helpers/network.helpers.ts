@@ -21,6 +21,7 @@ export function getNetworkScheme(chainID: ChainId): string {
   switch (chainID?.toString()) {
     case ETHEREUM_CHAINS.ethereum:
     case ETHEREUM_CHAINS.goerli:
+    case ETHEREUM_CHAINS.sepolia:
       return NETWORKS.ETHEREUM
     case POLYGON_CHAINS.mainnet:
     case POLYGON_CHAINS.mumbai:
@@ -70,7 +71,7 @@ export function getChainFromNetwork(network: NETWORKS): string {
     case NETWORKS.POLYGON:
       return isProduction ? POLYGON_CHAINS.mainnet : POLYGON_CHAINS.mumbai
     case NETWORKS.ETHEREUM:
-      return isProduction ? ETHEREUM_CHAINS.ethereum : ETHEREUM_CHAINS.goerli
+      return isProduction ? ETHEREUM_CHAINS.ethereum : ETHEREUM_CHAINS.sepolia
     case NETWORKS.Q:
       return isProduction ? Q_CHAINS.mainet : Q_CHAINS.testnet
     default:

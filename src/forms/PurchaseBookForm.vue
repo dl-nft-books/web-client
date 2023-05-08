@@ -18,32 +18,55 @@
   </template>
 
   <!-- Before generation stuff -->
-  <form v-else class="purchase-book-form" @submit.prevent="submit">
-    <book-preview
-      :book="book"
-      :modification="
-        form.tokenType === TOKEN_TYPES.nft ? 'floor-price' : 'default'
-      "
-    />
+  <steps-form
+    v-else
+    :submit-text="$t('purchase-book-form.generate-btn')"
+    :is-next-step-disabled="isNextStepDisabled"
+    @submit="submit(editorInstance?.editorInstance)"
+  >
+    <template #step1>
+      <form class="purchase-book-form" @submit.prevent>
+        <book-preview
+          :book="book"
+          :modification="
+            form.tokenType === TOKEN_TYPES.nft ? 'floor-price' : 'default'
+          "
+        />
 
-    <select-field
-      v-model="form.tokenType"
-      class="purchase-book-form__select"
-      :label="$t('purchase-book-form.token-type-lbl')"
-      :value-options="tokenTypesOptions"
-      :error-message="getFieldErrorMessage('tokenType')"
-      :disabled="isFormDisabled"
-      @blur="touchField('tokenType')"
-    />
+        <select-field
+          v-model="form.tokenType"
+          class="purchase-book-form__select"
+          :label="$t('purchase-book-form.token-type-lbl')"
+          :value-options="tokenTypesOptions"
+          :error-message="getFieldErrorMessage('tokenType')"
+          :disabled="isFormDisabled"
+          @blur="touchField('tokenType')"
+        />
 
-    <component :is="paymentTemplate" ref="paymentTemplateRef" :book="book" />
-  </form>
+        <component
+          :is="paymentTemplate"
+          ref="paymentTemplateRef"
+          :book="book"
+        />
+      </form>
+    </template>
+
+    <template #step2>
+      <image-editor
+        ref="editorInstance"
+        :image-url="book.banner.attributes.url"
+      />
+    </template>
+  </steps-form>
 </template>
 
 <script lang="ts" setup>
+import 'simple-fabric-vue-image-editor/dist/fabric-vue-image-editor-ts.css'
+
 import { ref, reactive, computed, Ref, provide } from 'vue'
 import { useWeb3ProvidersStore } from '@/store'
 import { BN } from '@/utils/math.util'
+import { ImageEditor, UseImageEditor } from 'simple-fabric-vue-image-editor'
 
 import {
   Platform,
@@ -52,11 +75,11 @@ import {
   PurchaseFormKey,
   MintSignatureResponse,
   Task,
-  Book,
+  FullBookInfo,
 } from '@/types'
 import { TOKEN_TYPES } from '@/enums'
 
-import { Animation, BookPreview } from '@/common'
+import { Animation, BookPreview, StepsForm } from '@/common'
 
 import {
   NativeTemplate,
@@ -68,9 +91,7 @@ import {
 import {
   useForm,
   useFormValidation,
-  useNftBookToken,
-  useErc20,
-  useErc721,
+  useNftTokens,
   useGenerator,
 } from '@/composables'
 
@@ -85,7 +106,6 @@ import { ethers } from 'ethers'
 export type ExposedFormRef = {
   isFormValid: () => boolean
   promocode: Ref<Promocode | null>
-  signature: Ref<string>
   tokenAddress: Ref<string>
   tokenAmount: Ref<string>
   tokenPrice: Ref<TokenPrice | null>
@@ -95,7 +115,7 @@ export type ExposedFormRef = {
 const TOKEN_AMOUNT_COEFFICIENT = 1.02
 
 const props = defineProps<{
-  book: Book
+  book: FullBookInfo
   currentPlatform: Platform
 }>()
 
@@ -107,11 +127,14 @@ const emit = defineEmits<{
 const web3ProvidersStore = useWeb3ProvidersStore()
 const provider = computed(() => web3ProvidersStore.provider)
 
-const { createNewGenerationTask, getMintSignature, getGeneratedTask } =
-  useGenerator()
-const nftBookToken = useNftBookToken(props.book.contract_address)
-const erc20 = useErc20()
-const erc721 = useErc721()
+const {
+  createNewGenerationTask,
+  getMintSignature,
+  uploadBanner,
+  sendBuyWithVoucherRequest,
+} = useGenerator()
+const { mintWithErc20, mintWithEth, mintWithNft, approveTokenSpend } =
+  useNftTokens()
 
 const form = reactive({
   tokenType: TOKEN_TYPES.native,
@@ -132,6 +155,10 @@ provide(PurchaseFormKey, {
 })
 
 const paymentTemplateRef = ref<ExposedFormRef | null>(null)
+
+const isNextStepDisabled = computed(
+  () => isFormDisabled.value || !paymentTemplateRef.value?.isFormValid(),
+)
 
 const paymentTemplate = computed(() => {
   switch (form.tokenType) {
@@ -157,10 +184,6 @@ const tokenTypesOptions = computed(() => {
       label: globalizeTokenType(TOKEN_TYPES.voucher),
       value: TOKEN_TYPES.voucher,
     },
-    {
-      label: globalizeTokenType(TOKEN_TYPES.nft),
-      value: TOKEN_TYPES.nft,
-    },
   ]
 
   /* 
@@ -176,64 +199,15 @@ const tokenTypesOptions = computed(() => {
     })
   }
 
+  if (props.book.isNFTBuyable) {
+    defaultOptions.push({
+      label: globalizeTokenType(TOKEN_TYPES.nft),
+      value: TOKEN_TYPES.nft,
+    })
+  }
+
   return defaultOptions
 })
-
-const isTokenApproved = async (
-  tokenAmount: string,
-  tokenAddress?: string,
-): Promise<boolean> => {
-  if (tokenAddress) erc20.init(tokenAddress)
-
-  const allowance = await erc20.getAllowance(
-    provider.value.selectedAddress!,
-    props.book.contract_address,
-  )
-
-  if (
-    new BN(allowance?.toString() || 0).compare(tokenAmount) === 1 ||
-    new BN(allowance?.toString() || 0).compare(tokenAmount) === 0
-  ) {
-    return true
-  } else if (new BN(allowance?.toString() || 0).compare(tokenAmount) === -1) {
-    await erc20.approve(props.book.contract_address, tokenAmount)
-  }
-
-  return isTokenApproved(tokenAmount)
-}
-
-const approveTokenSpend = async (
-  tokenType: TOKEN_TYPES,
-  tokenAmount?: string,
-  tokenAddress?: string,
-  tokenId?: string,
-) => {
-  if (!provider.value.selectedAddress) return
-
-  switch (tokenType) {
-    case TOKEN_TYPES.erc20:
-      if (!tokenAddress || !tokenAmount) return
-      await isTokenApproved(tokenAmount, tokenAddress)
-      break
-    case TOKEN_TYPES.voucher:
-      await isTokenApproved(
-        props.book.voucher_token_amount,
-        props.book.voucher_token,
-      )
-
-      break
-    case TOKEN_TYPES.nft:
-      if (!tokenAddress || !tokenId) return
-      erc721.init(tokenAddress)
-
-      await erc721.approve(props.book.contract_address, tokenId)
-      break
-    default:
-      break
-  }
-}
-
-// Minting with ERC721 requires to invoke different mint function on contract
 const mintToken = async (
   mintSignature: MintSignatureResponse,
   generatedTask: Task,
@@ -241,41 +215,116 @@ const mintToken = async (
   tokenId?: string,
   nativeTokenAmount?: string,
 ) => {
-  if (form.tokenType !== TOKEN_TYPES.nft) {
-    await nftBookToken.mintToken(
-      tokenAddress || ethers.constants.AddressZero,
-      mintSignature.price,
-      mintSignature.discount,
-      mintSignature.end_timestamp,
-      generatedTask!.metadata_ipfs_hash,
-      mintSignature.signature.r,
-      mintSignature.signature.s,
-      mintSignature.signature.v,
-      nativeTokenAmount,
-    )
+  if (!provider.value.selectedAddress) return
 
-    return
-  }
-
-  if (!tokenId) return
-
-  await nftBookToken.mintTokenByNFT(
-    tokenAddress,
-    mintSignature.price,
-    tokenId,
-    mintSignature.end_timestamp,
-    generatedTask!.metadata_ipfs_hash,
-    mintSignature.signature.r,
-    mintSignature.signature.s,
-    mintSignature.signature.v,
+  const bookContract = props.book.networks.find(
+    el => el.attributes.chain_id === Number(provider.value.chainId),
   )
+
+  if (!bookContract)
+    throw new Error('No matching book contract found for that chain')
+
+  switch (form.tokenType) {
+    case TOKEN_TYPES.native:
+      if (!nativeTokenAmount) throw new Error('Missing native token amount')
+
+      await mintWithEth(
+        {
+          tokenContract: bookContract.attributes.contract_address,
+          recipient: provider.value.selectedAddress,
+          tokenData: {
+            tokenId: mintSignature.token_id.toString(),
+            tokenURI: generatedTask.metadata_ipfs_hash,
+          },
+          paymentDetails: {
+            paymentTokenAddress: ethers.constants.AddressZero,
+            paymentTokenPrice: mintSignature.price,
+            nftTokenId: '0',
+            discount: mintSignature.discount,
+          },
+        },
+        {
+          ...mintSignature.signature,
+          endSigTimestamp: mintSignature.end_timestamp,
+        },
+        nativeTokenAmount,
+      )
+      break
+    case TOKEN_TYPES.erc20:
+      if (!tokenAddress) throw new Error('ERC20 address is missing')
+
+      await mintWithErc20(
+        {
+          tokenContract: bookContract.attributes.contract_address,
+          recipient: provider.value.selectedAddress,
+          tokenData: {
+            tokenId: mintSignature.token_id.toString(),
+            tokenURI: generatedTask.metadata_ipfs_hash,
+          },
+          paymentDetails: {
+            paymentTokenAddress: tokenAddress,
+            paymentTokenPrice: mintSignature.price,
+            nftTokenId: '0',
+            discount: mintSignature.discount,
+          },
+        },
+        {
+          ...mintSignature.signature,
+          endSigTimestamp: mintSignature.end_timestamp,
+        },
+      )
+      break
+    case TOKEN_TYPES.nft: {
+      if (!tokenId) throw new Error('Nft token id is missing')
+
+      await mintWithNft(
+        {
+          tokenContract: bookContract.attributes.contract_address,
+          recipient: provider.value.selectedAddress,
+          tokenData: {
+            tokenId: mintSignature.token_id.toString(),
+            tokenURI: generatedTask.metadata_ipfs_hash,
+          },
+          paymentDetails: {
+            paymentTokenAddress: tokenAddress,
+            paymentTokenPrice: mintSignature.price,
+            nftTokenId: tokenId,
+            discount: mintSignature.discount,
+          },
+        },
+        {
+          ...mintSignature.signature,
+          endSigTimestamp: mintSignature.end_timestamp,
+        },
+      )
+      break
+    }
+    default:
+      break
+  }
 }
 
-const submit = async () => {
+const editorInstance = ref<{
+  editorInstance: UseImageEditor | null
+}>()
+
+/* FIXME: for some fucked up reason when im trying to invoke functions 
+from editorInsance inside submit function - editorInstance appears to be null
+
+if <image-editor /> is not being passed though slots to another component -
+it works as expected - you getting all what you want from editorInstance
+
+but if <image-editor /> passed through named slots its just doesn't work and the
+only solution i figure out for now its to pass editorInstance directly from 
+template to the submit func and now its working perfectly fine.
+
+*/
+const submit = async (editorFromTemplate: UseImageEditor | null) => {
   if (
     !isFormValid() ||
     !paymentTemplateRef.value?.isFormValid() ||
-    !provider.value.selectedAddress
+    !provider.value.selectedAddress ||
+    !editorFromTemplate
   )
     return
 
@@ -284,7 +333,6 @@ const submit = async () => {
     tokenPrice: paymentTemplateRef.value?.tokenPrice,
     tokenId: paymentTemplateRef.value.tokenId,
     tokenAmount: paymentTemplateRef.value?.tokenAmount,
-    signature: paymentTemplateRef.value?.signature,
     promocode: paymentTemplateRef.value.promocode,
   }
 
@@ -292,17 +340,32 @@ const submit = async () => {
   emit('submitting', true)
 
   try {
+    const banner = await editorFromTemplate.canvasToFormData('Document')
+
+    if (!banner) throw new Error('Failed to format canvas to FormData')
+
     const currentTask = await createNewGenerationTask({
-      signature: paymentTemplateRef.value.signature,
       account: provider.value.selectedAddress,
       bookId: props.book.id,
+      chainId: Number(provider.value.chainId),
     })
 
-    const generatedTask = await getGeneratedTask(currentTask.id)
+    const generatedTask = await uploadBanner(currentTask.id, banner)
 
+    if (form.tokenType === TOKEN_TYPES.voucher) {
+      await sendBuyWithVoucherRequest(
+        props.book.voucherTokenContract,
+        props.book.voucherTokensAmount,
+        Number(generatedTask.id),
+      )
+      emit('submitting', false)
+      emit('submit')
+
+      return
+    }
     const mintSignature = await getMintSignature(
       props.currentPlatform.id,
-      generatedTask!.id,
+      generatedTask.id,
       dataForMint.tokenAddress,
       dataForMint.promocode ? dataForMint.promocode.id : undefined,
       form.tokenType === TOKEN_TYPES.nft,
@@ -311,7 +374,7 @@ const submit = async () => {
     const nativeTokenAmount =
       form.tokenType !== TOKEN_TYPES.native
         ? ''
-        : new BN(props.book.price, {
+        : new BN(props.book.pricePerOneToken, {
             decimals: dataForMint.tokenPrice.token.decimals,
           })
             .div(dataForMint.tokenPrice.price)
@@ -327,7 +390,7 @@ const submit = async () => {
 
     await mintToken(
       mintSignature,
-      generatedTask,
+      generatedTask!,
       dataForMint.tokenAddress,
       dataForMint.tokenId,
       nativeTokenAmount,
@@ -344,10 +407,15 @@ const submit = async () => {
 
 <style lang="scss" scoped>
 .purchase-book-form {
-  width: 100%;
   display: flex;
   flex-direction: column;
   gap: toRem(20);
+  width: toRem(350);
+  padding: 0 toRem(5);
+
+  @include respond-to(small) {
+    width: 100%;
+  }
 }
 
 .purchase-book-form__submitting-animation-wrp {

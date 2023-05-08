@@ -5,7 +5,8 @@
     "field-error_email": "Field must be a valid email",
     "field-error_address": "Field must be a valid address",
     "field-error_minLength": "Value must be at least {min} chars",
-    "field-error_maxLength": "Value can't be greater than {max} chars"
+    "field-error_maxLength": "Value can't be greater than {max} chars",
+    "field-error_urlSymbols": "All unsafe and reserved url chars are restricted"
   },
   "errors": {
     "default": "Oops... Something went wrong",
@@ -125,6 +126,11 @@
     "floor-price-explanation": "Floor price is the minimum NFT price that can be exchanged for a book",
     "voucher-explanation": "You can use the voucher token when you pay"
   },
+  "steps-form" : {
+    "next-step-lbl": "Next step",
+    "prev-step-lbl": "Back",
+    "step-lbl": "Step {number}"
+  },
   "networks": {
     "polygon": "Polygon Mainnet",
     "ethereum": "Ethereum Mainnet",
@@ -135,7 +141,7 @@
     "network-error": "Failed to load network list"
   },
   "my-nfts-page": {
-    "loading-error-msg": "This page is currently unavailable due to connection problems with IPFS. Please, try again later.",
+    "loading-error-msg": "This chain is unsupported",
     "no-data-msg": "Empty data, please add new",
     "title": "My NFTs",
     "details-btn": "Details",
@@ -327,15 +333,13 @@
   },
   "nft-details": {
     "price-lbl": "Price",
-    "floor-price-lbl": "Exchanged NFT Floor Price",
     "exchanged-nft-address": "Exchanged NFT address",
-    "exchanged-nft-id": "Exchanged NFT ID",
     "purchase-date-lbl": "Purchase Date",
     "your-token-lbl": "Your Token",
     "token-amount-lbl": "Amount of Your Token",
-    "signature-lbl": "Your Signature",
     "document-lbl": "Document",
-    "token-id-lbl": "Token ID"
+    "token-id-lbl": "Token ID",
+    "payment-type-lbl": "Payment type"
   },
   "my-nfts-no-data": {
     "message-first": "Your bookshelf is still empty.",
@@ -350,5 +354,10 @@
     "voucher-lbl": "Voucher Token",
     "nft": "NFT",
     "not-found-lbl": "Token type not found"
+  },
+  "browser-support": {
+    "title": "Make sure you are using the correct browser",
+    "subtitle": "For the best experience on our site, we recommend using Google Chrome, Opera, Opera GX, Microsoft Edge, Firefox or Brave. Please note that the site may not function properly on other browsers.",
+    "submit-btn": "Understood"
   }
 }

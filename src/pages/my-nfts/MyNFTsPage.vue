@@ -12,7 +12,7 @@
         <div v-if="nftList.length" class="my-nfts-page__list">
           <book-card
             v-for="book in nftList"
-            :key="book.id"
+            :key="`${book.tokenContract}${book.tokenId}`"
             background-color="tertiary"
             :book="book"
             :action-btn-text="$t('my-nfts-page.details-btn')"
@@ -44,38 +44,36 @@ import { MyNftsNoData } from '@/pages/my-nfts'
 import { ErrorHandler } from '@/helpers'
 import { ref, computed } from 'vue'
 import { useWeb3ProvidersStore } from '@/store'
-import { usePaginate, useGenerator } from '@/composables'
-import { Token } from '@/types'
-import { GENERATED_NFT_STATUSES } from '@/enums'
-
+import {
+  useContractPagination,
+  useNftTokens,
+  TokenBaseInfo,
+} from '@/composables'
 const web3ProvidersStore = useWeb3ProvidersStore()
 const provider = computed(() => web3ProvidersStore.provider)
 
-const { getGeneratedTokens } = useGenerator()
-
 const isLoadFailed = ref(false)
-const nftList = ref<Token[]>([])
+const nftList = ref<TokenBaseInfo[]>([])
+
+const { getNftList } = useNftTokens()
 
 const loadList = computed(
-  () => () =>
-    getGeneratedTokens({
-      account: [provider.value.selectedAddress!],
-      status: [GENERATED_NFT_STATUSES.finishedUploading],
-    }),
+  () => (limit: number, offset: number) =>
+    getNftList(provider.value.selectedAddress, limit, offset),
 )
 
-const { loadNextPage, isLoading, isLoadMoreBtnShown } = usePaginate(
+const { loadNextPage, isLoading, isLoadMoreBtnShown } = useContractPagination(
   loadList,
   setList,
   concatList,
   onError,
 )
 
-function setList(chunk: Token[]) {
+function setList(chunk: TokenBaseInfo[]) {
   nftList.value = chunk ?? []
 }
 
-function concatList(chunk: Token[]) {
+function concatList(chunk: TokenBaseInfo[]) {
   nftList.value = nftList.value.concat(chunk ?? [])
 }
 

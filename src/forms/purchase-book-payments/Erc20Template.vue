@@ -40,25 +40,6 @@
         :token-type="TOKEN_TYPES.erc20"
         :token-address="form.tokenAddress"
       />
-
-      <textarea-field
-        v-model="form.signature"
-        :placeholder="$t('purchase-book-form.signature-placeholder')"
-        :maxlength="MAX_FIELD_LENGTH.signature"
-        :label="$t('purchase-book-form.signature-lbl')"
-        :error-message="getFieldErrorMessage('signature')"
-        :disabled="isFormDisabled"
-        @blur="touchField('signature')"
-      />
-
-      <!-- Starting NFT generation -->
-      <app-button
-        class="erc20-template__purchase-btn"
-        size="small"
-        type="submit"
-        :text="$t('purchase-book-form.generate-btn')"
-        :disabled="isFormDisabled || !isEnoughBalanceForBuy"
-      />
     </template>
   </template>
 </template>
@@ -67,19 +48,13 @@
 import { reactive, ref, computed, watch, toRef, inject } from 'vue'
 import { debounce } from 'lodash'
 
-import { AppButton, Loader, ErrorMessage } from '@/common'
+import { Loader, ErrorMessage } from '@/common'
 import { PromocodeTemplate } from '@/forms/purchase-book-payments'
-import {
-  InputField,
-  MessageField,
-  ReadonlyField,
-  TextareaField,
-} from '@/fields'
+import { InputField, MessageField, ReadonlyField } from '@/fields'
 import { useFormValidation, useBalance } from '@/composables'
-import { required, address, minLength, maxLength } from '@/validators'
+import { required, address } from '@/validators'
 
-import { PROMOCODE_LENGTH, MAX_FIELD_LENGTH } from '@/const'
-import { Book, Promocode, PurchaseFormKey } from '@/types'
+import { Promocode, PurchaseFormKey, FullBookInfo } from '@/types'
 import { ExposedPromocodeRef } from '@/forms/purchase-book-payments/PromocodeTemplate.vue'
 import { ExposedFormRef } from '@/forms//PurchaseBookForm.vue'
 import { BN } from '@/utils/math.util'
@@ -87,7 +62,7 @@ import { useWeb3ProvidersStore } from '@/store'
 import { TOKEN_TYPES } from '@/enums'
 
 const props = defineProps<{
-  book: Book
+  book: FullBookInfo
 }>()
 
 const { platform: currentPlatform, isFormDisabled } = inject(PurchaseFormKey)
@@ -95,7 +70,6 @@ const { platform: currentPlatform, isFormDisabled } = inject(PurchaseFormKey)
 const form = reactive({
   tokenAddress: '',
   signature: '',
-  promocode: '',
 })
 
 const web3ProvidersStore = useWeb3ProvidersStore()
@@ -119,11 +93,6 @@ const loadBalanceAndPrice = debounce(async () => {
 const { getFieldErrorMessage, touchField, isFormValid } = useFormValidation(
   form,
   {
-    signature: { required },
-    promocode: {
-      minLength: minLength(PROMOCODE_LENGTH),
-      maxLength: maxLength(PROMOCODE_LENGTH),
-    },
     tokenAddress: { required, address },
   },
 )
@@ -135,7 +104,9 @@ const promocode = ref<Promocode | null>(null)
 const formattedTokenAmount = computed(() => {
   if (!tokenPrice.value) return ''
 
-  return new BN(props.book.price, { decimals: tokenPrice.value.token.decimals })
+  return new BN(props.book.pricePerOneToken, {
+    decimals: tokenPrice.value.token.decimals,
+  })
     .fromFraction(tokenPrice.value.token.decimals)
     .div(tokenPrice.value.price)
     .toString()
@@ -146,11 +117,13 @@ const isEnoughBalanceForBuy = computed(
 )
 
 defineExpose<ExposedFormRef>({
-  isFormValid: () => isFormValid() && promocodeRef.value?.isPromocodeValid(),
+  isFormValid: () =>
+    isFormValid() &&
+    promocodeRef.value?.isPromocodeValid() &&
+    isEnoughBalanceForBuy.value,
   tokenAmount: formattedTokenAmount,
   tokenPrice: tokenPrice,
   tokenAddress: toRef(form, 'tokenAddress'),
-  signature: toRef(form, 'signature'),
   promocode: promocode,
 })
 
@@ -183,12 +156,5 @@ watch(
   text-align: left;
   width: 100%;
   color: var(--error-main);
-}
-
-.erc20-template__purchase-btn {
-  margin-inline: auto;
-  margin-top: toRem(20);
-  min-width: toRem(144);
-  min-height: toRem(48);
 }
 </style>

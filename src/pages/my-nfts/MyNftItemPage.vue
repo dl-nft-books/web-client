@@ -2,7 +2,7 @@
   <div class="my-nft-item-page">
     <template v-if="isLoaded">
       <error-message
-        v-if="isLoadFailed"
+        v-if="errorMsg"
         class="my-nft-item-page__error"
         :message="$t('my-nft-item-page.loading-error-msg')"
       />
@@ -10,14 +10,14 @@
       <template v-else-if="nftToken">
         <div class="my-nft-item-page__cover-wrp">
           <img
-            :src="nftToken.image_url"
-            :alt="nftToken.name"
+            :src="nftToken.metadata.image"
+            :alt="nftToken.metadata.name"
             class="my-nft-item-page__cover"
           />
         </div>
         <div class="my-nft-item-page__details">
           <h2 class="my-nft-item-page__title">
-            {{ nftToken.name }}
+            {{ nftToken.metadata.name }}
           </h2>
           <tabs
             v-model="currentTab"
@@ -26,7 +26,7 @@
           />
           <nft-description
             v-if="currentTab === TABS.bookDescription.id"
-            :description="nftToken.description"
+            :description="nftToken.metadata.description"
           />
           <nft-details
             v-if="currentTab === TABS.myPurchase.id"
@@ -49,13 +49,20 @@ import {
 } from '@/common'
 
 import { ErrorHandler } from '@/helpers'
-import { ref } from 'vue'
-import { useGenerator } from '@/composables'
-import { Token } from '@/types'
+import { ref, computed } from 'vue'
+import { useNftTokens, useErc721 } from '@/composables'
 import { useI18n } from 'vue-i18n'
+import { useWeb3ProvidersStore } from '@/store'
+import { router } from '@/router'
+import { ROUTE_NAMES } from '@/enums'
+import { TokenFullInfo } from '@/types'
 
 const { t } = useI18n()
-const { getGeneratedTokenById } = useGenerator()
+const { getNft } = useNftTokens()
+const { init: initErc721, getOwner } = useErc721()
+
+const web3Store = useWeb3ProvidersStore()
+const provider = computed(() => web3Store.provider)
 
 const TABS = {
   myPurchase: {
@@ -70,21 +77,32 @@ const TABS = {
 
 const props = defineProps<{
   id: string
+  contractAddress: string
 }>()
 
 const isLoaded = ref(false)
-const isLoadFailed = ref(false)
+const errorMsg = ref('')
 const currentTab = ref(TABS.myPurchase.id)
 
-const nftToken = ref<Token | undefined>()
+const nftToken = ref<TokenFullInfo | undefined>()
 
 const init = async () => {
   try {
-    const data = await getGeneratedTokenById(props.id)
+    const data = await getNft(props.contractAddress, props.id)
+    initErc721(data.tokenContract)
+
+    const owner = await getOwner(data.tokenId)
+
+    // not showing this page if its not owner of nft
+    if (provider.value.selectedAddress !== owner) {
+      router.push({ name: ROUTE_NAMES.myNfts })
+      return
+    }
+
     nftToken.value = data
   } catch (error) {
     ErrorHandler.processWithoutFeedback(error)
-    isLoadFailed.value = true
+    if (error instanceof Error) errorMsg.value = error.message
   }
   isLoaded.value = true
 }

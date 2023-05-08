@@ -9,13 +9,13 @@
         <div class="bookshelf-item-page__cover-wrp">
           <img
             :src="book.banner.attributes.url"
-            :alt="book.title"
+            :alt="book.tokenName"
             class="bookshelf-item-page__cover"
           />
         </div>
         <div class="bookshelf-item-page__details">
           <h2 class="bookshelf-item-page__title">
-            {{ book.title }}
+            {{ book.tokenName }}
           </h2>
           <marquee
             :text="[
@@ -26,17 +26,26 @@
 
           <section class="bookshelf-item-page__prices">
             <bookshelf-prices
-              :price="formatFiatAssetFromWei(book.price, CURRENCIES.USD)"
+              :price="
+                formatFiatAssetFromWei(book.pricePerOneToken, CURRENCIES.USD)
+              "
               :floor-price="
-                formatFiatAssetFromWei(book.floor_price, CURRENCIES.USD)
+                formatFiatAssetFromWei(book.minNFTFloorPrice, CURRENCIES.USD)
               "
               :voucher-link="
-                book.voucher_token !== ethers.constants.AddressZero
-                  ? getBlockExplorerLink(book.chain_id, book.voucher_token)
+                book.voucherTokenContract !== ethers.constants.AddressZero
+                  ? getBlockExplorerLink(
+                    provider.chainId!,
+                    book.voucherTokenContract,
+                  )
                   : undefined
               "
             />
           </section>
+
+          <p>
+            {{ book.networks.map(el => el.attributes.chain_id).join(', ') }}
+          </p>
 
           <bookshelf-network-info
             v-if="bookNetwork"
@@ -101,10 +110,10 @@ import {
 } from '@/helpers'
 import { CURRENCIES } from '@/enums'
 import { useBooks } from '@/composables'
+import { FullBookInfo } from '@/types'
 import { useWeb3ProvidersStore, useNetworksStore } from '@/store'
 import { storeToRefs } from 'pinia'
 import { ethers } from 'ethers'
-import { Book } from '@/types'
 
 const props = defineProps<{
   id: string
@@ -118,11 +127,12 @@ const isPurchaseSuccessModalShown = ref(false)
 
 const networkStore = useNetworksStore()
 const { getBookById } = useBooks()
+
 const bookNetwork = computed(() =>
   networkStore.getNetworkByID(book.value?.chain_id),
 )
 
-const book = ref<Book | undefined>()
+const book = ref<FullBookInfo | undefined>()
 
 const submit = async () => {
   try {
