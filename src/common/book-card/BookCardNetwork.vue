@@ -1,9 +1,12 @@
 <template>
   <div class="book-card-network">
-    <icon class="book-card-network__icon" :name="getIconByScheme(scheme)" />
-    <p class="book-card-network__name">
-      {{ name }}
-    </p>
+    <div
+      v-for="scheme in networks"
+      :key="scheme"
+      class="book-card-network__wrapper"
+    >
+      <icon class="book-card-network__icon" :name="getIconByScheme(scheme)" />
+    </div>
   </div>
 </template>
 
@@ -12,41 +15,36 @@ import { Icon } from '@/common'
 import { NETWORKS } from '@/enums'
 import { getIconByScheme } from '@/helpers'
 
-withDefaults(
-  defineProps<{
-    name: string
-    scheme?: NETWORKS
-  }>(),
-  {
-    scheme: NETWORKS.ETHEREUM,
-  },
-)
+defineProps<{
+  networks: NETWORKS[]
+}>()
 </script>
 
 <style lang="scss" scoped>
 .book-card-network {
-  background-color: var(--text-primary-main);
-  width: fit-content;
-  height: toRem(31);
-  padding: 0 toRem(10);
   position: absolute;
   bottom: 0;
-  right: toRem(-2);
-  border-radius: toRem(12) 0 toRem(12) 0;
+  right: 0;
   display: flex;
   align-items: center;
-  gap: toRem(7);
+  gap: toRem(8);
+  padding: toRem(8);
+}
+
+.book-card-network__wrapper {
+  --wrapper-color: #{rgba(var(--background-primary-light-rgb), 0.8)};
+
+  background-color: var(--wrapper-color);
+  border-radius: toRem(4);
+  display: grid;
+  place-content: center;
+  width: toRem(40);
+  height: toRem(40);
 }
 
 .book-card-network__icon {
-  max-width: toRem(18);
-  max-height: toRem(16);
-  color: var(--primary-main);
-}
-
-.book-card-network__name {
-  font-size: toRem(15);
-  padding-top: toRem(2);
-  color: var(--text-primary-invert-main);
+  max-width: toRem(22);
+  max-height: toRem(22);
+  color: var(--text-primary-light);
 }
 </style>

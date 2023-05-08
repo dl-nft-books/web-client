@@ -76,7 +76,7 @@ onMounted(() => {
 
 <style lang="scss" scoped>
 .browser-support__main {
-  background-color: var(--background-primary);
+  background-color: var(--background-primary-light);
   padding: toRem(50) toRem(40) toRem(35) toRem(40);
   border-radius: toRem(12);
   max-width: toRem(450);

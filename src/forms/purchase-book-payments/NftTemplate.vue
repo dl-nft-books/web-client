@@ -17,13 +17,13 @@
       :subtitle="$t('nft-template.unsupported-token-subtitle')"
     />
 
-    <error-message v-else :message="$t('nft-template.loading-error-msg')" />
+    <message-field v-else :title="$t('nft-template.loading-error-msg')" />
   </template>
 
   <template v-else-if="nftPrice">
     <readonly-field
       :label="$t('nft-template.collection-price')"
-      :value="$t('nft-template.price', { price: nftPrice.usd })"
+      :value="$t('nft-template.price', { price: nftPrice.floor_price })"
     />
 
     <p
@@ -69,10 +69,9 @@ import {
   MessageField,
 } from '@/fields'
 
-import { ErrorMessage, Loader } from '@/common'
+import { Loader } from '@/common'
 import { useBalance, useFormValidation, useErc721 } from '@/composables'
 import { PurchaseFormKey, FullBookInfo } from '@/types'
-
 import { required, address } from '@/validators'
 import { useWeb3ProvidersStore } from '@/store'
 import { ExposedFormRef } from '@/forms//PurchaseBookForm.vue'
@@ -85,14 +84,14 @@ const props = defineProps<{
   book: FullBookInfo
 }>()
 
-const { platform: currentPlatform, isFormDisabled } = inject(PurchaseFormKey)
+const { isFormDisabled } = inject(PurchaseFormKey)
 
 const {
   isLoadFailed,
   isTokenAddressUnsupported,
   nftPrice,
   loadBalanceAndPrice: _loadBalanceAndPrice,
-} = useBalance(currentPlatform)
+} = useBalance()
 
 const { t } = useI18n()
 
@@ -145,7 +144,9 @@ const isFloorPriceAcceptable = computed(() => {
     2,
   )
 
-  return new BN(nftPrice.value?.usd).compare(formattedBookFloorPrice) >= 1
+  return (
+    new BN(nftPrice.value?.floor_price).compare(formattedBookFloorPrice) >= 1
+  )
 })
 
 const loadBalanceAndPrice = debounce(async () => {
@@ -175,7 +176,7 @@ const onTokenIdInput = async () => {
 }
 
 defineExpose<Omit<ExposedFormRef, 'promocode' | 'tokenAmount' | 'tokenPrice'>>({
-  isFormValid: () => isFormValid() && !isGenerateButtonDisabled.value,
+  isFormValid: () => !isGenerateButtonDisabled.value && isFormValid(),
   tokenAddress: toRef(form, 'tokenAddress'),
   tokenId: toRef(form, 'tokenId'),
 })
@@ -188,6 +189,7 @@ watch(
 watch(
   () => [provider.value.selectedAddress, form.tokenAddress],
   () => {
+    nftPrice.value = null
     loadBalanceAndPrice()
     form.tokenId = ''
   },

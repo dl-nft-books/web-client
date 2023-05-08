@@ -48,35 +48,26 @@ const messageClasses = computed(() => [
   padding: toRem(12) toRem(10);
 
   &--error {
-    background: var(--background-error);
+    background: var(--error-main);
   }
 
   &--success {
-    background: var(--background-success);
+    background: var(--success-dark);
   }
 }
 
 .message-field__icon {
-  --size: #{toRem(15)};
+  --size: #{toRem(20)};
 
   max-width: var(--size);
   max-height: var(--size);
-
-  .message-field--error & {
-    color: var(--error-main);
-  }
+  color: var(--text-primary-light);
 }
 
 .message-field__title {
   font-size: toRem(14);
   line-height: 1.2;
-
-  .message-field--error & {
-    color: var(--error-main);
-  }
-
-  .message-field--success & {
-    color: var(--text-success);
-  }
+  font-weight: 600;
+  color: var(--text-primary-light);
 }
 </style>

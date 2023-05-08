@@ -6,7 +6,7 @@
     <template #default="{ modal }">
       <div class="purchasing-modal__pane">
         <div class="purchasing-modal__head">
-          <h4>
+          <h4 class="purchasing-modal__head-title">
             {{ title }}
           </h4>
           <app-button
@@ -19,40 +19,30 @@
           />
         </div>
         <div class="purchasing-modal__body">
-          <template v-if="isLoaded">
-            <error-message
-              v-if="isLoadFailed"
-              :message="$t('purchasing-modal.loading-error-msg')"
-            />
-            <template v-else>
-              <purchase-book-form
-                v-if="isValidChain"
-                :book="props.book"
-                :current-platform="currentPlatform"
-                @submitting="isSubmitting = $event"
-                @submit="emit('submit')"
+          <purchase-book-form
+            v-if="isValidChain"
+            :book="props.book"
+            @submitting="isSubmitting = $event"
+            @submit="emit('submit', $event)"
+          />
+          <template v-else>
+            <div class="purchasing-modal__wrong-network-animation-wrp">
+              <animation
+                :animation-data="disableChainAnimation"
+                :loop="true"
+                :speed="1"
               />
-              <template v-else>
-                <div class="purchasing-modal__wrong-network-animation-wrp">
-                  <animation
-                    :animation-data="disableChainAnimation"
-                    :loop="true"
-                    :speed="1"
-                  />
-                </div>
-                <p class="purchasing-modal__wrong-network-message">
-                  {{ $t('purchasing-modal.wrong-network-message') }}
-                </p>
-                <app-button
-                  size="small"
-                  :text="$t('networks.switch-btn-lbl')"
-                  :icon-left="$icons.refresh"
-                  @click="switchNetwork(book.networks[0].attributes.chain_id)"
-                />
-              </template>
-            </template>
+            </div>
+            <p class="purchasing-modal__wrong-network-message">
+              {{ $t('purchasing-modal.wrong-network-message') }}
+            </p>
+            <app-button
+              size="small"
+              :text="$t('networks.switch-btn-lbl')"
+              :icon-left="$icons.refresh"
+              @click="switchNetwork(book.networks[0].attributes.chain_id)"
+            />
           </template>
-          <loader v-else />
         </div>
       </div>
     </template>
@@ -60,19 +50,18 @@
 </template>
 
 <script lang="ts" setup>
-import { AppButton, Modal, Animation, Loader, ErrorMessage } from '@/common'
+import { AppButton, Modal, Animation } from '@/common'
 
 import { useWeb3ProvidersStore } from '@/store'
 import { storeToRefs } from 'pinia'
-import { ErrorHandler, switchNetwork } from '@/helpers'
+import { switchNetwork } from '@/helpers'
 import { ref, computed } from 'vue'
 import { PurchaseBookForm } from '@/forms'
 
 import disableChainAnimation from '@/assets/animations/disable-chain.json'
-import { ETHEREUM_CHAINS, POLYGON_CHAINS, Q_CHAINS } from '@/enums'
-import { Platform, FullBookInfo } from '@/types'
+
+import { FullBookInfo } from '@/types'
 import { useI18n } from 'vue-i18n'
-import { usePricer } from '@/composables'
 
 const props = defineProps<{
   isShown: boolean
@@ -81,16 +70,12 @@ const props = defineProps<{
 
 const emit = defineEmits<{
   (event: 'update:is-shown', value: boolean): void
-  (event: 'submit'): void
+  (event: 'submit', message?: string): void
 }>()
 
 const { t } = useI18n()
-const { getPlatformsList } = usePricer()
 
-const isLoaded = ref(false)
 const isSubmitting = ref(false)
-const currentPlatform = ref<Platform>()
-const isLoadFailed = ref(false)
 
 const { provider } = storeToRefs(useWeb3ProvidersStore())
 
@@ -102,66 +87,27 @@ const isValidChain = computed(() =>
 )
 
 const title = computed(() => {
-  if (!isValidChain.value && isLoaded.value)
-    return t('purchasing-modal.wrong-network-title')
+  if (!isValidChain.value) return t('purchasing-modal.wrong-network-title')
   return isSubmitting.value
     ? t('purchasing-modal.generation-title')
     : t('purchasing-modal.title')
 })
-
-// Pricer returns price only for not test networks, for debug need to convert
-function formatChain(chainId: number): string {
-  switch (chainId.toString()) {
-    case POLYGON_CHAINS.mumbai:
-    case POLYGON_CHAINS.mainnet:
-      return POLYGON_CHAINS.mainnet
-    case ETHEREUM_CHAINS.goerli:
-    case ETHEREUM_CHAINS.sepolia:
-    case ETHEREUM_CHAINS.ethereum:
-      return ETHEREUM_CHAINS.ethereum
-    case Q_CHAINS.testnet:
-    case Q_CHAINS.mainet:
-      return Q_CHAINS.mainet
-    default:
-      return POLYGON_CHAINS.mainnet
-  }
-}
-
-async function init() {
-  isLoaded.value = false
-  try {
-    const { data: platforms } = await getPlatformsList()
-
-    currentPlatform.value = platforms.find(platform =>
-      isValidChain.value
-        ? platform.chain_identifier ===
-          Number(formatChain(provider.value.chainId))
-        : platform.chain_identifier ===
-          Number(formatChain(props.book.networks[0].attributes.chain_id)),
-    )
-  } catch (e) {
-    isLoadFailed.value = true
-    ErrorHandler.processWithoutFeedback(e)
-  }
-  isLoaded.value = true
-}
-
-init()
 </script>
 
 <style lang="scss" scoped>
 .purchasing-modal__pane {
   display: flex;
   flex-direction: column;
-  max-height: 100vh;
+  max-height: vh(100);
   width: fit-content;
   padding: toRem(32);
-  background: var(--background-primary);
+  background: var(--background-primary-light);
   border-radius: toRem(10);
+  overflow-y: auto;
 
   @include respond-to(small) {
     width: 100vw;
-    padding: toRem(32) toRem(15);
+    padding: toRem(32) toRem(24);
   }
 }
 
@@ -181,7 +127,6 @@ init()
   flex-direction: column;
   align-items: center;
   gap: toRem(20);
-  overflow-y: auto;
 
   @include respond-to(small) {
     padding: 0;
@@ -208,5 +153,9 @@ init()
   &:hover {
     transform: rotate(90deg);
   }
+}
+
+.purchasing-modal__head-title {
+  font-weight: 700;
 }
 </style>

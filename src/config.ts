@@ -9,6 +9,8 @@ export const config = {
   FAQ_LINK: import.meta.env.VITE_APP_FAQ_LINK,
   HELP_LINK: import.meta.env.VITE_APP_HELP_LINK,
   BLOG_LINK: import.meta.env.VITE_APP_BLOG_LINK,
+  DOCS_LINK: import.meta.env.VITE_APP_DOCS_LINK,
+  INSTAGRAM_LINK: import.meta.env.VITE_APP_INSTAGRAM_LINK,
   DEPLOY_ENVIRONMENT: import.meta.env.VITE_APP_DEPLOY_ENVIRONMENT,
   API_URL: import.meta.env.VITE_APP_API_URL,
   APP_NAME: import.meta.env.VITE_APP_APP_NAME,
@@ -18,6 +20,7 @@ export const config = {
   TECHNICAL_STATE: import.meta.env.VITE_APP_TECHNICAL_STATE,
   DEFAULT_RPC_URL: import.meta.env.VITE_APP_DEFAULT_RPC_URL,
   DEFAULT_CHAIN_ID: import.meta.env.VITE_APP_DEFAULT_CHAIN_ID,
+  SIGNATURE_EXPIRATION_TIME: import.meta.env.VITE_APP_SIGNATURE_EXPIRATION_TIME,
 } as const
 
 Object.assign(config, _mapEnvCfg(import.meta.env))

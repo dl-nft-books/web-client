@@ -7,6 +7,7 @@ import { BN } from '@/utils/math.util'
 
 import { IMarketplace } from '@/types/contracts/MarketPlace'
 import { switchNetwork } from '@/helpers'
+import { config } from '@/config'
 
 // Info about book gathering partly from backend and partly from contract
 export type FullBookInfo = Book &
@@ -30,6 +31,7 @@ export function useBooks(contractRegistryAddress?: string) {
     init: initMarketPlace,
     getTokenParams,
     getBooksBatch,
+    getTokenContractsCount,
   } = useMarketplace()
 
   const _initMarketPlace = async (address?: string) => {
@@ -95,19 +97,16 @@ export function useBooks(contractRegistryAddress?: string) {
     }
   }
 
-  const _gatherDetailedBookData = async (book: Book): Promise<FullBookInfo> => {
-    if (!networkStore.list.length) {
-      await networkStore.loadNetworks()
-    }
-
+  const _gatherDetailedBookData = async (
+    book: Book,
+    chainId: number,
+  ): Promise<FullBookInfo> => {
     const bookNetwork = book.networks.find(
-      el => el.attributes.chain_id === Number(provider.value.chainId),
+      el => el.attributes.chain_id === chainId,
     )
 
     if (!bookNetwork) throw new Error('failed to get appropriate info source')
 
-    _initContractRegistry(bookNetwork.attributes.chain_id)
-    await _initMarketPlace()
     const bookParams = await getTokenParams([
       bookNetwork.attributes.contract_address,
     ])
@@ -138,6 +137,35 @@ export function useBooks(contractRegistryAddress?: string) {
     return formattedArray.filter(book => Boolean(book)) as BaseBookInfo[]
   }
 
+  const _fetchBooksList = async (contractFilter: string, limit: number) => {
+    const { data: dataWithoutNetworks } = await api.get<Book[]>(
+      '/integrations/books',
+      {
+        filter: {
+          contract: contractFilter,
+        },
+        page: {
+          limit: limit,
+          order: 'desc',
+        },
+      },
+    )
+
+    if (!dataWithoutNetworks.length) return []
+
+    const { data } = await api.get<Book[]>('/integrations/books', {
+      filter: {
+        id: dataWithoutNetworks.map(book => book.id).join(','),
+      },
+      page: {
+        limit: limit,
+        order: 'desc',
+      },
+    })
+
+    return data
+  }
+
   const getBooksFromContract = async (
     limit: number,
     offset: number,
@@ -163,19 +191,9 @@ export function useBooks(contractRegistryAddress?: string) {
 
     if (!bookContractsList?.length) return []
 
-    const { data: booksFromBackend } = await api.get<Book[]>(
-      '/integrations/books',
-      {
-        filter: {
-          contract: bookContractsList
-            .map(book => book.baseTokenData.tokenContract)
-            .join(','),
-        },
-        page: {
-          limit: limit,
-          order: 'desc',
-        },
-      },
+    const booksFromBackend = await _fetchBooksList(
+      bookContractsList.map(book => book.baseTokenData.tokenContract).join(','),
+      limit,
     )
 
     const formattedBooks = _gatherBaseBookData(
@@ -186,13 +204,40 @@ export function useBooks(contractRegistryAddress?: string) {
     return formattedBooks
   }
 
+  const getTotalBooksAmount = async (chainId: ChainId) => {
+    if (!networkStore.list.length) {
+      await networkStore.loadNetworks()
+    }
+
+    if (
+      !networkStore.list.some(network => network.chain_id === Number(chainId))
+    ) {
+      return
+    }
+
+    if (provider.value.isConnected) await switchNetwork(chainId)
+
+    await _initContractRegistry(Number(chainId))
+    await _initMarketPlace()
+
+    const amount = await getTokenContractsCount()
+
+    if (!amount) return
+
+    return new BN(amount._hex).toString()
+  }
+
   const getBookById = async (id: number | string): Promise<FullBookInfo> => {
-    await _initContractRegistry(Number(provider.value.chainId))
+    const chainId = provider.value.isConnected
+      ? Number(provider.value.chainId)
+      : Number(config.DEFAULT_CHAIN_ID)
+
+    await _initContractRegistry(chainId)
     await _initMarketPlace()
 
     const { data } = await api.get<Book>(`/integrations/books/${id}`)
 
-    const bookData = await _gatherDetailedBookData(data)
+    const bookData = await _gatherDetailedBookData(data, chainId)
 
     return bookData
   }
@@ -200,5 +245,6 @@ export function useBooks(contractRegistryAddress?: string) {
   return {
     getBookById,
     getBooksFromContract,
+    getTotalBooksAmount,
   }
 }

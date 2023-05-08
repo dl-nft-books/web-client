@@ -37,6 +37,7 @@
 
       <promocode-template
         ref="promocodeRef"
+        :book-id="book.id"
         :token-type="TOKEN_TYPES.erc20"
         :token-address="form.tokenAddress"
       />
@@ -65,7 +66,7 @@ const props = defineProps<{
   book: FullBookInfo
 }>()
 
-const { platform: currentPlatform, isFormDisabled } = inject(PurchaseFormKey)
+const { isFormDisabled } = inject(PurchaseFormKey)
 
 const form = reactive({
   tokenAddress: '',
@@ -82,7 +83,7 @@ const {
   isTokenAddressUnsupported,
   tokenPrice,
   loadBalanceAndPrice: _loadBalanceAndPrice,
-} = useBalance(currentPlatform)
+} = useBalance()
 
 const loadBalanceAndPrice = debounce(async () => {
   isLoading.value = true
@@ -105,9 +106,9 @@ const formattedTokenAmount = computed(() => {
   if (!tokenPrice.value) return ''
 
   return new BN(props.book.pricePerOneToken, {
-    decimals: tokenPrice.value.token.decimals,
+    decimals: 18,
   })
-    .fromFraction(tokenPrice.value.token.decimals)
+    .fromFraction(18)
     .div(tokenPrice.value.price)
     .toString()
 })
@@ -118,9 +119,9 @@ const isEnoughBalanceForBuy = computed(
 
 defineExpose<ExposedFormRef>({
   isFormValid: () =>
-    isFormValid() &&
     promocodeRef.value?.isPromocodeValid() &&
-    isEnoughBalanceForBuy.value,
+    isEnoughBalanceForBuy.value &&
+    isFormValid(),
   tokenAmount: formattedTokenAmount,
   tokenPrice: tokenPrice,
   tokenAddress: toRef(form, 'tokenAddress'),

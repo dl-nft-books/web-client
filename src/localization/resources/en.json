@@ -81,12 +81,19 @@
   "app-footer": {
     "faq-link": "faq",
     "help-link": "Help & Support",
-    "blog-link": "blog"
+    "blog-link": "blog",
+    "docs-link": "Documentation"
   },
   "bookshelf-header": {
     "title": "Create your nft library",
-    "book-description-title": "Every book with your",
-    "book-description-subtitle": "personal sign inside"
+    "subtitle": "Buy a book and get it as NFT with a personalised design"
+  },
+  "book-details": {
+    "voucher-token-lbl": "Buy with a voucher token",
+    "nft-lbl": "Buy with NFT",
+    "floor-price-lbl": "Floor price",
+    "price-lbl": "Price",
+    "network-lbl": "Supported network"
   },
   "about-us-page": {
     "title": "Distributed LAB",
@@ -261,9 +268,11 @@
     "loading-error-msg": "Oops.... Something went wrong",
     "purchase-btn": "BUY",
     "badge-1": "For any acceptable token",
-    "badge-2": "Add your personal sign",
+    "badge-2": "Draw your personal banner",
     "network-title": "Supported by",
-    "connect-btn": "Connect Wallet"
+    "connect-btn": "Connect Wallet",
+    "description-lbl": "Show full description",
+    "voucher-payment-msg": "Transaction has been sent. It may take a while. You can check transaction status by this link"
   },
   "purchasing-modal": {
     "title": "Purchasing",
@@ -294,7 +303,7 @@
     "submitting-message": "As soon as NFT book generates you will need to pay",
     "not-enough-balance-msg": "You don't have enough tokens to buy this NFT",
     "voucher-token-unsupported-msg": "This payment method is not supported for the purchase of this book",
-    "not-enough-voucher-tokens-msg": "You don't have enough voucher tokens to buy this NFT. Required amount: {amount}." 
+    "not-enough-voucher-tokens-msg": "You don't have enough voucher tokens to buy this NFT. Required amount: {amount}."
   },
   "nft-template": {
     "token-address-lbl": "Token Address",
@@ -318,12 +327,13 @@
     "head-title": "Purchasing",
     "title": "Your payment was successful.",
     "message": "As soon as the NFT book is minted, it will appear in your wallet and in the My NFTs tab.",
-    "ok-btn": "Ok"
+    "ok-btn": "Ok",
+    "link": "Check on block explorer"
   },
   "my-nft-item-page": {
     "loading-error-msg": "This page is currently unavailable due to connection problems with IPFS. Please, try again later.",
     "purchase-btn": "Buy",
-    "my-purchase-tab": "My Purchase",
+    "my-purchase-tab": "My NFT",
     "book-description-tab": "Book Description"
   },
   "nft-description": {

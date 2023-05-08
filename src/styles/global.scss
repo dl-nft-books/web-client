@@ -18,12 +18,20 @@ html {
   }
 }
 
+/* for IOS */
+.body-scroll-disabled {
+  touch-action: none;
+  -webkit-overflow-scrolling: none;
+  overflow: hidden;
+  overscroll-behavior: none;
+}
+
 /* stylelint-disable-next-line */
 body, #app {
   display: flex;
   flex-direction: column;
   flex: 1;
-  background-color: var(--background-primary);
+  background-color: var(--background-primary-main);
   color: var(--text-primary-main);
 }
 
@@ -94,13 +102,13 @@ p {
 
 h1,
 h2 {
-  font-weight: 900;
+  font-weight: 700;
 }
 
 h3,
 h4,
 h5 {
-  font-weight: 700;
+  font-weight: 500;
 }
 
 h1,
@@ -113,10 +121,8 @@ h5 {
 }
 
 h1 {
-  font-size: toRem(58);
-  line-height: 110%;
-  letter-spacing: 0.055em;
-  text-transform: uppercase;
+  font-size: toRem(40);
+  line-height: toRem(50);
 
   @include respond-to(medium) {
     font-size: toRem(40);
@@ -124,8 +130,8 @@ h1 {
 }
 
 h2 {
-  font-size: toRem(48);
-  line-height: toRem(61);
+  font-size: toRem(36);
+  line-height: toRem(45);
 
   @include respond-to(medium) {
     font-size: toRem(30);
@@ -133,8 +139,8 @@ h2 {
 }
 
 h3 {
-  font-size: toRem(40);
-  line-height: toRem(50);
+  font-size: toRem(32);
+  line-height: toRem(40);
 
   @include respond-to(medium) {
     font-size: toRem(30);

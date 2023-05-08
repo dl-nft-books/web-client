@@ -1,6 +1,6 @@
 <template>
   <div :class="accountClasses">
-    <header-network-switcher :modification="modification" />
+    <network-switcher :modification="modification" />
     <drop-down :right="0">
       <template #head="{ menu }">
         <app-button
@@ -40,7 +40,7 @@
 import { computed } from 'vue'
 import { cropAddress, copyToClipboard, ErrorHandler } from '@/helpers'
 import { useWeb3ProvidersStore } from '@/store'
-import { AppButton, Icon, DropDown, HeaderNetworkSwitcher } from '@/common'
+import { AppButton, Icon, DropDown, NetworkSwitcher } from '@/common'
 
 type MODIFICATIONS = 'dark-mode' | 'default'
 
@@ -79,10 +79,10 @@ const copyAddress = async () => {
 }
 
 .account-info__body {
-  background-color: var(--background-primary);
+  background-color: var(--background-primary-main);
 
   .account-info--dark-mode & {
-    background-color: var(--background-quaternary);
+    background-color: var(--background-secondary);
   }
 }
 
@@ -99,7 +99,7 @@ const copyAddress = async () => {
     height: toRem(1);
     left: toRem(15);
     width: 85%;
-    background-color: var(--background-tertiary);
+    background-color: var(--border-primary-light);
     bottom: 0;
   }
 }
@@ -110,12 +110,12 @@ const copyAddress = async () => {
   user-select: none;
 
   .account-info--dark-mode & {
-    color: var(--text-primary-invert-main);
+    color: var(--text-primary-light);
   }
 }
 
 .account-info__avatar {
-  background-color: var(--background-primary);
+  background-color: var(--background-primary-main);
   display: flex;
   align-items: center;
   padding: toRem(12) toRem(16);
@@ -128,12 +128,12 @@ const copyAddress = async () => {
 
   &:hover {
     cursor: pointer;
-    background-color: var(--background-tertiary);
+    background-color: var(--border-primary-light);
   }
 
   .account-info--dark-mode & {
     background-color: transparent;
-    border: toRem(1) solid var(--white);
+    border: toRem(1) solid var(--border-primary-light);
   }
 }
 
@@ -157,9 +157,9 @@ const copyAddress = async () => {
   user-select: none;
 
   .account-info--dark-mode & {
-    --app-button-text-hover: var(--text-primary-invert-main);
+    --app-button-text-hover: var(--text-primary-light);
 
-    color: var(--text-primary-invert-main);
+    color: var(--text-primary-light);
   }
 }
 

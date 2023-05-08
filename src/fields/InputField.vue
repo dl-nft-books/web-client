@@ -183,6 +183,7 @@ const setHeightCSSVar = (element: HTMLElement) => {
 
 .input-field__input {
   padding: var(--field-padding);
+  background-color: var(--background-primary-dark);
   transition-property: box-shadow;
   flex: 1;
 

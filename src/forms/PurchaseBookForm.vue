@@ -69,7 +69,6 @@ import { BN } from '@/utils/math.util'
 import { ImageEditor, UseImageEditor } from 'simple-fabric-vue-image-editor'
 
 import {
-  Platform,
   Promocode,
   TokenPrice,
   PurchaseFormKey,
@@ -77,7 +76,7 @@ import {
   Task,
   FullBookInfo,
 } from '@/types'
-import { TOKEN_TYPES } from '@/enums'
+import { Q_CHAINS, TOKEN_TYPES } from '@/enums'
 
 import { Animation, BookPreview, StepsForm } from '@/common'
 
@@ -102,6 +101,7 @@ import { required } from '@/validators'
 
 import loaderAnimation from '@/assets/animations/loader.json'
 import { ethers } from 'ethers'
+import { ProviderUserRejectedRequest } from '@/errors/runtime.errors'
 
 export type ExposedFormRef = {
   isFormValid: () => boolean
@@ -116,11 +116,10 @@ const TOKEN_AMOUNT_COEFFICIENT = 1.02
 
 const props = defineProps<{
   book: FullBookInfo
-  currentPlatform: Platform
 }>()
 
 const emit = defineEmits<{
-  (event: 'submit'): void
+  (event: 'submit', message?: string): void
   (event: 'submitting', value: boolean): void
 }>()
 
@@ -149,10 +148,7 @@ const { getFieldErrorMessage, touchField, isFormValid } = useFormValidation(
 )
 
 // to avoid props drilling - passing necessary info using provide -> inject
-provide(PurchaseFormKey, {
-  platform: props.currentPlatform,
-  isFormDisabled,
-})
+provide(PurchaseFormKey, { isFormDisabled })
 
 const paymentTemplateRef = ref<ExposedFormRef | null>(null)
 
@@ -180,22 +176,26 @@ const tokenTypesOptions = computed(() => {
       label: globalizeTokenType(TOKEN_TYPES.native),
       value: TOKEN_TYPES.native,
     },
-    {
-      label: globalizeTokenType(TOKEN_TYPES.voucher),
-      value: TOKEN_TYPES.voucher,
-    },
   ]
 
   /* 
     Temporary solution because of missing price for Q on backend
     Will be fixed in future updates
   */
-  const qNetworkIdentifier = 'q'
-
-  if (props.currentPlatform.id !== qNetworkIdentifier) {
+  if (
+    provider.value.chainId !== Number(Q_CHAINS.mainet) &&
+    provider.value.chainId !== Number(Q_CHAINS.testnet)
+  ) {
     defaultOptions.push({
       label: globalizeTokenType(TOKEN_TYPES.erc20),
       value: TOKEN_TYPES.erc20,
+    })
+  }
+
+  if (props.book.isVoucherBuyable) {
+    defaultOptions.push({
+      label: globalizeTokenType(TOKEN_TYPES.voucher),
+      value: TOKEN_TYPES.voucher,
     })
   }
 
@@ -208,6 +208,7 @@ const tokenTypesOptions = computed(() => {
 
   return defaultOptions
 })
+
 const mintToken = async (
   mintSignature: MintSignatureResponse,
   generatedTask: Task,
@@ -353,18 +354,19 @@ const submit = async (editorFromTemplate: UseImageEditor | null) => {
     const generatedTask = await uploadBanner(currentTask.id, banner)
 
     if (form.tokenType === TOKEN_TYPES.voucher) {
-      await sendBuyWithVoucherRequest(
+      const txHash = await sendBuyWithVoucherRequest(
         props.book.voucherTokenContract,
         props.book.voucherTokensAmount,
         Number(generatedTask.id),
       )
+
       emit('submitting', false)
-      emit('submit')
+      emit('submit', txHash)
 
       return
     }
+
     const mintSignature = await getMintSignature(
-      props.currentPlatform.id,
       generatedTask.id,
       dataForMint.tokenAddress,
       dataForMint.promocode ? dataForMint.promocode.id : undefined,
@@ -383,7 +385,12 @@ const submit = async (editorFromTemplate: UseImageEditor | null) => {
 
     await approveTokenSpend(
       form.tokenType,
-      dataForMint.tokenAmount,
+      new BN(dataForMint.tokenAmount, {
+        decimals: dataForMint.tokenPrice?.token.decimals,
+      })
+        .toFraction(dataForMint.tokenPrice?.token.decimals)
+        .toString()
+        .split('.')[0],
       dataForMint.tokenAddress,
       dataForMint.tokenId,
     )
@@ -399,6 +406,10 @@ const submit = async (editorFromTemplate: UseImageEditor | null) => {
     emit('submitting', false)
     emit('submit')
   } catch (e) {
+    if (e instanceof ProviderUserRejectedRequest) {
+      ErrorHandler.processWithoutFeedback(e)
+      return
+    }
     ErrorHandler.process(e)
   }
   enableForm()

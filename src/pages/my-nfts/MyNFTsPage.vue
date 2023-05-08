@@ -1,6 +1,6 @@
 <template>
   <div class="my-nfts-page">
-    <h3>
+    <h3 class="my-nfts-page__title">
       {{ $t('my-nfts-page.title') }}
     </h3>
     <template v-if="provider.isConnected">
@@ -30,11 +30,11 @@
           @click="loadNextPage"
         />
       </template>
-
       <my-nfts-no-data v-else />
     </template>
 
     <my-nfts-no-data v-else is-not-connected />
+    <img class="my-nfts-page__background" src="/images/fancy-lines.png" />
   </div>
 </template>
 
@@ -42,7 +42,7 @@
 import { Loader, ErrorMessage, BookCard, AppButton } from '@/common'
 import { MyNftsNoData } from '@/pages/my-nfts'
 import { ErrorHandler } from '@/helpers'
-import { ref, computed } from 'vue'
+import { ref, computed, watch } from 'vue'
 import { useWeb3ProvidersStore } from '@/store'
 import {
   useContractPagination,
@@ -62,12 +62,8 @@ const loadList = computed(
     getNftList(provider.value.selectedAddress, limit, offset),
 )
 
-const { loadNextPage, isLoading, isLoadMoreBtnShown } = useContractPagination(
-  loadList,
-  setList,
-  concatList,
-  onError,
-)
+const { loadNextPage, isLoading, isLoadMoreBtnShown, loadFirstPage } =
+  useContractPagination(loadList, setList, concatList, onError)
 
 function setList(chunk: TokenBaseInfo[]) {
   nftList.value = chunk ?? []
@@ -81,19 +77,29 @@ function onError(e: Error) {
   ErrorHandler.processWithoutFeedback(e)
   isLoadFailed.value = true
 }
+
+watch(
+  () => provider.value.chainId,
+  () => {
+    isLoadFailed.value = false
+    loadFirstPage()
+  },
+)
 </script>
 
 <style lang="scss" scoped>
 .my-nfts-page {
   display: flex;
   flex-direction: column;
-  flex: 1;
-  gap: toRem(34);
   padding-top: toRem(70);
   padding-bottom: toRem(200);
-  background: url('/images/background-cubes.png') no-repeat right center /
-    contain;
-  background-size: clamp(toRem(300), 30%, toRem(400));
+  overflow: hidden;
+  flex: 1;
+  position: relative;
+  background-color: var(--background-primary-dark);
+  z-index: var(--z-index-layer-2);
+
+  // @include gray-background-curve;
 
   @include respond-to(tablet) {
     padding-top: toRem(10);
@@ -101,13 +107,23 @@ function onError(e: Error) {
   }
 }
 
+.my-nfts-page__title {
+  color: var(--text-primary-invert-main);
+  margin-bottom: toRem(18);
+}
+
 .my-nfts-page__list {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(toRem(292), 1fr));
+  grid-template-columns: repeat(auto-fill, toRem(292));
   grid-gap: toRem(20);
+  justify-content: space-evenly;
 }
 
 .my-nfts-page__load-more-btn {
-  margin: toRem(20) auto 0;
+  margin: toRem(40) auto 0;
+}
+
+.my-nfts-page__background {
+  @include background-image;
 }
 </style>

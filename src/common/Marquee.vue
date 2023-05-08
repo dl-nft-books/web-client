@@ -52,13 +52,10 @@ const textArray = computed(() => {
 
 <style scoped lang="scss">
 .marquee {
-  --marquee-text-color: #a9a9a9;
-  --marquee-border-color: #efefef;
-  --marquee-background: #d7dadb;
   --gap: #{toRem(15)};
 
-  border-top: toRem(1) solid var(--marquee-border-color);
-  border-bottom: toRem(1) solid var(--marquee-border-color);
+  border-top: toRem(1) solid var(--border-primary-light);
+  border-bottom: toRem(1) solid var(--border-primary-light);
   overflow: hidden;
   height: toRem(35);
   display: flex;
@@ -80,11 +77,11 @@ const textArray = computed(() => {
 .marquee__delimiter {
   width: toRem(6);
   height: toRem(6);
-  background-color: var(--marquee-background);
+  background-color: var(--border-primary-light);
 }
 
 .marquee__text {
-  color: var(--marquee-text-color);
+  color: var(--text-primary-dark);
   font-style: italic;
 }
 

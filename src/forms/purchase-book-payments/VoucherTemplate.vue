@@ -27,14 +27,15 @@
 </template>
 
 <script setup lang="ts">
-import { computed, inject, reactive, ref, toRef, watch } from 'vue'
+import { computed, reactive, ref, toRef, watch } from 'vue'
 import { ethers } from 'ethers'
 
 import { Loader, ErrorMessage } from '@/common'
 import { MessageField, ReadonlyField } from '@/fields'
 
-import { PurchaseFormKey, FullBookInfo } from '@/types'
+import { FullBookInfo } from '@/types'
 import { useBalance } from '@/composables'
+
 import { ErrorHandler, formatAssetFromWei } from '@/helpers'
 import { BN } from '@/utils/math.util'
 import { useWeb3ProvidersStore } from '@/store'
@@ -46,14 +47,12 @@ const props = defineProps<{
   book: FullBookInfo
 }>()
 
-const { platform: currentPlatform } = inject(PurchaseFormKey)
-
 const { t } = useI18n()
 
 const web3ProvidersStore = useWeb3ProvidersStore()
 const provider = computed(() => web3ProvidersStore.provider)
 
-const { getBalance, isLoadFailed, balance } = useBalance(currentPlatform)
+const { getBalance, isLoadFailed, balance } = useBalance()
 
 const form = reactive({
   tokenAddress: props.book.voucherTokenContract,
@@ -82,7 +81,7 @@ const voucherErrorTitle = computed(() =>
 )
 
 const isEnoughVoucherTokensForBuy = computed(
-  () => new BN(balance.value).compare(formattedVoucherTokenAmount.value) >= 1,
+  () => new BN(balance.value).compare(formattedVoucherTokenAmount.value) >= 0,
 )
 
 defineExpose<Omit<ExposedFormRef, 'promocode' | 'tokenPrice'>>({

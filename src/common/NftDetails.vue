@@ -128,24 +128,29 @@ const details: NftDetails[] = getDetails()
   grid-gap: toRem(20);
 
   @include respond-to(small) {
-    grid-template-columns: 1fr;
+    grid-template-columns: 55% 1fr;
     grid-gap: toRem(10);
   }
 }
 
 .nft-details__row-label {
-  font-size: toRem(20);
-  line-height: 120%;
-  color: var(--text-secondary-main);
+  background-color: var(--background-primary-main);
+  border-radius: toRem(6);
+  padding: toRem(10) toRem(14);
+  display: flex;
+  align-items: center;
 
   @include respond-to(small) {
-    font-size: toRem(16);
+    font-size: toRem(15);
   }
 }
 
 .nft-details__row-value {
-  font-size: toRem(24);
-  line-height: 120%;
+  background-color: var(--background-primary-main);
+  border-radius: toRem(6);
+  padding: toRem(10) toRem(14);
+  display: flex;
+  align-items: center;
   max-width: 100%;
   word-break: break-word;
 
@@ -156,6 +161,8 @@ const details: NftDetails[] = getDetails()
     max-width: 100%;
     overflow: hidden;
     font-weight: inherit;
+    padding: 0;
+    padding-right: toRem(14);
   }
 
   &--shortened {
@@ -163,7 +170,7 @@ const details: NftDetails[] = getDetails()
   }
 
   @include respond-to(small) {
-    font-size: toRem(20);
+    font-size: toRem(15);
   }
 }
 
@@ -174,5 +181,10 @@ const details: NftDetails[] = getDetails()
   min-width: toRem(24);
   color: var(--primary-main);
   margin-left: toRem(10);
+
+  @include respond-to(small) {
+    width: toRem(18);
+    height: toRem(18);
+  }
 }
 </style>

@@ -64,17 +64,12 @@ const cardClasses = computed(() => [
 
 <style scoped lang="scss">
 .about-us-quote-card__wrapper {
-  background-color: var(--background-primary);
   padding-top: toRem(90);
   padding-bottom: toRem(50);
-
-  &--dark {
-    background: none;
-  }
 }
 
 .about-us-quote-card {
-  background-color: var(--background-tertiary);
+  background-color: var(--background-primary-main);
   border-radius: toRem(11);
   display: flex;
   width: 60%;
@@ -96,14 +91,14 @@ const cardClasses = computed(() => [
   }
 
   .about-us-quote-card__wrapper--dark & {
-    background-color: var(--background-secondary);
+    background-color: var(--background-primary-dark);
   }
 }
 
 .about-us-quote-card__image-wrapper {
   display: flex;
   flex-direction: column;
-  align-content: flex-end;
+  align-content: flex-start;
   width: max-content;
   transform: translate(toRem(-65), toRem(-40));
 
@@ -114,7 +109,7 @@ const cardClasses = computed(() => [
   }
 
   .about-us-quote-card--reverse & {
-    transform: translate(toRem(60), toRem(-60));
+    transform: translate(toRem(40), toRem(-60));
 
     @include respond-to(medium) {
       transform: translate(0, toRem(-40));
@@ -125,6 +120,11 @@ const cardClasses = computed(() => [
 .about-us-quote-card__image {
   max-width: toRem(280);
   align-self: flex-end;
+  border-radius: toRem(10);
+
+  .about-us-quote-card--reverse & {
+    align-self: flex-start;
+  }
 
   @include respond-to(medium) {
     align-self: center;
@@ -136,9 +136,15 @@ const cardClasses = computed(() => [
   text-transform: uppercase;
   margin-top: toRem(25);
   align-self: flex-end;
+  text-align: right;
+  width: toRem(300);
 
   @include respond-to(medium) {
     align-self: center;
+  }
+
+  .about-us-quote-card--reverse & {
+    text-align: left;
   }
 
   .about-us-quote-card__wrapper--dark & {
@@ -156,14 +162,17 @@ const cardClasses = computed(() => [
   line-height: 120%;
   text-transform: uppercase;
   margin-top: toRem(10);
-  align-self: flex-end;
+  text-align: right;
 
   @include respond-to(medium) {
     align-self: center;
   }
 
+  .about-us-quote-card--reverse & {
+    text-align: left;
+  }
+
   .about-us-quote-card__wrapper--dark & {
-    align-self: flex-start;
     color: var(--text-primary-invert-main);
 
     @include respond-to(medium) {
@@ -176,7 +185,7 @@ const cardClasses = computed(() => [
   display: flex;
   flex-direction: column;
   justify-content: center;
-  padding: toRem(40) toRem(30);
+  padding: toRem(40);
   gap: toRem(10);
 
   @include respond-to(medium) {

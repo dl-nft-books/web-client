@@ -50,7 +50,7 @@ const pickGuide = (guide: Guide) => {
 <style scoped lang="scss">
 .faq-guides-switcher {
   --button-size: #{toRem(150)};
-  --mobile-background: #{rgba(var(--white-rgb), 0.6)};
+  --mobile-background: #{rgba(var(--background-primary-light-rgb), 0.7)};
 
   display: grid;
   position: sticky;
@@ -75,7 +75,7 @@ const pickGuide = (guide: Guide) => {
 }
 
 .faq-guides-switcher__item {
-  --bg-picked-color: #{rgba(var(--background-switcher-picked-rgb), 0.14)};
+  --bg-picked-color: #{rgba(var(--primary-main-rgb), 0.5)};
 
   display: grid;
   place-content: center;
@@ -83,9 +83,9 @@ const pickGuide = (guide: Guide) => {
   height: var(--button-size);
   justify-self: center;
   width: var(--button-size);
-  border: toRem(1) solid var(--text-secondary-main);
+  border: toRem(1) solid var(--border-primary-main);
   border-radius: toRem(5);
-  background-color: var(--background-switcher);
+  background-color: var(--background-primary-main);
   backdrop-filter: blur(toRem(3));
   user-select: none;
   transition: 0.2s ease-in-out;
@@ -112,15 +112,17 @@ const pickGuide = (guide: Guide) => {
 }
 
 .faq-guides-switcher__item-title {
-  font-size: toRem(22);
+  font-size: toRem(20);
   line-height: 120%;
+  color: var(--text-primary-dark);
 
   @include respond-to(medium) {
     font-size: toRem(14);
   }
 
   .faq-guides-switcher__item--picked & {
-    color: var(--text-guides);
+    font-weight: 700;
+    color: var(--text-primary-light);
   }
 }
 </style>

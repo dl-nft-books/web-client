@@ -21,11 +21,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 #### Changed
 - Promocode now can be different length and can be 100%
 - On unsupported browsers will be shown corresponding message
+- Redesign of all pages
 - Main buy NFT form now is 2 steps form (first step: all payment info, second step: editing your banner)
 - Network switcher now works as a filter by chains
 - Voucher buy doesn't require to have native currency to obtain book
 - Refactor some composables
 - All 'generator' routes now 'core' routes
+
 
 #### Fixed
 - Bug with provider detection in Brave Browser

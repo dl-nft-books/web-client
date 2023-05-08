@@ -173,16 +173,12 @@ export function useNftTokens() {
 
     const proccessedData: TokenBaseInfo[] = []
 
-    let index = 0
-
     for (const { tokenContract, tokenIds } of filteredData) {
       initErc721(tokenContract)
       for (const tokenId of tokenIds) {
-        index++
         const metadata = await tokenURI(tokenId)
 
         if (!metadata) continue
-        if (index === 1) continue
 
         const data: NftMetadata = await (await fetch(metadata)).json()
 

@@ -1,6 +1,11 @@
 import { api } from '@/api'
 import { computed } from 'vue'
-import { CreateTaskResponse, MintSignatureResponse, Task } from '@/types'
+import {
+  CreateTaskResponse,
+  JsonApiRecordBase,
+  MintSignatureResponse,
+  Task,
+} from '@/types'
 import { useVoucher, useContractRegistry } from '@/composables'
 import { useNetworksStore, useWeb3ProvidersStore } from '@/store'
 
@@ -13,6 +18,10 @@ enum TASK_STATUS {
 }
 
 const DEFAULT_CALL_INTERVAL = 3000 // ms
+
+type VoucherTxResponse = JsonApiRecordBase<'voucher'> & {
+  tx_hash: string
+}
 
 export function useGenerator() {
   const networkStore = useNetworksStore()
@@ -98,7 +107,6 @@ export function useGenerator() {
   }
 
   const getMintSignature = async (
-    platform: string,
     taskId: string | number,
     tokenAddress?: string,
     promocodeId?: string,
@@ -109,7 +117,6 @@ export function useGenerator() {
       : '/integrations/core/signature/mint'
 
     const { data } = await api.get<MintSignatureResponse>(apiEndpoint, {
-      platform,
       task_id: taskId,
       ...(promocodeId ? { promocode_id: promocodeId } : {}),
       ...(tokenAddress ? { token_address: tokenAddress } : {}),
@@ -141,22 +148,27 @@ export function useGenerator() {
 
     if (!permitSignature) throw new Error('failed to form signature')
 
-    await api.post('/integrations/core/buy/voucher', {
-      data: {
-        attributes: {
-          voucher_address: voucherAddress,
-          task_id: taskId,
-          end_sig_timestamp: permitSignature.endSigTimestamp,
-          permit_sig: {
-            attributes: {
-              r: permitSignature.r,
-              s: permitSignature.s,
-              v: permitSignature.v,
+    const { data } = await api.post<VoucherTxResponse>(
+      '/integrations/core/buy/voucher',
+      {
+        data: {
+          attributes: {
+            voucher_address: voucherAddress,
+            task_id: taskId,
+            end_sig_timestamp: permitSignature.endSigTimestamp,
+            permit_sig: {
+              attributes: {
+                r: permitSignature.r,
+                s: permitSignature.s,
+                v: permitSignature.v,
+              },
             },
           },
         },
       },
-    })
+    )
+
+    return data.tx_hash
   }
 
   return {

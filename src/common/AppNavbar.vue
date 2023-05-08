@@ -1,6 +1,6 @@
 <template>
-  <nav class="app-navbar" :class="{ 'app-navbar--dark': isDarkMode }">
-    <app-logo :scheme="isDarkMode ? 'light' : 'dark'" />
+  <nav class="app-navbar">
+    <app-logo scheme="dark" />
     <button
       class="app-navbar__hamburger-button"
       type="button"
@@ -42,10 +42,7 @@
         :text="$t('app-navbar.connect-provider-button')"
         @click="handleProviderClick"
       />
-      <account-info
-        v-else
-        :modification="isDarkMode ? 'dark-mode' : 'default'"
-      />
+      <account-info v-else modification="dark-mode" />
     </div>
     <app-navigation-mobile />
   </nav>
@@ -62,9 +59,6 @@ import {
 import { useWeb3ProvidersStore } from '@/store'
 import { Bus } from '@/helpers'
 import { storeToRefs } from 'pinia'
-import { computed } from 'vue'
-import { router } from '@/router'
-import { ROUTE_METAS } from '@/enums'
 
 const { provider } = storeToRefs(useWeb3ProvidersStore())
 
@@ -78,10 +72,6 @@ const handleProviderClick = () => {
   }
   provider.value.connect()
 }
-
-const isDarkMode = computed(
-  () => router.currentRoute.value.meta[ROUTE_METAS.isDarkPage],
-)
 </script>
 
 <style lang="scss" scoped>
@@ -92,13 +82,10 @@ const isDarkMode = computed(
   padding: toRem(30) var(--app-padding-right) toRem(30) var(--app-padding-left);
   z-index: var(--z-index-layer-3);
   position: relative;
+  background-color: var(--background-primary-dark);
 
   @include respond-to(small) {
     width: 100%;
-  }
-
-  &--dark {
-    background-color: var(--background-quinary);
   }
 }
 
@@ -115,42 +102,29 @@ const isDarkMode = computed(
 }
 
 .app-navbar__text-link {
-  color: var(--text-secondary-dark);
   transition: 0.2s ease-in-out;
   transition-property: color;
+  color: var(--text-primary-main);
 
   &:hover {
-    color: var(--text-secondary-main);
-  }
-
-  .app-navbar--dark & {
-    color: var(--text-primary-invert-main);
+    color: var(--text-primary-dark);
   }
 
   &.router-link-active {
-    color: var(--text-secondary-main);
     border-bottom: toRem(2) solid var(--primary-main);
   }
 }
 
 .app-navbar__provider-btn {
-  --app-button-bg: var(--background-primary);
-  --app-button-bg-hover: var(--background-tertiary);
-  --app-button-flat-border: #{toRem(1)} solid var(--border-secondary-dark);
+  --app-button-bg-hover: var(--background-primary-light);
+  --app-button-bg: var(--background-primary-dark);
+  --app-button-flat-border: #{toRem(1)} solid var(--border-primary-light);
+  --app-button-flat-text-hover: var(--text-primary-invert-main);
 
   text-transform: uppercase;
   font-weight: 500;
   padding: toRem(9) toRem(16);
   color: var(--text-primary-light);
-
-  .app-navbar--dark & {
-    --app-button-bg: var(--background-quinary);
-    --app-button-bg-hover: var(--background-quaternary);
-    --app-button-flat-border: #{toRem(1)} solid var(--border-primary-light);
-    --app-button-flat-text-hover: var(--text-primary-invert-main);
-
-    color: var(--text-primary-invert-main);
-  }
 
   &:disabled {
     opacity: 1;
@@ -175,10 +149,7 @@ const isDarkMode = computed(
 .app-navbar__hamburger-button-icon {
   width: 100%;
   height: 100%;
-
-  .app-navbar--dark & {
-    color: var(--text-primary-invert-main);
-  }
+  color: var(--text-primary-main);
 }
 
 .app-navbar__provider-button-wrapper {

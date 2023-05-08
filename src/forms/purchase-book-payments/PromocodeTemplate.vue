@@ -50,6 +50,7 @@ const props = withDefaults(
   defineProps<{
     tokenAddress?: string
     tokenType?: TOKEN_TYPES
+    bookId: string
   }>(),
   {
     tokenAddress: '',
@@ -57,7 +58,7 @@ const props = withDefaults(
   },
 )
 
-const { platform: currentPlatform, isFormDisabled } = inject(PurchaseFormKey)
+const { isFormDisabled } = inject(PurchaseFormKey)
 
 const form = reactive({
   promocode: '',
@@ -76,12 +77,12 @@ const {
 })
 
 const { promocodeInfo, validatePromocode } = usePromocode()
-const { getPrice, tokenPrice } = useBalance(currentPlatform)
+const { getPrice, tokenPrice } = useBalance()
 
 const onPromocodeInput = async () => {
   if (!isPromocodeValid()) return
 
-  await validatePromocode(form.promocode)
+  await validatePromocode(form.promocode, Number(props.bookId))
 
   //in order to always calculate new price based on initial price
   await getPrice(props.tokenAddress, props.tokenType)
@@ -100,7 +101,7 @@ const onPromocodeInput = async () => {
 const handlePromocodeInput = debounce(onPromocodeInput, 400)
 
 defineExpose<ExposedPromocodeRef>({
-  isPromocodeValid,
+  isPromocodeValid: () => isPromocodeValid() && !promocodeInfo.error,
   tokenPrice,
   promocode: toRef(promocodeInfo, 'promocode'),
 })

@@ -4,6 +4,7 @@ import {
   POLYGON_MUMBAI_CHAIN,
   Q_MAINNET_CHAIN,
   Q_TESTNET_CHAIN,
+  SEPOLIA_CHAIN,
 } from '@/const'
 import {
   ETHEREUM_CHAINS,
@@ -17,7 +18,7 @@ import { ChainId, ChainUrlInfo, EthProviderRpcError } from '@/types'
 import { ErrorHandler } from '@/helpers'
 import { useWeb3ProvidersStore } from '@/store'
 
-export function getNetworkScheme(chainID: ChainId): string {
+export function getNetworkScheme(chainID: ChainId): NETWORKS {
   switch (chainID?.toString()) {
     case ETHEREUM_CHAINS.ethereum:
     case ETHEREUM_CHAINS.goerli:
@@ -34,14 +35,17 @@ export function getNetworkScheme(chainID: ChainId): string {
   }
 }
 
-export function getIconByScheme(scheme: NETWORKS): ICON_NAMES {
+export function getIconByScheme(
+  scheme: NETWORKS,
+  type = 'default' as 'default' | 'circle',
+): ICON_NAMES {
   switch (scheme) {
     case NETWORKS.POLYGON:
-      return ICON_NAMES.polygon
+      return type === 'circle' ? ICON_NAMES.polygonCircle : ICON_NAMES.polygon
     case NETWORKS.ETHEREUM:
-      return ICON_NAMES.ethereum
+      return type === 'circle' ? ICON_NAMES.ethereumCircle : ICON_NAMES.ethereum
     case NETWORKS.Q:
-      return ICON_NAMES.q
+      return type === 'circle' ? ICON_NAMES.qCircle : ICON_NAMES.q
     case NETWORKS.UNSUPPORTED:
     default:
       return ICON_NAMES.ban
@@ -59,6 +63,8 @@ export function getNetworkInfo(chainID: ChainId): ChainUrlInfo | null {
       return Q_TESTNET_CHAIN
     case Q_CHAINS.mainet:
       return Q_MAINNET_CHAIN
+    case ETHEREUM_CHAINS.sepolia:
+      return SEPOLIA_CHAIN
     default:
       return null
   }
@@ -79,22 +85,30 @@ export function getChainFromNetwork(network: NETWORKS): string {
   }
 }
 
-export function getBlockExplorerLink(chainId: ChainId, token: string): string {
+type LinkType = 'token' | 'tx'
+
+export function getBlockExplorerLink(
+  chainId: ChainId,
+  token: string,
+  linkType = 'token' as LinkType,
+): string {
   switch (chainId?.toString()) {
     case POLYGON_CHAINS.mumbai:
-      return `https://mumbai.polygonscan.com/token/${token}`
+      return `https://mumbai.polygonscan.com/${linkType}/${token}`
     case POLYGON_CHAINS.mainnet:
-      return `https://polygonscan.com/token/${token}`
+      return `https://polygonscan.com/${linkType}/${token}`
+    case ETHEREUM_CHAINS.sepolia:
+      return `https://sepolia.etherscan.io/${linkType}/${token}`
     case ETHEREUM_CHAINS.goerli:
-      return `https://goerli.etherscan.io/token/${token}`
+      return `https://goerli.etherscan.io/${linkType}/${token}`
     case ETHEREUM_CHAINS.ethereum:
-      return `https://etherscan.io/token/${token}`
+      return `https://etherscan.io/${linkType}/${token}`
     case Q_CHAINS.testnet:
-      return `https://explorer.qtestnet.org/token/${token}`
+      return `https://explorer.qtestnet.org/${linkType}/${token}`
     case Q_CHAINS.mainet:
-      return `https://explorer.q.org/token/${token}`
+      return `https://explorer.q.org/${linkType}/${token}`
     default:
-      return `https://etherscan.io/token/${token}`
+      return `https://etherscan.io/${linkType}/${token}`
   }
 }
 

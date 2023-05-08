@@ -33,7 +33,7 @@ const classes = computed(() => [
 
 <style scoped lang="scss">
 .faq-card-info {
-  --background-color: #{rgba(var(--guide-card-color-rgb), 0.1)};
+  --background-color: var(--background-primary-main);
 
   display: flex;
   flex-direction: column;
@@ -61,7 +61,7 @@ const classes = computed(() => [
   width: var(--size);
   height: var(--size);
   border-radius: 100%;
-  background-color: var(--background-quinary);
+  background-color: var(--background-primary-dark);
   display: grid;
   place-content: center;
   padding-top: toRem(2);
