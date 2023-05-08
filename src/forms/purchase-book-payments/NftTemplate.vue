@@ -70,14 +70,8 @@ import {
 } from '@/fields'
 
 import { Loader } from '@/common'
-import {
-  useBalance,
-  useFormValidation,
-  useErc721,
-  FullBookInfo,
-} from '@/composables'
-import { PurchaseFormKey } from '@/types'
-
+import { useBalance, useFormValidation, useErc721 } from '@/composables'
+import { PurchaseFormKey, FullBookInfo } from '@/types'
 import { required, address } from '@/validators'
 import { useWeb3ProvidersStore } from '@/store'
 import { ExposedFormRef } from '@/forms//PurchaseBookForm.vue'

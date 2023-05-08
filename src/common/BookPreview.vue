@@ -30,7 +30,7 @@
 import { computed } from 'vue'
 import { formatFiatAssetFromWei } from '@/helpers'
 import { CURRENCIES } from '@/enums'
-import { FullBookInfo } from '@/composables'
+import { FullBookInfo } from '@/types'
 
 type MODIFICATIONS = 'floor-price' | 'default'
 

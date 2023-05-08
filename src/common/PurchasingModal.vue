@@ -59,8 +59,9 @@ import { ref, computed } from 'vue'
 import { PurchaseBookForm } from '@/forms'
 
 import disableChainAnimation from '@/assets/animations/disable-chain.json'
+
+import { FullBookInfo } from '@/types'
 import { useI18n } from 'vue-i18n'
-import { FullBookInfo } from '@/composables'
 
 const props = defineProps<{
   isShown: boolean

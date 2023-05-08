@@ -39,7 +39,6 @@
         scheme="flat"
         size="small"
         :icon-left="$icons.metamask"
-        :disabled="provider.selectedAddress"
         :text="$t('app-navbar.connect-provider-button')"
         @click="handleProviderClick"
       />

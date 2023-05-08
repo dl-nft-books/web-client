@@ -38,7 +38,7 @@ const routes: Array<RouteRecordRaw> = [
     meta: { [ROUTE_METAS.isDarkPage]: true },
   },
   {
-    path: '/my-nft/:contract/:id',
+    path: '/my-nft/:contractAddress/:id',
     props: true,
     name: ROUTE_NAMES.myNftItem,
     component: () => import('@/pages/my-nfts/MyNftItemPage.vue'),

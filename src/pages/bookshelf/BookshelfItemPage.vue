@@ -98,9 +98,12 @@ import {
 
 import { BookDetails } from '@/pages/bookshelf'
 import { ref, watch, computed } from 'vue'
+
 import { ErrorHandler, getBlockExplorerLink } from '@/helpers'
 
-import { FullBookInfo, useBooks } from '@/composables'
+import { useBooks } from '@/composables'
+import { FullBookInfo } from '@/types'
+
 import { useWeb3ProvidersStore, useNetworksStore } from '@/store'
 import { router } from '@/router'
 import { ROUTE_NAMES } from '@/enums'

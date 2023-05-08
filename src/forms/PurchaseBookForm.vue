@@ -74,6 +74,7 @@ import {
   PurchaseFormKey,
   MintSignatureResponse,
   Task,
+  FullBookInfo,
 } from '@/types'
 import { Q_CHAINS, TOKEN_TYPES } from '@/enums'
 
@@ -91,7 +92,6 @@ import {
   useFormValidation,
   useNftTokens,
   useGenerator,
-  FullBookInfo,
 } from '@/composables'
 
 import { SelectField } from '@/fields'

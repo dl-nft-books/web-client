@@ -5,10 +5,29 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+#### Added
+- New contracts logic:
+    - Now info about book is gathering partly from contracts and partly from backend
+    - All NFT`s are being fetched directly from contract
+- NFT banner image editor
+- Default configurable RPC provider for displaying books from 1 default chain if user doesn't have provider
+- Composable useContractPagination for contract-based pagination
+- Sepolia network for stage tests
+
+#### Removed
+- Search feature
+- Signature from buy NFT form. We are no longer adding signature directly to PDF, this purpose now is on image editor
+
 #### Changed
 - Promocode now can be different length and can be 100%
 - On unsupported browsers will be shown corresponding message
 - Redesign of all pages
+- Main buy NFT form now is 2 steps form (first step: all payment info, second step: editing your banner)
+- Network switcher now works as a filter by chains
+- Voucher buy doesn't require to have native currency to obtain book
+- Refactor some composables
+- All 'generator' routes now 'core' routes
+
 
 #### Fixed
 - Bug with provider detection in Brave Browser

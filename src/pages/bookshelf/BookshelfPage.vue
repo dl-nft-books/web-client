@@ -5,8 +5,9 @@
       {{ $t('bookshelf-page.title') }}
     </h1>
 
-    <book-list v-if="totalAmount !== -1" :total-amount="totalAmount" />
-    <loader v-else />
+    <loader v-if="isLoading" />
+    <book-list v-else-if="totalAmount !== -1" :total-amount="totalAmount" />
+    <no-data-message v-else :message="$t('bookshelf-page.no-data-msg')" />
     <img
       class="bookshelf-page__background bookshelf-page__background--bottom"
       src="/images/fancy-lines.png"
@@ -17,30 +18,34 @@
 <script lang="ts" setup>
 import { ref, computed, onMounted } from 'vue'
 
-import { Loader } from '@/common'
+import { Loader, NoDataMessage } from '@/common'
 import { useBooks } from '@/composables'
 import { BookshelfHeader, BookList } from '@/pages/bookshelf'
 import { useWeb3ProvidersStore } from '@/store'
-import { config } from '@/config'
+import { ErrorHandler } from '@/helpers'
 
 const webProvidersStore = useWeb3ProvidersStore()
 
 const provider = computed(() => webProvidersStore.provider)
 
 const totalAmount = ref(-1)
+const isLoading = ref(false)
 
 const { getTotalBooksAmount } = useBooks()
 
 onMounted(async () => {
-  const data = await getTotalBooksAmount(
-    provider.value.isConnected
-      ? provider.value.chainId
-      : config.DEFAULT_CHAIN_ID,
-  )
+  isLoading.value = true
 
-  if (!data) return
+  try {
+    const data = await getTotalBooksAmount(provider.value.chainId)
+    if (!data) throw new Error('No books found')
 
-  totalAmount.value = Number(data)
+    totalAmount.value = Number(data)
+  } catch (error) {
+    ErrorHandler.processWithoutFeedback(error)
+  }
+
+  isLoading.value = false
 })
 </script>
 

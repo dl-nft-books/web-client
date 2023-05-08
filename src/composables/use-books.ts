@@ -183,8 +183,7 @@ export function useBooks(contractRegistryAddress?: string) {
       return []
     }
 
-    if (provider.value.isConnected) await switchNetwork(chainId)
-
+    await switchNetwork(chainId)
     await _initContractRegistry(Number(chainId))
     await _initMarketPlace()
 

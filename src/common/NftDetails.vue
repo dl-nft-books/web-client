@@ -37,9 +37,8 @@ import {
   globalizeTokenType,
 } from '@/helpers'
 
-import { CURRENCIES } from '@/enums'
-import { TokenFullInfo } from '@/composables'
-import { TOKEN_TYPES } from '@/enums'
+import { CURRENCIES, TOKEN_TYPES } from '@/enums'
+import { TokenFullInfo } from '@/types'
 import { useI18n } from 'vue-i18n'
 
 type NftDetails = {
@@ -48,7 +47,9 @@ type NftDetails = {
   isUrl?: boolean
 }
 
-const props = defineProps<{ nftToken: TokenFullInfo }>()
+const props = defineProps<{
+  nftToken: TokenFullInfo
+}>()
 
 const { t } = useI18n()
 

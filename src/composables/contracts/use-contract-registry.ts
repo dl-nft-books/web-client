@@ -12,18 +12,11 @@ export const useContractRegistry = (address?: string) => {
   const contractInstance = computed(
     () =>
       (!!provider.value &&
-        provider.value.isConnected &&
         !!provider.value.currentProvider &&
         !!contractAddress.value &&
         ContractRegistry__factory.connect(
           contractAddress.value,
           provider.value.currentProvider,
-        )) ||
-      (!!provider.value.defaultProvider &&
-        !!contractAddress.value &&
-        ContractRegistry__factory.connect(
-          contractAddress.value,
-          provider.value.defaultProvider,
         )) ||
       undefined,
   )

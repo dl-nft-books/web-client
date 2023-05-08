@@ -28,25 +28,17 @@
         @click="loadNextPage"
       />
     </template>
-    <no-data-message v-else :message="$t('bookshelf-page.no-data-msg')" />
   </section>
 </template>
 
 <script setup lang="ts">
 import { ref, computed } from 'vue'
 
-import {
-  Loader,
-  ErrorMessage,
-  NoDataMessage,
-  BookCard,
-  AppButton,
-} from '@/common'
+import { Loader, ErrorMessage, BookCard, AppButton } from '@/common'
 
 import { ErrorHandler } from '@/helpers'
 import { BaseBookInfo, useBooks, useContractPagination } from '@/composables'
 import { useNetworksStore, useWeb3ProvidersStore } from '@/store'
-import { config } from '@/config'
 import { DateUtil } from '@distributedlab/utils'
 
 const props = defineProps<{
@@ -65,13 +57,7 @@ const books = ref<BaseBookInfo[]>([])
 
 const loadList = computed(
   () => (limit: number, offset: number) =>
-    getBooksFromContract(
-      limit,
-      offset,
-      provider.value.isConnected
-        ? provider.value.chainId
-        : config.DEFAULT_CHAIN_ID,
-    ),
+    getBooksFromContract(limit, offset, provider.value.chainId),
 )
 const { loadNextPage, isLoading, isLoadMoreBtnShown } = useContractPagination(
   loadList,

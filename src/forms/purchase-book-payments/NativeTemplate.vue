@@ -30,9 +30,9 @@ import { BN } from '@/utils/math.util'
 import { ReadonlyField } from '@/fields'
 
 import { ErrorMessage, Loader } from '@/common'
-import { FullBookInfo, useBalance } from '@/composables'
+import { useBalance } from '@/composables'
 import { PromocodeTemplate } from '@/forms/purchase-book-payments'
-import { Promocode } from '@/types'
+import { Promocode, FullBookInfo } from '@/types'
 
 import { useWeb3ProvidersStore } from '@/store'
 import { ExposedPromocodeRef } from '@/forms/purchase-book-payments/PromocodeTemplate.vue'

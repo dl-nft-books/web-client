@@ -3,24 +3,6 @@ import { computed, ref } from 'vue'
 import { MarketPlace__factory, EthProviderRpcError } from '@/types'
 import { handleEthError } from '@/helpers'
 
-export type TokenParams = {
-  pricePerOneToken: string
-  minNFTFloorPrice: string
-  voucherTokensAmount: string
-  voucherTokenContract: string
-  fundsRecipient: string
-  isNFTBuyable: boolean
-  isDisabled: boolean
-  isVoucherBuyable: boolean
-}
-
-export type PaymentDetails = {
-  paymentTokenAddress: string
-  paymentTokenPrice: string
-  discount: string
-  nftTokenId: string
-}
-
 export type BuyParams = {
   paymentDetails: PaymentDetails
   tokenContract: string
@@ -28,16 +10,23 @@ export type BuyParams = {
   tokenData: TokenMintData
 }
 
-export type TokenMintData = {
-  tokenId: string
-  tokenURI: string
-}
-
 export type Signature = {
   r: string
   s: string
   v: number
   endSigTimestamp: number
+}
+
+type PaymentDetails = {
+  paymentTokenAddress: string
+  paymentTokenPrice: string
+  discount: string
+  nftTokenId: string
+}
+
+type TokenMintData = {
+  tokenId: string
+  tokenURI: string
 }
 
 export const useMarketplace = (address?: string) => {
@@ -49,18 +38,11 @@ export const useMarketplace = (address?: string) => {
   const contractInstance = computed(
     () =>
       (!!provider.value &&
-        provider.value.isConnected &&
-        !!provider.value.currentSigner &&
+        !!provider.value.currentProvider &&
         !!contractAddress.value &&
         MarketPlace__factory.connect(
           contractAddress.value,
-          provider.value.currentSigner,
-        )) ||
-      (!!provider.value.defaultProvider &&
-        !!contractAddress.value &&
-        MarketPlace__factory.connect(
-          contractAddress.value,
-          provider.value.defaultProvider,
+          provider.value.currentProvider,
         )) ||
       undefined,
   )
@@ -137,13 +119,16 @@ export const useMarketplace = (address?: string) => {
     if (!contractInstance.value) return
 
     try {
-      const tx = await contractInstance.value.buyTokenWithETH(
+      const data = contractInterface.encodeFunctionData('buyTokenWithETH', [
         buyParams,
         signature,
-        ...(value ? [{ value }] : []),
-      )
+      ])
 
-      const receipt = await tx.wait()
+      const receipt = await provider.value.signAndSendTx({
+        to: contractAddress.value,
+        data,
+        ...(value ? { value } : {}),
+      })
 
       return receipt
     } catch (error) {

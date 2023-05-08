@@ -33,7 +33,9 @@ import { ethers } from 'ethers'
 import { Loader, ErrorMessage } from '@/common'
 import { MessageField, ReadonlyField } from '@/fields'
 
-import { FullBookInfo, useBalance } from '@/composables'
+import { FullBookInfo } from '@/types'
+import { useBalance } from '@/composables'
+
 import { ErrorHandler, formatAssetFromWei } from '@/helpers'
 import { BN } from '@/utils/math.util'
 import { useWeb3ProvidersStore } from '@/store'
