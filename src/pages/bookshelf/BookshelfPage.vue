@@ -16,7 +16,7 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed, watch } from 'vue'
 
 import { Loader, NoDataMessage } from '@/common'
 import { useBooks } from '@/composables'
@@ -33,8 +33,9 @@ const isLoading = ref(false)
 
 const { getTotalBooksAmount } = useBooks()
 
-onMounted(async () => {
+const init = async () => {
   isLoading.value = true
+  totalAmount.value = -1
 
   try {
     const data = await getTotalBooksAmount(provider.value.chainId)
@@ -46,7 +47,9 @@ onMounted(async () => {
   }
 
   isLoading.value = false
-})
+}
+
+watch(() => provider.value.chainId, init, { immediate: true })
 </script>
 
 <style lang="scss" scoped>
