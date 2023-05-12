@@ -6,7 +6,7 @@
     </h1>
 
     <loader v-if="isLoading" />
-    <book-list v-else-if="totalAmount !== -1" :total-amount="totalAmount" />
+    <book-list v-else-if="totalAmount > 0" :total-amount="totalAmount" />
     <no-data-message v-else :message="$t('bookshelf-page.no-data-msg')" />
     <img
       class="bookshelf-page__background bookshelf-page__background--bottom"
