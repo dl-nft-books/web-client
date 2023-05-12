@@ -4,11 +4,7 @@
       {{ $t('my-nfts-page.title') }}
     </h3>
     <loader v-if="isLoading" />
-    <nft-list
-      v-else-if="provider.isConnected && totalAmount !== -1"
-      :total-amount="totalAmount"
-    />
-
+    <nft-list v-else-if="provider.isConnected" :total-amount="totalAmount" />
     <my-nfts-no-data v-else is-not-connected />
     <img class="my-nfts-page__background" src="/images/fancy-lines.png" />
   </div>

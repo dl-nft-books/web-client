@@ -1,10 +1,6 @@
 <template>
   <div>
-    <error-message
-      v-if="isLoadFailed"
-      :message="$t('my-nfts-page.loading-error-msg')"
-    />
-    <template v-else-if="nftList.length || isLoading">
+    <template v-if="nftList.length || isLoading">
       <div v-if="nftList.length" class="nft-list__items">
         <book-card
           v-for="book in nftList"
@@ -31,7 +27,7 @@
 </template>
 
 <script setup lang="ts">
-import { Loader, ErrorMessage, BookCard, AppButton } from '@/common'
+import { Loader, BookCard, AppButton } from '@/common'
 import { MyNftsNoData } from '@/pages/my-nfts'
 import { ErrorHandler } from '@/helpers'
 import { ref, computed, watch } from 'vue'
@@ -49,7 +45,6 @@ const props = defineProps<{
 const web3ProvidersStore = useWeb3ProvidersStore()
 const provider = computed(() => web3ProvidersStore.provider)
 
-const isLoadFailed = ref(false)
 const nftList = ref<TokenBaseInfo[]>([])
 
 const { getNftList } = useNftTokens()
@@ -75,16 +70,9 @@ function concatList(chunk: TokenBaseInfo[]) {
 
 function onError(e: Error) {
   ErrorHandler.processWithoutFeedback(e)
-  isLoadFailed.value = true
 }
 
-watch(
-  () => provider.value.chainId,
-  () => {
-    isLoadFailed.value = false
-    loadFirstPage()
-  },
-)
+watch(() => provider.value.chainId, loadFirstPage)
 </script>
 
 <style lang="scss" scoped>

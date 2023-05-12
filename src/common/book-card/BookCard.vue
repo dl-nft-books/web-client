@@ -84,7 +84,10 @@ const redirect = () => {
   if (isNftToken(props.book)) {
     router.push({
       name: ROUTE_NAMES.myNftItem,
-      params: { id: props.book.tokenId, contract: props.book.tokenContract },
+      params: {
+        id: props.book.tokenId,
+        contractAddress: props.book.tokenContract,
+      },
     })
     return
   }
