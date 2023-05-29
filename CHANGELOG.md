@@ -4,7 +4,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [1.4.0] - 2023-05-12
 #### Added
 - New contracts logic:
     - Now info about book is gathering partly from contracts and partly from backend
@@ -112,9 +112,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 #### Under the hood changes
 - merged from https://gitlab.com/distributed_lab/frontend/vue-template
 
-[Unreleased]: https://gitlab.com/tokend/nft-books/web-client-nft-books/compare/v1.3.0-rc.1...main
-[1.3.1]: https://gitlab.com/tokend/nft-books/web-client-nft-books/compare/v1.3.0-rc.1...v1.3.1
-[1.3.0-rc.1]: https://gitlab.com/tokend/nft-books/web-client-nft-books/compare/v1.2.0...v1.3.0-rc.1
-[1.2.0]: https://gitlab.com/tokend/nft-books/web-client-nft-books/compare/v1.1.0...v1.2.0
-[1.1.0]: https://gitlab.com/tokend/nft-books/web-client-nft-books/compare/v1.0.0...v1.1.0
-[1.0.0]: https://gitlab.com/tokend/nft-books/web-client-nft-books/tags/v1.0.0
+[Unreleased]: https://github.com/dl-nft-books/web-client/compare/v1.4.0...main
+[1.4.0]: https://github.com/dl-nft-books/web-client/compare/v1.3.1...v1.4.0
+[1.3.1]: https://github.com/dl-nft-books/web-client/compare/v1.3.0-rc.1...v1.3.1
+[1.3.0-rc.1]: https://github.com/dl-nft-books/web-client/compare/v1.2.0...v1.3.0-rc.1
+[1.2.0]: https://github.com/dl-nft-books/web-client/compare/v1.1.0...v1.2.0
+[1.1.0]: https://github.com/dl-nft-books/web-client/compare/v1.0.0...v1.1.0
+[1.0.0]: https://github.com/dl-nft-books/web-client/tree/v1.0.0
