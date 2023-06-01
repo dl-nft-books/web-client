@@ -25,7 +25,7 @@ export const useWeb3ProvidersStore = defineStore('web3-providers-store', {
 
       if (metamaskProvider) await this.provider.init(metamaskProvider)
 
-      if (!metamaskProvider || !this.provider.isConnected) {
+      if (!metamaskProvider) {
         await this.setupFallbackProvider()
         return
       }

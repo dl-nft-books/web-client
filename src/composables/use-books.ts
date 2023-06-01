@@ -1,12 +1,10 @@
 import { api } from '@/api'
 import { Book, ChainId } from '@/types'
 import { useMarketplace, useContractRegistry } from '@/composables/contracts'
-import { useNetworksStore, useWeb3ProvidersStore } from '@/store'
-import { computed } from 'vue'
+import { useNetworksStore } from '@/store'
 import { BN } from '@/utils/math.util'
 
 import { IMarketplace } from '@/types/contracts/MarketPlace'
-import { switchNetwork } from '@/helpers'
 import { config } from '@/config'
 
 // Info about book gathering partly from backend and partly from contract
@@ -20,8 +18,6 @@ export type BaseBookInfo = Book &
 
 export function useBooks(contractRegistryAddress?: string) {
   const networkStore = useNetworksStore()
-  const web3Store = useWeb3ProvidersStore()
-  const provider = computed(() => web3Store.provider)
 
   const { getMarketPlaceAddress, init: initRegistry } = useContractRegistry(
     contractRegistryAddress,
@@ -51,8 +47,18 @@ export function useBooks(contractRegistryAddress?: string) {
       network => network.chain_id === chainId,
     )?.factory_address
 
-    if (!appropriateRegistryAddress)
-      throw new Error('failed to get registry address')
+    // in case we don't have registry on that chain - we use default one
+    if (!appropriateRegistryAddress) {
+      const defaultRegistryAddress = networkStore.list.find(
+        network => network.chain_id === Number(config.DEFAULT_CHAIN_ID),
+      )?.factory_address
+
+      if (!defaultRegistryAddress)
+        throw new Error('failed to get default registry address')
+
+      initRegistry(defaultRegistryAddress)
+      return
+    }
 
     initRegistry(appropriateRegistryAddress)
   }
@@ -105,11 +111,21 @@ export function useBooks(contractRegistryAddress?: string) {
       el => el.attributes.chain_id === chainId,
     )
 
-    if (!bookNetwork) throw new Error('failed to get appropriate info source')
+    let bookContractAddress = bookNetwork?.attributes.contract_address
 
-    const bookParams = await getTokenParams([
-      bookNetwork.attributes.contract_address,
-    ])
+    /* 
+      in case we don't have book on current chain - 
+      we use the contract that matches default chain 
+    */
+    if (!bookContractAddress) {
+      bookContractAddress = book.networks.find(
+        book => book.attributes.chain_id === Number(config.DEFAULT_CHAIN_ID),
+      )?.attributes.contract_address
+
+      if (!bookContractAddress) throw new Error('failed to get book address')
+    }
+
+    const bookParams = await getTokenParams([bookContractAddress])
 
     if (!bookParams) throw new Error('Failed to get info from contract')
 
@@ -173,17 +189,6 @@ export function useBooks(contractRegistryAddress?: string) {
   ) => {
     if (!limit) return []
 
-    if (!networkStore.list.length) {
-      await networkStore.loadNetworks()
-    }
-
-    if (
-      !networkStore.list.some(network => network.chain_id === Number(chainId))
-    ) {
-      return []
-    }
-
-    await switchNetwork(chainId)
     await _initContractRegistry(Number(chainId))
     await _initMarketPlace()
 
@@ -205,18 +210,6 @@ export function useBooks(contractRegistryAddress?: string) {
   }
 
   const getTotalBooksAmount = async (chainId: ChainId) => {
-    if (!networkStore.list.length) {
-      await networkStore.loadNetworks()
-    }
-
-    if (
-      !networkStore.list.some(network => network.chain_id === Number(chainId))
-    ) {
-      return
-    }
-
-    if (provider.value.isConnected) await switchNetwork(chainId)
-
     await _initContractRegistry(Number(chainId))
     await _initMarketPlace()
 
@@ -227,17 +220,16 @@ export function useBooks(contractRegistryAddress?: string) {
     return new BN(amount._hex).toString()
   }
 
-  const getBookById = async (id: number | string): Promise<FullBookInfo> => {
-    const chainId = provider.value.isConnected
-      ? Number(provider.value.chainId)
-      : Number(config.DEFAULT_CHAIN_ID)
-
-    await _initContractRegistry(chainId)
+  const getBookById = async (
+    id: number | string,
+    chainId: ChainId,
+  ): Promise<FullBookInfo> => {
+    await _initContractRegistry(Number(chainId))
     await _initMarketPlace()
 
     const { data } = await api.get<Book>(`/integrations/books/${id}`)
 
-    const bookData = await _gatherDetailedBookData(data, chainId)
+    const bookData = await _gatherDetailedBookData(data, Number(chainId))
 
     return bookData
   }

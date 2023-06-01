@@ -153,7 +153,7 @@ const submit = async (message?: string) => {
 const init = async () => {
   isLoaded.value = false
   try {
-    const data = await getBookById(props.id)
+    const data = await getBookById(props.id, provider.value.chainId)
 
     book.value = data
   } catch (error) {
