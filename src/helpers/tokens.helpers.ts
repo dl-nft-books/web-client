@@ -13,6 +13,8 @@ export function globalizeTokenType(type: string) {
       return t('token-types.voucher-lbl')
     case TOKEN_TYPES.nft:
       return t('token-types.nft')
+    case TOKEN_TYPES.rarimo:
+      return t('token-types.rarimo')
     default:
       return t('token-types.not-found-lbl')
   }

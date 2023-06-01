@@ -1,6 +1,7 @@
 <template>
   <modal
     :is-shown="isShown"
+    :is-close-by-click-outside="false"
     @update:is-shown="value => emit('update:is-shown', value)"
   >
     <template #default="{ modal }">

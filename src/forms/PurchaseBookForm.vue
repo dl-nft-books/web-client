@@ -63,7 +63,7 @@
 <script lang="ts" setup>
 import 'simple-fabric-vue-image-editor/dist/fabric-vue-image-editor-ts.css'
 
-import { ref, reactive, computed, Ref, provide } from 'vue'
+import { ref, reactive, computed, Ref, provide, toRef } from 'vue'
 import { useWeb3ProvidersStore } from '@/store'
 import { BN } from '@/utils/math.util'
 import { ImageEditor, UseImageEditor } from 'simple-fabric-vue-image-editor'
@@ -75,6 +75,8 @@ import {
   MintSignatureResponse,
   Task,
   FullBookInfo,
+  BuyParams,
+  Signature,
 } from '@/types'
 import { Q_CHAINS, TOKEN_TYPES } from '@/enums'
 
@@ -85,6 +87,7 @@ import {
   Erc20Template,
   VoucherTemplate,
   NftTemplate,
+  RarimoTemplate,
 } from '@/forms/purchase-book-payments'
 
 import {
@@ -110,6 +113,11 @@ export type ExposedFormRef = {
   tokenAmount: Ref<string>
   tokenPrice: Ref<TokenPrice | null>
   tokenId?: Ref<string>
+  mintFunction?: (
+    buyParams: BuyParams,
+    signature: Signature,
+    amountOfEth: string,
+  ) => Promise<void>
 }
 
 const TOKEN_AMOUNT_COEFFICIENT = 1.02
@@ -164,6 +172,8 @@ const paymentTemplate = computed(() => {
       return VoucherTemplate
     case TOKEN_TYPES.nft:
       return NftTemplate
+    case TOKEN_TYPES.rarimo:
+      return RarimoTemplate
     case TOKEN_TYPES.native:
     default:
       return NativeTemplate
@@ -175,6 +185,10 @@ const tokenTypesOptions = computed(() => {
     {
       label: globalizeTokenType(TOKEN_TYPES.native),
       value: TOKEN_TYPES.native,
+    },
+    {
+      label: globalizeTokenType(TOKEN_TYPES.rarimo),
+      value: TOKEN_TYPES.rarimo,
     },
   ]
 
@@ -300,6 +314,33 @@ const mintToken = async (
       )
       break
     }
+    case TOKEN_TYPES.rarimo:
+      if (!nativeTokenAmount) throw new Error('Missing native token amount')
+      if (!paymentTemplateRef.value?.mintFunction)
+        throw new Error('Missing mint function')
+
+      await paymentTemplateRef.value.mintFunction(
+        {
+          tokenContract: bookContract.attributes.contract_address,
+          recipient: provider.value.selectedAddress,
+          tokenData: {
+            tokenId: mintSignature.token_id.toString(),
+            tokenURI: generatedTask.metadata_ipfs_hash,
+          },
+          paymentDetails: {
+            paymentTokenAddress: ethers.constants.AddressZero,
+            paymentTokenPrice: mintSignature.price,
+            nftTokenId: '0',
+            discount: mintSignature.discount,
+          },
+        },
+        {
+          ...mintSignature.signature,
+          endSigTimestamp: mintSignature.end_timestamp,
+        },
+        nativeTokenAmount,
+      )
+      break
     default:
       break
   }
@@ -414,6 +455,12 @@ const submit = async (editorFromTemplate: UseImageEditor | null) => {
   }
   enableForm()
 }
+
+defineExpose<{
+  tokenType: Ref<TOKEN_TYPES>
+}>({
+  tokenType: toRef(form, 'tokenType'),
+})
 </script>
 
 <style lang="scss" scoped>

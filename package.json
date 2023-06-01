@@ -23,6 +23,8 @@
   "dependencies": {
     "@distributedlab/utils": "^2.0.0",
     "@invisiburu/vue-picker": "^2.1.0",
+    "@rarimo/nft-checkout": "^1.5.0-rc.25",
+    "@rarimo/providers-evm": "^1.5.0-rc.25",
     "@solana/web3.js": "1.52.0",
     "@vuelidate/core": "^2.0.0-alpha.44",
     "@vuelidate/validators": "^2.0.0-alpha.31",

@@ -3,3 +3,4 @@ export { default as Erc20Template } from '@/forms/purchase-book-payments/Erc20Te
 export { default as VoucherTemplate } from '@/forms/purchase-book-payments/VoucherTemplate.vue'
 export { default as NftTemplate } from '@/forms/purchase-book-payments/NftTemplate.vue'
 export { default as PromocodeTemplate } from '@/forms/purchase-book-payments/PromocodeTemplate.vue'
+export { default as RarimoTemplate } from '@/forms/purchase-book-payments/RarimoTemplate.vue'

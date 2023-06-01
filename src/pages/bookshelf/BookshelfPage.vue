@@ -34,6 +34,8 @@ const isLoading = ref(false)
 const { getTotalBooksAmount } = useBooks()
 
 const init = async () => {
+  if (!provider.value.chainId) return
+
   isLoading.value = true
   totalAmount.value = -1
 

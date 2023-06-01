@@ -1,6 +1,7 @@
 <template>
   <modal
     :is-shown="isShown"
+    :is-close-by-click-outside="false"
     @update:is-shown="value => emit('update:is-shown', value)"
   >
     <template #default="{ modal }">
@@ -21,6 +22,7 @@
         <div class="purchasing-modal__body">
           <purchase-book-form
             v-if="isValidChain"
+            ref="formTemplate"
             :book="props.book"
             @submitting="isSubmitting = $event"
             @submit="emit('submit', $event)"
@@ -62,6 +64,7 @@ import disableChainAnimation from '@/assets/animations/disable-chain.json'
 
 import { FullBookInfo } from '@/types'
 import { useI18n } from 'vue-i18n'
+import { TOKEN_TYPES } from '@/enums'
 
 const props = defineProps<{
   isShown: boolean
@@ -76,14 +79,19 @@ const emit = defineEmits<{
 const { t } = useI18n()
 
 const isSubmitting = ref(false)
+const formTemplate = ref<{
+  tokenType: TOKEN_TYPES
+}>()
 
 const { provider } = storeToRefs(useWeb3ProvidersStore())
 
-const isValidChain = computed(() =>
-  props.book.networks.some(
-    ({ attributes: { chain_id } }) =>
-      chain_id === Number(provider.value.chainId),
-  ),
+// if we performing checkout using rarimo - no need to switch chain to valid
+const isValidChain = computed(
+  () =>
+    props.book.networks.some(
+      ({ attributes: { chain_id } }) =>
+        chain_id === Number(provider.value.chainId),
+    ) || formTemplate.value?.tokenType === TOKEN_TYPES.rarimo,
 )
 
 const title = computed(() => {
