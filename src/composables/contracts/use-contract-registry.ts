@@ -1,14 +1,31 @@
-import { useWeb3ProvidersStore } from '@/store'
+import { useWeb3ProvidersStore, useNetworksStore } from '@/store'
 import { computed, ref } from 'vue'
 import { ContractRegistry__factory, EthProviderRpcError } from '@/types'
-import { handleEthError } from '@/helpers'
+import { handleEthError, getJsonRpcProvider } from '@/helpers'
+import { config } from '@/config'
 
 export const useContractRegistry = (address?: string) => {
+  const networkStore = useNetworksStore()
   const web3ProvidersStore = useWeb3ProvidersStore()
   const provider = computed(() => web3ProvidersStore.provider)
 
+  const isValidChain = computed(() =>
+    networkStore.list.some(
+      i => Number(i.chain_id) === Number(provider.value.chainId),
+    ),
+  )
+
   const contractAddress = ref(address || '')
 
+  const rpcProvider = computed(() =>
+    getJsonRpcProvider(
+      isValidChain.value
+        ? provider.value.chainId?.toString()
+        : config.DEFAULT_CHAIN_ID,
+    ),
+  )
+
+  // for read operations always using RPC
   const contractInstance = computed(
     () =>
       (!!provider.value &&
@@ -16,7 +33,7 @@ export const useContractRegistry = (address?: string) => {
         !!contractAddress.value &&
         ContractRegistry__factory.connect(
           contractAddress.value,
-          provider.value.currentProvider,
+          rpcProvider.value,
         )) ||
       undefined,
   )

@@ -41,6 +41,7 @@ const init = async () => {
 
   try {
     const data = await getTotalBooksAmount(provider.value.chainId)
+
     if (!data) throw new Error('No books found')
 
     totalAmount.value = Number(data)

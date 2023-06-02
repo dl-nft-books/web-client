@@ -18,6 +18,8 @@ import { utils } from 'ethers'
 import { useWeb3ProvidersStore, useNetworksStore } from '@/store'
 import { BuyParams, Signature, useContractRegistry } from '@/composables'
 import { MarketPlace__factory } from '@/types'
+import { config } from '@/config'
+
 export function useNftCheckout(contractRegistryAddress?: string) {
   const web3Store = useWeb3ProvidersStore()
   const networkStore = useNetworksStore()
@@ -40,8 +42,18 @@ export function useNftCheckout(contractRegistryAddress?: string) {
       network => network.chain_id === chainId,
     )?.factory_address
 
-    if (!appropriateRegistryAddress)
-      throw new Error('failed to get registry address')
+    // in case we don't have registry on that chain - we use default one
+    if (!appropriateRegistryAddress) {
+      const defaultRegistryAddress = networkStore.list.find(
+        network => network.chain_id === Number(config.DEFAULT_CHAIN_ID),
+      )?.factory_address
+
+      if (!defaultRegistryAddress)
+        throw new Error('failed to get default registry address')
+
+      initRegistry(defaultRegistryAddress)
+      return
+    }
 
     initRegistry(appropriateRegistryAddress)
   }

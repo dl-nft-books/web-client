@@ -12,7 +12,7 @@
           {{ $t('nft-checkout-info.impact-value', { impact: info.impact }) }}
         </p>
       </div>
-      <div class="nft-checkout-info__details-wrapper">
+      <div v-if="info.gasPrice" class="nft-checkout-info__details-wrapper">
         <p>{{ $t('nft-checkout-info.network-fee-lbl') }}</p>
         <p>{{ info.gasPrice }}</p>
       </div>

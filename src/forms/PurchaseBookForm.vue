@@ -170,7 +170,9 @@ const {
 const { mintWithErc20, mintWithEth, mintWithNft, approveTokenSpend } =
   useNftTokens()
 
-const paymentType = ref<PAYMENT_TYPES>()
+const paymentType = ref<PAYMENT_TYPES | undefined>(
+  !props.isValidChain ? PAYMENT_TYPES.rarimo : undefined,
+)
 const paymentOptions = [
   {
     label: t('purchase-book-form.default-payment'),
