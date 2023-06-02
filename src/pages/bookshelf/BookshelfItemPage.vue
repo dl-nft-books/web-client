@@ -46,11 +46,17 @@
 
           <book-details :book="book" />
 
+          <bookshelf-rarimo-message
+            v-if="!isValidChain && provider.chainId"
+            :source-chain="provider.chainId"
+            :target-chain="book.networks[0].attributes.chain_id"
+          />
+
           <app-button
             v-if="provider.isConnected"
             class="bookshelf-item-page__purchase-btn"
             size="small"
-            :text="$t('bookshelf-item-page.purchase-btn')"
+            :text="buyButtonText"
             @click="isPurchaseModalShown = true"
           />
 
@@ -67,6 +73,7 @@
           v-if="book"
           v-model:is-shown="isPurchaseModalShown"
           :book="book"
+          :is-valid-chain="isValidChain"
           @submit="submit"
         />
 
@@ -96,7 +103,7 @@ import {
   Icon,
 } from '@/common'
 
-import { BookDetails } from '@/pages/bookshelf'
+import { BookDetails, BookshelfRarimoMessage } from '@/pages/bookshelf'
 import { ref, watch, computed } from 'vue'
 
 import { ErrorHandler, getBlockExplorerLink } from '@/helpers'
@@ -104,7 +111,7 @@ import { ErrorHandler, getBlockExplorerLink } from '@/helpers'
 import { useBooks } from '@/composables'
 import { FullBookInfo } from '@/types'
 
-import { useWeb3ProvidersStore, useNetworksStore } from '@/store'
+import { useWeb3ProvidersStore } from '@/store'
 import { router } from '@/router'
 import { ROUTE_NAMES } from '@/enums'
 import { useI18n } from 'vue-i18n'
@@ -115,7 +122,6 @@ const props = defineProps<{
 
 const { t } = useI18n()
 
-const networkStore = useNetworksStore()
 const web3Store = useWeb3ProvidersStore()
 const provider = computed(() => web3Store.provider)
 
@@ -128,6 +134,21 @@ const linkToTx = ref('')
 const { getBookById } = useBooks()
 
 const book = ref<FullBookInfo | undefined>()
+const isValidChain = computed(() =>
+  Boolean(
+    book.value &&
+      book.value.networks.some(
+        network =>
+          network.attributes.chain_id === Number(provider.value.chainId),
+      ),
+  ),
+)
+
+const buyButtonText = computed(() =>
+  isValidChain.value
+    ? t('bookshelf-item-page.purchase-btn')
+    : t('bookshelf-item-page.rarimo-btn'),
+)
 
 const submit = async (message?: string) => {
   try {
@@ -169,20 +190,6 @@ watch(
     if (!value) {
       isPurchaseModalShown.value = false
     }
-  },
-)
-
-watch(
-  () => provider.value.chainId,
-  () => {
-    if (
-      !networkStore.list.some(
-        network => network.chain_id === Number(provider.value.chainId),
-      )
-    )
-      return
-
-    init()
   },
 )
 
@@ -257,7 +264,6 @@ init()
 }
 
 .bookshelf-item-page__purchase-btn {
-  text-transform: uppercase;
   width: 100%;
   height: toRem(60);
   font-size: toRem(24);

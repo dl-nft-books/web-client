@@ -264,9 +264,23 @@
     "subtitle": "Now we are carrying out technical work to make our site better, and the purchase of books is even more convenient! We'll be waiting for you here a little later.",
     "alt-technical-work": "technical work image"
   },
+  "bookshelf-rarimo-message": {
+    "title-part-1": "You are trying to purchase an NFT from ",
+    "title-part-2": "while your wallet is connected to ",
+    "subtitle": "Use the cross-chain feature Rarimo to purchase this NFT.",
+    "ethereum-chain": "Ethereum Chain",
+    "polygon-chain": "Polygon Chain",
+    "mumbai-chain": "Mumbai Chain",
+    "q-chain": "Q Chain",
+    "q-test-chain": "Q Testnet Chain",
+    "sepolia-chain": "Sepolia Chain",
+    "goerli-chain": "Goerli Chain",
+    "unknown-chain": "Unknown Chain"
+  },
   "bookshelf-item-page": {
     "loading-error-msg": "Oops.... Something went wrong",
     "purchase-btn": "BUY",
+    "rarimo-btn": "Buy with Rarimo",
     "badge-1": "For any acceptable token",
     "badge-2": "Draw your personal banner",
     "network-title": "Supported by",
@@ -303,7 +317,10 @@
     "submitting-message": "As soon as NFT book generates you will need to pay",
     "not-enough-balance-msg": "You don't have enough tokens to buy this NFT",
     "voucher-token-unsupported-msg": "This payment method is not supported for the purchase of this book",
-    "not-enough-voucher-tokens-msg": "You don't have enough voucher tokens to buy this NFT. Required amount: {amount}."
+    "not-enough-voucher-tokens-msg": "You don't have enough voucher tokens to buy this NFT. Required amount: {amount}.",
+    "default-payment": "Pay on current chain",
+    "rarimo-payment": "Use Rarimo and pay with another token",
+    "rarimo-tip": "You also can use cross-chain feature Rarimo to pay on any networks."
   },
   "nft-template": {
     "token-address-lbl": "Token Address",
@@ -323,13 +340,18 @@
   "rarimo-template": {
     "source-chain-lbl": "Source chain",
     "source-chain-placeholder": "Chain to pay from",
-    "target-chain-lbl": "Target chain",
-    "target-chain-placeholder": "Chain where will be your NFT",
     "payment-token-lbl": "Payment token",
     "payment-token-placeholder": "Token to pay with",
     "estimated-price-lbl": "Estimated price",
     "no-payment-tokens": "No payment tokens available for that setup",
+    "not-enough-balance": "Not enough tokens to buy",
     "error-message": "Failed to load balance and price"
+  },
+  "nft-checkout-info": {
+    "impact-lbl": "Price impact",
+    "impact-value": "{impact}%",
+    "price-conversion-lbl": "Price conversion",
+    "network-fee-lbl": "Network fees"
   },
   "book-preview": {
     "label": "Floor price"
@@ -374,7 +396,6 @@
     "native-lbl": "Native",
     "voucher-lbl": "Voucher Token",
     "nft": "NFT",
-    "rarimo": "Rarimo checkout",
     "not-found-lbl": "Token type not found"
   },
   "browser-support": {

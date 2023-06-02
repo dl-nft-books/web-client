@@ -47,14 +47,14 @@
   resolved "https://registry.yarnpkg.com/@csstools/selector-specificity/-/selector-specificity-2.0.2.tgz#1bfafe4b7ed0f3e4105837e056e0a89b108ebe36"
   integrity sha512-IkpVW/ehM1hWKln4fCA3NzJU8KwD+kIOvPZA4cqxoJHtE21CCzjyp+Kxbu0i5I4tBNOlXPL9mjwnWlL0VEG4Fg==
 
-"@distributedlab/fetcher@0.2.0-rc.16", "@distributedlab/fetcher@^0.2.0-rc.5":
+"@distributedlab/fetcher@0.2.0-rc.16", "@distributedlab/fetcher@^0.2.0-rc.16":
   version "0.2.0-rc.16"
   resolved "https://registry.yarnpkg.com/@distributedlab/fetcher/-/fetcher-0.2.0-rc.16.tgz#42b6bc4c8df84ccff9d9ab77976644e816f9b81f"
   integrity sha512-qU+RUmkHWZ5GkuFaso2GFccK+g8fo1HBo0VBeYX93GYCIlWSE1KGCo2qZC+tqcdG5N4+jJyYl18U4Q0vzQEUiA==
   dependencies:
     uuid "^9.0.0"
 
-"@distributedlab/jac@^0.2.0-rc.5":
+"@distributedlab/jac@^0.2.0-rc.16", "@distributedlab/jac@^0.2.0-rc.9":
   version "0.2.0-rc.16"
   resolved "https://registry.yarnpkg.com/@distributedlab/jac/-/jac-0.2.0-rc.16.tgz#e03d64eb03274b2016670b5784c33b6701628712"
   integrity sha512-KpQ0RiiRGVkfVcJ2VsJvzwKYwhrbjgY043bV8qnplzKGzcwUcTM8u5g7GgMJsnenoZqlgf/pLaSshQyWtXTfRw==
@@ -62,7 +62,7 @@
     "@distributedlab/fetcher" "0.2.0-rc.16"
     lodash "^4.17.21"
 
-"@distributedlab/tools@^0.2.0-rc.5", "@distributedlab/tools@^0.2.0-rc.9":
+"@distributedlab/tools@^0.2.0-rc.16", "@distributedlab/tools@^0.2.0-rc.9":
   version "0.2.0-rc.16"
   resolved "https://registry.yarnpkg.com/@distributedlab/tools/-/tools-0.2.0-rc.16.tgz#75e51cfc0e35d7d7f6c4ef720303cd3e8569c4fb"
   integrity sha512-xr9nwPyiqpkVlE5CkAce1aT0QMcEwXtcYE5e0mYv6oFLjJeGRsoUqT0QcYt/gKw0hbnFnBXhUJiab5igSxqJRw==
@@ -1048,22 +1048,36 @@
   resolved "https://registry.yarnpkg.com/@protobufjs/utf8/-/utf8-1.1.0.tgz#a777360b5b39a1a2e5106f8e858f2fd2d060c570"
   integrity sha512-Vvn3zZrhQZkkBE8LSuW3em98c0FwgO4nxzv6OdSxPKJIEKY2bGbHn+mhGIPerzI4twdxaP8/0+06HBpwf345Lw==
 
-"@rarimo/nft-checkout@^1.5.0-rc.25":
-  version "1.5.0-rc.25"
-  resolved "https://registry.yarnpkg.com/@rarimo/nft-checkout/-/nft-checkout-1.5.0-rc.25.tgz#dd2f63f891803ed47c02ed7b09164025084c94cf"
-  integrity sha512-jBs5KHLIsd8XrOrx5X7MUGe6P68RRkiULWVNS3S9soIOjp0cvioS4DuPw6acIiaSJL9ENNjBg03GzizEHCAVuA==
+"@rarimo/bridge@^2.0.0-rc.0":
+  version "2.0.0-rc.0"
+  resolved "https://registry.yarnpkg.com/@rarimo/bridge/-/bridge-2.0.0-rc.0.tgz#a4c57ebec1da6891c731b222f798debb31e066cf"
+  integrity sha512-KFpaZWv7k0n62BbvfXkYmMKZqBmYOl5u037SAbadM3AchimOERX53i7208I+9Pom40qi6ttqukk7WrwmbZdWKA==
   dependencies:
-    "@distributedlab/fetcher" "^0.2.0-rc.5"
-    "@distributedlab/jac" "^0.2.0-rc.5"
-    "@distributedlab/tools" "^0.2.0-rc.5"
+    "@distributedlab/jac" "^0.2.0-rc.9"
+    "@distributedlab/tools" "^0.2.0-rc.9"
+    "@rarimo/provider" "^2.0.0-rc.0"
+    "@rarimo/shared" "^2.0.0-rc.0"
+    ethers "^5.7.2"
+
+"@rarimo/nft-checkout@^2.0.0-rc.0":
+  version "2.0.0-rc.0"
+  resolved "https://registry.yarnpkg.com/@rarimo/nft-checkout/-/nft-checkout-2.0.0-rc.0.tgz#f6a5f09740f7bb703a0937d5ce314e1c450da158"
+  integrity sha512-/25Nb1FYCpOsVNppDC9Njx6UD9fyP06uSBmpRwH5mqf+TW9HuGaBwoUiFnDxF4DdnE3kWbkmMmNkHZ9PqnrPZw==
+  dependencies:
+    "@distributedlab/fetcher" "^0.2.0-rc.16"
+    "@distributedlab/jac" "^0.2.0-rc.16"
+    "@distributedlab/tools" "^0.2.0-rc.16"
     "@ethersproject/abstract-provider" "^5.7.0"
     "@ethersproject/properties" "^5.7.0"
     "@ethersproject/providers" "^5.7.2"
     "@pancakeswap/sdk" "3.1.4"
     "@pancakeswap/smart-router" "0.6.1"
     "@pancakeswap/swap-sdk-core" "0.0.1"
-    "@rarimo/provider" "^1.5.0-rc.25"
+    "@rarimo/bridge" "^2.0.0-rc.0"
+    "@rarimo/provider" "^2.0.0-rc.0"
     "@rarimo/quickswap-sdk" "^3.0.8"
+    "@rarimo/shared" "^2.0.0-rc.0"
+    "@rarimo/swap" "^2.0.0-rc.0"
     "@traderjoe-xyz/sdk" "2.0.7"
     "@uniswap/router-sdk" "^1.4.0"
     "@uniswap/sdk-core" "3.1.0"
@@ -1076,21 +1090,23 @@
     events "^3.3.0"
     jsbi "^3.2.5"
 
-"@rarimo/provider@^1.5.0-rc.25":
-  version "1.5.0-rc.25"
-  resolved "https://registry.yarnpkg.com/@rarimo/provider/-/provider-1.5.0-rc.25.tgz#429940fb3bea39eb9b407d96af7abc2b6152baf4"
-  integrity sha512-9BZP9MQDfiVfnXtMmdnvSMuONJbCUD+88RFP+zoknFuystijOVKupe7cWGg4LV5Te430ag64lkM/3PevKLnW0A==
+"@rarimo/provider@^2.0.0-rc.0":
+  version "2.0.0-rc.0"
+  resolved "https://registry.yarnpkg.com/@rarimo/provider/-/provider-2.0.0-rc.0.tgz#aeac4468c976992855d37722291f54bf3a4db016"
+  integrity sha512-paS/vGtHlf+neVOT522xWqlAEKy35n1FdudeeewK/ROl7qBSagRlpVBuDqRTNotlPR028ZfvN+KCNtZZJ2CK5A==
   dependencies:
-    "@distributedlab/tools" "^0.2.0-rc.9"
+    "@distributedlab/tools" "^0.2.0-rc.16"
+    "@rarimo/shared" "^2.0.0-rc.0"
 
-"@rarimo/providers-evm@^1.5.0-rc.25":
-  version "1.5.0-rc.25"
-  resolved "https://registry.yarnpkg.com/@rarimo/providers-evm/-/providers-evm-1.5.0-rc.25.tgz#82dc49d5f43b4c2e7b6df5beb1fefe24da6716cd"
-  integrity sha512-RNWACoPlKOQB6jg2/zqnUauR226ttDQyf67qmKNtAPWSBCCERnr9ykwwxn3HmXcjO0fkS/2KWMCngC2nC4iz1Q==
+"@rarimo/providers-evm@^2.0.0-rc.0":
+  version "2.0.0-rc.0"
+  resolved "https://registry.yarnpkg.com/@rarimo/providers-evm/-/providers-evm-2.0.0-rc.0.tgz#01f21d17fdbfc6d663323a95688ec23aff2d0400"
+  integrity sha512-pQbsv6WYJGX2dck/+U5sZc2Bs/mzGocVxe0EVb2ljt0ADnyjWLmprrKoLLwfSyKJh0w0kXGg73SnyOV+twU+QQ==
   dependencies:
     "@ethersproject/abstract-provider" "^5.7.0"
     "@ethersproject/properties" "^5.7.0"
-    "@rarimo/provider" "^1.5.0-rc.25"
+    "@rarimo/provider" "^2.0.0-rc.0"
+    "@rarimo/shared" "^2.0.0-rc.0"
     ethers "^5.7.2"
     web3-core "^1.8.2"
 
@@ -1106,6 +1122,22 @@
     tiny-invariant "^1.1.0"
     tiny-warning "^1.0.3"
     toformat "^2.0.0"
+
+"@rarimo/shared@^2.0.0-rc.0":
+  version "2.0.0-rc.0"
+  resolved "https://registry.yarnpkg.com/@rarimo/shared/-/shared-2.0.0-rc.0.tgz#c5f5a999665d838bf27fbddef0965b6b9aa21584"
+  integrity sha512-b0imjlQYT+7iqS5ywSvJKgIh1FE9tfWwHj36y7rpBI4c2iECYOo8CwkbNppbANNZBVMtco92nKDa5dE4dSQKlA==
+  dependencies:
+    "@distributedlab/tools" "^0.2.0-rc.16"
+
+"@rarimo/swap@^2.0.0-rc.0":
+  version "2.0.0-rc.0"
+  resolved "https://registry.yarnpkg.com/@rarimo/swap/-/swap-2.0.0-rc.0.tgz#167b522f2f697f74afef3874693bd71a463bf089"
+  integrity sha512-nmHkLQilzjBw4V8GzteNDr+PmlvO2Ve7SYx7p7PIMFF5FGGJ3x5hSFHaTFojbNbdo5CpREiCRF4+RVdz5NYd5Q==
+  dependencies:
+    "@rarimo/bridge" "^2.0.0-rc.0"
+    "@rarimo/provider" "^2.0.0-rc.0"
+    "@rarimo/shared" "^2.0.0-rc.0"
 
 "@resolver-engine/core@^0.2.1":
   version "0.2.1"

@@ -5,10 +5,9 @@ import {
   EVMOperation,
   Price,
   PaymentToken,
-  INFTCheckoutOperation,
+  CheckoutOperation,
   EstimatedPrice,
   BridgeChain,
-  Target,
 } from '@rarimo/nft-checkout'
 
 import { createProvider } from '@rarimo/provider'
@@ -18,11 +17,7 @@ import { utils } from 'ethers'
 
 import { useWeb3ProvidersStore, useNetworksStore } from '@/store'
 import { BuyParams, Signature, useContractRegistry } from '@/composables'
-// import { ETHEREUM_CHAINS, POLYGON_CHAINS, Q_CHAINS } from '@/enums'
 import { MarketPlace__factory } from '@/types'
-
-// type Chain = ETHEREUM_CHAINS | POLYGON_CHAINS | Q_CHAINS
-
 export function useNftCheckout(contractRegistryAddress?: string) {
   const web3Store = useWeb3ProvidersStore()
   const networkStore = useNetworksStore()
@@ -30,7 +25,7 @@ export function useNftCheckout(contractRegistryAddress?: string) {
   const provider = computed(() => web3Store.provider)
   const marketPlaceAddress = ref('')
 
-  let checkout: INFTCheckoutOperation | undefined = undefined
+  let checkout: CheckoutOperation | undefined = undefined
 
   const { getMarketPlaceAddress, init: initRegistry } = useContractRegistry(
     contractRegistryAddress,
@@ -59,22 +54,6 @@ export function useNftCheckout(contractRegistryAddress?: string) {
     marketPlaceAddress.value = address
   }
 
-  // const _convertChain = (chain: Chain): ChainNames => {
-  //   switch (chain) {
-  //     case ETHEREUM_CHAINS.ethereum:
-  //       return ChainNames.Ethereum
-  //     case ETHEREUM_CHAINS.goerli:
-  //       return ChainNames.Goerli
-  //     case ETHEREUM_CHAINS.sepolia:
-  //       return ChainNames.Sepolia
-  //     case POLYGON_CHAINS.mainnet:
-  //       return ChainNames.Polygon
-  //     default:
-  //     case POLYGON_CHAINS.mumbai:
-  //       return ChainNames.Mumbai
-  //   }
-  // }
-
   const getSupportedChains = () => {
     return checkout && checkout.supportedChains()
   }
@@ -93,16 +72,11 @@ export function useNftCheckout(contractRegistryAddress?: string) {
   ) => {
     if (!checkout) return
 
-    const target: Target = {
-      chainId: destinationChain.id,
-      recipient: opts.recipient,
-      price: Price.fromBigInt(opts.nftPrice, 18, sourceChain.token.symbol),
-      swapTargetTokenSymbol: 'GETH',
-    }
-
     await checkout.init({
       chainIdFrom: sourceChain.id,
-      target,
+      chainIdTo: destinationChain.id,
+      recipient: opts.recipient,
+      price: Price.fromBigInt(opts.nftPrice, 18, destinationChain.token.symbol),
     })
   }
 
@@ -142,11 +116,7 @@ export function useNftCheckout(contractRegistryAddress?: string) {
 
     const bundle = utils.defaultAbiCoder.encode(
       ['address[]', 'uint256[]', 'bytes[]'],
-      [
-        [marketPlaceAddress.value],
-        [txOpts.buyParams.paymentDetails.paymentTokenPrice],
-        [encodedFunctionData],
-      ],
+      [[marketPlaceAddress.value], [txOpts.amountOfEth], [encodedFunctionData]],
     )
 
     const txHash = await checkout.checkout(estimatedPrice, { bundle })

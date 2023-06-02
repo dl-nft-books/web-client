@@ -15,36 +15,16 @@
         :disabled="isFormDisabled || isGlobalFormDisabled"
         @blur="touchField('sourceChain')"
       />
-      <select-field
-        v-model="form.targetChain"
-        :value-options="targetChainList"
-        :placeholder="$t('rarimo-template.target-chain-placeholder')"
-        :label="$t('rarimo-template.target-chain-lbl')"
-        :error-message="getFieldErrorMessage('targetChain')"
-        :disabled="isFormDisabled || isGlobalFormDisabled"
-        @blur="touchField('targetChain')"
-      />
       <loader v-if="isFetchingTokens" />
-      <select-field
-        v-else-if="paymentTokensList.length"
-        v-model="form.paymentToken"
-        :value-options="paymentTokensList"
-        :label="$t('rarimo-template.payment-token-lbl')"
-        :placeholder="$t('rarimo-template.payment-token-placeholder')"
-        :error-message="getFieldErrorMessage('paymentToken')"
-        :disabled="isFormDisabled || isGlobalFormDisabled"
-        @blur="touchField('paymentToken')"
+      <rarimo-token-select
+        v-else-if="paymentTokensRaw.length"
+        v-model="paymentToken"
+        :value-options="paymentTokensRaw"
       />
-      <readonly-field
-        v-if="estimatedPrice"
-        :value="
-          formatAssetFromWei(
-            estimatedPrice.price.value,
-            estimatedPrice.price.decimals,
-          )
-        "
-        :label="$t('rarimo-template.estimated-price-lbl')"
-      />
+
+      <loader v-if="isLoadingPrice" />
+
+      <nft-checkout-info v-else-if="estimatedPrice" :info="estimatedPrice" />
 
       <message-field
         v-if="noAvailableTokens"
@@ -58,8 +38,13 @@
 <script setup lang="ts">
 import { computed, reactive, ref, toRef, watch, inject } from 'vue'
 
-import { Loader, ErrorMessage } from '@/common'
-import { MessageField, SelectField, ReadonlyField } from '@/fields'
+import {
+  Loader,
+  ErrorMessage,
+  NftCheckoutInfo,
+  RarimoTokenSelect,
+} from '@/common'
+import { MessageField, SelectField } from '@/fields'
 
 import { BuyParams, FullBookInfo, PurchaseFormKey, Signature } from '@/types'
 import {
@@ -69,19 +54,26 @@ import {
   useForm,
 } from '@/composables'
 
-import { ErrorHandler, formatAssetFromWei } from '@/helpers'
+import { ErrorHandler } from '@/helpers'
 import { BN, BnLike } from '@/utils/math.util'
 import { useWeb3ProvidersStore } from '@/store'
 import { ExposedFormRef } from '@/forms//PurchaseBookForm.vue'
 import { TOKEN_TYPES } from '@/enums'
 import { required } from '@/validators'
-import { PaymentToken, BridgeChain, EstimatedPrice } from '@rarimo/nft-checkout'
+import {
+  PaymentToken,
+  BridgeChain,
+  EstimatedPrice,
+  ChainNames,
+} from '@rarimo/nft-checkout'
+import { config } from '@/config'
+import { ethers } from 'ethers'
+import { EstimatedPriceInfo } from '@/common/NftCheckoutInfo.vue'
 
 type SelectOption = {
   label: string
   value: string
 }
-
 const TOKEN_AMOUNT_COEFFICIENT = 1.02
 
 const props = defineProps<{
@@ -94,7 +86,6 @@ const web3ProvidersStore = useWeb3ProvidersStore()
 const provider = computed(() => web3ProvidersStore.provider)
 
 const {
-  balance,
   isLoadFailed,
   isPriceAndBalanceLoaded,
   tokenPrice,
@@ -112,8 +103,6 @@ const {
 
 const form = reactive({
   sourceChain: '',
-  targetChain: '',
-  paymentToken: '',
   tokenAddress: '',
 })
 
@@ -122,23 +111,26 @@ const { isFormValid, touchField, getFieldErrorMessage } = useFormValidation(
   form,
   {
     sourceChain: { required },
-    targetChain: { required },
-    paymentToken: { required },
   },
 )
 
+const isDevelopment = config.DEPLOY_ENVIRONMENT === 'development'
+
 const isLoading = ref(true)
+const isLoadingPrice = ref(false)
 const isFetchingTokens = ref(false)
 const noAvailableTokens = ref(false)
 
 const chainListRaw = ref<BridgeChain[]>([])
 const paymentTokensRaw = ref<PaymentToken[]>([])
+const paymentToken = ref<PaymentToken>()
 
 const paymentTokensList = ref<SelectOption[]>([])
 const sourceChainList = ref<SelectOption[]>([])
-const targetChainList = ref<SelectOption[]>([])
 
-const estimatedPrice = ref<EstimatedPrice>()
+const estimatedPrice = ref<EstimatedPriceInfo>()
+
+let priceRaw: EstimatedPrice | undefined = undefined
 
 const formattedTokenAmount = computed(() => {
   if (!tokenPrice.value) return ''
@@ -151,26 +143,11 @@ const formattedTokenAmount = computed(() => {
     .toString()
 })
 
-const isEnoughBalanceForBuy = computed(() =>
-  estimatedPrice.value
-    ? new BN(balance.value).compare(estimatedPrice.value.price.value) >= 0
-    : false,
-)
-
 const initChainSelectFields = (supportedChains: BridgeChain[]) => {
   chainListRaw.value = supportedChains
 
-  sourceChainList.value = supportedChains.map(chain => ({
-    label: chain.name,
-    value: chain.name,
-  }))
-
-  targetChainList.value = supportedChains
-    .filter(chain =>
-      props.book.networks.find(
-        network => network.attributes.chain_id === chain.id,
-      ),
-    )
+  sourceChainList.value = supportedChains
+    .filter(chain => (isDevelopment ? chain.isTestnet : !chain.isTestnet))
     .map(chain => ({
       label: chain.name,
       value: chain.name,
@@ -179,8 +156,6 @@ const initChainSelectFields = (supportedChains: BridgeChain[]) => {
 
 const initForm = async () => {
   try {
-    // console.log('creating checkout')
-
     await createCheckout()
 
     const supportedChains = await getSupportedChains()
@@ -200,9 +175,9 @@ const getBridgeChains = () => {
 
   if (!sourceChain) return
 
-  const targetChain = chainListRaw.value.find(
-    chain => chain.name === form.targetChain,
-  )
+  const targetChain = isDevelopment
+    ? chainListRaw.value.find(chain => chain.name === ChainNames.Sepolia)
+    : chainListRaw.value.find(chain => chain.name === ChainNames.Polygon)
 
   if (!targetChain) return
 
@@ -220,8 +195,33 @@ const initializeSupportedTokens = async (sourceChain: BridgeChain) => {
   paymentTokensRaw.value = tokens
   paymentTokensList.value = tokens.map(token => ({
     label: `${token.name}: ${token.balance}`,
-    value: token.address,
+    value: token.address || ethers.constants.AddressZero,
   }))
+}
+
+const initializeEstimatedPrice = async () => {
+  if (!paymentToken.value) return
+
+  const price = await getEstimatedPrice(paymentToken.value)
+
+  if (!price) return
+
+  priceRaw = price
+
+  estimatedPrice.value = {
+    gasPrice: price.gasPrice!,
+    impact: price.impact!,
+    balance: (price.from as unknown as { balance: string }).balance,
+    price: {
+      value: price.price.value,
+      decimals: price.price.decimals,
+      symbol: price.price.symbol,
+    },
+    initialPrice: {
+      value: formattedTokenAmount.value,
+      symbol: price.to.chain.token.symbol,
+    },
+  }
 }
 
 const initializeCheckout = async (
@@ -237,8 +237,6 @@ const initializeCheckout = async (
     .mul(TOKEN_AMOUNT_COEFFICIENT)
     .toFixed()
 
-  // console.log(sourceChain, targetChain, nftPrice)
-
   await initCheckout(sourceChain, targetChain, {
     recipient: provider.value.selectedAddress,
     nftPrice,
@@ -250,9 +248,9 @@ const performCheckout = async (
   signature: Signature,
   amountOfEth: string,
 ) => {
-  if (!estimatedPrice.value) return
+  if (!estimatedPrice.value || !priceRaw) return
 
-  await sendTransaction(estimatedPrice.value, {
+  await sendTransaction(priceRaw, {
     buyParams,
     signature,
     amountOfEth,
@@ -261,36 +259,34 @@ const performCheckout = async (
 
 defineExpose<Omit<ExposedFormRef, 'promocode'>>({
   isFormValid: () =>
-    !noAvailableTokens.value && isEnoughBalanceForBuy.value && isFormValid(),
+    !noAvailableTokens.value &&
+    !isFormDisabled.value &&
+    Boolean(paymentToken.value) &&
+    isFormValid(),
   tokenAddress: toRef(form, 'tokenAddress'),
   tokenAmount: formattedTokenAmount,
   tokenPrice,
   mintFunction: performCheckout,
 })
 
-watch(
-  () => form.paymentToken,
-  async () => {
-    if (!form.paymentToken) return
-    const paymentToken = paymentTokensRaw.value.find(
-      token => token.address === form.paymentToken,
-    )
-    if (!paymentToken) return
+watch(paymentToken, async () => {
+  if (!paymentToken.value) return
 
-    const price = await getEstimatedPrice(paymentToken as PaymentToken)
-
-    if (!price) return
-
-    estimatedPrice.value = price
-  },
-)
+  isLoadingPrice.value = true
+  disableForm()
+  try {
+    await initializeEstimatedPrice()
+  } catch (error) {
+    ErrorHandler.process(error)
+  }
+  isLoadingPrice.value = false
+  enableForm()
+})
 
 watch(
-  () => [form.sourceChain, form.targetChain],
+  () => form.sourceChain,
   async () => {
-    if (!form.sourceChain || !form.targetChain) return
-
-    // console.log('initializing checkout and fetching token list')
+    if (!form.sourceChain) return
 
     noAvailableTokens.value = false
     isFetchingTokens.value = true

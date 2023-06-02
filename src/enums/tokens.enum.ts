@@ -3,5 +3,4 @@ export enum TOKEN_TYPES {
   erc20 = 'erc20',
   voucher = 'voucher',
   nft = 'nft',
-  rarimo = 'rarimo',
 }
