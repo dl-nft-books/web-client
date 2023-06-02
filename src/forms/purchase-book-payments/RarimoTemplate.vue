@@ -315,7 +315,12 @@ watch(
   () => provider.value.selectedAddress,
   async () => {
     isLoading.value = true
-    await loadBalanceAndPrice('', TOKEN_TYPES.native)
+
+    await loadBalanceAndPrice(
+      '',
+      TOKEN_TYPES.native,
+      Number(config.DEFAULT_CHAIN_ID),
+    )
     await initForm()
     isLoading.value = false
   },

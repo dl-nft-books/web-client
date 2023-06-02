@@ -31,17 +31,21 @@ export function useBalance() {
 
   const { getPrice: _getPrice, getNftPrice } = usePricer()
 
-  const getPrice = async (tokenAddress: string, tokenType: TOKEN_TYPES) => {
+  const getPrice = async (
+    tokenAddress: string,
+    tokenType: TOKEN_TYPES,
+    chain = chainId.value,
+  ) => {
     try {
       if (tokenType !== TOKEN_TYPES.nft) {
         const contract = tokenType === TOKEN_TYPES.erc20 ? tokenAddress : ''
-        const { data } = await _getPrice(chainId.value, contract)
+        const { data } = await _getPrice(chain, contract)
 
         tokenPrice.value = data
         return
       }
 
-      const { data } = await getNftPrice(chainId.value, tokenAddress)
+      const { data } = await getNftPrice(chain, tokenAddress)
 
       nftPrice.value = data
     } catch (error) {
@@ -89,6 +93,7 @@ export function useBalance() {
   const loadBalanceAndPrice = async (
     tokenAddress: string,
     tokenType: TOKEN_TYPES,
+    chain = chainId.value,
   ) => {
     tokenPrice.value = null
     balance.value = ''
@@ -109,7 +114,7 @@ export function useBalance() {
 
     try {
       await Promise.all([
-        getPrice(tokenAddress, tokenType),
+        getPrice(tokenAddress, tokenType, chain),
         getBalance(tokenAddress, tokenType),
       ])
     } catch (e) {
