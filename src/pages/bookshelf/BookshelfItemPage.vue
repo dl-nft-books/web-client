@@ -49,7 +49,7 @@
           <bookshelf-rarimo-message
             v-if="!isValidChain && provider.chainId"
             :source-chain="provider.chainId"
-            :target-chain="book.networks[0].attributes.chain_id"
+            :target-chain="$config.DEFAULT_CHAIN_ID"
           />
 
           <app-button
