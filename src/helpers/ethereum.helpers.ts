@@ -1,4 +1,4 @@
-import { EthProviderRpcError, NativeCurrency } from '@/types'
+import { ChainId, EthProviderRpcError, NativeCurrency } from '@/types'
 import { errors } from '@/errors'
 import { ethers } from 'ethers'
 import {
@@ -22,9 +22,9 @@ import { config } from '@/config'
 type SupportedChain = ETHEREUM_CHAINS | POLYGON_CHAINS | Q_CHAINS
 
 export const getJsonRpcProvider = (
-  chain: SupportedChain,
+  chain: ChainId,
 ): ethers.providers.JsonRpcProvider => {
-  switch (chain) {
+  switch (chain.toString() as SupportedChain) {
     case ETHEREUM_CHAINS.sepolia:
       return new ethers.providers.JsonRpcProvider(SEPOLIA_CHAIN.rpcUrl)
     case Q_CHAINS.mainet:

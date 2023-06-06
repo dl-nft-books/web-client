@@ -22,20 +22,22 @@ import { ErrorHandler } from '@/helpers/error-handler'
 import { ref, watch } from 'vue'
 import { useNotifications } from '@/composables'
 import { config } from '@config'
-import { useWeb3ProvidersStore } from '@/store'
+import { useWeb3ProvidersStore, useNetworksStore } from '@/store'
 import { Bus } from '@/helpers'
 
 const isAppInitialized = ref(false)
 const web3Store = useWeb3ProvidersStore()
+const networkStore = useNetworksStore()
 
 const body = ref<HTMLBodyElement | null>(document.querySelector('body'))
 
 const init = async () => {
   try {
     useNotifications()
+    await networkStore.loadNetworks()
     await web3Store.detectProviders()
 
-    await web3Store.init()
+    await web3Store.init(networkStore.list.map(el => el.chain_id))
 
     document.title = config.APP_NAME
   } catch (error) {
