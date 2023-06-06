@@ -1,4 +1,4 @@
-import { computed, ref } from 'vue'
+import { ref } from 'vue'
 
 import {
   createCheckoutOperation,
@@ -15,16 +15,14 @@ import { MetamaskProvider } from '@rarimo/providers-evm'
 
 import { utils } from 'ethers'
 
-import { useWeb3ProvidersStore, useNetworksStore } from '@/store'
+import { useNetworksStore } from '@/store'
 import { BuyParams, Signature, useContractRegistry } from '@/composables'
 import { MarketPlace__factory } from '@/types'
 import { config } from '@/config'
 
 export function useNftCheckout(contractRegistryAddress?: string) {
-  const web3Store = useWeb3ProvidersStore()
   const networkStore = useNetworksStore()
 
-  const provider = computed(() => web3Store.provider)
   const marketPlaceAddress = ref('')
 
   let checkout: CheckoutOperation | undefined = undefined
@@ -84,6 +82,9 @@ export function useNftCheckout(contractRegistryAddress?: string) {
   ) => {
     if (!checkout) return
 
+    await _initContractRegistry(Number(destinationChain.id))
+    await _initMarketPlace()
+
     await checkout.init({
       chainIdFrom: sourceChain.id,
       chainIdTo: destinationChain.id,
@@ -93,11 +94,6 @@ export function useNftCheckout(contractRegistryAddress?: string) {
   }
 
   const createCheckout = async () => {
-    if (!provider.value.chainId) return
-
-    await _initContractRegistry(Number(provider.value.chainId))
-    await _initMarketPlace()
-
     const providerInstance = await createProvider(MetamaskProvider)
 
     checkout = createCheckoutOperation(EVMOperation, providerInstance)
