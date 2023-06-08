@@ -8,6 +8,7 @@
   "scripts": {
     "vite-dev-server": "vite",
     "vite-build": "vite build",
+    "vite-preview": "vite preview",
     "start": "cross-env VITE_APP_ENVIRONMENT=development yarn vite-dev-server --host",
     "build": "cross-env VITE_APP_ENVIRONMENT=production yarn vite-build",
     "analyze": "cross-env VITE_APP_ENVIRONMENT=analyze yarn vite-build",
