@@ -49,7 +49,7 @@
           <bookshelf-rarimo-message
             v-if="!isValidChain && provider.chainId"
             :source-chain="provider.chainId"
-            :target-chain="$config.DEFAULT_CHAIN_ID"
+            :target-chain="config.DEFAULT_CHAIN_ID"
           />
 
           <app-button
@@ -115,6 +115,7 @@ import { useWeb3ProvidersStore } from '@/store'
 import { router } from '@/router'
 import { ROUTE_NAMES } from '@/enums'
 import { useI18n } from 'vue-i18n'
+import { config } from '@/config'
 
 const props = defineProps<{
   id: string

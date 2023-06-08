@@ -80,7 +80,7 @@
 <script lang="ts" setup>
 import 'simple-fabric-vue-image-editor/dist/fabric-vue-image-editor-ts.css'
 
-import { ref, reactive, computed, Ref, provide, toRef } from 'vue'
+import { ref, reactive, computed, Ref, provide } from 'vue'
 import { useWeb3ProvidersStore } from '@/store'
 import { BN } from '@/utils/math.util'
 import { ImageEditor, UseImageEditor } from 'simple-fabric-vue-image-editor'
@@ -463,12 +463,6 @@ const submit = async (editorFromTemplate: UseImageEditor | null) => {
   }
   enableForm()
 }
-
-defineExpose<{
-  tokenType: Ref<TOKEN_TYPES>
-}>({
-  tokenType: toRef(form, 'tokenType'),
-})
 </script>
 
 <style lang="scss" scoped>
