@@ -24,14 +24,6 @@ export default defineConfig(({ command, mode }) => {
     server: {
       port: Number(env.VITE_APP_PORT),
     },
-    build: {
-      target: 'es2020',
-    },
-    optimizeDeps: {
-      esbuildOptions: {
-        target: 'es2020',
-      },
-    },
     publicDir: 'static',
     plugins: [
       vue(),
