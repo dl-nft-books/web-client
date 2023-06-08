@@ -972,18 +972,7 @@
     lodash "^4.17.21"
     tiny-invariant "^1.1.0"
 
-"@pancakeswap/swap-sdk-core@*":
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/@pancakeswap/swap-sdk-core/-/swap-sdk-core-1.0.0.tgz#30ab333943ecca5484cd10cbc493841fb553728d"
-  integrity sha512-MZBF8FHpCX/ffY8/gd2zz6TpiftwqRouVPr1kB88wm7desYh+E2y4kWPcZX1roWR38UkjBv4/DoXVSDeSTBgRg==
-  dependencies:
-    big.js "^5.2.2"
-    decimal.js-light "^2.5.0"
-    tiny-invariant "^1.1.0"
-    tiny-warning "^1.0.3"
-    toformat "^2.0.0"
-
-"@pancakeswap/swap-sdk-core@0.0.1":
+"@pancakeswap/swap-sdk-core@*", "@pancakeswap/swap-sdk-core@0.0.1":
   version "0.0.1"
   resolved "https://registry.yarnpkg.com/@pancakeswap/swap-sdk-core/-/swap-sdk-core-0.0.1.tgz#092a4935a2434374f0c1bbab1f0396bf633f5c26"
   integrity sha512-nBs+5LDtOqIsIDaJ9yoYp9phtIt6jhjAlBbPB0IN2cA+o6IpTtn+psnkHR86VtXYizSw2R9iMyGDFyZf1Z6dJg==
