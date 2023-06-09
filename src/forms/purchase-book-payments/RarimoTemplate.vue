@@ -4,33 +4,30 @@
       v-if="isLoadFailed"
       :message="$t('rarimo-template.error-message')"
     />
+    <select-field
+      v-model="form.sourceChain"
+      :value-options="sourceChainList"
+      :placeholder="$t('rarimo-template.source-chain-placeholder')"
+      :label="$t('rarimo-template.source-chain-lbl')"
+      :error-message="getFieldErrorMessage('sourceChain')"
+      :disabled="isFormDisabled || isGlobalFormDisabled"
+      @blur="touchField('sourceChain')"
+    />
+    <loader v-if="isFetchingTokens" />
+    <rarimo-token-select
+      v-else-if="paymentTokensRaw.length"
+      v-model="paymentToken"
+      :value-options="paymentTokensRaw"
+    />
 
-    <template v-else-if="isPriceAndBalanceLoaded">
-      <select-field
-        v-model="form.sourceChain"
-        :value-options="sourceChainList"
-        :placeholder="$t('rarimo-template.source-chain-placeholder')"
-        :label="$t('rarimo-template.source-chain-lbl')"
-        :error-message="getFieldErrorMessage('sourceChain')"
-        :disabled="isFormDisabled || isGlobalFormDisabled"
-        @blur="touchField('sourceChain')"
-      />
-      <loader v-if="isFetchingTokens" />
-      <rarimo-token-select
-        v-else-if="paymentTokensRaw.length"
-        v-model="paymentToken"
-        :value-options="paymentTokensRaw"
-      />
+    <loader v-if="isLoadingPrice" />
 
-      <loader v-if="isLoadingPrice" />
+    <nft-checkout-info v-else-if="estimatedPrice" :info="estimatedPrice" />
 
-      <nft-checkout-info v-else-if="estimatedPrice" :info="estimatedPrice" />
-
-      <message-field
-        v-if="noAvailableTokens"
-        :title="$t('rarimo-template.no-payment-tokens')"
-      />
-    </template>
+    <message-field
+      v-if="noAvailableTokens"
+      :title="$t('rarimo-template.no-payment-tokens')"
+    />
   </template>
   <loader v-else />
 </template>
@@ -85,12 +82,7 @@ const { isFormDisabled: isGlobalFormDisabled } = inject(PurchaseFormKey)
 const web3ProvidersStore = useWeb3ProvidersStore()
 const provider = computed(() => web3ProvidersStore.provider)
 
-const {
-  isLoadFailed,
-  isPriceAndBalanceLoaded,
-  tokenPrice,
-  loadBalanceAndPrice,
-} = useBalance()
+const { isLoadFailed, tokenPrice, getPrice } = useBalance()
 
 const {
   createCheckout,
@@ -316,11 +308,7 @@ watch(
   async () => {
     isLoading.value = true
 
-    await loadBalanceAndPrice(
-      '',
-      TOKEN_TYPES.native,
-      Number(config.DEFAULT_CHAIN_ID),
-    )
+    await getPrice('', TOKEN_TYPES.native, Number(config.DEFAULT_CHAIN_ID))
     await initForm()
     isLoading.value = false
   },

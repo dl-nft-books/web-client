@@ -15,21 +15,32 @@ import { MetamaskProvider } from '@rarimo/providers-evm'
 
 import { utils } from 'ethers'
 
-import { useNetworksStore } from '@/store'
+import { useNetworksStore, useWeb3ProvidersStore } from '@/store'
 import { BuyParams, Signature, useContractRegistry } from '@/composables'
-import { MarketPlace__factory } from '@/types'
+import { MarketPlace__factory, UnwrappedProvider } from '@/types'
 import { config } from '@/config'
 
 export function useNftCheckout(contractRegistryAddress?: string) {
   const networkStore = useNetworksStore()
+  const web3ProvidersStore = useWeb3ProvidersStore()
 
-  const marketPlaceAddress = ref('')
+  const provider = ref<UnwrappedProvider>()
 
+  let marketPlaceAddress = ''
   let checkout: CheckoutOperation | undefined = undefined
 
   const { getMarketPlaceAddress, init: initRegistry } = useContractRegistry(
     contractRegistryAddress,
+    provider,
   )
+
+  const _initProvider = (chainId: number) => {
+    const providerInstance = web3ProvidersStore.fallbackProviders.get(chainId)
+
+    if (!providerInstance) throw new Error('no provider found for this chain')
+
+    provider.value = providerInstance as unknown as UnwrappedProvider
+  }
 
   const _initContractRegistry = async (chainId: number) => {
     if (!networkStore.list.length) {
@@ -61,7 +72,7 @@ export function useNftCheckout(contractRegistryAddress?: string) {
 
     if (!address) return
 
-    marketPlaceAddress.value = address
+    marketPlaceAddress = address
   }
 
   const getSupportedChains = () => {
@@ -82,6 +93,7 @@ export function useNftCheckout(contractRegistryAddress?: string) {
   ) => {
     if (!checkout) return
 
+    _initProvider(Number(destinationChain.id))
     await _initContractRegistry(Number(destinationChain.id))
     await _initMarketPlace()
 
@@ -113,7 +125,7 @@ export function useNftCheckout(contractRegistryAddress?: string) {
   ) => {
     if (!checkout) return
 
-    if (!marketPlaceAddress.value) throw new Error('no marketplace address')
+    if (!marketPlaceAddress) throw new Error('no marketplace address')
 
     const marketplaceInterface = MarketPlace__factory.createInterface()
 
@@ -124,7 +136,7 @@ export function useNftCheckout(contractRegistryAddress?: string) {
 
     const bundle = utils.defaultAbiCoder.encode(
       ['address[]', 'uint256[]', 'bytes[]'],
-      [[marketPlaceAddress.value], [txOpts.amountOfEth], [encodedFunctionData]],
+      [[marketPlaceAddress], [txOpts.amountOfEth], [encodedFunctionData]],
     )
 
     const txHash = await checkout.checkout(estimatedPrice, { bundle })

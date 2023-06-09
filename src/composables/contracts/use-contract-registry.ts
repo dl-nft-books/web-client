@@ -1,11 +1,20 @@
 import { useWeb3ProvidersStore } from '@/store'
-import { computed, ref } from 'vue'
-import { ContractRegistry__factory, EthProviderRpcError } from '@/types'
+import { computed, ref, Ref } from 'vue'
+import {
+  ContractRegistry__factory,
+  EthProviderRpcError,
+  UnwrappedProvider,
+} from '@/types'
 import { handleEthError } from '@/helpers'
 
-export const useContractRegistry = (address?: string) => {
+export const useContractRegistry = (
+  address?: string,
+  providerInstance?: Ref<UnwrappedProvider | undefined>,
+) => {
   const web3ProvidersStore = useWeb3ProvidersStore()
-  const provider = computed(() => web3ProvidersStore.dynamicProvider)
+  const provider = computed(
+    () => providerInstance?.value ?? web3ProvidersStore.dynamicProvider,
+  )
 
   const contractAddress = ref(address || '')
 

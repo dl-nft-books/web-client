@@ -84,6 +84,11 @@
     "blog-link": "blog",
     "docs-link": "Documentation"
   },
+  "app-logo": {
+    "title": "DISTRIBUTED STORE",
+    "subtitle": "Powered with",
+    "acsent": "RARIMO"
+  },
   "bookshelf-header": {
     "title": "Create your nft library",
     "subtitle": "Buy a book and get it as NFT with a personalised design"
@@ -387,9 +392,11 @@
   "my-nfts-no-data": {
     "message-first": "Your bookshelf is still empty.",
     "message-second": "All of your purchased NFTs will be stored here",
+    "wrong-chain-message": "To see your NFT's switch to supported network",
     "marketplace-btn": "Go to Marketplace",
     "connect-metamask-btn": "Connect to MetaMask",
-    "connect-metamask-message": "To see purchased NFTs, please connect your MetaMask Wallet"
+    "connect-metamask-message": "To see purchased NFTs, please connect your MetaMask Wallet",
+    "switch-chain-btn": "Switch chain"
   },
   "token-types": {
     "erc20-lbl": "ERC-20",

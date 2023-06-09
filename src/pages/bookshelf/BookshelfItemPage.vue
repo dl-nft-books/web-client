@@ -104,7 +104,7 @@ import {
 } from '@/common'
 
 import { BookDetails, BookshelfRarimoMessage } from '@/pages/bookshelf'
-import { ref, watch, computed } from 'vue'
+import { ref, computed } from 'vue'
 
 import { ErrorHandler, getBlockExplorerLink } from '@/helpers'
 
@@ -183,15 +183,6 @@ const init = async () => {
   }
   isLoaded.value = true
 }
-
-watch(
-  () => provider.value.isConnected,
-  value => {
-    if (!value) {
-      isPurchaseModalShown.value = false
-    }
-  },
-)
 
 init()
 </script>

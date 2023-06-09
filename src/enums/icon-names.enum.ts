@@ -253,7 +253,6 @@ export enum ICON_NAMES {
   zoomIn = 'zoom-in',
   zoomOut = 'zoom-out',
   book = 'book',
-  distributedStoreText = 'distributed-store-text',
   metamask = 'metamask',
   facebookCircle = 'facebook-circle',
   youtubeCircle = 'youtube-circle',
