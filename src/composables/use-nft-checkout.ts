@@ -115,7 +115,7 @@ export function useNftCheckout(contractRegistryAddress?: string) {
     return checkout && checkout.estimatePrice(paymentToken)
   }
 
-  const sendTransaction = async (
+  const performCheckout = async (
     estimatedPrice: EstimatedPrice,
     txOpts: {
       buyParams: BuyParams
@@ -148,7 +148,7 @@ export function useNftCheckout(contractRegistryAddress?: string) {
     checkout,
     createCheckout,
     initCheckout,
-    sendTransaction,
+    performCheckout,
     getEstimatedPrice,
     getSupportedChains,
     getSupportedTokens,

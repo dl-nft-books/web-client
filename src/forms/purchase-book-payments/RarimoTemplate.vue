@@ -1,5 +1,6 @@
 <template>
-  <template v-if="!isLoading">
+  <loader v-if="isLoading" />
+  <template v-else>
     <error-message
       v-if="isLoadFailed"
       :message="$t('rarimo-template.error-message')"
@@ -29,7 +30,6 @@
       :title="$t('rarimo-template.no-payment-tokens')"
     />
   </template>
-  <loader v-else />
 </template>
 
 <script setup lang="ts">
@@ -90,7 +90,7 @@ const {
   getSupportedChains,
   getSupportedTokens,
   getEstimatedPrice,
-  sendTransaction,
+  performCheckout,
 } = useNftCheckout()
 
 const form = reactive({
@@ -235,14 +235,14 @@ const initializeCheckout = async (
   })
 }
 
-const performCheckout = async (
+const _performCheckout = async (
   buyParams: BuyParams,
   signature: Signature,
   amountOfEth: string,
 ) => {
   if (!estimatedPrice.value || !priceRaw) return
 
-  await sendTransaction(priceRaw, {
+  await performCheckout(priceRaw, {
     buyParams,
     signature,
     amountOfEth,
@@ -258,7 +258,7 @@ defineExpose<Omit<ExposedFormRef, 'promocode'>>({
   tokenAddress: toRef(form, 'tokenAddress'),
   tokenAmount: formattedTokenAmount,
   tokenPrice,
-  mintFunction: performCheckout,
+  mintFunction: _performCheckout,
 })
 
 watch(paymentToken, async () => {
