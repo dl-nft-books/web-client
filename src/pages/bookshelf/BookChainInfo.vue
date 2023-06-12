@@ -1,14 +1,14 @@
 <template>
-  <div class="bookshelf-rarimo-message">
-    <p class="bookshelf-rarimo-message__title">
-      {{ $t('bookshelf-rarimo-message.title-part-1') }}
-      <span class="bookshelf-rarimo-message__chain">{{ targetChainName }}</span>
+  <div class="book-chain-info">
+    <p class="book-chain-info__title">
+      {{ $t('book-chain-info.title-part-1') }}
+      <span class="book-chain-info__chain">{{ targetChainName }}</span>
 
-      {{ $t('bookshelf-rarimo-message.title-part-2') }}
-      <span class="bookshelf-rarimo-message__chain">{{ sourceChainName }}</span>
+      {{ $t('book-chain-info.title-part-2') }}
+      <span class="book-chain-info__chain">{{ sourceChainName }}</span>
     </p>
     <p>
-      {{ $t('bookshelf-rarimo-message.subtitle') }}
+      {{ $t('book-chain-info.subtitle') }}
     </p>
   </div>
 </template>
@@ -30,21 +30,21 @@ const { t } = useI18n()
 const getChainName = (chain: SupportedChain) => {
   switch (chain) {
     case ETHEREUM_CHAINS.ethereum:
-      return t('bookshelf-rarimo-message.ethereum-chain')
+      return t('book-chain-info.ethereum-chain')
     case ETHEREUM_CHAINS.goerli:
-      return t('bookshelf-rarimo-message.goerli-chain')
+      return t('book-chain-info.goerli-chain')
     case ETHEREUM_CHAINS.sepolia:
-      return t('bookshelf-rarimo-message.sepolia-chain')
+      return t('book-chain-info.sepolia-chain')
     case POLYGON_CHAINS.mainnet:
-      return t('bookshelf-rarimo-message.polygon-chain')
+      return t('book-chain-info.polygon-chain')
     case POLYGON_CHAINS.mumbai:
-      return t('bookshelf-rarimo-message.mumbai-chain')
+      return t('book-chain-info.mumbai-chain')
     case Q_CHAINS.mainet:
-      return t('bookshelf-rarimo-message.q-chain')
+      return t('book-chain-info.q-chain')
     case Q_CHAINS.testnet:
-      return t('bookshelf-rarimo-message.q-test-chain')
+      return t('book-chain-info.q-test-chain')
     default:
-      return t('bookshelf-rarimo-message.unknown-chain')
+      return t('book-chain-info.unknown-chain')
   }
 }
 
@@ -57,11 +57,11 @@ const targetChainName = getChainName(
 </script>
 
 <style lang="scss" scoped>
-.bookshelf-rarimo-message__title {
+.book-chain-info__title {
   line-height: toRem(20);
 }
 
-.bookshelf-rarimo-message__chain {
+.book-chain-info__chain {
   color: var(--primary-main);
 }
 </style>

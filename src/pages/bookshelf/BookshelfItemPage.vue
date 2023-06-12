@@ -46,7 +46,7 @@
 
           <book-details :book="book" />
 
-          <bookshelf-rarimo-message
+          <book-chain-info
             v-if="!isValidChain && provider.chainId"
             :source-chain="provider.chainId"
             :target-chain="$config.DEFAULT_CHAIN_ID"
@@ -103,7 +103,7 @@ import {
   Icon,
 } from '@/common'
 
-import { BookDetails, BookshelfRarimoMessage } from '@/pages/bookshelf'
+import { BookDetails, BookChainInfo } from '@/pages/bookshelf'
 import { ref, computed } from 'vue'
 
 import { ErrorHandler, getBlockExplorerLink } from '@/helpers'
