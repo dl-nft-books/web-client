@@ -5,9 +5,10 @@ import { errors } from '@/api/json-api'
 import { NftPrice, TokenPrice } from '@/types'
 import { TOKEN_TYPES } from '@/enums'
 import { BN } from '@/utils/math.util'
-import { useWeb3ProvidersStore } from '@/store'
+import { useWeb3ProvidersStore, useNetworksStore } from '@/store'
 import { useErc20, usePricer } from '@/composables'
 import { ErrorHandler } from '@/helpers'
+import { config } from '@/config'
 
 export function useBalance() {
   const tokenPrice = ref<TokenPrice | null>(null)
@@ -18,27 +19,33 @@ export function useBalance() {
   const isPriceAndBalanceLoaded = ref(false)
 
   const web3ProvidersStore = useWeb3ProvidersStore()
+  const networkStore = useNetworksStore()
   const provider = computed(() => web3ProvidersStore.provider)
+  const chainId = computed(() =>
+    networkStore.list.some(
+      network => network.chain_id === Number(provider.value.chainId),
+    )
+      ? Number(provider.value.chainId)
+      : Number(config.DEFAULT_CHAIN_ID),
+  )
 
   const { getPrice: _getPrice, getNftPrice } = usePricer()
 
-  const getPrice = async (tokenAddress: string, tokenType: TOKEN_TYPES) => {
+  const getPrice = async (
+    tokenAddress: string,
+    tokenType: TOKEN_TYPES,
+    chain = chainId.value,
+  ) => {
     try {
       if (tokenType !== TOKEN_TYPES.nft) {
         const contract = tokenType === TOKEN_TYPES.erc20 ? tokenAddress : ''
-        const { data } = await _getPrice(
-          Number(provider.value.chainId),
-          contract,
-        )
+        const { data } = await _getPrice(chain, contract)
 
         tokenPrice.value = data
         return
       }
 
-      const { data } = await getNftPrice(
-        Number(provider.value.chainId),
-        tokenAddress,
-      )
+      const { data } = await getNftPrice(chain, tokenAddress)
 
       nftPrice.value = data
     } catch (error) {
@@ -86,6 +93,7 @@ export function useBalance() {
   const loadBalanceAndPrice = async (
     tokenAddress: string,
     tokenType: TOKEN_TYPES,
+    chain = chainId.value,
   ) => {
     tokenPrice.value = null
     balance.value = ''
@@ -106,7 +114,7 @@ export function useBalance() {
 
     try {
       await Promise.all([
-        getPrice(tokenAddress, tokenType),
+        getPrice(tokenAddress, tokenType, chain),
         getBalance(tokenAddress, tokenType),
       ])
     } catch (e) {

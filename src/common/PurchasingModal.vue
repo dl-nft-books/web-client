@@ -1,6 +1,7 @@
 <template>
   <modal
     :is-shown="isShown"
+    :is-close-by-click-outside="false"
     @update:is-shown="value => emit('update:is-shown', value)"
   >
     <template #default="{ modal }">
@@ -20,29 +21,11 @@
         </div>
         <div class="purchasing-modal__body">
           <purchase-book-form
-            v-if="isValidChain"
             :book="props.book"
+            :is-valid-chain="isValidChain"
             @submitting="isSubmitting = $event"
             @submit="emit('submit', $event)"
           />
-          <template v-else>
-            <div class="purchasing-modal__wrong-network-animation-wrp">
-              <animation
-                :animation-data="disableChainAnimation"
-                :loop="true"
-                :speed="1"
-              />
-            </div>
-            <p class="purchasing-modal__wrong-network-message">
-              {{ $t('purchasing-modal.wrong-network-message') }}
-            </p>
-            <app-button
-              size="small"
-              :text="$t('networks.switch-btn-lbl')"
-              :icon-left="$icons.refresh"
-              @click="switchNetwork(book.networks[0].attributes.chain_id)"
-            />
-          </template>
         </div>
       </div>
     </template>
@@ -50,21 +33,16 @@
 </template>
 
 <script lang="ts" setup>
-import { AppButton, Modal, Animation } from '@/common'
+import { AppButton, Modal } from '@/common'
 
-import { useWeb3ProvidersStore } from '@/store'
-import { storeToRefs } from 'pinia'
-import { switchNetwork } from '@/helpers'
 import { ref, computed } from 'vue'
 import { PurchaseBookForm } from '@/forms'
-
-import disableChainAnimation from '@/assets/animations/disable-chain.json'
-
 import { FullBookInfo } from '@/types'
 import { useI18n } from 'vue-i18n'
 
 const props = defineProps<{
   isShown: boolean
+  isValidChain: boolean
   book: FullBookInfo
 }>()
 
@@ -77,21 +55,11 @@ const { t } = useI18n()
 
 const isSubmitting = ref(false)
 
-const { provider } = storeToRefs(useWeb3ProvidersStore())
-
-const isValidChain = computed(() =>
-  props.book.networks.some(
-    ({ attributes: { chain_id } }) =>
-      chain_id === Number(provider.value.chainId),
-  ),
-)
-
-const title = computed(() => {
-  if (!isValidChain.value) return t('purchasing-modal.wrong-network-title')
-  return isSubmitting.value
+const title = computed(() =>
+  isSubmitting.value
     ? t('purchasing-modal.generation-title')
-    : t('purchasing-modal.title')
-})
+    : t('purchasing-modal.title'),
+)
 </script>
 
 <style lang="scss" scoped>

@@ -6,6 +6,10 @@ import { config } from '@/config'
 import { getJsonRpcProvider } from '@/helpers'
 import { useNetworksStore } from '@/store'
 
+export type UnwrappedProvider = ReturnType<
+  typeof useWeb3ProvidersStore
+>['provider']
+
 export const useWeb3ProvidersStore = defineStore('web3-providers-store', {
   state: () => ({
     providers: [] as DesignatedProvider[],

@@ -217,6 +217,7 @@ $z-local-index: 1;
   &--disabled,
   &--readonly {
     opacity: 0.5;
+    pointer-events: none;
   }
 }
 

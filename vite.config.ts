@@ -66,6 +66,11 @@ export default defineConfig(({ command, mode }) => {
         '@': `${root}/`,
         '@config': `${root}/config.ts`,
         '@static': `${root}/../static`,
+        /* 
+          uniswap by default exporting wrong build
+          + they doesn't have jsbi as a dependency but using it in their package
+        */
+        '@uniswap/router-sdk': '@uniswap/router-sdk/dist/router-sdk.esm.js',
       },
     },
   }

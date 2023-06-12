@@ -84,6 +84,11 @@
     "blog-link": "blog",
     "docs-link": "Documentation"
   },
+  "app-logo": {
+    "title": "DISTRIBUTED STORE",
+    "subtitle": "Powered with",
+    "acsent": "RARIMO"
+  },
   "bookshelf-header": {
     "title": "Create your nft library",
     "subtitle": "Buy a book and get it as NFT with a personalised design"
@@ -264,9 +269,23 @@
     "subtitle": "Now we are carrying out technical work to make our site better, and the purchase of books is even more convenient! We'll be waiting for you here a little later.",
     "alt-technical-work": "technical work image"
   },
+  "bookshelf-rarimo-message": {
+    "title-part-1": "You are trying to purchase an NFT from ",
+    "title-part-2": "while your wallet is connected to ",
+    "subtitle": "Use the cross-chain feature Rarimo to purchase this NFT.",
+    "ethereum-chain": "Ethereum Chain",
+    "polygon-chain": "Polygon Chain",
+    "mumbai-chain": "Mumbai Chain",
+    "q-chain": "Q Chain",
+    "q-test-chain": "Q Testnet Chain",
+    "sepolia-chain": "Sepolia Chain",
+    "goerli-chain": "Goerli Chain",
+    "unknown-chain": "Unknown Chain"
+  },
   "bookshelf-item-page": {
     "loading-error-msg": "Oops.... Something went wrong",
     "purchase-btn": "BUY",
+    "rarimo-btn": "Buy with Rarimo",
     "badge-1": "For any acceptable token",
     "badge-2": "Draw your personal banner",
     "network-title": "Supported by",
@@ -286,7 +305,7 @@
     "signature-lbl": "Your Signature",
     "signature-placeholder": "Write the signature you would like to see in your book",
     "generate-btn": "GENERATE NFT",
-    "token-type-lbl": "Token Type",
+    "token-type-lbl": "Payment Type",
     "token-amount-lbl": "Amount to spend",
     "voucher-token-lbl": "Voucher Token Address",
     "voucher-token-amount-lbl": "Amount of Voucher Token",
@@ -303,7 +322,10 @@
     "submitting-message": "As soon as NFT book generates you will need to pay",
     "not-enough-balance-msg": "You don't have enough tokens to buy this NFT",
     "voucher-token-unsupported-msg": "This payment method is not supported for the purchase of this book",
-    "not-enough-voucher-tokens-msg": "You don't have enough voucher tokens to buy this NFT. Required amount: {amount}."
+    "not-enough-voucher-tokens-msg": "You don't have enough voucher tokens to buy this NFT. Required amount: {amount}.",
+    "default-payment": "Pay on current chain",
+    "rarimo-payment": "Use Rarimo and pay with another token",
+    "rarimo-tip": "You also can use cross-chain feature Rarimo to pay on any networks."
   },
   "nft-template": {
     "token-address-lbl": "Token Address",
@@ -319,6 +341,22 @@
     "loading-error-msg": "Something went wrong during fetching NFT price",
     "user-is-not-owner": "You don't own this NFT",
     "nft-not-exist": "NFT with such id doesn't exist"
+  },
+  "rarimo-template": {
+    "source-chain-lbl": "Source chain",
+    "source-chain-placeholder": "Chain to pay from",
+    "payment-token-lbl": "Payment token",
+    "payment-token-placeholder": "Token to pay with",
+    "estimated-price-lbl": "Estimated price",
+    "no-payment-tokens": "No payment tokens available for that setup",
+    "not-enough-balance": "Not enough tokens to buy",
+    "error-message": "Failed to load balance and price"
+  },
+  "nft-checkout-info": {
+    "impact-lbl": "Price impact",
+    "impact-value": "{impact}%",
+    "price-conversion-lbl": "Price conversion",
+    "network-fee-lbl": "Network fees"
   },
   "book-preview": {
     "label": "Floor price"
@@ -354,9 +392,11 @@
   "my-nfts-no-data": {
     "message-first": "Your bookshelf is still empty.",
     "message-second": "All of your purchased NFTs will be stored here",
+    "wrong-chain-message": "To see your NFT's switch to supported network",
     "marketplace-btn": "Go to Marketplace",
     "connect-metamask-btn": "Connect to MetaMask",
-    "connect-metamask-message": "To see purchased NFTs, please connect your MetaMask Wallet"
+    "connect-metamask-message": "To see purchased NFTs, please connect your MetaMask Wallet",
+    "switch-chain-btn": "Switch chain"
   },
   "token-types": {
     "erc20-lbl": "ERC-20",

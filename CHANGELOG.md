@@ -5,6 +5,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+#### Added
+- Rarimo checkout option while buying NFT
+
 #### Changed
 - For read operations from contracts now is always used JsonRpcProvider. It provides
 abillity to show books no matter on what chain user is now

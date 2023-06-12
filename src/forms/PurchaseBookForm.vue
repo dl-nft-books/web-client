@@ -33,21 +33,38 @@
           "
         />
 
-        <select-field
-          v-model="form.tokenType"
-          class="purchase-book-form__select"
-          :label="$t('purchase-book-form.token-type-lbl')"
-          :value-options="tokenTypesOptions"
-          :error-message="getFieldErrorMessage('tokenType')"
-          :disabled="isFormDisabled"
-          @blur="touchField('tokenType')"
-        />
+        <template v-if="isValidChain">
+          <message-field
+            :title="$t('purchase-book-form.rarimo-tip')"
+            modification="no-icon"
+            scheme="info"
+          />
 
-        <component
-          :is="paymentTemplate"
-          ref="paymentTemplateRef"
-          :book="book"
-        />
+          <radio-select
+            v-model="paymentType"
+            :value-options="paymentOptions"
+            name="payment-select"
+          />
+        </template>
+
+        <template v-if="paymentType">
+          <select-field
+            v-if="paymentType === PAYMENT_TYPES.default"
+            v-model="form.tokenType"
+            class="purchase-book-form__select"
+            :label="$t('purchase-book-form.token-type-lbl')"
+            :value-options="tokenTypesOptions"
+            :error-message="getFieldErrorMessage('tokenType')"
+            :disabled="isFormDisabled"
+            @blur="touchField('tokenType')"
+          />
+
+          <component
+            :is="paymentTemplate"
+            ref="paymentTemplateRef"
+            :book="book"
+          />
+        </template>
       </form>
     </template>
 
@@ -75,6 +92,8 @@ import {
   MintSignatureResponse,
   Task,
   FullBookInfo,
+  BuyParams,
+  Signature,
 } from '@/types'
 import { Q_CHAINS, TOKEN_TYPES } from '@/enums'
 
@@ -85,6 +104,7 @@ import {
   Erc20Template,
   VoucherTemplate,
   NftTemplate,
+  RarimoTemplate,
 } from '@/forms/purchase-book-payments'
 
 import {
@@ -94,7 +114,7 @@ import {
   useGenerator,
 } from '@/composables'
 
-import { SelectField } from '@/fields'
+import { SelectField, RadioSelect, MessageField } from '@/fields'
 import { ErrorHandler, globalizeTokenType } from '@/helpers'
 
 import { required } from '@/validators'
@@ -102,6 +122,8 @@ import { required } from '@/validators'
 import loaderAnimation from '@/assets/animations/loader.json'
 import { ethers } from 'ethers'
 import { ProviderUserRejectedRequest } from '@/errors/runtime.errors'
+import { useI18n } from 'vue-i18n'
+import { config } from '@/config'
 
 export type ExposedFormRef = {
   isFormValid: () => boolean
@@ -110,18 +132,31 @@ export type ExposedFormRef = {
   tokenAmount: Ref<string>
   tokenPrice: Ref<TokenPrice | null>
   tokenId?: Ref<string>
+  mintFunction?: (
+    buyParams: BuyParams,
+    signature: Signature,
+    amountOfEth: string,
+  ) => Promise<void>
+}
+
+enum PAYMENT_TYPES {
+  rarimo = 'rarimo',
+  default = 'default',
 }
 
 const TOKEN_AMOUNT_COEFFICIENT = 1.02
 
 const props = defineProps<{
   book: FullBookInfo
+  isValidChain: boolean
 }>()
 
 const emit = defineEmits<{
   (event: 'submit', message?: string): void
   (event: 'submitting', value: boolean): void
 }>()
+
+const { t } = useI18n()
 
 const web3ProvidersStore = useWeb3ProvidersStore()
 const provider = computed(() => web3ProvidersStore.provider)
@@ -134,6 +169,20 @@ const {
 } = useGenerator()
 const { mintWithErc20, mintWithEth, mintWithNft, approveTokenSpend } =
   useNftTokens()
+
+const paymentType = ref<PAYMENT_TYPES | undefined>(
+  !props.isValidChain ? PAYMENT_TYPES.rarimo : undefined,
+)
+const paymentOptions = [
+  {
+    label: t('purchase-book-form.default-payment'),
+    value: PAYMENT_TYPES.default,
+  },
+  {
+    label: t('purchase-book-form.rarimo-payment'),
+    value: PAYMENT_TYPES.rarimo,
+  },
+]
 
 const form = reactive({
   tokenType: TOKEN_TYPES.native,
@@ -157,6 +206,8 @@ const isNextStepDisabled = computed(
 )
 
 const paymentTemplate = computed(() => {
+  if (paymentType.value === PAYMENT_TYPES.rarimo) return RarimoTemplate
+
   switch (form.tokenType) {
     case TOKEN_TYPES.erc20:
       return Erc20Template
@@ -215,89 +266,83 @@ const mintToken = async (
   tokenAddress: string,
   tokenId?: string,
   nativeTokenAmount?: string,
+  mintFunction?: (
+    buyParams: BuyParams,
+    signature: Signature,
+    amountOfEth: string,
+  ) => Promise<void>,
 ) => {
   if (!provider.value.selectedAddress) return
 
+  const appropriateChainId = props.isValidChain
+    ? Number(provider.value.chainId)
+    : Number(config.DEFAULT_CHAIN_ID)
+
   const bookContract = props.book.networks.find(
-    el => el.attributes.chain_id === Number(provider.value.chainId),
+    el => el.attributes.chain_id === appropriateChainId,
   )
 
   if (!bookContract)
     throw new Error('No matching book contract found for that chain')
 
+  const dataForMint = {
+    buyParams: {
+      tokenContract: bookContract.attributes.contract_address,
+      recipient: provider.value.selectedAddress,
+      tokenData: {
+        tokenId: mintSignature.token_id.toString(),
+        tokenURI: generatedTask.metadata_ipfs_hash,
+      },
+      paymentDetails: {
+        paymentTokenAddress:
+          form.tokenType === TOKEN_TYPES.native
+            ? ethers.constants.AddressZero
+            : tokenAddress!,
+        paymentTokenPrice: mintSignature.price,
+        nftTokenId: form.tokenType !== TOKEN_TYPES.nft ? '0' : tokenId!,
+        discount: mintSignature.discount,
+      },
+    },
+    signature: {
+      ...mintSignature.signature,
+      endSigTimestamp: mintSignature.end_timestamp,
+    },
+    nativeTokenAmount,
+  }
+
+  if (paymentType.value === PAYMENT_TYPES.rarimo) {
+    if (!dataForMint.nativeTokenAmount)
+      throw new Error('Missing native token amount')
+    if (!mintFunction) throw new Error('Missing mint function')
+
+    await mintFunction(
+      dataForMint.buyParams,
+      dataForMint.signature,
+      dataForMint.nativeTokenAmount,
+    )
+    return
+  }
+
   switch (form.tokenType) {
     case TOKEN_TYPES.native:
-      if (!nativeTokenAmount) throw new Error('Missing native token amount')
+      if (!dataForMint.nativeTokenAmount)
+        throw new Error('Missing native token amount')
 
       await mintWithEth(
-        {
-          tokenContract: bookContract.attributes.contract_address,
-          recipient: provider.value.selectedAddress,
-          tokenData: {
-            tokenId: mintSignature.token_id.toString(),
-            tokenURI: generatedTask.metadata_ipfs_hash,
-          },
-          paymentDetails: {
-            paymentTokenAddress: ethers.constants.AddressZero,
-            paymentTokenPrice: mintSignature.price,
-            nftTokenId: '0',
-            discount: mintSignature.discount,
-          },
-        },
-        {
-          ...mintSignature.signature,
-          endSigTimestamp: mintSignature.end_timestamp,
-        },
-        nativeTokenAmount,
+        dataForMint.buyParams,
+        dataForMint.signature,
+        dataForMint.nativeTokenAmount,
       )
       break
     case TOKEN_TYPES.erc20:
       if (!tokenAddress) throw new Error('ERC20 address is missing')
 
-      await mintWithErc20(
-        {
-          tokenContract: bookContract.attributes.contract_address,
-          recipient: provider.value.selectedAddress,
-          tokenData: {
-            tokenId: mintSignature.token_id.toString(),
-            tokenURI: generatedTask.metadata_ipfs_hash,
-          },
-          paymentDetails: {
-            paymentTokenAddress: tokenAddress,
-            paymentTokenPrice: mintSignature.price,
-            nftTokenId: '0',
-            discount: mintSignature.discount,
-          },
-        },
-        {
-          ...mintSignature.signature,
-          endSigTimestamp: mintSignature.end_timestamp,
-        },
-      )
+      await mintWithErc20(dataForMint.buyParams, dataForMint.signature)
       break
     case TOKEN_TYPES.nft: {
       if (!tokenId) throw new Error('Nft token id is missing')
 
-      await mintWithNft(
-        {
-          tokenContract: bookContract.attributes.contract_address,
-          recipient: provider.value.selectedAddress,
-          tokenData: {
-            tokenId: mintSignature.token_id.toString(),
-            tokenURI: generatedTask.metadata_ipfs_hash,
-          },
-          paymentDetails: {
-            paymentTokenAddress: tokenAddress,
-            paymentTokenPrice: mintSignature.price,
-            nftTokenId: tokenId,
-            discount: mintSignature.discount,
-          },
-        },
-        {
-          ...mintSignature.signature,
-          endSigTimestamp: mintSignature.end_timestamp,
-        },
-      )
+      await mintWithNft(dataForMint.buyParams, dataForMint.signature)
       break
     }
     default:
@@ -335,6 +380,7 @@ const submit = async (editorFromTemplate: UseImageEditor | null) => {
     tokenId: paymentTemplateRef.value.tokenId,
     tokenAmount: paymentTemplateRef.value?.tokenAmount,
     promocode: paymentTemplateRef.value.promocode,
+    mintFunction: paymentTemplateRef.value.mintFunction,
   }
 
   disableForm()
@@ -348,7 +394,9 @@ const submit = async (editorFromTemplate: UseImageEditor | null) => {
     const currentTask = await createNewGenerationTask({
       account: provider.value.selectedAddress,
       bookId: props.book.id,
-      chainId: Number(provider.value.chainId),
+      chainId: props.isValidChain
+        ? Number(provider.value.chainId)
+        : Number(config.DEFAULT_CHAIN_ID),
     })
 
     const generatedTask = await uploadBanner(currentTask.id, banner)
@@ -401,6 +449,7 @@ const submit = async (editorFromTemplate: UseImageEditor | null) => {
       dataForMint.tokenAddress,
       dataForMint.tokenId,
       nativeTokenAmount,
+      dataForMint.mintFunction,
     )
 
     emit('submitting', false)

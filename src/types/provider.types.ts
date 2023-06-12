@@ -85,3 +85,4 @@ export interface ProviderWrapper {
 }
 
 export type { UseProvider } from '@/composables'
+export type { UnwrappedProvider } from '@/store'
