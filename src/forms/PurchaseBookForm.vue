@@ -470,7 +470,7 @@ const submit = async (editorFromTemplate: UseImageEditor | null) => {
   display: flex;
   flex-direction: column;
   gap: toRem(20);
-  width: toRem(350);
+  width: toRem(400);
   padding: 0 toRem(5);
 
   @include respond-to(small) {

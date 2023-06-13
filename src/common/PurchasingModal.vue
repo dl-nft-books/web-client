@@ -5,7 +5,7 @@
     @update:is-shown="value => emit('update:is-shown', value)"
   >
     <template #default="{ modal }">
-      <div class="purchasing-modal__pane">
+      <div ref="modalPaneRef" :class="modalPaneClasses">
         <div class="purchasing-modal__head">
           <h4 class="purchasing-modal__head-title">
             {{ title }}
@@ -38,6 +38,7 @@ import { AppButton, Modal } from '@/common'
 import { ref, computed } from 'vue'
 import { PurchaseBookForm } from '@/forms'
 import { FullBookInfo } from '@/types'
+import { useElementSize, useWindowSize } from '@vueuse/core'
 import { useI18n } from 'vue-i18n'
 
 const props = defineProps<{
@@ -54,24 +55,49 @@ const emit = defineEmits<{
 const { t } = useI18n()
 
 const isSubmitting = ref(false)
+const modalPaneRef = ref<HTMLElement | null>(null)
+
+const { height } = useElementSize(modalPaneRef)
+const { height: windowHeight } = useWindowSize()
 
 const title = computed(() =>
   isSubmitting.value
     ? t('purchasing-modal.generation-title')
     : t('purchasing-modal.title'),
 )
+
+const modalPaneClasses = computed(() => {
+  const maxThreshold = 150
+  const threshold = windowHeight.value - height.value
+
+  return [
+    'purchasing-modal__pane',
+    threshold >= maxThreshold ? 'purchasing-modal__pane--scrollable' : '',
+  ]
+})
 </script>
 
 <style lang="scss" scoped>
 .purchasing-modal__pane {
   display: flex;
   flex-direction: column;
-  max-height: vh(100);
+  max-height: vh(96);
   width: fit-content;
   padding: toRem(32);
   background: var(--background-primary-light);
   border-radius: toRem(10);
-  overflow-y: auto;
+
+  &--scrollable {
+    overflow-y: auto;
+  }
+
+  &::-webkit-scrollbar {
+    border-radius: 0 toRem(10) toRem(10) 0;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    border-radius: 0 toRem(10) toRem(10) 0;
+  }
 
   @include respond-to(small) {
     width: 100vw;
