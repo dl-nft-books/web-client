@@ -72,7 +72,7 @@ const modalPaneClasses = computed(() => {
 
   return [
     'purchasing-modal__pane',
-    threshold >= maxThreshold ? 'purchasing-modal__pane--scrollable' : '',
+    threshold <= maxThreshold ? 'purchasing-modal__pane--scrollable' : '',
   ]
 })
 </script>
