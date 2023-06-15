@@ -12,6 +12,7 @@ import { PageOrder, Signature, BuyParams } from '@/types'
 import { IMarketplace } from '@/types/contracts/MarketPlace'
 import { BN } from '@/utils/math.util'
 import { computed, ref, watch } from 'vue'
+import { useFetch } from '@vueuse/core'
 
 export type TokenBaseInfo = {
   tokenContract: string
@@ -52,6 +53,8 @@ type Payment = {
   }
   type: TOKEN_TYPES
 }
+
+const MAX_METADATA_WAIT_TIME = 8000 // ms
 
 export function useNftTokens() {
   const networkStore = useNetworksStore()
@@ -153,6 +156,22 @@ export function useNftTokens() {
     return data[0]
   }
 
+  const _loadMetadata = async (
+    tokenUri: string,
+    maxTimeout = MAX_METADATA_WAIT_TIME,
+  ) => {
+    const { execute: fetchMetaData, data } = useFetch(tokenUri, {
+      immediate: false,
+      timeout: maxTimeout,
+    })
+      .get()
+      .json<NftMetadata>()
+
+    await fetchMetaData()
+
+    return data.value
+  }
+
   const getNftList = async (
     userAddress: string,
     limit: number,
@@ -176,18 +195,18 @@ export function useNftTokens() {
     for (const { tokenContract, tokenIds } of filteredData) {
       initErc721(tokenContract)
       for (const tokenId of tokenIds) {
-        const metadata = await tokenURI(tokenId)
+        const metadataUrl = await tokenURI(tokenId)
+
+        if (!metadataUrl) continue
+
+        const metadata = await _loadMetadata(metadataUrl)
 
         if (!metadata) continue
-
-        const data: NftMetadata = await (await fetch(metadata)).json()
-
-        if (!data) continue
 
         proccessedData.push({
           tokenContract,
           tokenId,
-          metadata: data,
+          metadata,
         })
       }
     }
@@ -206,11 +225,13 @@ export function useNftTokens() {
     await _initMarketPlace()
     initErc721(collectionAddress)
 
-    const uri = await tokenURI(tokenId)
+    const metadataUrl = await tokenURI(tokenId)
 
-    if (!uri) throw new Error('Failed to get tokenURI')
+    if (!metadataUrl) throw new Error('Failed to get tokenURI')
 
-    const metadata: NftMetadata = await (await fetch(uri)).json()
+    const metadata = await _loadMetadata(metadataUrl)
+
+    if (!metadata) throw new Error('Failed to get metadata')
 
     const paymentInfo = await _getPayment({
       tokenAddress: collectionAddress,
