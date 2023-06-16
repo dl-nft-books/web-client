@@ -86,7 +86,7 @@
   },
   "app-logo": {
     "title": "DISTRIBUTED STORE",
-    "subtitle": "Powered with",
+    "subtitle": "Powered by",
     "acsent": "RARIMO"
   },
   "bookshelf-header": {
@@ -272,15 +272,7 @@
   "book-chain-info": {
     "title-part-1": "You are trying to purchase an NFT from ",
     "title-part-2": "while your wallet is connected to ",
-    "subtitle": "Use the cross-chain feature Rarimo to purchase this NFT.",
-    "ethereum-chain": "Ethereum Chain",
-    "polygon-chain": "Polygon Chain",
-    "mumbai-chain": "Mumbai Chain",
-    "q-chain": "Q Chain",
-    "q-test-chain": "Q Testnet Chain",
-    "sepolia-chain": "Sepolia Chain",
-    "goerli-chain": "Goerli Chain",
-    "unknown-chain": "Unknown Chain"
+    "subtitle": "Use the cross-chain feature Rarimo to purchase this NFT."
   },
   "bookshelf-item-page": {
     "loading-error-msg": "Oops.... Something went wrong",

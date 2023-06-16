@@ -15,7 +15,7 @@
       <div v-else class="header-network-switcher__wrapper" @click="menu.open">
         <network-item
           :modification="`non-active ${modification}`"
-          :name="pickedNetwork?.name"
+          :name="networkName"
           :scheme="getNetworkScheme(pickedNetwork?.chain_id)"
         />
       </div>
@@ -76,15 +76,23 @@ const pickedNetwork = computed(() =>
   networksStore.getNetworkByID(Number(provider.value.chainId)),
 )
 
+const networkName = computed(() =>
+  pickedNetwork.value
+    ? pickedNetwork.value.name
+    : networksStore.getChainByID(Number(provider.value.chainId))?.name,
+)
+
 const changeNetwork = async (chainID: ChainId) => {
   isSwitchingChain.value = true
   await switchNetwork(chainID)
   isSwitchingChain.value = false
 }
 
-onMounted(() => {
+onMounted(async () => {
   try {
-    networksStore.loadNetworks()
+    await networksStore.loadNetworks()
+    await networksStore.loadChainList()
+
     isLoadingNetworks.value = false
   } catch (error) {
     ErrorHandler.processWithoutFeedback(error)

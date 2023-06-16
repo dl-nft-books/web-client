@@ -76,7 +76,7 @@ export function useNftCheckout(contractRegistryAddress?: string) {
   }
 
   const getSupportedChains = () => {
-    return checkout && checkout.supportedChains()
+    return checkout && checkout.loadSupportedChains()
   }
 
   const getSupportedTokens = (chain: BridgeChain) => {

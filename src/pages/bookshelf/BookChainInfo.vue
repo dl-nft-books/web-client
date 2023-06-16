@@ -14,11 +14,10 @@
 </template>
 
 <script setup lang="ts">
+import { computed } from 'vue'
 import { ChainId } from '@/types'
+import { useNetworksStore } from '@/store'
 import { useI18n } from 'vue-i18n'
-import { ETHEREUM_CHAINS, POLYGON_CHAINS, Q_CHAINS } from '@/enums'
-
-type SupportedChain = ETHEREUM_CHAINS | POLYGON_CHAINS | Q_CHAINS
 
 const props = defineProps<{
   sourceChain: ChainId
@@ -27,32 +26,18 @@ const props = defineProps<{
 
 const { t } = useI18n()
 
-const getChainName = (chain: SupportedChain) => {
-  switch (chain) {
-    case ETHEREUM_CHAINS.ethereum:
-      return t('book-chain-info.ethereum-chain')
-    case ETHEREUM_CHAINS.goerli:
-      return t('book-chain-info.goerli-chain')
-    case ETHEREUM_CHAINS.sepolia:
-      return t('book-chain-info.sepolia-chain')
-    case POLYGON_CHAINS.mainnet:
-      return t('book-chain-info.polygon-chain')
-    case POLYGON_CHAINS.mumbai:
-      return t('book-chain-info.mumbai-chain')
-    case Q_CHAINS.mainet:
-      return t('book-chain-info.q-chain')
-    case Q_CHAINS.testnet:
-      return t('book-chain-info.q-test-chain')
-    default:
-      return t('book-chain-info.unknown-chain')
-  }
-}
+const networkStore = useNetworksStore()
 
-const sourceChainName = getChainName(
-  props.sourceChain.toString() as SupportedChain,
+const sourceChainName = computed(
+  () =>
+    networkStore.getChainByID(Number(props.sourceChain))?.name ??
+    t('networks.unsupported'),
 )
-const targetChainName = getChainName(
-  props.targetChain.toString() as SupportedChain,
+
+const targetChainName = computed(
+  () =>
+    networkStore.getChainByID(Number(props.targetChain))?.name ??
+    t('networks.unsupported'),
 )
 </script>
 
