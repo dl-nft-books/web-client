@@ -173,6 +173,13 @@ const getBridgeChains = () => {
 
   if (!targetChain) return
 
+  if (
+    !props.book.networks.some(
+      network => network.attributes.chain_id === Number(targetChain.id),
+    )
+  )
+    return
+
   return {
     sourceChain,
     targetChain,
@@ -286,7 +293,8 @@ watch(
     disableForm()
     try {
       const bridgeChains = getBridgeChains()
-      if (!bridgeChains) return
+
+      if (!bridgeChains) throw new Error('no bridge chains found')
 
       await initializeCheckout(
         bridgeChains.sourceChain,

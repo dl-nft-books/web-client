@@ -4,7 +4,7 @@
       <icon class="network-item__icon" :name="getIconByScheme(scheme)" />
     </span>
     <p class="network-item__title">
-      {{ title }}
+      {{ name }}
     </p>
   </button>
 </template>
@@ -14,17 +14,14 @@ import { Icon } from '@/common'
 import { computed } from 'vue'
 import { NETWORKS } from '@/enums'
 import { getIconByScheme } from '@/helpers'
-import { useI18n } from 'vue-i18n'
 
 type MODIFICATIONS = 'non-active' | 'dark-mode' | 'default'
-
-const { t } = useI18n()
 
 const props = withDefaults(
   defineProps<{
     scheme?: NETWORKS
     modification?: MODIFICATIONS
-    name?: string
+    name: string
   }>(),
   {
     scheme: NETWORKS.POLYGON,
@@ -32,13 +29,6 @@ const props = withDefaults(
     name: '',
   },
 )
-
-const title = computed(() =>
-  props.scheme !== NETWORKS.UNSUPPORTED
-    ? props.name
-    : t('networks.unsupported'),
-)
-
 const classes = computed(() => [
   'network-item',
   ...props.modification.split(' ').map(mod => `network-item--${mod}`),

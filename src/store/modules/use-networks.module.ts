@@ -3,11 +3,20 @@ import { Network, PageOrder } from '@/types'
 import { api } from '@/api'
 import { config } from '@/config'
 
+type ChainInfo = {
+  name: string
+  chainId: number
+}
+
+const chainListLink = 'https://chainid.network/chains_mini.json'
+
 export const useNetworksStore = defineStore('networks', {
   state: () => ({
     list: [] as Network[],
+    chainList: [] as ChainInfo[],
   }),
   actions: {
+    // Loads supported network from backend
     async loadNetworks(opts?: {
       pageLimit?: number
       pageOrder?: PageOrder
@@ -23,6 +32,16 @@ export const useNetworksStore = defineStore('networks', {
       )
 
       this.list = networks
+    },
+
+    // Loads chain list to find info about unsupported chains
+    async loadChainList() {
+      const data = await (await fetch(chainListLink)).json()
+      this.chainList = data
+    },
+
+    getChainByID(id: number): ChainInfo | undefined {
+      return this.chainList.find(chain => chain.chainId === id)
     },
 
     getNetworkByID(id: number): Network | undefined {
