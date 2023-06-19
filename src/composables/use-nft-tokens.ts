@@ -4,15 +4,17 @@ import {
   useContractRegistry,
   useErc721,
   useErc20,
+  useGenerator,
 } from '@/composables'
 import { config } from '@/config'
 import { TOKEN_TYPES } from '@/enums'
 import { useNetworksStore, useWeb3ProvidersStore } from '@/store'
-import { PageOrder, Signature, BuyParams } from '@/types'
+import { PageOrder, Signature, BuyParams, FullBookInfo } from '@/types'
 import { IMarketplace } from '@/types/contracts/MarketPlace'
 import { BN } from '@/utils/math.util'
 import { computed, ref, watch } from 'vue'
 import { useFetch } from '@vueuse/core'
+import { ethers } from 'ethers'
 
 export type TokenBaseInfo = {
   tokenContract: string
@@ -293,6 +295,65 @@ export function useNftTokens() {
     }
   }
 
+  const formMintData = async (initialOpts: {
+    banner: FormData
+    book: FullBookInfo
+    account: string
+    chainId: number
+    tokenAddress: string
+    promocodeId?: string
+    nftId?: string // for NFT for NFT exchange
+  }): Promise<{
+    buyParams: BuyParams
+    signature: Signature
+  }> => {
+    const { createNewGenerationTask, uploadBanner, getMintSignature } =
+      useGenerator()
+
+    const task = await createNewGenerationTask({
+      account: initialOpts.account,
+      bookId: initialOpts.book.id,
+      chainId: initialOpts.chainId,
+    })
+
+    const generatedTask = await uploadBanner(task.id, initialOpts.banner)
+
+    const mintSignature = await getMintSignature(
+      generatedTask.id,
+      initialOpts.tokenAddress,
+      initialOpts.promocodeId,
+    )
+
+    const bookContract = initialOpts.book.networks.find(
+      el => el.attributes.chain_id === initialOpts.chainId,
+    )
+
+    if (!bookContract)
+      throw new Error('No matching book contract found for that chain')
+
+    return {
+      buyParams: {
+        tokenContract: bookContract.attributes.contract_address,
+        recipient: initialOpts.account,
+        tokenData: {
+          tokenId: mintSignature.token_id.toString(),
+          tokenURI: generatedTask.metadata_ipfs_hash,
+        },
+        paymentDetails: {
+          paymentTokenAddress:
+            initialOpts.tokenAddress || ethers.constants.AddressZero,
+          paymentTokenPrice: mintSignature.price,
+          nftTokenId: initialOpts.nftId ?? '0',
+          discount: mintSignature.discount,
+        },
+      },
+      signature: {
+        ...mintSignature.signature,
+        endSigTimestamp: mintSignature.end_timestamp,
+      },
+    }
+  }
+
   const isNftToken = (object: unknown): object is TokenBaseInfo => {
     return (
       typeof object === 'object' &&
@@ -324,5 +385,6 @@ export function useNftTokens() {
     mintWithNft,
     isNftToken,
     approveTokenSpend,
+    formMintData,
   }
 }

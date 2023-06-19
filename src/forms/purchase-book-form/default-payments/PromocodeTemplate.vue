@@ -2,8 +2,8 @@
   <!-- PROMOCODES -->
   <input-field
     v-model="form.promocode"
-    :label="$t('purchase-book-form.promocode-lbl')"
-    :placeholder="$t('purchase-book-form.promocode-placeholder')"
+    :label="$t('promocode-template.promocode-lbl')"
+    :placeholder="$t('promocode-template.promocode-placeholder')"
     :error-message="getFieldErrorMessage('promocode')"
     :disabled="isFormDisabled"
     @blur="touchField('promocode')"
@@ -18,7 +18,7 @@
       scheme="success"
       :icon="$icons.percentCircle"
       :title="
-        $t('purchase-book-form.promocode-applied-msg', {
+        $t('promocode-template.promocode-applied-msg', {
           amount: Number(promocodeInfo.promocode.discount) * 100,
         })
       "
@@ -28,7 +28,7 @@
 </template>
 
 <script setup lang="ts">
-import { reactive, Ref, toRef, inject } from 'vue'
+import { reactive, Ref, toRef, computed } from 'vue'
 import { debounce } from 'lodash'
 
 import { InputField, MessageField } from '@/fields'
@@ -38,7 +38,8 @@ import { maxLength, minLength, urlSymbols } from '@/validators'
 import { MAX_PROMOCODE_LENGTH, MIN_PROMOCODE_LENGTH } from '@/const'
 import { Promocode, TokenPrice, PurchaseFormKey } from '@/types'
 import { BN } from '@/utils/math.util'
-import { TOKEN_TYPES } from '@/enums'
+import { FORM_STATES, TOKEN_TYPES } from '@/enums'
+import { safeInject } from '@/helpers'
 
 export type ExposedPromocodeRef = {
   isPromocodeValid: () => boolean
@@ -58,7 +59,9 @@ const props = withDefaults(
   },
 )
 
-const { isFormDisabled } = inject(PurchaseFormKey)
+const { formState } = safeInject(PurchaseFormKey)
+
+const isFormDisabled = computed(() => formState.value === FORM_STATES.disabled)
 
 const form = reactive({
   promocode: '',

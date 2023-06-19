@@ -9,8 +9,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Rarimo checkout option while buying NFT
 
 #### Changed
-- For read operations from contracts now is always used JsonRpcProvider. It provides
+- When chain is invalid - we using fallback provider. It provides
 abillity to show books no matter on what chain user is now
+
+#### Fixed
+- Purchase form refactored
 
 ## [1.4.0] - 2023-05-12
 #### Added

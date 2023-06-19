@@ -1,178 +1,124 @@
 <template>
-  <!-- While NFT is being generated -->
-  <template v-if="isFormDisabled">
-    <div class="purchase-book-form__submitting-animation-wrp">
-      <animation
-        class="purchase-book-form__submitting-animation"
-        :animation-data="loaderAnimation"
-        :loop="true"
-        :speed="1"
-      />
-    </div>
-    <h5 class="purchase-book-form__submitting-title">
-      {{ $t('purchase-book-form.submitting-title') }}
-    </h5>
-    <p class="purchase-book-form__submitting-message">
-      {{ $t('purchase-book-form.submitting-message') }}
-    </p>
-  </template>
+  <div class="purchase-book-form">
+    <generation-view v-if="formState === FORM_STATES.pending" />
 
-  <!-- Before generation stuff -->
-  <steps-form
-    v-else
-    :submit-text="$t('purchase-book-form.generate-btn')"
-    :is-next-step-disabled="isNextStepDisabled"
-    @submit="submit(editorInstance?.editorInstance)"
-  >
-    <template #step1>
-      <form class="purchase-book-form" @submit.prevent>
-        <book-preview
-          :book="book"
-          :modification="
-            form.tokenType === TOKEN_TYPES.nft ? 'floor-price' : 'default'
-          "
-        />
+    <generation-success-view
+      v-else-if="formState === FORM_STATES.success"
+      :message="successMessage.message"
+      :link="successMessage.txLink"
+    />
 
-        <template v-if="isValidChain">
+    <steps-form
+      v-else
+      :submit-text="$t('purchase-book-form.generate-btn')"
+      :is-form-valid="checkFormValidation"
+      :is-form-disabled="isFormDisabled"
+      @submit="submit(editorInstance)"
+    >
+      <template #step1>
+        <form class="purchase-book-form__form">
+          <!-- Components from templates will be teleported here -->
+          <section id="purchase-book-form__preview">
+            <book-preview v-if="!paymentType" :book="book" />
+          </section>
+
           <message-field
             :title="$t('purchase-book-form.rarimo-tip')"
             modification="no-icon"
             scheme="info"
           />
 
+          <!-- 
+            That component is responsible for switching between integrated
+            payment types and default ones
+           -->
           <radio-select
+            v-if="isValidChain"
             v-model="paymentType"
             :value-options="paymentOptions"
             name="payment-select"
           />
-        </template>
 
-        <template v-if="paymentType">
-          <select-field
-            v-if="paymentType === PAYMENT_TYPES.default"
-            v-model="form.tokenType"
-            class="purchase-book-form__select"
-            :label="$t('purchase-book-form.token-type-lbl')"
-            :value-options="tokenTypesOptions"
-            :error-message="getFieldErrorMessage('tokenType')"
-            :disabled="isFormDisabled"
-            @blur="touchField('tokenType')"
-          />
+          <component v-if="paymentType" :is="paymentFlow" />
+        </form>
+      </template>
 
-          <component
-            :is="paymentTemplate"
-            ref="paymentTemplateRef"
-            :book="book"
-          />
-        </template>
-      </form>
-    </template>
-
-    <template #step2>
-      <image-editor
-        ref="editorInstance"
-        :image-url="book.banner.attributes.url"
-      />
-    </template>
-  </steps-form>
+      <template #step2>
+        <image-editor
+          ref="editorInstance"
+          :image-url="book.banner.attributes.url"
+        />
+      </template>
+    </steps-form>
+  </div>
 </template>
 
-<script lang="ts" setup>
+<script setup lang="ts">
 import 'simple-fabric-vue-image-editor/dist/fabric-vue-image-editor-ts.css'
-
-import { ref, reactive, computed, Ref, provide } from 'vue'
-import { useWeb3ProvidersStore } from '@/store'
-import { BN } from '@/utils/math.util'
 import { ImageEditor, UseImageEditor } from 'simple-fabric-vue-image-editor'
 
-import {
-  Promocode,
-  TokenPrice,
-  PurchaseFormKey,
-  MintSignatureResponse,
-  Task,
-  FullBookInfo,
-  BuyParams,
-  Signature,
-} from '@/types'
-import { Q_CHAINS, TOKEN_TYPES } from '@/enums'
-
-import { Animation, BookPreview, StepsForm } from '@/common'
-
-import {
-  NativeTemplate,
-  Erc20Template,
-  VoucherTemplate,
-  NftTemplate,
-  RarimoTemplate,
-} from '@/forms/purchase-book-payments'
-
-import {
-  useForm,
-  useFormValidation,
-  useNftTokens,
-  useGenerator,
-} from '@/composables'
-
-import { SelectField, RadioSelect, MessageField } from '@/fields'
-import { ErrorHandler, globalizeTokenType } from '@/helpers'
-
-import { required } from '@/validators'
-
-import loaderAnimation from '@/assets/animations/loader.json'
-import { ethers } from 'ethers'
-import { ProviderUserRejectedRequest } from '@/errors/runtime.errors'
+import { computed, provide, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { config } from '@/config'
 
-export type ExposedFormRef = {
-  isFormValid: () => boolean
-  promocode: Ref<Promocode | null>
-  tokenAddress: Ref<string>
-  tokenAmount: Ref<string>
-  tokenPrice: Ref<TokenPrice | null>
-  tokenId?: Ref<string>
-  mintFunction?: (
-    buyParams: BuyParams,
-    signature: Signature,
-    amountOfEth: string,
-  ) => Promise<void>
-}
+import { StepsForm, BookPreview } from '@/common'
+import { RadioSelect, MessageField } from '@/fields'
+import { FullBookInfo, PurchaseFormKey } from '@/types'
+import { FORM_STATES } from '@/enums'
+import { useWeb3ProvidersStore } from '@/store'
+import {
+  GenerationView,
+  GenerationSuccessView,
+  DefaultPaymentFlow,
+  RarimoFlow,
+} from '@/forms/purchase-book-form'
 
 enum PAYMENT_TYPES {
   rarimo = 'rarimo',
   default = 'default',
 }
 
-const TOKEN_AMOUNT_COEFFICIENT = 1.02
-
 const props = defineProps<{
   book: FullBookInfo
-  isValidChain: boolean
-}>()
-
-const emit = defineEmits<{
-  (event: 'submit', message?: string): void
-  (event: 'submitting', value: boolean): void
 }>()
 
 const { t } = useI18n()
 
 const web3ProvidersStore = useWeb3ProvidersStore()
 const provider = computed(() => web3ProvidersStore.provider)
-
-const {
-  createNewGenerationTask,
-  getMintSignature,
-  uploadBanner,
-  sendBuyWithVoucherRequest,
-} = useGenerator()
-const { mintWithErc20, mintWithEth, mintWithNft, approveTokenSpend } =
-  useNftTokens()
-
-const paymentType = ref<PAYMENT_TYPES | undefined>(
-  !props.isValidChain ? PAYMENT_TYPES.rarimo : undefined,
+const isValidChain = computed(() =>
+  Boolean(
+    props.book.networks.some(
+      network => network.attributes.chain_id === Number(provider.value.chainId),
+    ),
+  ),
 )
+
+const formState = ref<FORM_STATES>(FORM_STATES.active)
+
+// Form validation occurs inside templates and vary from component to component
+const isFormValid = ref<(() => boolean) | null>(null)
+
+/* 
+  Each payment template implements its own version of submit function, that at
+  the end of purchase will be invoked here
+*/
+const submitFunc = ref<(editor: UseImageEditor | null) => Promise<void>>()
+const successMessage = ref<{
+  message: string
+  txLink?: string
+}>({
+  message: t('generation-success-view.message'),
+})
+
+const editorInstance = ref<{
+  editorInstance: UseImageEditor | null
+}>()
+
+// if chain invalid - goes with rarimo by default
+const paymentType = ref<PAYMENT_TYPES | undefined>(
+  !isValidChain.value ? PAYMENT_TYPES.rarimo : undefined,
+)
+
 const paymentOptions = [
   {
     label: t('purchase-book-form.default-payment'),
@@ -184,289 +130,41 @@ const paymentOptions = [
   },
 ]
 
-const form = reactive({
-  tokenType: TOKEN_TYPES.native,
-})
-
-const { disableForm, enableForm, isFormDisabled } = useForm()
-const { getFieldErrorMessage, touchField, isFormValid } = useFormValidation(
-  form,
-  {
-    tokenType: { required },
-  },
-)
-
-// to avoid props drilling - passing necessary info using provide -> inject
-provide(PurchaseFormKey, { isFormDisabled })
-
-const paymentTemplateRef = ref<ExposedFormRef | null>(null)
-
-const isNextStepDisabled = computed(
-  () => isFormDisabled.value || !paymentTemplateRef.value?.isFormValid(),
-)
-
-const paymentTemplate = computed(() => {
-  if (paymentType.value === PAYMENT_TYPES.rarimo) return RarimoTemplate
-
-  switch (form.tokenType) {
-    case TOKEN_TYPES.erc20:
-      return Erc20Template
-    case TOKEN_TYPES.voucher:
-      return VoucherTemplate
-    case TOKEN_TYPES.nft:
-      return NftTemplate
-    case TOKEN_TYPES.native:
+const paymentFlow = computed(() => {
+  switch (paymentType.value) {
+    case PAYMENT_TYPES.rarimo:
+      return RarimoFlow
+    case PAYMENT_TYPES.default:
     default:
-      return NativeTemplate
+      return DefaultPaymentFlow
   }
 })
 
-const tokenTypesOptions = computed(() => {
-  const defaultOptions = [
-    {
-      label: globalizeTokenType(TOKEN_TYPES.native),
-      value: TOKEN_TYPES.native,
-    },
-  ]
+const isFormDisabled = computed(() => formState.value === FORM_STATES.disabled)
 
-  /* 
-    Temporary solution because of missing price for Q on backend
-    Will be fixed in future updates
-  */
-  if (
-    provider.value.chainId !== Number(Q_CHAINS.mainet) &&
-    provider.value.chainId !== Number(Q_CHAINS.testnet)
-  ) {
-    defaultOptions.push({
-      label: globalizeTokenType(TOKEN_TYPES.erc20),
-      value: TOKEN_TYPES.erc20,
-    })
-  }
+const submit = (editor: typeof editorInstance.value) => {
+  if (!submitFunc.value || !editor) return
 
-  if (props.book.isVoucherBuyable) {
-    defaultOptions.push({
-      label: globalizeTokenType(TOKEN_TYPES.voucher),
-      value: TOKEN_TYPES.voucher,
-    })
-  }
-
-  if (props.book.isNFTBuyable) {
-    defaultOptions.push({
-      label: globalizeTokenType(TOKEN_TYPES.nft),
-      value: TOKEN_TYPES.nft,
-    })
-  }
-
-  return defaultOptions
-})
-
-const mintToken = async (
-  mintSignature: MintSignatureResponse,
-  generatedTask: Task,
-  tokenAddress: string,
-  tokenId?: string,
-  nativeTokenAmount?: string,
-  mintFunction?: (
-    buyParams: BuyParams,
-    signature: Signature,
-    amountOfEth: string,
-  ) => Promise<void>,
-) => {
-  if (!provider.value.selectedAddress) return
-
-  const appropriateChainId = props.isValidChain
-    ? Number(provider.value.chainId)
-    : Number(config.DEFAULT_CHAIN_ID)
-
-  const bookContract = props.book.networks.find(
-    el => el.attributes.chain_id === appropriateChainId,
-  )
-
-  if (!bookContract)
-    throw new Error('No matching book contract found for that chain')
-
-  const dataForMint = {
-    buyParams: {
-      tokenContract: bookContract.attributes.contract_address,
-      recipient: provider.value.selectedAddress,
-      tokenData: {
-        tokenId: mintSignature.token_id.toString(),
-        tokenURI: generatedTask.metadata_ipfs_hash,
-      },
-      paymentDetails: {
-        paymentTokenAddress:
-          form.tokenType === TOKEN_TYPES.native
-            ? ethers.constants.AddressZero
-            : tokenAddress!,
-        paymentTokenPrice: mintSignature.price,
-        nftTokenId: form.tokenType !== TOKEN_TYPES.nft ? '0' : tokenId!,
-        discount: mintSignature.discount,
-      },
-    },
-    signature: {
-      ...mintSignature.signature,
-      endSigTimestamp: mintSignature.end_timestamp,
-    },
-    nativeTokenAmount,
-  }
-
-  if (paymentType.value === PAYMENT_TYPES.rarimo) {
-    if (!dataForMint.nativeTokenAmount)
-      throw new Error('Missing native token amount')
-    if (!mintFunction) throw new Error('Missing mint function')
-
-    await mintFunction(
-      dataForMint.buyParams,
-      dataForMint.signature,
-      dataForMint.nativeTokenAmount,
-    )
-    return
-  }
-
-  switch (form.tokenType) {
-    case TOKEN_TYPES.native:
-      if (!dataForMint.nativeTokenAmount)
-        throw new Error('Missing native token amount')
-
-      await mintWithEth(
-        dataForMint.buyParams,
-        dataForMint.signature,
-        dataForMint.nativeTokenAmount,
-      )
-      break
-    case TOKEN_TYPES.erc20:
-      if (!tokenAddress) throw new Error('ERC20 address is missing')
-
-      await mintWithErc20(dataForMint.buyParams, dataForMint.signature)
-      break
-    case TOKEN_TYPES.nft: {
-      if (!tokenId) throw new Error('Nft token id is missing')
-
-      await mintWithNft(dataForMint.buyParams, dataForMint.signature)
-      break
-    }
-    default:
-      break
-  }
+  submitFunc.value(editor.editorInstance)
 }
 
-const editorInstance = ref<{
-  editorInstance: UseImageEditor | null
-}>()
+const checkFormValidation = () => {
+  if (!isFormValid.value) return false
 
-/* FIXME: for some fucked up reason when im trying to invoke functions 
-from editorInsance inside submit function - editorInstance appears to be null
-
-if <image-editor /> is not being passed though slots to another component -
-it works as expected - you getting all what you want from editorInstance
-
-but if <image-editor /> passed through named slots its just doesn't work and the
-only solution i figure out for now its to pass editorInstance directly from 
-template to the submit func and now its working perfectly fine.
-
-*/
-const submit = async (editorFromTemplate: UseImageEditor | null) => {
-  if (
-    !isFormValid() ||
-    !paymentTemplateRef.value?.isFormValid() ||
-    !provider.value.selectedAddress ||
-    !editorFromTemplate
-  )
-    return
-
-  const dataForMint = {
-    tokenAddress: paymentTemplateRef.value?.tokenAddress,
-    tokenPrice: paymentTemplateRef.value?.tokenPrice,
-    tokenId: paymentTemplateRef.value.tokenId,
-    tokenAmount: paymentTemplateRef.value?.tokenAmount,
-    promocode: paymentTemplateRef.value.promocode,
-    mintFunction: paymentTemplateRef.value.mintFunction,
-  }
-
-  disableForm()
-  emit('submitting', true)
-
-  try {
-    const banner = await editorFromTemplate.canvasToFormData('Document')
-
-    if (!banner) throw new Error('Failed to format canvas to FormData')
-
-    const currentTask = await createNewGenerationTask({
-      account: provider.value.selectedAddress,
-      bookId: props.book.id,
-      chainId: props.isValidChain
-        ? Number(provider.value.chainId)
-        : Number(config.DEFAULT_CHAIN_ID),
-    })
-
-    const generatedTask = await uploadBanner(currentTask.id, banner)
-
-    if (form.tokenType === TOKEN_TYPES.voucher) {
-      const txHash = await sendBuyWithVoucherRequest(
-        props.book.voucherTokenContract,
-        props.book.voucherTokensAmount,
-        Number(generatedTask.id),
-      )
-
-      emit('submitting', false)
-      emit('submit', txHash)
-
-      return
-    }
-
-    const mintSignature = await getMintSignature(
-      generatedTask.id,
-      dataForMint.tokenAddress,
-      dataForMint.promocode ? dataForMint.promocode.id : undefined,
-      form.tokenType === TOKEN_TYPES.nft,
-    )
-
-    const nativeTokenAmount =
-      form.tokenType !== TOKEN_TYPES.native
-        ? ''
-        : new BN(props.book.pricePerOneToken, {
-            decimals: dataForMint.tokenPrice.token.decimals,
-          })
-            .div(dataForMint.tokenPrice.price)
-            .mul(TOKEN_AMOUNT_COEFFICIENT)
-            .toFixed()
-
-    await approveTokenSpend(
-      form.tokenType,
-      new BN(dataForMint.tokenAmount, {
-        decimals: dataForMint.tokenPrice?.token.decimals,
-      })
-        .toFraction(dataForMint.tokenPrice?.token.decimals)
-        .toString()
-        .split('.')[0],
-      dataForMint.tokenAddress,
-      dataForMint.tokenId,
-    )
-
-    await mintToken(
-      mintSignature,
-      generatedTask!,
-      dataForMint.tokenAddress,
-      dataForMint.tokenId,
-      nativeTokenAmount,
-      dataForMint.mintFunction,
-    )
-
-    emit('submitting', false)
-    emit('submit')
-  } catch (e) {
-    if (e instanceof ProviderUserRejectedRequest) {
-      ErrorHandler.processWithoutFeedback(e)
-      return
-    }
-    ErrorHandler.process(e)
-  }
-  enableForm()
+  return isFormValid.value()
 }
+
+provide(PurchaseFormKey, {
+  formState,
+  bookInfo: props.book,
+  isFormValid,
+  submit: submitFunc,
+  successMessage,
+})
 </script>
 
 <style lang="scss" scoped>
-.purchase-book-form {
+.purchase-book-form__form {
   display: flex;
   flex-direction: column;
   gap: toRem(20);
@@ -476,21 +174,5 @@ const submit = async (editorFromTemplate: UseImageEditor | null) => {
   @include respond-to(small) {
     width: 100%;
   }
-}
-
-.purchase-book-form__submitting-animation-wrp {
-  margin: 0 auto toRem(30);
-  max-width: toRem(300);
-}
-
-.purchase-book-form__submitting-title {
-  text-align: center;
-}
-
-.purchase-book-form__submitting-message {
-  max-width: toRem(310);
-  text-align: center;
-  font-size: toRem(18);
-  line-height: 160%;
 }
 </style>

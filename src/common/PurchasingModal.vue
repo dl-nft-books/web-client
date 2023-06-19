@@ -8,7 +8,7 @@
       <div ref="modalPaneRef" :class="modalPaneClasses">
         <div class="purchasing-modal__head">
           <h4 class="purchasing-modal__head-title">
-            {{ title }}
+            {{ $t('purchasing-modal.title') }}
           </h4>
           <app-button
             class="purchasing-modal__close-btn"
@@ -22,8 +22,6 @@
         <div class="purchasing-modal__body">
           <purchase-book-form
             :book="props.book"
-            :is-valid-chain="isValidChain"
-            @submitting="isSubmitting = $event"
             @submit="emit('submit', $event)"
           />
         </div>
@@ -39,11 +37,9 @@ import { ref, computed } from 'vue'
 import { PurchaseBookForm } from '@/forms'
 import { FullBookInfo } from '@/types'
 import { useElementSize, useWindowSize } from '@vueuse/core'
-import { useI18n } from 'vue-i18n'
 
 const props = defineProps<{
   isShown: boolean
-  isValidChain: boolean
   book: FullBookInfo
 }>()
 
@@ -52,19 +48,10 @@ const emit = defineEmits<{
   (event: 'submit', message?: string): void
 }>()
 
-const { t } = useI18n()
-
-const isSubmitting = ref(false)
 const modalPaneRef = ref<HTMLElement | null>(null)
 
 const { height } = useElementSize(modalPaneRef)
 const { height: windowHeight } = useWindowSize()
-
-const title = computed(() =>
-  isSubmitting.value
-    ? t('purchasing-modal.generation-title')
-    : t('purchasing-modal.title'),
-)
 
 const modalPaneClasses = computed(() => {
   const maxThreshold = 150

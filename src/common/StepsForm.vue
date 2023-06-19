@@ -38,7 +38,7 @@
         v-if="currentStep === STEPS.first"
         class="steps-form__actions-btn"
         size="x-small"
-        :disabled="isNextStepDisabled"
+        :disabled="isFormDisabled"
         :text="$t('steps-form.next-step-lbl')"
         @click="switchStep(STEPS.second)"
       />
@@ -47,15 +47,16 @@
           class="steps-form__actions-btn"
           scheme="flat"
           size="x-small"
+          :disabled="isFormDisabled"
           :icon-left="$icons.arrowLeft"
           :text="$t('steps-form.prev-step-lbl')"
           @click="switchStep(STEPS.first)"
         />
         <app-button
-          :disabled="isNextStepDisabled"
           class="steps-form__actions-btn"
-          :text="submitText"
           size="x-small"
+          :text="submitText"
+          :disabled="isFormDisabled"
           @click="submit"
         />
       </template>
@@ -72,9 +73,10 @@ enum STEPS {
   second = 'second',
 }
 
-defineProps<{
+const props = defineProps<{
   submitText: string
-  isNextStepDisabled: boolean
+  isFormValid: () => boolean
+  isFormDisabled: boolean
 }>()
 
 const emit = defineEmits<{
@@ -84,10 +86,14 @@ const emit = defineEmits<{
 const currentStep = ref<STEPS>(STEPS.first)
 
 const submit = () => {
+  if (!props.isFormValid()) return
+
   emit('submit')
 }
 
 const switchStep = (type: STEPS) => {
+  if (!props.isFormValid()) return
+
   switch (type) {
     case STEPS.second:
       currentStep.value = STEPS.second

@@ -30,32 +30,37 @@
       :title="$t('rarimo-template.no-payment-tokens')"
     />
   </template>
+
+  <teleport to="#purchase-book-form__preview">
+    <book-preview :book="book" />
+  </teleport>
 </template>
 
 <script setup lang="ts">
-import { computed, reactive, ref, toRef, watch, inject } from 'vue'
+import { computed, reactive, ref, watch } from 'vue'
 
 import {
   Loader,
   ErrorMessage,
   NftCheckoutInfo,
   RarimoTokenSelect,
+  BookPreview,
 } from '@/common'
 import { MessageField, SelectField } from '@/fields'
 
-import { BuyParams, FullBookInfo, PurchaseFormKey, Signature } from '@/types'
+import { PurchaseFormKey } from '@/types'
 import {
   useBalance,
   useNftCheckout,
+  useNftTokens,
   useFormValidation,
   useForm,
 } from '@/composables'
 
-import { ErrorHandler } from '@/helpers'
+import { ErrorHandler, safeInject } from '@/helpers'
 import { BN, BnLike } from '@/utils/math.util'
 import { useWeb3ProvidersStore } from '@/store'
-import { ExposedFormRef } from '@/forms//PurchaseBookForm.vue'
-import { TOKEN_TYPES } from '@/enums'
+import { FORM_STATES, TOKEN_TYPES } from '@/enums'
 import { required } from '@/validators'
 import {
   PaymentToken,
@@ -66,6 +71,7 @@ import {
 import { config } from '@/config'
 import { ethers } from 'ethers'
 import { EstimatedPriceInfo } from '@/common/NftCheckoutInfo.vue'
+import { UseImageEditor } from 'simple-fabric-vue-image-editor'
 
 type SelectOption = {
   label: string
@@ -73,14 +79,18 @@ type SelectOption = {
 }
 const TOKEN_AMOUNT_COEFFICIENT = 1.02
 
-const props = defineProps<{
-  book: FullBookInfo
-}>()
-
-const { isFormDisabled: isGlobalFormDisabled } = inject(PurchaseFormKey)
+const {
+  bookInfo: book,
+  formState,
+  submit,
+  isFormValid: _isFormValid,
+} = safeInject(PurchaseFormKey)
 
 const web3ProvidersStore = useWeb3ProvidersStore()
 const provider = computed(() => web3ProvidersStore.provider)
+const isGlobalFormDisabled = computed(
+  () => formState.value === FORM_STATES.disabled,
+)
 
 const { isLoadFailed, tokenPrice, getPrice } = useBalance()
 
@@ -92,6 +102,7 @@ const {
   getEstimatedPrice,
   performCheckout,
 } = useNftCheckout()
+const { formMintData } = useNftTokens()
 
 const form = reactive({
   sourceChain: '',
@@ -127,13 +138,19 @@ let priceRaw: EstimatedPrice | undefined = undefined
 const formattedTokenAmount = computed(() => {
   if (!tokenPrice.value) return ''
 
-  return new BN(props.book.pricePerOneToken as BnLike, {
+  return new BN(book.pricePerOneToken as BnLike, {
     decimals: tokenPrice.value.token.decimals,
   })
     .fromFraction(tokenPrice.value.token.decimals)
     .div(tokenPrice.value.price)
     .toString()
 })
+
+const targetChain = computed(() =>
+  isDevelopment
+    ? chainListRaw.value.find(chain => chain.name === ChainNames.Sepolia)
+    : chainListRaw.value.find(chain => chain.name === ChainNames.Polygon),
+)
 
 const initChainSelectFields = (supportedChains: BridgeChain[]) => {
   chainListRaw.value = supportedChains
@@ -148,6 +165,8 @@ const initChainSelectFields = (supportedChains: BridgeChain[]) => {
 
 const initForm = async () => {
   try {
+    await getPrice('', TOKEN_TYPES.native, Number(config.DEFAULT_CHAIN_ID))
+
     await createCheckout()
 
     const supportedChains = await getSupportedChains()
@@ -167,22 +186,18 @@ const getBridgeChains = () => {
 
   if (!sourceChain) return
 
-  const targetChain = isDevelopment
-    ? chainListRaw.value.find(chain => chain.name === ChainNames.Sepolia)
-    : chainListRaw.value.find(chain => chain.name === ChainNames.Polygon)
-
-  if (!targetChain) return
+  if (!targetChain.value) return
 
   if (
-    !props.book.networks.some(
-      network => network.attributes.chain_id === Number(targetChain.id),
+    !book.networks.some(
+      network => network.attributes.chain_id === Number(targetChain.value!.id),
     )
   )
     return
 
   return {
     sourceChain,
-    targetChain,
+    targetChain: targetChain.value,
   }
 }
 
@@ -229,7 +244,7 @@ const initializeCheckout = async (
 ) => {
   if (!tokenPrice.value || !provider.value.selectedAddress) return
 
-  const nftPrice = new BN(props.book.pricePerOneToken as BnLike, {
+  const nftPrice = new BN(book.pricePerOneToken as BnLike, {
     decimals: tokenPrice.value?.token.decimals,
   })
     .div(tokenPrice.value.price)
@@ -242,32 +257,56 @@ const initializeCheckout = async (
   })
 }
 
-const _performCheckout = async (
-  buyParams: BuyParams,
-  signature: Signature,
-  amountOfEth: string,
-) => {
-  if (!estimatedPrice.value || !priceRaw) return
+const _performCheckout = async (editorInstance: UseImageEditor | null) => {
+  if (
+    !priceRaw ||
+    !provider.value.selectedAddress ||
+    !editorInstance ||
+    !tokenPrice.value
+  )
+    return
 
-  await performCheckout(priceRaw, {
-    buyParams,
-    signature,
-    amountOfEth,
-  })
+  formState.value = FORM_STATES.pending
+  try {
+    const banner = await editorInstance.canvasToFormData('Document')
+
+    if (!banner) throw new Error('Failed to format canvas to FormData')
+
+    const { buyParams, signature } = await formMintData({
+      banner,
+      book,
+      account: provider.value.selectedAddress,
+      chainId: Number(provider.value.chainId),
+      tokenAddress: '',
+    })
+
+    const nativeTokenAmount = new BN(book.pricePerOneToken as BnLike, {
+      decimals: tokenPrice.value.token.decimals,
+    })
+      .div(tokenPrice.value.price)
+      .mul(TOKEN_AMOUNT_COEFFICIENT)
+      .toFixed()
+
+    await performCheckout(priceRaw, {
+      buyParams,
+      signature,
+      amountOfEth: nativeTokenAmount,
+    })
+
+    formState.value = FORM_STATES.success
+  } catch (error) {
+    ErrorHandler.process(error)
+    formState.value = FORM_STATES.active
+  }
 }
 
-defineExpose<Omit<ExposedFormRef, 'promocode'>>({
-  isFormValid: () =>
-    !noAvailableTokens.value &&
-    !isFormDisabled.value &&
-    Boolean(paymentToken.value) &&
-    isFormValid(),
-  tokenAddress: toRef(form, 'tokenAddress'),
-  tokenAmount: formattedTokenAmount,
-  tokenPrice,
-  mintFunction: _performCheckout,
-})
-
+// this submit function will be invoked on the top level of purchase form
+submit.value = _performCheckout
+_isFormValid.value = () =>
+  !noAvailableTokens.value &&
+  !isFormDisabled.value &&
+  Boolean(paymentToken.value) &&
+  isFormValid()
 watch(paymentToken, async () => {
   if (!paymentToken.value) return
 
@@ -315,8 +354,6 @@ watch(
   () => provider.value.selectedAddress,
   async () => {
     isLoading.value = true
-
-    await getPrice('', TOKEN_TYPES.native, Number(config.DEFAULT_CHAIN_ID))
     await initForm()
     isLoading.value = false
   },

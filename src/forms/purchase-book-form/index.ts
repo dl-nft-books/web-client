@@ -1,0 +1,5 @@
+export { default as GenerationView } from '@/forms/purchase-book-form/GenerationView.vue'
+export { default as GenerationSuccessView } from '@/forms/purchase-book-form/GenerationSuccessView.vue'
+export { default as DefaultPaymentFlow } from '@/forms/purchase-book-form/DefaultPaymentFlow.vue'
+export * from '@/forms/purchase-book-form/default-payments'
+export * from '@/forms/purchase-book-form/integrated-payments'
