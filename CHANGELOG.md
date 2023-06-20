@@ -14,6 +14,7 @@ abillity to show books no matter on what chain user is now
 
 #### Fixed
 - Purchase form refactored
+- StepsForm now works with dynamic amount of steps
 
 ## [1.4.0] - 2023-05-12
 #### Added

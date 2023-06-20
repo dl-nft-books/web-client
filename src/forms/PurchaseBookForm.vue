@@ -11,7 +11,7 @@
     <steps-form
       v-else
       :submit-text="$t('purchase-book-form.generate-btn')"
-      :is-form-valid="checkFormValidation"
+      :is-form-valid="isFormValid"
       :is-form-disabled="isFormDisabled"
       @submit="submit(editorInstance)"
     >
@@ -19,7 +19,7 @@
         <form class="purchase-book-form__form">
           <!-- Components from templates will be teleported here -->
           <section id="purchase-book-form__preview">
-            <book-preview v-if="!paymentType" :book="book" />
+            <book-preview v-if="!form.paymentType" :book="book" />
           </section>
 
           <message-field
@@ -34,13 +34,14 @@
            -->
           <radio-select
             v-if="isValidChain"
-            v-model="paymentType"
-            :value-options="paymentOptions"
+            v-model="form.paymentType"
             name="payment-select"
+            :value-options="paymentOptions"
+            :error-message="getFieldErrorMessage('paymentType')"
           />
 
           <component
-            v-if="paymentType"
+            v-if="form.paymentType"
             :is="paymentFlow"
             class="purchase-book-form__form-descendant"
           />
@@ -61,7 +62,7 @@
 import 'simple-fabric-vue-image-editor/dist/fabric-vue-image-editor-ts.css'
 import { ImageEditor, UseImageEditor } from 'simple-fabric-vue-image-editor'
 
-import { computed, provide, ref } from 'vue'
+import { computed, provide, ref, reactive } from 'vue'
 import { useI18n } from 'vue-i18n'
 
 import {
@@ -72,7 +73,8 @@ import {
 } from '@/common'
 import { RadioSelect, MessageField } from '@/fields'
 import { FullBookInfo, PurchaseFormKey } from '@/types'
-import { useForm } from '@/composables'
+import { useForm, useFormValidation } from '@/composables'
+import { required } from '@/validators'
 import { useWeb3ProvidersStore } from '@/store'
 import { DefaultPaymentFlow, RarimoFlow } from '@/forms/purchase-book-form'
 
@@ -88,6 +90,7 @@ const props = defineProps<{
 const { t } = useI18n()
 
 const web3ProvidersStore = useWeb3ProvidersStore()
+
 const provider = computed(() => web3ProvidersStore.provider)
 const isValidChain = computed(() =>
   Boolean(
@@ -97,12 +100,30 @@ const isValidChain = computed(() =>
   ),
 )
 
+const paymentFlow = computed(() => {
+  switch (form.paymentType) {
+    case PAYMENT_TYPES.rarimo:
+      return RarimoFlow
+    case PAYMENT_TYPES.default:
+    default:
+      return DefaultPaymentFlow
+  }
+})
+
+// if chain invalid - goes with rarimo by default
+const form = reactive({
+  paymentType: !isValidChain.value ? PAYMENT_TYPES.rarimo : undefined,
+})
+
 const formState = useForm()
 const { isFormDisabled, isFormPending, isFormSuccesfullySubmitted } = formState
 
-// Form validation occurs inside templates and vary from component to component
-const isFormValid = ref<(() => boolean) | null>(null)
-
+const { isFormValid: isTemplateValid, getFieldErrorMessage } =
+  useFormValidation(form, {
+    paymentType: {
+      required,
+    },
+  })
 /* 
   Each payment template implements its own version of submit function, that at
   the end of purchase will be invoked here
@@ -119,11 +140,6 @@ const editorInstance = ref<{
   editorInstance: UseImageEditor | null
 }>()
 
-// if chain invalid - goes with rarimo by default
-const paymentType = ref<PAYMENT_TYPES | undefined>(
-  !isValidChain.value ? PAYMENT_TYPES.rarimo : undefined,
-)
-
 const paymentOptions = [
   {
     label: t('purchase-book-form.default-payment'),
@@ -135,26 +151,13 @@ const paymentOptions = [
   },
 ]
 
-const paymentFlow = computed(() => {
-  switch (paymentType.value) {
-    case PAYMENT_TYPES.rarimo:
-      return RarimoFlow
-    case PAYMENT_TYPES.default:
-    default:
-      return DefaultPaymentFlow
-  }
-})
+// Form validation occurs inside templates and vary from component to component
+const isFormValid = ref<() => boolean>(isTemplateValid)
 
 const submit = (editor: typeof editorInstance.value) => {
   if (!submitFunc.value || !editor) return
 
   submitFunc.value(editor.editorInstance)
-}
-
-const checkFormValidation = () => {
-  if (!isFormValid.value) return false
-
-  return isFormValid.value()
 }
 
 provide(PurchaseFormKey, {

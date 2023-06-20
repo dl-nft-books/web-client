@@ -32,6 +32,7 @@
       />
     </template>
 
+    <!-- This component is teleported to parent component (Purchase Form) -->
     <teleport to="#purchase-book-form__preview">
       <book-preview :book="book" />
     </teleport>
@@ -84,7 +85,7 @@ const {
   bookInfo: book,
   formState: { isFormDisabled, setFormState, enableForm, disableForm },
   submit,
-  isFormValid: _isFormValid,
+  isFormValid,
 } = safeInject(PurchaseFormKey)
 
 const web3ProvidersStore = useWeb3ProvidersStore()
@@ -124,7 +125,11 @@ const estimatedPrice = ref<EstimatedPriceInfo>()
 
 let priceRaw: EstimatedPrice | undefined = undefined
 
-const { isFormValid, touchField, getFieldErrorMessage } = useFormValidation(
+const {
+  isFormValid: isTemplateValid,
+  touchField,
+  getFieldErrorMessage,
+} = useFormValidation(
   { ...toRefs(form), noAvailableTokens },
   {
     sourceChain: { required },
@@ -300,7 +305,7 @@ const submitFunc = async (editorInstance: UseImageEditor | null) => {
 
 // this submit function will be invoked on the top level of purchase form
 submit.value = submitFunc
-_isFormValid.value = () => !noAvailableTokens.value && isFormValid()
+isFormValid.value = isTemplateValid
 
 watch(
   () => form.paymentToken,

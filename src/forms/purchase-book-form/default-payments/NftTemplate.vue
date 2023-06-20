@@ -53,6 +53,7 @@
     :label="$t('nft-template.buy-terms')"
   />
 
+  <!-- This component is teleported to parent component (Purchase Form) -->
   <teleport to="#purchase-book-form__preview">
     <book-preview :book="book" modification="floor-price" />
   </teleport>
