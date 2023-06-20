@@ -30,7 +30,7 @@
 
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue'
-import { ethers } from 'ethers'
+import { constants } from 'ethers'
 
 import { Loader, ErrorMessage, BookPreview } from '@/common'
 import { MessageField, ReadonlyField } from '@/fields'
@@ -53,7 +53,7 @@ import { UseImageEditor } from 'simple-fabric-vue-image-editor'
 
 const {
   bookInfo: book,
-  formState: { setFormState, enableForm },
+  formState: { formState, enableForm },
   submit,
   isFormValid,
   successMessage,
@@ -71,7 +71,7 @@ const { sendBuyWithVoucherRequest, createNewGenerationTask, uploadBanner } =
 const isLoading = ref(true)
 
 const isVoucherSupported = computed(
-  () => book.voucherTokenContract !== ethers.constants.AddressZero,
+  () => book.voucherTokenContract !== constants.AddressZero,
 )
 
 const formattedVoucherTokenAmount = computed(() =>
@@ -109,7 +109,7 @@ const {
 const submitFunc = async (editorInstance: UseImageEditor | null) => {
   if (!editorInstance || !provider.value.selectedAddress) return
 
-  setFormState(FORM_STATES.pending)
+  formState.value = FORM_STATES.pending
   try {
     const banner = await editorInstance.canvasToFormData('Document')
 
@@ -125,7 +125,7 @@ const submitFunc = async (editorInstance: UseImageEditor | null) => {
 
     const txHash = await sendBuyWithVoucherRequest(
       book.voucherTokenContract,
-      book.voucherTokensAmount,
+      book.voucherTokensAmount as string,
       Number(generatedTask.id),
     )
 
@@ -136,7 +136,7 @@ const submitFunc = async (editorInstance: UseImageEditor | null) => {
       txLink: getBlockExplorerLink(provider.value.chainId!, txHash, 'tx'),
     }
 
-    setFormState(FORM_STATES.success)
+    formState.value = FORM_STATES.success
   } catch (error) {
     ErrorHandler.process(error)
     enableForm()

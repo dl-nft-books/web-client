@@ -13,3 +13,7 @@ export type {
   Signature,
   BuyParams,
 } from '@/composables/contracts/use-marketplace'
+export type {
+  UnwrapPromiseProperties,
+  UnwrapPromise,
+} from '@/helpers/promise.helpers'

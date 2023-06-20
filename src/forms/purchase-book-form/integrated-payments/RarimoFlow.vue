@@ -83,7 +83,7 @@ const TOKEN_AMOUNT_COEFFICIENT = 1.02
 
 const {
   bookInfo: book,
-  formState: { isFormDisabled, setFormState, enableForm, disableForm },
+  formState: { isFormDisabled, formState, enableForm, disableForm },
   submit,
   isFormValid,
 } = safeInject(PurchaseFormKey)
@@ -269,7 +269,7 @@ const submitFunc = async (editorInstance: UseImageEditor | null) => {
   )
     return
 
-  setFormState(FORM_STATES.pending)
+  formState.value = FORM_STATES.pending
   try {
     const banner = await editorInstance.canvasToFormData('Document')
 
@@ -296,7 +296,7 @@ const submitFunc = async (editorInstance: UseImageEditor | null) => {
       amountOfEth: nativeTokenAmount,
     })
 
-    setFormState(FORM_STATES.success)
+    formState.value = FORM_STATES.success
   } catch (error) {
     ErrorHandler.process(error)
     enableForm()

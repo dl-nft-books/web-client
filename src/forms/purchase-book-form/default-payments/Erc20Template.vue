@@ -62,7 +62,7 @@ import { ErrorHandler, safeInject } from '@/helpers'
 
 const {
   bookInfo: book,
-  formState: { isFormDisabled, setFormState, enableForm },
+  formState: { isFormDisabled, enableForm, formState },
   submit,
   isFormValid: _isFormValid,
 } = safeInject(PurchaseFormKey)
@@ -131,7 +131,7 @@ const submitFunc = async (editorInstance: UseImageEditor | null) => {
   )
     return
 
-  setFormState(FORM_STATES.pending)
+  formState.value = FORM_STATES.pending
   try {
     const banner = await editorInstance.canvasToFormData('Document')
 
@@ -159,7 +159,7 @@ const submitFunc = async (editorInstance: UseImageEditor | null) => {
 
     await mintWithErc20(buyParams, signature)
 
-    setFormState(FORM_STATES.success)
+    formState.value = FORM_STATES.success
   } catch (error) {
     ErrorHandler.process(error)
     enableForm()

@@ -20,16 +20,12 @@ export function useForm() {
     () => formState.value === FORM_STATES.success,
   )
 
-  const setFormState = (state: FORM_STATES) => {
-    formState.value = state
-  }
-
   const disableForm = () => {
-    setFormState(FORM_STATES.disabled)
+    formState.value = FORM_STATES.disabled
   }
 
   const enableForm = () => {
-    setFormState(FORM_STATES.active)
+    formState.value = FORM_STATES.active
   }
 
   const showConfirmation = () => {
@@ -43,7 +39,7 @@ export function useForm() {
   }
 
   const hideConfirmationAfterSubmit = async (submitFn: () => Promise<void>) => {
-    setFormState(FORM_STATES.pending)
+    formState.value = FORM_STATES.pending
     await submitFn()
     hideConfirmation()
   }
@@ -55,7 +51,6 @@ export function useForm() {
     isFormSuccesfullySubmitted,
     isConfirmationShown,
     formState,
-    setFormState,
     disableForm,
     enableForm,
     showConfirmation,

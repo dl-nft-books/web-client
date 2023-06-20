@@ -1,22 +1,19 @@
 <template>
   <div class="readonly-field">
-    <p v-if="label" class="readonly-field__label">
-      {{ label }}
-    </p>
-    <div class="readonly-field__value-wrap">
-      <p class="readonly-field__value">
-        {{ value }}
-      </p>
-    </div>
-
-    <span v-if="errorMessage" class="readonly-field__err-msg">
-      {{ errorMessage }}
-    </span>
+    <input-field
+      v-model="fieldValue"
+      :error-message="errorMessage"
+      :label="label"
+      readonly
+    />
   </div>
 </template>
 
 <script setup lang="ts">
-withDefaults(
+import { ref } from 'vue'
+import { InputField } from '@/fields'
+
+const props = withDefaults(
   defineProps<{
     value?: string
     label?: string
@@ -28,49 +25,20 @@ withDefaults(
     errorMessage: '',
   },
 )
+
+const fieldValue = ref(props.value)
 </script>
 
 <style lang="scss" scoped>
 .readonly-field {
-  display: flex;
-  flex-direction: column;
-  position: relative;
-  width: 100%;
-  flex: 1;
-
-  &--disabled,
-  &--readonly {
-    opacity: 0.5;
+  :deep(.input-field) {
+    opacity: 1;
   }
-}
 
-.readonly-field__label {
-  @include text-ellipsis;
-
-  @include field-label;
-}
-
-.readonly-field__value-wrap {
-  display: flex;
-  flex-direction: column;
-  position: relative;
-}
-
-.readonly-field__value {
-  padding: var(--field-padding);
-  transition-property: box-shadow;
-  border-bottom: toRem(1) solid var(--field-border);
-
-  @include text-ellipsis;
-
-  @include field-text;
-}
-
-.readonly-field__err-msg {
-  @include field-error;
-
-  font-size: toRem(12);
-  padding-top: toRem(5);
-  padding-left: toRem(10);
+  :deep(.input-field__input) {
+    background-color: var(--background-primary-light);
+    border: none;
+    border-bottom: toRem(1) solid var(--field-border);
+  }
 }
 </style>

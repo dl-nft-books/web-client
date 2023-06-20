@@ -14,7 +14,7 @@ import { IMarketplace } from '@/types/contracts/MarketPlace'
 import { BN } from '@/utils/math.util'
 import { computed, ref, watch } from 'vue'
 import { useFetch } from '@vueuse/core'
-import { ethers } from 'ethers'
+import { constants } from 'ethers'
 
 export type TokenBaseInfo = {
   tokenContract: string
@@ -341,7 +341,7 @@ export function useNftTokens() {
         },
         paymentDetails: {
           paymentTokenAddress:
-            initialOpts.tokenAddress || ethers.constants.AddressZero,
+            initialOpts.tokenAddress || constants.AddressZero,
           paymentTokenPrice: mintSignature.price,
           nftTokenId: initialOpts.nftId ?? '0',
           discount: mintSignature.discount,

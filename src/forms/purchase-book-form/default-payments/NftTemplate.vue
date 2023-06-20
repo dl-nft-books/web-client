@@ -89,7 +89,7 @@ import { ErrorHandler, formatAssetFromWei, safeInject } from '@/helpers'
 
 const {
   bookInfo: book,
-  formState: { isFormDisabled, setFormState, enableForm },
+  formState: { isFormDisabled, formState, enableForm },
   isFormValid,
   submit,
 } = safeInject(PurchaseFormKey)
@@ -192,7 +192,7 @@ const onTokenIdInput = async () => {
 const submitFunc = async (editorInstance: UseImageEditor | null) => {
   if (!editorInstance || !provider.value.selectedAddress) return
 
-  setFormState(FORM_STATES.pending)
+  formState.value = FORM_STATES.pending
   try {
     const banner = await editorInstance.canvasToFormData('Document')
 
@@ -216,7 +216,7 @@ const submitFunc = async (editorInstance: UseImageEditor | null) => {
 
     await mintWithNft(buyParams, signature)
 
-    setFormState(FORM_STATES.success)
+    formState.value = FORM_STATES.success
   } catch (error) {
     ErrorHandler.process(error)
     enableForm()
