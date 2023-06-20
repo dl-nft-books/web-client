@@ -1,9 +1,9 @@
 <template>
   <div class="purchase-book-form">
-    <generation-view v-if="formState === FORM_STATES.pending" />
+    <generation-view v-if="isFormPending" />
 
     <generation-success-view
-      v-else-if="formState === FORM_STATES.success"
+      v-else-if="isFormSuccesfullySubmitted"
       :message="successMessage.message"
       :link="successMessage.txLink"
     />
@@ -39,7 +39,11 @@
             name="payment-select"
           />
 
-          <component v-if="paymentType" :is="paymentFlow" />
+          <component
+            v-if="paymentType"
+            :is="paymentFlow"
+            class="purchase-book-form__form-descendant"
+          />
         </form>
       </template>
 
@@ -60,17 +64,17 @@ import { ImageEditor, UseImageEditor } from 'simple-fabric-vue-image-editor'
 import { computed, provide, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 
-import { StepsForm, BookPreview } from '@/common'
-import { RadioSelect, MessageField } from '@/fields'
-import { FullBookInfo, PurchaseFormKey } from '@/types'
-import { FORM_STATES } from '@/enums'
-import { useWeb3ProvidersStore } from '@/store'
 import {
+  StepsForm,
+  BookPreview,
   GenerationView,
   GenerationSuccessView,
-  DefaultPaymentFlow,
-  RarimoFlow,
-} from '@/forms/purchase-book-form'
+} from '@/common'
+import { RadioSelect, MessageField } from '@/fields'
+import { FullBookInfo, PurchaseFormKey } from '@/types'
+import { useForm } from '@/composables'
+import { useWeb3ProvidersStore } from '@/store'
+import { DefaultPaymentFlow, RarimoFlow } from '@/forms/purchase-book-form'
 
 enum PAYMENT_TYPES {
   rarimo = 'rarimo',
@@ -93,7 +97,8 @@ const isValidChain = computed(() =>
   ),
 )
 
-const formState = ref<FORM_STATES>(FORM_STATES.active)
+const formState = useForm()
+const { isFormDisabled, isFormPending, isFormSuccesfullySubmitted } = formState
 
 // Form validation occurs inside templates and vary from component to component
 const isFormValid = ref<(() => boolean) | null>(null)
@@ -140,8 +145,6 @@ const paymentFlow = computed(() => {
   }
 })
 
-const isFormDisabled = computed(() => formState.value === FORM_STATES.disabled)
-
 const submit = (editor: typeof editorInstance.value) => {
   if (!submitFunc.value || !editor) return
 
@@ -174,5 +177,9 @@ provide(PurchaseFormKey, {
   @include respond-to(small) {
     width: 100%;
   }
+}
+
+.purchase-book-form__form-descendant {
+  all: inherit;
 }
 </style>

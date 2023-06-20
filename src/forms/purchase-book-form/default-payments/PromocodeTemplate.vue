@@ -28,7 +28,7 @@
 </template>
 
 <script setup lang="ts">
-import { reactive, Ref, toRef, computed } from 'vue'
+import { reactive, Ref, toRef } from 'vue'
 import { debounce } from 'lodash'
 
 import { InputField, MessageField } from '@/fields'
@@ -38,7 +38,7 @@ import { maxLength, minLength, urlSymbols } from '@/validators'
 import { MAX_PROMOCODE_LENGTH, MIN_PROMOCODE_LENGTH } from '@/const'
 import { Promocode, TokenPrice, PurchaseFormKey } from '@/types'
 import { BN } from '@/utils/math.util'
-import { FORM_STATES, TOKEN_TYPES } from '@/enums'
+import { TOKEN_TYPES } from '@/enums'
 import { safeInject } from '@/helpers'
 
 export type ExposedPromocodeRef = {
@@ -59,9 +59,9 @@ const props = withDefaults(
   },
 )
 
-const { formState } = safeInject(PurchaseFormKey)
-
-const isFormDisabled = computed(() => formState.value === FORM_STATES.disabled)
+const {
+  formState: { isFormDisabled },
+} = safeInject(PurchaseFormKey)
 
 const form = reactive({
   promocode: '',

@@ -8,6 +8,10 @@
         {{ value }}
       </p>
     </div>
+
+    <span v-if="errorMessage" class="readonly-field__err-msg">
+      {{ errorMessage }}
+    </span>
   </div>
 </template>
 
@@ -16,10 +20,12 @@ withDefaults(
   defineProps<{
     value?: string
     label?: string
+    errorMessage?: string
   }>(),
   {
     value: '',
     label: '',
+    errorMessage: '',
   },
 )
 </script>
@@ -58,5 +64,13 @@ withDefaults(
   @include text-ellipsis;
 
   @include field-text;
+}
+
+.readonly-field__err-msg {
+  @include field-error;
+
+  font-size: toRem(12);
+  padding-top: toRem(5);
+  padding-left: toRem(10);
 }
 </style>

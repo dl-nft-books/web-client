@@ -20,29 +20,26 @@
     <message-field v-else :title="$t('nft-template.loading-error-msg')" />
   </template>
 
-  <template v-else-if="nftPrice">
+  <template v-else-if="floorPrice">
     <readonly-field
       :label="$t('nft-template.collection-price')"
-      :value="$t('nft-template.price', { price: nftPrice.floor_price })"
+      :value="
+        $t('nft-template.price', { price: formatAssetFromWei(floorPrice, 2) })
+      "
+      :error-message="floorPriceError"
     />
 
-    <p
-      v-if="!isFloorPriceAcceptable"
-      class="nft-template__not-enough-balance-msg"
-    >
-      {{ $t('nft-template.not-enough-price') }}
-    </p>
+    <input-field
+      v-if="!isLoadFailed && !floorPriceError"
+      v-model="form.tokenId"
+      type="number"
+      :label="$t('nft-template.token-id-lbl')"
+      :placeholder="$t('nft-template.token-id-placeholder')"
+      :error-message="getFieldErrorMessage('tokenId')"
+      :disabled="isFormDisabled"
+      @blur="touchField('tokenId')"
+    />
   </template>
-
-  <input-field
-    v-if="!isLoadFailed && isFloorPriceAcceptable"
-    v-model="form.tokenId"
-    :label="$t('nft-template.token-id-lbl')"
-    :placeholder="$t('nft-template.token-id-placeholder')"
-    :error-message="getFieldErrorMessage('tokenId')"
-    :disabled="isFormDisabled"
-    @blur="touchField('tokenId')"
-  />
 
   <loader v-if="isNftOwnershipLoading" />
 
@@ -62,7 +59,10 @@
 </template>
 
 <script setup lang="ts">
-import { computed, reactive, watch, ref } from 'vue'
+import { UseImageEditor } from 'simple-fabric-vue-image-editor'
+import { computed, reactive, watch, ref, toRefs } from 'vue'
+import { useI18n } from 'vue-i18n'
+import { debounce } from 'lodash'
 
 import { BN, BnLike } from '@/utils/math.util'
 
@@ -81,18 +81,15 @@ import {
   useNftTokens,
 } from '@/composables'
 import { PurchaseFormKey } from '@/types'
-import { required, address } from '@/validators'
+import { required, address, enoughBnAmount, truthyValue } from '@/validators'
 import { useWeb3ProvidersStore } from '@/store'
 import { FORM_STATES, TOKEN_TYPES } from '@/enums'
-import { debounce } from 'lodash'
 import { ErrorHandler, formatAssetFromWei, safeInject } from '@/helpers'
-import { useI18n } from 'vue-i18n'
-import { UseImageEditor } from 'simple-fabric-vue-image-editor'
 
 const {
   bookInfo: book,
-  formState,
-  isFormValid: _isFormValid,
+  formState: { isFormDisabled, setFormState, enableForm },
+  isFormValid,
   submit,
 } = safeInject(PurchaseFormKey)
 
@@ -109,38 +106,27 @@ const web3ProvidersStore = useWeb3ProvidersStore()
 const provider = computed(() => web3ProvidersStore.provider)
 
 const erc721 = useErc721()
-const { formMintData, mintWithNft, approveTokenSpend } = useNftTokens()
+const { buildFormMintData, mintWithNft, approveTokenSpend } = useNftTokens()
 
 const form = reactive({
   tokenAddress: '',
   tokenId: '',
   isAgreedWithTerms: false,
 })
-
-const { getFieldErrorMessage, touchField, isFormValid } = useFormValidation(
-  form,
-  {
-    tokenId: { required },
-    tokenAddress: { required, address },
-  },
-)
-
 const isCollectionPriceLoading = ref(false)
 const isNftOwnershipLoading = ref(false)
 const isNftOwnedByUser = ref(true)
 const isNftExist = ref(true)
 
-const isFormDisabled = computed(() => formState.value === FORM_STATES.disabled)
+const floorPrice = computed(() => {
+  if (!nftPrice.value) return ''
 
-const isGenerateButtonDisabled = computed(() => {
-  return (
-    isFormDisabled.value ||
-    !form.isAgreedWithTerms ||
-    !isFloorPriceAcceptable.value ||
-    !isNftOwnedByUser.value ||
-    !isNftExist.value
-  )
+  return new BN(nftPrice.value.floor_price).toWei().toString()
 })
+
+const floorPriceError = computed(() =>
+  getFieldErrorMessage('floorPrice') ? t('nft-template.not-enough-price') : '',
+)
 
 const nftErrorMessage = computed(() => {
   if (!isNftOwnedByUser.value) return t('nft-template.user-is-not-owner')
@@ -150,23 +136,33 @@ const nftErrorMessage = computed(() => {
   return ''
 })
 
-const isFloorPriceAcceptable = computed(() => {
-  const formattedBookFloorPrice = formatAssetFromWei(
-    book.minNFTFloorPrice as BnLike,
-    2,
-  )
-
-  return (
-    new BN(nftPrice.value?.floor_price as BnLike).compare(
-      formattedBookFloorPrice,
-    ) >= 1
-  )
-})
+const {
+  getFieldErrorMessage,
+  touchField,
+  isFormValid: isTemplateValid,
+} = useFormValidation(
+  { ...toRefs(form), floorPrice, isNftExist, isNftOwnedByUser },
+  {
+    tokenId: { required },
+    tokenAddress: { required, address },
+    isAgreedWithTerms: { truthyValue },
+    floorPrice: {
+      required,
+      enoughBnAmount: enoughBnAmount(book.minNFTFloorPrice as BnLike),
+    },
+    isNftExist: { truthyValue },
+    isNftOwnedByUser: { truthyValue },
+  },
+)
 
 const loadBalanceAndPrice = debounce(async () => {
   isCollectionPriceLoading.value = true
   await _loadBalanceAndPrice(form.tokenAddress, TOKEN_TYPES.nft)
   isCollectionPriceLoading.value = false
+
+  if (!nftPrice.value) return
+
+  touchField('floorPrice')
 }, 400)
 
 const onTokenIdInput = async () => {
@@ -186,19 +182,22 @@ const onTokenIdInput = async () => {
     ErrorHandler.processWithoutFeedback(error)
   }
 
+  touchField('isNftExist')
+  touchField('isNftOwnedByUser')
+
   isNftOwnershipLoading.value = false
 }
 
 const submitFunc = async (editorInstance: UseImageEditor | null) => {
   if (!editorInstance || !provider.value.selectedAddress) return
 
-  formState.value = FORM_STATES.pending
+  setFormState(FORM_STATES.pending)
   try {
     const banner = await editorInstance.canvasToFormData('Document')
 
     if (!banner) throw new Error('Failed to format canvas to FormData')
 
-    const { buyParams, signature } = await formMintData({
+    const { buyParams, signature } = await buildFormMintData({
       banner,
       book,
       account: provider.value.selectedAddress,
@@ -216,16 +215,16 @@ const submitFunc = async (editorInstance: UseImageEditor | null) => {
 
     await mintWithNft(buyParams, signature)
 
-    formState.value = FORM_STATES.success
+    setFormState(FORM_STATES.success)
   } catch (error) {
     ErrorHandler.process(error)
-    formState.value = FORM_STATES.active
+    enableForm()
   }
 }
 
 // this submit function will be invoked on the top level of purchase form
 submit.value = submitFunc
-_isFormValid.value = () => !isGenerateButtonDisabled.value && isFormValid()
+isFormValid.value = isTemplateValid
 
 watch(
   () => [form.tokenId, provider.value.selectedAddress],

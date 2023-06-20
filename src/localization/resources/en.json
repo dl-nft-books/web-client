@@ -6,7 +6,8 @@
     "field-error_address": "Field must be a valid address",
     "field-error_minLength": "Value must be at least {min} chars",
     "field-error_maxLength": "Value can't be greater than {max} chars",
-    "field-error_urlSymbols": "All unsafe and reserved url chars are restricted"
+    "field-error_urlSymbols": "All unsafe and reserved url chars are restricted",
+    "field-error_enoughBnAmount": "You don't have enough token amount"
   },
   "errors": {
     "default": "Oops... Something went wrong",
@@ -320,8 +321,7 @@
   },
   "native-template": {
     "token-amount-lbl": "Amount to spend",
-    "loading-error-msg":"Failed to load balance and price",
-    "not-enough-balance-msg": "You don't have enough tokens to buy this NFT"
+    "loading-error-msg":"Failed to load balance and price"
   },
   "erc20-template": {
     "token-address-lbl": "Enter Token Address",

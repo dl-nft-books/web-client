@@ -1,10 +1,10 @@
 import { InjectionKey, Ref } from 'vue'
-import { FORM_STATES } from '@/enums'
 import { FullBookInfo } from '@/types'
 import { UseImageEditor } from 'simple-fabric-vue-image-editor'
+import { useForm } from '@/composables'
 
 export const PurchaseFormKey: InjectionKey<{
-  formState: Ref<FORM_STATES>
+  formState: ReturnType<typeof useForm>
   bookInfo: FullBookInfo
   isFormValid: Ref<(() => boolean) | null>
   submit: Ref<

@@ -17,7 +17,7 @@ import { reactive, computed } from 'vue'
 import { SelectField } from '@/fields'
 import { globalizeTokenType, safeInject } from '@/helpers'
 import { useWeb3ProvidersStore } from '@/store'
-import { FORM_STATES, Q_CHAINS, TOKEN_TYPES } from '@/enums'
+import { Q_CHAINS, TOKEN_TYPES } from '@/enums'
 import { PurchaseFormKey } from '@/types'
 import {
   NativeTemplate,
@@ -26,12 +26,13 @@ import {
   NftTemplate,
 } from '@/forms/purchase-book-form'
 
-const { bookInfo: book, formState } = safeInject(PurchaseFormKey)
+const {
+  bookInfo: book,
+  formState: { isFormDisabled },
+} = safeInject(PurchaseFormKey)
 
 const web3ProvidersStore = useWeb3ProvidersStore()
 const provider = computed(() => web3ProvidersStore.provider)
-
-const isFormDisabled = computed(() => formState.value === FORM_STATES.disabled)
 
 const form = reactive({
   tokenType: TOKEN_TYPES.native,
@@ -90,9 +91,3 @@ const tokenTypesOptions = computed(() => {
   return defaultOptions
 })
 </script>
-
-<style lang="scss" scoped>
-.default-payment-flow {
-  all: inherit;
-}
-</style>

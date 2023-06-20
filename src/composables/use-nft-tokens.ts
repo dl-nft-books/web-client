@@ -295,7 +295,7 @@ export function useNftTokens() {
     }
   }
 
-  const formMintData = async (initialOpts: {
+  const buildFormMintData = async (initialOpts: {
     banner: FormData
     book: FullBookInfo
     account: string
@@ -385,6 +385,6 @@ export function useNftTokens() {
     mintWithNft,
     isNftToken,
     approveTokenSpend,
-    formMintData,
+    buildFormMintData,
   }
 }

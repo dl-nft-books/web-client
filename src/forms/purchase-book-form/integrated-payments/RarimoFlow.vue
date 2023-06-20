@@ -1,43 +1,45 @@
 <template>
-  <loader v-if="isLoading" />
-  <template v-else>
-    <error-message
-      v-if="isLoadFailed"
-      :message="$t('rarimo-template.error-message')"
-    />
-    <select-field
-      v-model="form.sourceChain"
-      :value-options="sourceChainList"
-      :placeholder="$t('rarimo-template.source-chain-placeholder')"
-      :label="$t('rarimo-template.source-chain-lbl')"
-      :error-message="getFieldErrorMessage('sourceChain')"
-      :disabled="isFormDisabled || isGlobalFormDisabled"
-      @blur="touchField('sourceChain')"
-    />
-    <loader v-if="isFetchingTokens" />
-    <rarimo-token-select
-      v-else-if="paymentTokensRaw.length"
-      v-model="paymentToken"
-      :value-options="paymentTokensRaw"
-    />
+  <div class="rarimo-flow">
+    <loader v-if="isLoading" />
+    <template v-else>
+      <error-message
+        v-if="isLoadFailed"
+        :message="$t('rarimo-template.error-message')"
+      />
+      <select-field
+        v-model="form.sourceChain"
+        :value-options="sourceChainList"
+        :placeholder="$t('rarimo-template.source-chain-placeholder')"
+        :label="$t('rarimo-template.source-chain-lbl')"
+        :error-message="getFieldErrorMessage('sourceChain')"
+        :disabled="isFormDisabled"
+        @blur="touchField('sourceChain')"
+      />
+      <loader v-if="isFetchingTokens" />
+      <rarimo-token-select
+        v-else-if="paymentTokensRaw.length"
+        v-model="form.paymentToken"
+        :value-options="paymentTokensRaw"
+      />
 
-    <loader v-if="isLoadingPrice" />
+      <loader v-if="isLoadingPrice" />
 
-    <nft-checkout-info v-else-if="estimatedPrice" :info="estimatedPrice" />
+      <nft-checkout-info v-else-if="estimatedPrice" :info="estimatedPrice" />
 
-    <message-field
-      v-if="noAvailableTokens"
-      :title="$t('rarimo-template.no-payment-tokens')"
-    />
-  </template>
+      <message-field
+        v-if="noAvailableTokens"
+        :title="$t('rarimo-template.no-payment-tokens')"
+      />
+    </template>
 
-  <teleport to="#purchase-book-form__preview">
-    <book-preview :book="book" />
-  </teleport>
+    <teleport to="#purchase-book-form__preview">
+      <book-preview :book="book" />
+    </teleport>
+  </div>
 </template>
 
 <script setup lang="ts">
-import { computed, reactive, ref, watch } from 'vue'
+import { computed, reactive, ref, watch, toRefs } from 'vue'
 
 import {
   Loader,
@@ -54,14 +56,13 @@ import {
   useNftCheckout,
   useNftTokens,
   useFormValidation,
-  useForm,
 } from '@/composables'
 
 import { ErrorHandler, safeInject } from '@/helpers'
 import { BN, BnLike } from '@/utils/math.util'
 import { useWeb3ProvidersStore } from '@/store'
 import { FORM_STATES, TOKEN_TYPES } from '@/enums'
-import { required } from '@/validators'
+import { required, truthyValue, not } from '@/validators'
 import {
   PaymentToken,
   BridgeChain,
@@ -81,16 +82,13 @@ const TOKEN_AMOUNT_COEFFICIENT = 1.02
 
 const {
   bookInfo: book,
-  formState,
+  formState: { isFormDisabled, setFormState, enableForm, disableForm },
   submit,
   isFormValid: _isFormValid,
 } = safeInject(PurchaseFormKey)
 
 const web3ProvidersStore = useWeb3ProvidersStore()
 const provider = computed(() => web3ProvidersStore.provider)
-const isGlobalFormDisabled = computed(
-  () => formState.value === FORM_STATES.disabled,
-)
 
 const { isLoadFailed, tokenPrice, getPrice } = useBalance()
 
@@ -102,20 +100,12 @@ const {
   getEstimatedPrice,
   performCheckout,
 } = useNftCheckout()
-const { formMintData } = useNftTokens()
+const { buildFormMintData } = useNftTokens()
 
 const form = reactive({
   sourceChain: '',
-  tokenAddress: '',
+  paymentToken: undefined as PaymentToken | undefined,
 })
-
-const { isFormDisabled, disableForm, enableForm } = useForm()
-const { isFormValid, touchField, getFieldErrorMessage } = useFormValidation(
-  form,
-  {
-    sourceChain: { required },
-  },
-)
 
 const isDevelopment = config.DEPLOY_ENVIRONMENT === 'development'
 
@@ -126,7 +116,6 @@ const noAvailableTokens = ref(false)
 
 const chainListRaw = ref<BridgeChain[]>([])
 const paymentTokensRaw = ref<PaymentToken[]>([])
-const paymentToken = ref<PaymentToken>()
 
 const paymentTokensList = ref<SelectOption[]>([])
 const sourceChainList = ref<SelectOption[]>([])
@@ -134,6 +123,15 @@ const sourceChainList = ref<SelectOption[]>([])
 const estimatedPrice = ref<EstimatedPriceInfo>()
 
 let priceRaw: EstimatedPrice | undefined = undefined
+
+const { isFormValid, touchField, getFieldErrorMessage } = useFormValidation(
+  { ...toRefs(form), noAvailableTokens },
+  {
+    sourceChain: { required },
+    paymentToken: { truthyValue },
+    noAvailableTokens: { not: not(truthyValue) },
+  },
+)
 
 const formattedTokenAmount = computed(() => {
   if (!tokenPrice.value) return ''
@@ -214,9 +212,9 @@ const initializeSupportedTokens = async (sourceChain: BridgeChain) => {
 }
 
 const initializeEstimatedPrice = async () => {
-  if (!paymentToken.value) return
+  if (!form.paymentToken) return
 
-  const price = await getEstimatedPrice(paymentToken.value)
+  const price = await getEstimatedPrice(form.paymentToken)
 
   if (!price) return
 
@@ -257,7 +255,7 @@ const initializeCheckout = async (
   })
 }
 
-const _performCheckout = async (editorInstance: UseImageEditor | null) => {
+const submitFunc = async (editorInstance: UseImageEditor | null) => {
   if (
     !priceRaw ||
     !provider.value.selectedAddress ||
@@ -266,13 +264,13 @@ const _performCheckout = async (editorInstance: UseImageEditor | null) => {
   )
     return
 
-  formState.value = FORM_STATES.pending
+  setFormState(FORM_STATES.pending)
   try {
     const banner = await editorInstance.canvasToFormData('Document')
 
     if (!banner) throw new Error('Failed to format canvas to FormData')
 
-    const { buyParams, signature } = await formMintData({
+    const { buyParams, signature } = await buildFormMintData({
       banner,
       book,
       account: provider.value.selectedAddress,
@@ -293,33 +291,33 @@ const _performCheckout = async (editorInstance: UseImageEditor | null) => {
       amountOfEth: nativeTokenAmount,
     })
 
-    formState.value = FORM_STATES.success
+    setFormState(FORM_STATES.success)
   } catch (error) {
     ErrorHandler.process(error)
-    formState.value = FORM_STATES.active
+    enableForm()
   }
 }
 
 // this submit function will be invoked on the top level of purchase form
-submit.value = _performCheckout
-_isFormValid.value = () =>
-  !noAvailableTokens.value &&
-  !isFormDisabled.value &&
-  Boolean(paymentToken.value) &&
-  isFormValid()
-watch(paymentToken, async () => {
-  if (!paymentToken.value) return
+submit.value = submitFunc
+_isFormValid.value = () => !noAvailableTokens.value && isFormValid()
 
-  isLoadingPrice.value = true
-  disableForm()
-  try {
-    await initializeEstimatedPrice()
-  } catch (error) {
-    ErrorHandler.process(error)
-  }
-  isLoadingPrice.value = false
-  enableForm()
-})
+watch(
+  () => form.paymentToken,
+  async () => {
+    if (!form.paymentToken) return
+
+    isLoadingPrice.value = true
+    disableForm()
+    try {
+      await initializeEstimatedPrice()
+    } catch (error) {
+      ErrorHandler.process(error)
+    }
+    isLoadingPrice.value = false
+    enableForm()
+  },
+)
 
 watch(
   () => form.sourceChain,
