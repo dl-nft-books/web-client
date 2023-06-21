@@ -33,9 +33,9 @@
     </template>
 
     <!-- This component is teleported to parent component (Purchase Form) -->
-    <teleport to="#purchase-book-form__preview">
+    <mounted-teleport to="#purchase-book-form__preview">
       <book-preview :book="book" />
-    </teleport>
+    </mounted-teleport>
   </div>
 </template>
 
@@ -48,6 +48,7 @@ import {
   NftCheckoutInfo,
   RarimoTokenSelect,
   BookPreview,
+  MountedTeleport,
 } from '@/common'
 import { MessageField, SelectField } from '@/fields'
 
@@ -79,7 +80,9 @@ type SelectOption = {
   label: string
   value: string
 }
+
 const TOKEN_AMOUNT_COEFFICIENT = 1.02
+const isDevelopment = config.DEPLOY_ENVIRONMENT === 'development'
 
 const {
   bookInfo: book,
@@ -88,27 +91,10 @@ const {
   isFormValid,
 } = safeInject(PurchaseFormKey)
 
-const web3ProvidersStore = useWeb3ProvidersStore()
-const provider = computed(() => web3ProvidersStore.provider)
-
-const { isLoadFailed, tokenPrice, getPrice } = useBalance()
-
-const {
-  createCheckout,
-  initCheckout,
-  getSupportedChains,
-  getSupportedTokens,
-  getEstimatedPrice,
-  performCheckout,
-} = useNftCheckout()
-const { buildFormMintData } = useNftTokens()
-
 const form = reactive({
   sourceChain: '',
   paymentToken: undefined as PaymentToken | undefined,
 })
-
-const isDevelopment = config.DEPLOY_ENVIRONMENT === 'development'
 
 const isLoading = ref(true)
 const isLoadingPrice = ref(false)
@@ -125,6 +111,20 @@ const estimatedPrice = ref<EstimatedPriceInfo>()
 
 let priceRaw: EstimatedPrice | undefined = undefined
 
+const web3ProvidersStore = useWeb3ProvidersStore()
+
+const { isLoadFailed, tokenPrice, getPrice } = useBalance()
+
+const {
+  createCheckout,
+  initCheckout,
+  getSupportedChains,
+  getSupportedTokens,
+  getEstimatedPrice,
+  performCheckout,
+} = useNftCheckout()
+const { buildFormMintData } = useNftTokens()
+
 const {
   isFormValid: isTemplateValid,
   touchField,
@@ -137,6 +137,8 @@ const {
     noAvailableTokens: { not: not(truthyValue) },
   },
 )
+
+const provider = computed(() => web3ProvidersStore.provider)
 
 const formattedTokenAmount = computed(() => {
   if (!tokenPrice.value) return ''

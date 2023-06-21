@@ -16,16 +16,16 @@
   <loader v-else />
 
   <!-- This component is teleported to parent component (Purchase Form) -->
-  <teleport to="#purchase-book-form__preview">
+  <mounted-teleport to="#purchase-book-form__preview">
     <book-preview :book="book" />
-  </teleport>
+  </mounted-teleport>
 </template>
 
 <script setup lang="ts">
 import { computed, watch, ref } from 'vue'
 import { BN, BnLike } from '@/utils/math.util'
 
-import { ErrorMessage, Loader, BookPreview } from '@/common'
+import { ErrorMessage, Loader, BookPreview, MountedTeleport } from '@/common'
 import { useBalance, useNftTokens, useFormValidation } from '@/composables'
 import { useWeb3ProvidersStore } from '@/store'
 import { ReadonlyField } from '@/fields'
@@ -49,6 +49,9 @@ const {
   isFormValid,
 } = safeInject(PurchaseFormKey)
 
+const promocodeRef = ref<ExposedPromocodeRef | null>(null)
+const promocode = ref<Promocode | null>(null)
+
 const {
   balance,
   isLoadFailed,
@@ -60,6 +63,7 @@ const {
 const { mintWithEth, buildFormMintData } = useNftTokens()
 
 const web3ProvidersStore = useWeb3ProvidersStore()
+
 const provider = computed(() => web3ProvidersStore.provider)
 
 const formattedTokenAmount = computed(() => {
@@ -72,8 +76,8 @@ const formattedTokenAmount = computed(() => {
     .div(tokenPrice.value.price)
     .toString()
 })
-const promocodeRef = ref<ExposedPromocodeRef | null>(null)
-const promocode = ref<Promocode | null>(null)
+
+const balanceError = computed(() => getFieldErrorMessage('balance'))
 
 const {
   isFormValid: isTemplateValid,
@@ -87,8 +91,6 @@ const {
     },
   },
 )
-
-const balanceError = computed(() => getFieldErrorMessage('balance'))
 
 const submitFunc = async (editorInstance: UseImageEditor | null) => {
   if (!provider.value.selectedAddress || !editorInstance || !tokenPrice.value)

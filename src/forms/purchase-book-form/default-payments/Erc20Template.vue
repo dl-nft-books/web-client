@@ -37,9 +37,9 @@
   </template>
 
   <!-- This component is teleported to parent component (Purchase Form) -->
-  <teleport to="#purchase-book-form__preview">
+  <mounted-teleport to="#purchase-book-form__preview">
     <book-preview :book="book" />
-  </teleport>
+  </mounted-teleport>
 </template>
 
 <script setup lang="ts">
@@ -47,7 +47,7 @@ import { UseImageEditor } from 'simple-fabric-vue-image-editor'
 import { reactive, ref, computed, watch, toRefs } from 'vue'
 import { debounce } from 'lodash'
 
-import { Loader, ErrorMessage, BookPreview } from '@/common'
+import { Loader, ErrorMessage, BookPreview, MountedTeleport } from '@/common'
 import { PromocodeTemplate } from '@/forms/purchase-book-form'
 import { InputField, MessageField, ReadonlyField } from '@/fields'
 import { useFormValidation, useBalance, useNftTokens } from '@/composables'
@@ -71,9 +71,11 @@ const form = reactive({
   tokenAddress: '',
 })
 
-const web3ProvidersStore = useWeb3ProvidersStore()
-const provider = computed(() => web3ProvidersStore.provider)
+const isLoading = ref(false)
+const promocodeRef = ref<ExposedPromocodeRef | null>(null)
+const promocode = ref<Promocode | null>(null)
 
+const web3ProvidersStore = useWeb3ProvidersStore()
 const {
   balance,
   isLoadFailed,
@@ -85,22 +87,7 @@ const {
 
 const { buildFormMintData, mintWithErc20, approveTokenSpend } = useNftTokens()
 
-const loadBalanceAndPrice = debounce(async () => {
-  if (!isFormValid()) return
-
-  isLoading.value = true
-  await _loadBalanceAndPrice(form.tokenAddress, TOKEN_TYPES.erc20)
-
-  if (!tokenPrice.value) return
-
-  touchField('balance')
-
-  isLoading.value = false
-}, 400)
-
-const isLoading = ref(false)
-const promocodeRef = ref<ExposedPromocodeRef | null>(null)
-const promocode = ref<Promocode | null>(null)
+const provider = computed(() => web3ProvidersStore.provider)
 
 const formattedTokenAmount = computed(() => {
   if (!tokenPrice.value) return ''
@@ -121,6 +108,19 @@ const { getFieldErrorMessage, touchField, isFormValid } = useFormValidation(
     balance: { enoughBnAmount: enoughBnAmount(formattedTokenAmount) },
   },
 )
+
+const loadBalanceAndPrice = debounce(async () => {
+  if (!isFormValid()) return
+
+  isLoading.value = true
+  await _loadBalanceAndPrice(form.tokenAddress, TOKEN_TYPES.erc20)
+
+  if (!tokenPrice.value) return
+
+  touchField('balance')
+
+  isLoading.value = false
+}, 400)
 
 const submitFunc = async (editorInstance: UseImageEditor | null) => {
   if (

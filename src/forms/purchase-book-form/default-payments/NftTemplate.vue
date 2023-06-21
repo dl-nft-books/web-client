@@ -54,9 +54,9 @@
   />
 
   <!-- This component is teleported to parent component (Purchase Form) -->
-  <teleport to="#purchase-book-form__preview">
+  <mounted-teleport to="#purchase-book-form__preview">
     <book-preview :book="book" modification="floor-price" />
-  </teleport>
+  </mounted-teleport>
 </template>
 
 <script setup lang="ts">
@@ -74,7 +74,7 @@ import {
   MessageField,
 } from '@/fields'
 
-import { Loader, BookPreview } from '@/common'
+import { Loader, BookPreview, MountedTeleport } from '@/common'
 import {
   useBalance,
   useFormValidation,
@@ -94,6 +94,17 @@ const {
   submit,
 } = safeInject(PurchaseFormKey)
 
+const form = reactive({
+  tokenAddress: '',
+  tokenId: '',
+  isAgreedWithTerms: false,
+})
+
+const isCollectionPriceLoading = ref(false)
+const isNftOwnershipLoading = ref(false)
+const isNftOwnedByUser = ref(true)
+const isNftExist = ref(true)
+
 const {
   isLoadFailed,
   isTokenAddressUnsupported,
@@ -104,20 +115,11 @@ const {
 const { t } = useI18n()
 
 const web3ProvidersStore = useWeb3ProvidersStore()
-const provider = computed(() => web3ProvidersStore.provider)
-
 const erc721 = useErc721()
+
 const { buildFormMintData, mintWithNft, approveTokenSpend } = useNftTokens()
 
-const form = reactive({
-  tokenAddress: '',
-  tokenId: '',
-  isAgreedWithTerms: false,
-})
-const isCollectionPriceLoading = ref(false)
-const isNftOwnershipLoading = ref(false)
-const isNftOwnedByUser = ref(true)
-const isNftExist = ref(true)
+const provider = computed(() => web3ProvidersStore.provider)
 
 const floorPrice = computed(() => {
   if (!nftPrice.value) return ''

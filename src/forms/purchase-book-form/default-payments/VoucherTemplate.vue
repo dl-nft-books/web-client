@@ -23,16 +23,18 @@
   <loader v-else />
 
   <!-- This component is teleported to parent component (Purchase Form) -->
-  <teleport to="#purchase-book-form__preview">
+  <mounted-teleport to="#purchase-book-form__preview">
     <book-preview :book="book" />
-  </teleport>
+  </mounted-teleport>
 </template>
 
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue'
 import { constants } from 'ethers'
+import { useI18n } from 'vue-i18n'
+import { UseImageEditor } from 'simple-fabric-vue-image-editor'
 
-import { Loader, ErrorMessage, BookPreview } from '@/common'
+import { Loader, ErrorMessage, BookPreview, MountedTeleport } from '@/common'
 import { MessageField, ReadonlyField } from '@/fields'
 
 import { PurchaseFormKey } from '@/types'
@@ -48,8 +50,6 @@ import {
 import { BnLike } from '@/utils/math.util'
 import { useWeb3ProvidersStore } from '@/store'
 import { FORM_STATES, TOKEN_TYPES } from '@/enums'
-import { useI18n } from 'vue-i18n'
-import { UseImageEditor } from 'simple-fabric-vue-image-editor'
 
 const {
   bookInfo: book,
@@ -59,16 +59,17 @@ const {
   successMessage,
 } = safeInject(PurchaseFormKey)
 
+const isLoading = ref(true)
+
 const { t } = useI18n()
 
 const web3ProvidersStore = useWeb3ProvidersStore()
-const provider = computed(() => web3ProvidersStore.provider)
 
 const { getBalance, isLoadFailed, balance } = useBalance()
 const { sendBuyWithVoucherRequest, createNewGenerationTask, uploadBanner } =
   useGenerator()
 
-const isLoading = ref(true)
+const provider = computed(() => web3ProvidersStore.provider)
 
 const isVoucherSupported = computed(
   () => book.voucherTokenContract !== constants.AddressZero,
