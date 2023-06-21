@@ -50,8 +50,6 @@ withDefaults(
 .generation-success-view {
   display: flex;
   flex-direction: column;
-  max-width: toRem(452);
-  padding: toRem(32);
   background: var(--background-primary-light);
   border-radius: toRem(10);
 }

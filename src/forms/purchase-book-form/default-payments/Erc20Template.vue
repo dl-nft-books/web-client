@@ -55,7 +55,7 @@ import { required, address, enoughBnAmount } from '@/validators'
 
 import { Promocode, PurchaseFormKey } from '@/types'
 import { ExposedPromocodeRef } from '@/forms/purchase-book-form/default-payments/PromocodeTemplate.vue'
-import { BN, BnLike } from '@/utils/math.util'
+import { BN } from '@/utils/math.util'
 import { useWeb3ProvidersStore } from '@/store'
 import { FORM_STATES, TOKEN_TYPES } from '@/enums'
 import { ErrorHandler, safeInject } from '@/helpers'
@@ -92,7 +92,7 @@ const provider = computed(() => web3ProvidersStore.provider)
 const formattedTokenAmount = computed(() => {
   if (!tokenPrice.value) return ''
 
-  return new BN(book.pricePerOneToken as BnLike, {
+  return new BN(book.pricePerOneToken, {
     decimals: tokenPrice.value.token.decimals,
   })
     .fromFraction(tokenPrice.value.token.decimals)

@@ -47,7 +47,6 @@ import {
   getBlockExplorerLink,
   safeInject,
 } from '@/helpers'
-import { BnLike } from '@/utils/math.util'
 import { useWeb3ProvidersStore } from '@/store'
 import { FORM_STATES, TOKEN_TYPES } from '@/enums'
 
@@ -77,7 +76,7 @@ const isVoucherSupported = computed(
 
 const formattedVoucherTokenAmount = computed(() =>
   book.voucherTokensAmount
-    ? formatAssetFromWei(book.voucherTokensAmount as BnLike, 2)
+    ? formatAssetFromWei(book.voucherTokensAmount, 2)
     : '',
 )
 

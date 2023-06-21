@@ -1,22 +1,11 @@
 import { api } from '@/api'
-import { Book, ChainId, UnwrapPromiseProperties } from '@/types'
+import { Book, ChainId, FullBookInfo, BaseBookInfo } from '@/types'
 import { useMarketplace, useContractRegistry } from '@/composables/contracts'
 import { useNetworksStore } from '@/store'
 import { BN } from '@/utils/math.util'
 
 import { IMarketplace } from '@/types/contracts/MarketPlace'
 import { config } from '@/config'
-
-// Info about book gathering partly from backend and partly from contract
-export type FullBookInfo = Book &
-  UnwrapPromiseProperties<IMarketplace.BaseTokenDataStruct> &
-  UnwrapPromiseProperties<IMarketplace.TokenParamsStruct>
-
-export type BaseBookInfo = Book &
-  UnwrapPromiseProperties<
-    Pick<IMarketplace.BriefTokenInfoStruct, 'pricePerOneToken' | 'isDisabled'>
-  > &
-  UnwrapPromiseProperties<IMarketplace.BaseTokenDataStruct>
 
 export function useBooks(contractRegistryAddress?: string) {
   const networkStore = useNetworksStore()

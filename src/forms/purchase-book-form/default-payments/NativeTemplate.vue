@@ -23,7 +23,7 @@
 
 <script setup lang="ts">
 import { computed, watch, ref } from 'vue'
-import { BN, BnLike } from '@/utils/math.util'
+import { BN } from '@/utils/math.util'
 
 import { ErrorMessage, Loader, BookPreview, MountedTeleport } from '@/common'
 import { useBalance, useNftTokens, useFormValidation } from '@/composables'
@@ -69,7 +69,7 @@ const provider = computed(() => web3ProvidersStore.provider)
 const formattedTokenAmount = computed(() => {
   if (!tokenPrice.value) return ''
 
-  return new BN(book.pricePerOneToken as BnLike, {
+  return new BN(book.pricePerOneToken, {
     decimals: tokenPrice.value.token.decimals,
   })
     .fromFraction(tokenPrice.value.token.decimals)
@@ -111,7 +111,7 @@ const submitFunc = async (editorInstance: UseImageEditor | null) => {
       ...(promocode.value ? { promocodeId: promocode.value.id } : {}),
     })
 
-    const nativeTokenAmount = new BN(book.pricePerOneToken as BnLike, {
+    const nativeTokenAmount = new BN(book.pricePerOneToken, {
       decimals: tokenPrice.value.token.decimals,
     })
       .div(tokenPrice.value.price)

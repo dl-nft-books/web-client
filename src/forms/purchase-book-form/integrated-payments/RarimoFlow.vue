@@ -61,7 +61,7 @@ import {
 } from '@/composables'
 
 import { ErrorHandler, safeInject } from '@/helpers'
-import { BN, BnLike } from '@/utils/math.util'
+import { BN } from '@/utils/math.util'
 import { useWeb3ProvidersStore } from '@/store'
 import { FORM_STATES, TOKEN_TYPES } from '@/enums'
 import { required, truthyValue, not } from '@/validators'
@@ -143,7 +143,7 @@ const provider = computed(() => web3ProvidersStore.provider)
 const formattedTokenAmount = computed(() => {
   if (!tokenPrice.value) return ''
 
-  return new BN(book.pricePerOneToken as BnLike, {
+  return new BN(book.pricePerOneToken, {
     decimals: tokenPrice.value.token.decimals,
   })
     .fromFraction(tokenPrice.value.token.decimals)
@@ -249,7 +249,7 @@ const initializeCheckout = async (
 ) => {
   if (!tokenPrice.value || !provider.value.selectedAddress) return
 
-  const nftPrice = new BN(book.pricePerOneToken as BnLike, {
+  const nftPrice = new BN(book.pricePerOneToken, {
     decimals: tokenPrice.value?.token.decimals,
   })
     .div(tokenPrice.value.price)
@@ -285,7 +285,7 @@ const submitFunc = async (editorInstance: UseImageEditor | null) => {
       tokenAddress: '',
     })
 
-    const nativeTokenAmount = new BN(book.pricePerOneToken as BnLike, {
+    const nativeTokenAmount = new BN(book.pricePerOneToken, {
       decimals: tokenPrice.value.token.decimals,
     })
       .div(tokenPrice.value.price)

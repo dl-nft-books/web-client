@@ -1,33 +1,12 @@
 import { useWeb3ProvidersStore } from '@/store'
 import { computed, ref } from 'vue'
-import { MarketPlace__factory, EthProviderRpcError } from '@/types'
+import {
+  MarketPlace__factory,
+  EthProviderRpcError,
+  BuyParams,
+  Signature,
+} from '@/types'
 import { handleEthError } from '@/helpers'
-
-export type BuyParams = {
-  paymentDetails: PaymentDetails
-  tokenContract: string
-  recipient: string
-  tokenData: TokenMintData
-}
-
-export type Signature = {
-  r: string
-  s: string
-  v: number
-  endSigTimestamp: number
-}
-
-type PaymentDetails = {
-  paymentTokenAddress: string
-  paymentTokenPrice: string
-  discount: string
-  nftTokenId: string
-}
-
-type TokenMintData = {
-  tokenId: string
-  tokenURI: string
-}
 
 export const useMarketplace = (address?: string) => {
   const web3ProvidersStore = useWeb3ProvidersStore()

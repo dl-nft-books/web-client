@@ -65,7 +65,7 @@ import { computed, reactive, watch, ref, toRefs } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { debounce } from 'lodash'
 
-import { BN, BnLike } from '@/utils/math.util'
+import { BN } from '@/utils/math.util'
 
 import {
   InputField,
@@ -151,7 +151,7 @@ const {
     isAgreedWithTerms: { truthyValue },
     floorPrice: {
       required,
-      enoughBnAmount: enoughBnAmount(book.minNFTFloorPrice as BnLike),
+      enoughBnAmount: enoughBnAmount(book.minNFTFloorPrice),
     },
     isNftExist: { truthyValue },
     isNftOwnedByUser: { truthyValue },

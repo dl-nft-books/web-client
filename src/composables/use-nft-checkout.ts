@@ -16,8 +16,13 @@ import { MetamaskProvider } from '@rarimo/providers-evm'
 import { utils } from 'ethers'
 
 import { useNetworksStore, useWeb3ProvidersStore } from '@/store'
-import { BuyParams, Signature, useContractRegistry } from '@/composables'
-import { MarketPlace__factory, UnwrappedProvider } from '@/types'
+import { useContractRegistry } from '@/composables'
+import {
+  MarketPlace__factory,
+  UnwrappedProvider,
+  BuyParams,
+  Signature,
+} from '@/types'
 import { config } from '@/config'
 
 export function useNftCheckout(contractRegistryAddress?: string) {

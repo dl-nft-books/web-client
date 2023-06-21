@@ -1,11 +1,5 @@
+import { FORM_STATES } from '@/enums'
 import { ref, computed } from 'vue'
-
-export enum FORM_STATES {
-  active = 'active',
-  disabled = 'disabled',
-  pending = 'pending',
-  success = 'success',
-}
 
 export function useForm() {
   const isConfirmationShown = ref(false)

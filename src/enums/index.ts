@@ -12,5 +12,4 @@ export * from './promocodes.enum'
 export * from './currencies.enum'
 export * from './guides.enum'
 export * from './page-state.enum'
-
-export { FORM_STATES } from '@/composables/use-form'
+export * from './form.enum'
