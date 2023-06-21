@@ -296,6 +296,7 @@ export function useNftTokens() {
       generatedTask.id,
       initialOpts.tokenAddress,
       initialOpts.promocodeId,
+      Boolean(initialOpts.nftId),
     )
 
     const bookContract = initialOpts.book.networks.find(
