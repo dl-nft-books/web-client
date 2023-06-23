@@ -35,7 +35,8 @@ const init = async () => {
   try {
     useNotifications()
     await web3Store.detectProviders()
-
+    await networkStore.loadNetworks()
+    await networkStore.loadChainList()
     await web3Store.init(networkStore.list.map(el => el.chain_id))
 
     document.title = config.APP_NAME

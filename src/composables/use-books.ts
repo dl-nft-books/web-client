@@ -30,10 +30,6 @@ export function useBooks(contractRegistryAddress?: string) {
   }
 
   const _initContractRegistry = async (chainId: number) => {
-    if (!networkStore.list.length) {
-      await networkStore.loadNetworks()
-    }
-
     const appropriateRegistryAddress = networkStore.list.find(
       network => network.chain_id === chainId,
     )?.factory_address

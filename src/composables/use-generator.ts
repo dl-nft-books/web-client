@@ -31,10 +31,6 @@ export function useGenerator() {
   const { init: initRegistry, getMarketPlaceAddress } = useContractRegistry()
 
   const _initContractRegistry = async () => {
-    if (!networkStore.list.length) {
-      await networkStore.loadNetworks()
-    }
-
     const appropriateRegistryAddress = networkStore.list.find(
       network => network.chain_id === Number(provider.value.chainId),
     )?.factory_address
