@@ -93,8 +93,18 @@ export function useNftTokens() {
       network => network.chain_id === chainId,
     )?.factory_address
 
-    if (!appropriateRegistryAddress)
-      throw new Error('failed to get registry address')
+    // in case we don't have registry on that chain - we use default one
+    if (!appropriateRegistryAddress) {
+      const defaultRegistryAddress = networkStore.list.find(
+        network => network.chain_id === Number(config.DEFAULT_CHAIN_ID),
+      )?.factory_address
+
+      if (!defaultRegistryAddress)
+        throw new Error('failed to get default registry address')
+
+      initRegistry(defaultRegistryAddress)
+      return
+    }
 
     initRegistry(appropriateRegistryAddress)
   }
@@ -177,7 +187,7 @@ export function useNftTokens() {
     limit: number,
     offset: number,
   ): Promise<TokenBaseInfo[]> => {
-    if (!limit || !provider.value.isConnected) return []
+    if (!limit) return []
 
     await _initContractRegistry(Number(provider.value.chainId))
     await _initMarketPlace()

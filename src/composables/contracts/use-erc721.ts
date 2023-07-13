@@ -5,7 +5,7 @@ import { handleEthError, sleep } from '@/helpers'
 
 export const useErc721 = (address?: string) => {
   const web3ProvidersStore = useWeb3ProvidersStore()
-  const provider = computed(() => web3ProvidersStore.provider)
+  const provider = computed(() => web3ProvidersStore.dynamicProvider)
 
   const contractAddress = ref(address || '')
 

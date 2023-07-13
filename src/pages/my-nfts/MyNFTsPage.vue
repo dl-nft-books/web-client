@@ -17,26 +17,16 @@
 import { Loader } from '@/common'
 import { MyNftsNoData, NftList } from '@/pages/my-nfts'
 import { computed, ref, watch } from 'vue'
-import { useWeb3ProvidersStore, useNetworksStore } from '@/store'
+import { useWeb3ProvidersStore } from '@/store'
 import { useBooks } from '@/composables'
 import { ErrorHandler } from '@/helpers'
 
-const networkStore = useNetworksStore()
 const web3ProvidersStore = useWeb3ProvidersStore()
 const provider = computed(() => web3ProvidersStore.provider)
 
-const isValidChain = computed(() =>
-  networkStore.list.some(
-    i => Number(i.chain_id) === Number(provider.value.chainId),
-  ),
+const noDataScheme = computed(() =>
+  !provider.value.isConnected ? 'not-connected' : '',
 )
-
-const noDataScheme = computed(() => {
-  if (!isValidChain.value) return 'wrong-chain'
-  else if (!provider.value.isConnected) return 'not-connected'
-
-  return ''
-})
 
 const totalAmount = ref(-1)
 const isLoading = ref(false)
