@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 #### Changed
 - When chain is invalid - we using fallback provider. It provides
 abillity to show books no matter on what chain user is now
+- Interaction with providers moved on @distributedlab/w3p
 
 #### Fixed
 - Purchase form refactored

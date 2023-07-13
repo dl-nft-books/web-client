@@ -1,4 +1,3 @@
-import { useWeb3ProvidersStore } from '@/store'
 import { computed, ref, Ref } from 'vue'
 import {
   ContractRegistry__factory,
@@ -8,14 +7,9 @@ import {
 import { handleEthError } from '@/helpers'
 
 export const useContractRegistry = (
+  provider: Ref<UnwrappedProvider>,
   address?: string,
-  providerInstance?: Ref<UnwrappedProvider | undefined>,
 ) => {
-  const web3ProvidersStore = useWeb3ProvidersStore()
-  const provider = computed(
-    () => providerInstance?.value ?? web3ProvidersStore.dynamicProvider,
-  )
-
   const contractAddress = ref(address || '')
 
   const contractInstance = computed(

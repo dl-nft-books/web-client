@@ -28,19 +28,13 @@ export function useGenerator() {
   const web3Store = useWeb3ProvidersStore()
   const provider = computed(() => web3Store.provider)
 
-  const { init: initRegistry, getMarketPlaceAddress } = useContractRegistry()
+  const { init: initRegistry, getMarketPlaceAddress } =
+    useContractRegistry(provider)
 
   const _initContractRegistry = async () => {
-    if (!networkStore.list.length) {
-      await networkStore.loadNetworks()
-    }
-
-    const appropriateRegistryAddress = networkStore.list.find(
-      network => network.chain_id === Number(provider.value.chainId),
-    )?.factory_address
-
-    if (!appropriateRegistryAddress)
-      throw new Error('failed to get registry address')
+    const appropriateRegistryAddress = networkStore.getRegistryAddress(
+      Number(provider.value.chainId),
+    )
 
     initRegistry(appropriateRegistryAddress)
   }
@@ -130,7 +124,7 @@ export function useGenerator() {
     voucherAmount: string,
     taskId: number,
   ) => {
-    if (!provider.value.selectedAddress) return
+    if (!provider.value.address) return
 
     await _initContractRegistry()
 
@@ -138,10 +132,10 @@ export function useGenerator() {
 
     if (!spender) throw new Error('failed to get marketplace address')
 
-    const { getPermitSignature } = useVoucher(voucherAddress)
+    const { getPermitSignature } = useVoucher(provider, voucherAddress)
 
     const permitSignature = await getPermitSignature(
-      provider.value.selectedAddress,
+      provider.value.address,
       spender,
       voucherAmount,
     )

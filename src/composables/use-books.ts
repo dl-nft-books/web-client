@@ -1,16 +1,30 @@
 import { api } from '@/api'
-import { Book, ChainId, FullBookInfo, BaseBookInfo } from '@/types'
-import { useMarketplace, useContractRegistry } from '@/composables/contracts'
-import { useNetworksStore } from '@/store'
+import { Book, FullBookInfo, BaseBookInfo } from '@/types'
+import { ChainId } from '@distributedlab/w3p'
+import { useMarketplace, useContractRegistry } from '@/composables'
+import { useNetworksStore, useWeb3ProvidersStore } from '@/store'
 import { BN } from '@/utils/math.util'
 
 import { IMarketplace } from '@/types/contracts/MarketPlace'
 import { config } from '@/config'
+import { computed } from 'vue'
 
 export function useBooks(contractRegistryAddress?: string) {
   const networkStore = useNetworksStore()
+  const web3ProvidersStore = useWeb3ProvidersStore()
+
+  const provider = computed(() => {
+    if (
+      web3ProvidersStore.provider.isConnected &&
+      web3ProvidersStore.isValidChain
+    )
+      return web3ProvidersStore.provider
+
+    return web3ProvidersStore.fallbackProvider
+  })
 
   const { getMarketPlaceAddress, init: initRegistry } = useContractRegistry(
+    provider,
     contractRegistryAddress,
   )
 
@@ -19,7 +33,7 @@ export function useBooks(contractRegistryAddress?: string) {
     getTokenParams,
     getBooksBatch,
     getTokenContractsCount,
-  } = useMarketplace()
+  } = useMarketplace(provider)
 
   const _initMarketPlace = async (address?: string) => {
     const marketPlaceAddress = address || (await getMarketPlaceAddress())
@@ -30,26 +44,7 @@ export function useBooks(contractRegistryAddress?: string) {
   }
 
   const _initContractRegistry = async (chainId: number) => {
-    if (!networkStore.list.length) {
-      await networkStore.loadNetworks()
-    }
-
-    const appropriateRegistryAddress = networkStore.list.find(
-      network => network.chain_id === chainId,
-    )?.factory_address
-
-    // in case we don't have registry on that chain - we use default one
-    if (!appropriateRegistryAddress) {
-      const defaultRegistryAddress = networkStore.list.find(
-        network => network.chain_id === Number(config.DEFAULT_CHAIN_ID),
-      )?.factory_address
-
-      if (!defaultRegistryAddress)
-        throw new Error('failed to get default registry address')
-
-      initRegistry(defaultRegistryAddress)
-      return
-    }
+    const appropriateRegistryAddress = networkStore.getRegistryAddress(chainId)
 
     initRegistry(appropriateRegistryAddress)
   }

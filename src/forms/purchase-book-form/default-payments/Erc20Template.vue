@@ -124,7 +124,7 @@ const loadBalanceAndPrice = debounce(async () => {
 
 const submitFunc = async (editorInstance: UseImageEditor | null) => {
   if (
-    !provider.value.selectedAddress ||
+    !provider.value.address ||
     !editorInstance ||
     !tokenPrice.value ||
     !isFormValid()
@@ -140,7 +140,7 @@ const submitFunc = async (editorInstance: UseImageEditor | null) => {
     const { buyParams, signature } = await buildFormMintData({
       banner,
       book,
-      account: provider.value.selectedAddress,
+      account: provider.value.address,
       chainId: Number(provider.value.chainId),
       tokenAddress: '',
       ...(promocode.value ? { promocodeId: promocode.value.id } : {}),
@@ -182,7 +182,7 @@ watch(
 )
 
 watch(
-  () => [form.tokenAddress, provider.value.selectedAddress],
+  () => [form.tokenAddress, provider.value.address],
   () => {
     if (!form.tokenAddress) return
 

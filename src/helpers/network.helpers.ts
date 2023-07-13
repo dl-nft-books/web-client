@@ -12,11 +12,11 @@ import {
   POLYGON_CHAINS,
   Q_CHAINS,
   ICON_NAMES,
-  EIP1193,
 } from '@/enums'
-import { ChainId, ChainUrlInfo, EthProviderRpcError } from '@/types'
+import { ChainUrlInfo } from '@/types'
+import { ChainId, CHAIN_TYPES } from '@distributedlab/w3p'
 import { ErrorHandler } from '@/helpers'
-import { useWeb3ProvidersStore } from '@/store'
+import { useNetworksStore, useWeb3ProvidersStore } from '@/store'
 
 export function getNetworkScheme(chainID: ChainId): NETWORKS {
   switch (chainID?.toString()) {
@@ -114,17 +114,31 @@ export function getBlockExplorerLink(
 
 export async function switchNetwork(chainID: ChainId) {
   const { provider } = useWeb3ProvidersStore()
+  const networkStore = useNetworksStore()
+
+  const networkURLs = getNetworkInfo(chainID)
+  const networkInfo = networkStore.getNetworkByID(Number(chainID))
+
+  if (!networkInfo || !networkURLs) throw new Error('Unsupported network')
+
   try {
     await provider.switchChain(chainID)
   } catch (error) {
-    const ethError = error as EthProviderRpcError
-
     // if wallet has no chain added we need to add it and switch to it
-    if (ethError?.code === EIP1193.walletMissingChain) {
-      await provider.addNetwork(chainID)
-      return
-    }
+    await provider.addChain({
+      id: chainID,
+      name: networkInfo.name,
+      rpcUrl: networkURLs.rpcUrl,
+      explorerUrl: networkURLs.blockExplorerUrl,
+      type: CHAIN_TYPES.EVM,
+      token: {
+        name: networkInfo.token_name,
+        symbol: networkInfo.token_symbol,
+        decimals: networkInfo.decimals,
+      },
+      icon: '',
+    })
 
-    ErrorHandler.process(error)
+    ErrorHandler.processWithoutFeedback(error)
   }
 }

@@ -1,4 +1,5 @@
-import { ChainId, EthProviderRpcError, NativeCurrency } from '@/types'
+import { EthProviderRpcError, NativeCurrency } from '@/types'
+import { ChainId } from '@distributedlab/w3p'
 import { errors } from '@/errors'
 import { ethers } from 'ethers'
 import {
@@ -26,20 +27,27 @@ export const getJsonRpcProvider = (
 ): ethers.providers.JsonRpcProvider => {
   switch (chain.toString() as SupportedChain) {
     case ETHEREUM_CHAINS.sepolia:
-      return new ethers.providers.JsonRpcProvider(SEPOLIA_CHAIN.rpcUrl)
+      return new ethers.providers.JsonRpcProvider(SEPOLIA_CHAIN.rpcUrl, 'any')
     case Q_CHAINS.mainet:
-      return new ethers.providers.JsonRpcProvider(Q_MAINNET_CHAIN.rpcUrl)
+      return new ethers.providers.JsonRpcProvider(Q_MAINNET_CHAIN.rpcUrl, 'any')
     case Q_CHAINS.testnet:
-      return new ethers.providers.JsonRpcProvider(Q_TESTNET_CHAIN.rpcUrl)
+      return new ethers.providers.JsonRpcProvider(Q_TESTNET_CHAIN.rpcUrl, 'any')
     case POLYGON_CHAINS.mumbai:
-      return new ethers.providers.JsonRpcProvider(POLYGON_MUMBAI_CHAIN.rpcUrl)
+      return new ethers.providers.JsonRpcProvider(
+        POLYGON_MUMBAI_CHAIN.rpcUrl,
+        'any',
+      )
     case POLYGON_CHAINS.mainnet:
-      return new ethers.providers.JsonRpcProvider(POLYGON_MAINNET_CHAIN.rpcUrl)
+      return new ethers.providers.JsonRpcProvider(
+        POLYGON_MAINNET_CHAIN.rpcUrl,
+        'any',
+      )
     default:
       return new ethers.providers.JsonRpcProvider(
         config.DEPLOY_ENVIRONMENT === 'development'
           ? POLYGON_MUMBAI_CHAIN.rpcUrl
           : POLYGON_MAINNET_CHAIN.rpcUrl,
+        'any',
       )
   }
 }

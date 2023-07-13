@@ -6,12 +6,7 @@
     />
     <template v-else-if="books.length || isLoading">
       <div v-if="books.length" class="book-list__books">
-        <book-card
-          v-for="book in books"
-          :key="book.id"
-          :book="book"
-          :network="networkStore.getNetworkByID(book.chain_id)"
-        />
+        <book-card v-for="book in books" :key="book.id" :book="book" />
       </div>
 
       <div class="bookshelf-page__loader">
@@ -37,15 +32,15 @@ import { ref, computed } from 'vue'
 import { Loader, ErrorMessage, BookCard, AppButton } from '@/common'
 
 import { ErrorHandler } from '@/helpers'
-import { BaseBookInfo, useBooks, useContractPagination } from '@/composables'
-import { useNetworksStore, useWeb3ProvidersStore } from '@/store'
+import { useBooks, useContractPagination } from '@/composables'
+import { useWeb3ProvidersStore } from '@/store'
+import { BaseBookInfo } from '@/types'
 import { DateUtil } from '@distributedlab/utils'
 
 const props = defineProps<{
   totalAmount: number
 }>()
 
-const networkStore = useNetworksStore()
 const webProvidersStore = useWeb3ProvidersStore()
 
 const provider = computed(() => webProvidersStore.provider)

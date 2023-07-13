@@ -1,6 +1,9 @@
-import { useWeb3ProvidersStore } from '@/store'
-import { computed, ref } from 'vue'
-import { Voucher__factory, EthProviderRpcError } from '@/types'
+import { Ref, computed, ref } from 'vue'
+import {
+  Voucher__factory,
+  EthProviderRpcError,
+  UnwrappedProvider,
+} from '@/types'
 import { handleEthError } from '@/helpers'
 import { DateUtil } from '@distributedlab/utils'
 import { ethers } from 'ethers'
@@ -11,10 +14,10 @@ const CONTRACT_VERSION = '1'
 const CONTRACT_NAME = 'Voucher'
 const SIG_END_OFFSET = Number(config.SIGNATURE_EXPIRATION_TIME) // hours
 
-export const useVoucher = (address?: string) => {
-  const web3ProvidersStore = useWeb3ProvidersStore()
-  const provider = computed(() => web3ProvidersStore.provider)
-
+export const useVoucher = (
+  provider: Ref<UnwrappedProvider>,
+  address?: string,
+) => {
   const contractAddress = ref(address || '')
 
   const contractInstance = computed(

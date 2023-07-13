@@ -1,13 +1,12 @@
-import { computed, ref } from 'vue'
-import { Erc20__factory, EthProviderRpcError } from '@/types'
+import { computed, ref, Ref } from 'vue'
+import { Erc20__factory, EthProviderRpcError, UnwrappedProvider } from '@/types'
 import { handleEthError, sleep } from '@/helpers'
 import { BigNumber } from 'ethers'
-import { useWeb3ProvidersStore } from '@/store'
 
-export const useErc20 = (address?: string) => {
-  const web3ProvidersStore = useWeb3ProvidersStore()
-  const provider = computed(() => web3ProvidersStore.provider)
-
+export const useErc20 = (
+  provider: Ref<UnwrappedProvider>,
+  address?: string,
+) => {
   const contractAddress = ref(address || '')
 
   const contractInstance = computed(
@@ -47,7 +46,7 @@ export const useErc20 = (address?: string) => {
           getOwner(),
           getSymbol(),
           getTotalSupply(),
-          getBalanceOf(provider.value.selectedAddress!),
+          getBalanceOf(provider.value.address!),
         ])
 
       decimals.value = _decimals!

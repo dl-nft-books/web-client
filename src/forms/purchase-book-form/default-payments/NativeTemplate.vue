@@ -93,8 +93,7 @@ const {
 )
 
 const submitFunc = async (editorInstance: UseImageEditor | null) => {
-  if (!provider.value.selectedAddress || !editorInstance || !tokenPrice.value)
-    return
+  if (!provider.value.address || !editorInstance || !tokenPrice.value) return
 
   formState.value = FORM_STATES.pending
   try {
@@ -105,7 +104,7 @@ const submitFunc = async (editorInstance: UseImageEditor | null) => {
     const { buyParams, signature } = await buildFormMintData({
       banner,
       book,
-      account: provider.value.selectedAddress,
+      account: provider.value.address,
       chainId: Number(provider.value.chainId),
       tokenAddress: '',
       ...(promocode.value ? { promocodeId: promocode.value.id } : {}),
@@ -143,7 +142,7 @@ watch(
 )
 
 watch(
-  () => provider.value.selectedAddress,
+  () => provider.value.address,
   async () => {
     await loadBalanceAndPrice('', TOKEN_TYPES.native)
 

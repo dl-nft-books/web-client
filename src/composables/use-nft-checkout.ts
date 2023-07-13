@@ -1,4 +1,4 @@
-import { ref } from 'vue'
+import { computed } from 'vue'
 
 import {
   createCheckoutOperation,
@@ -17,57 +17,34 @@ import { utils } from 'ethers'
 
 import { useNetworksStore, useWeb3ProvidersStore } from '@/store'
 import { useContractRegistry } from '@/composables'
-import {
-  MarketPlace__factory,
-  UnwrappedProvider,
-  BuyParams,
-  Signature,
-} from '@/types'
-import { config } from '@/config'
+import { MarketPlace__factory, BuyParams, Signature } from '@/types'
 
 export function useNftCheckout(contractRegistryAddress?: string) {
   const networkStore = useNetworksStore()
   const web3ProvidersStore = useWeb3ProvidersStore()
 
-  const provider = ref<UnwrappedProvider>()
+  /* 
+     nft checkout always performing on wrong chain thats why we need fallback
+
+     for now destination chain is basically determined by config.DEFAULT_CHAIN 
+     and can be only one
+     
+     If future needs will require choosing destination chain --> fallback 
+     provider will be extended to Map<ChainId, UseProvider> and needed fallback
+     will be pick respectively
+  */
+  const provider = computed(() => web3ProvidersStore.fallbackProvider)
 
   let marketPlaceAddress = ''
   let checkout: CheckoutOperation | undefined = undefined
 
   const { getMarketPlaceAddress, init: initRegistry } = useContractRegistry(
-    contractRegistryAddress,
     provider,
+    contractRegistryAddress,
   )
 
-  const _initProvider = (chainId: number) => {
-    const providerInstance = web3ProvidersStore.fallbackProviders.get(chainId)
-
-    if (!providerInstance) throw new Error('no provider found for this chain')
-
-    provider.value = providerInstance as unknown as UnwrappedProvider
-  }
-
   const _initContractRegistry = async (chainId: number) => {
-    if (!networkStore.list.length) {
-      await networkStore.loadNetworks()
-    }
-
-    const appropriateRegistryAddress = networkStore.list.find(
-      network => network.chain_id === chainId,
-    )?.factory_address
-
-    // in case we don't have registry on that chain - we use default one
-    if (!appropriateRegistryAddress) {
-      const defaultRegistryAddress = networkStore.list.find(
-        network => network.chain_id === Number(config.DEFAULT_CHAIN_ID),
-      )?.factory_address
-
-      if (!defaultRegistryAddress)
-        throw new Error('failed to get default registry address')
-
-      initRegistry(defaultRegistryAddress)
-      return
-    }
+    const appropriateRegistryAddress = networkStore.getRegistryAddress(chainId)
 
     initRegistry(appropriateRegistryAddress)
   }
@@ -98,7 +75,6 @@ export function useNftCheckout(contractRegistryAddress?: string) {
   ) => {
     if (!checkout) return
 
-    _initProvider(Number(destinationChain.id))
     await _initContractRegistry(Number(destinationChain.id))
     await _initMarketPlace()
 

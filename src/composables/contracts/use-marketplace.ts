@@ -1,5 +1,5 @@
-import { useWeb3ProvidersStore } from '@/store'
-import { computed, ref } from 'vue'
+import { UnwrappedProvider } from '@/types'
+import { Ref, computed, ref } from 'vue'
 import {
   MarketPlace__factory,
   EthProviderRpcError,
@@ -8,10 +8,10 @@ import {
 } from '@/types'
 import { handleEthError } from '@/helpers'
 
-export const useMarketplace = (address?: string) => {
-  const web3ProvidersStore = useWeb3ProvidersStore()
-  const provider = computed(() => web3ProvidersStore.dynamicProvider)
-
+export const useMarketplace = (
+  provider: Ref<UnwrappedProvider>,
+  address?: string,
+) => {
   const contractAddress = ref(address || '')
 
   const contractInstance = computed(
