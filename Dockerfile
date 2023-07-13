@@ -1,4 +1,4 @@
-FROM node:20-alpine3.17 as builder
+FROM node:16-alpine3.17 as builder
 RUN apk --no-cache --update --virtual build-dependencies add \
     python \
     make \
