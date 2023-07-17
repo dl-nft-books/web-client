@@ -187,7 +187,7 @@ watch(
 
 watch(
   () => [form.tokenAddress, provider.value.selectedAddress],
-  async () => {
+  () => {
     if (!form.tokenAddress) return
 
     loadBalanceAndPrice()
