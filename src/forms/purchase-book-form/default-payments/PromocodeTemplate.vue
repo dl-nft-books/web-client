@@ -33,17 +33,15 @@ import { debounce } from 'lodash'
 
 import { InputField, MessageField } from '@/fields'
 import { Loader } from '@/common'
-import { useFormValidation, usePromocode, useBalance } from '@/composables'
+import { useFormValidation, usePromocode } from '@/composables'
 import { maxLength, minLength, urlSymbols } from '@/validators'
 import { MAX_PROMOCODE_LENGTH, MIN_PROMOCODE_LENGTH } from '@/const'
-import { Promocode, TokenPrice, PurchaseFormKey } from '@/types'
-import { BN } from '@/utils/math.util'
+import { Promocode, PurchaseFormKey } from '@/types'
 import { TOKEN_TYPES } from '@/enums'
 import { safeInject } from '@/helpers'
 
 export type ExposedPromocodeRef = {
   isPromocodeValid: () => boolean
-  tokenPrice: Ref<TokenPrice | null>
   promocode: Ref<Promocode | null>
 }
 
@@ -80,32 +78,17 @@ const {
 })
 
 const { promocodeInfo, validatePromocode } = usePromocode()
-const { getPrice, tokenPrice } = useBalance()
 
 const onPromocodeInput = async () => {
   if (!isPromocodeValid()) return
 
   await validatePromocode(form.promocode, Number(props.bookId))
-
-  //in order to always calculate new price based on initial price
-  await getPrice(props.tokenAddress, props.tokenType)
-
-  if (!tokenPrice.value?.price || !promocodeInfo.promocode) return
-
-  const newPrice = new BN(tokenPrice.value.price, {
-    decimals: tokenPrice.value.token.decimals,
-  })
-    .div(1 - promocodeInfo.promocode.discount)
-    .toString()
-
-  tokenPrice.value.price = newPrice
 }
 
 const handlePromocodeInput = debounce(onPromocodeInput, 400)
 
 defineExpose<ExposedPromocodeRef>({
   isPromocodeValid: () => isPromocodeValid() && !promocodeInfo.error,
-  tokenPrice,
   promocode: toRef(promocodeInfo, 'promocode'),
 })
 </script>
