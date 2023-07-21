@@ -6,7 +6,8 @@
     "field-error_address": "Field must be a valid address",
     "field-error_minLength": "Value must be at least {min} chars",
     "field-error_maxLength": "Value can't be greater than {max} chars",
-    "field-error_urlSymbols": "All unsafe and reserved url chars are restricted"
+    "field-error_urlSymbols": "All unsafe and reserved url chars are restricted",
+    "field-error_enoughBnAmount": "You don't have enough token amount"
   },
   "errors": {
     "default": "Oops... Something went wrong",
@@ -282,8 +283,7 @@
     "badge-2": "Draw your personal banner",
     "network-title": "Supported by",
     "connect-btn": "Connect Wallet",
-    "description-lbl": "Show full description",
-    "voucher-payment-msg": "Transaction has been sent. It may take a while. You can check transaction status by this link"
+    "description-lbl": "Show full description"
   },
   "purchasing-modal": {
     "title": "Purchasing",
@@ -293,31 +293,51 @@
     "generation-title": "Generation"
   },
   "purchase-book-form": {
-    "token-address-lbl": "Enter Token Address",
-    "signature-lbl": "Your Signature",
-    "signature-placeholder": "Write the signature you would like to see in your book",
     "generate-btn": "GENERATE NFT",
-    "token-type-lbl": "Payment Type",
-    "token-amount-lbl": "Amount to spend",
-    "voucher-token-lbl": "Voucher Token Address",
-    "voucher-token-amount-lbl": "Amount of Voucher Token",
+    "loading-error-msg":"Oops... Something went wrong",
+    "default-payment": "Pay on current chain",
+    "rarimo-payment": "Use Rarimo and pay with another token",
+    "rarimo-tip": "You can use cross-chain feature Rarimo to pay on any networks."
+  },
+  "generation-view": {
+    "submitting-title": "We are generating your NFT.",
+    "submitting-message": "As soon as NFT book generates you will need to pay"
+  },
+  "generation-success-view": {
+    "title": "Your payment was successful.",
+    "message": "As soon as the NFT book is minted, it will appear in your wallet and in the My NFTs tab.",
+    "link": "Check on block explorer"
+  },
+  "default-payment-flow": {
+    "token-type-lbl": "Payment Type"
+  },
+  "promocode-template": {
     "promocode-lbl": "Promocode",
     "promocode-placeholder": "Enter Promocode",
     "promocode-applied-msg": "{amount}% discount applied",
     "promocode-invalid-msg": "This promocode is invalid",
     "promocode-expired-msg": "This promocode is expired",
-    "promocode-used-msg": "This promocode is used maximum amount of times",
-    "loading-error-msg":"Oops... Something went wrong",
+    "promocode-used-msg": "This promocode is used maximum amount of times"
+  },
+  "native-template": {
+    "token-amount-lbl": "Amount to spend",
+    "loading-error-msg":"Failed to load balance and price"
+  },
+  "erc20-template": {
+    "token-address-lbl": "Enter Token Address",
+    "token-amount-lbl": "Amount to spend",
     "unsupported-token-title": "This token unsupported.",
     "unsupported-token-subtitle": "Please choose another token.",
-    "submitting-title": "We are generating your NFT.",
-    "submitting-message": "As soon as NFT book generates you will need to pay",
-    "not-enough-balance-msg": "You don't have enough tokens to buy this NFT",
+    "loading-error-msg":"Failed to load token balance",
+    "not-enough-balance-msg": "You don't have enough tokens to buy this NFT"
+  },
+  "voucher-template": {
+    "voucher-token-lbl": "Voucher Token Address",
+    "voucher-token-amount-lbl": "Amount of Voucher Token",
+    "loading-error-msg":"Failed to load voucher balance",
+    "voucher-payment-msg": "Transaction has been sent. It may take a while. You can check transaction status by this link",
     "voucher-token-unsupported-msg": "This payment method is not supported for the purchase of this book",
-    "not-enough-voucher-tokens-msg": "You don't have enough voucher tokens to buy this NFT. Required amount: {amount}.",
-    "default-payment": "Pay on current chain",
-    "rarimo-payment": "Use Rarimo and pay with another token",
-    "rarimo-tip": "You also can use cross-chain feature Rarimo to pay on any networks."
+    "not-enough-voucher-tokens-msg": "You don't have enough voucher tokens to buy this NFT. Required amount: {amount}."
   },
   "nft-template": {
     "token-address-lbl": "Token Address",
@@ -352,13 +372,6 @@
   },
   "book-preview": {
     "label": "Floor price"
-  },
-  "purchasing-success-modal": {
-    "head-title": "Purchasing",
-    "title": "Your payment was successful.",
-    "message": "As soon as the NFT book is minted, it will appear in your wallet and in the My NFTs tab.",
-    "ok-btn": "Ok",
-    "link": "Check on block explorer"
   },
   "my-nft-item-page": {
     "loading-error-msg": "This page is currently unavailable due to connection problems with IPFS. Please, try again later.",

@@ -1,102 +1,102 @@
 <template>
   <div class="steps-form">
     <header class="steps-form__header">
-      <div class="steps-form__header-status">
+      <div
+        v-for="step in stepsNumber"
+        :key="step"
+        class="steps-form__header-status"
+      >
         <p class="steps-form__header-status-lbl">
-          {{ $t('steps-form.step-lbl', { number: 1 }) }}
+          {{ $t('steps-form.step-lbl', { number: step }) }}
         </p>
         <div
           class="steps-form__header-indicator"
           :class="{
-            'steps-form__header-indicator--active': currentStep === STEPS.first,
-          }"
-        />
-      </div>
-      <div class="steps-form__header-status">
-        <p class="steps-form__header-status-lbl">
-          {{ $t('steps-form.step-lbl', { number: 2 }) }}
-        </p>
-        <div
-          class="steps-form__header-indicator"
-          :class="{
-            'steps-form__header-indicator--active':
-              currentStep === STEPS.second,
+            'steps-form__header-indicator--active': currentStepIndex === step,
           }"
         />
       </div>
     </header>
-    <div v-show="currentStep === STEPS.first">
-      <slot name="step1" />
-    </div>
-
-    <div v-show="currentStep === STEPS.second">
-      <slot name="step2" />
+    <div
+      v-for="step in stepsNumber"
+      v-show="currentStepIndex === step"
+      :key="step"
+    >
+      <slot :name="`step${step}`" />
     </div>
 
     <footer class="steps-form__actions">
       <app-button
-        v-if="currentStep === STEPS.first"
+        v-if="!isFirstStep"
+        class="steps-form__actions-btn"
+        scheme="flat"
+        size="x-small"
+        :disabled="isFormDisabled"
+        :icon-left="$icons.arrowLeft"
+        :text="$t('steps-form.prev-step-lbl')"
+        @click="previousStep"
+      />
+      <app-button
         class="steps-form__actions-btn"
         size="x-small"
-        :disabled="isNextStepDisabled"
-        :text="$t('steps-form.next-step-lbl')"
-        @click="switchStep(STEPS.second)"
+        :text="nextButtonText"
+        :disabled="isFormDisabled"
+        @click="nextStep"
       />
-      <template v-else>
-        <app-button
-          class="steps-form__actions-btn"
-          scheme="flat"
-          size="x-small"
-          :icon-left="$icons.arrowLeft"
-          :text="$t('steps-form.prev-step-lbl')"
-          @click="switchStep(STEPS.first)"
-        />
-        <app-button
-          :disabled="isNextStepDisabled"
-          class="steps-form__actions-btn"
-          :text="submitText"
-          size="x-small"
-          @click="submit"
-        />
-      </template>
     </footer>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, computed, useSlots } from 'vue'
 import { AppButton } from '@/common'
+import { useI18n } from 'vue-i18n'
 
-enum STEPS {
-  first = 'first',
-  second = 'second',
-}
-
-defineProps<{
+const props = defineProps<{
   submitText: string
-  isNextStepDisabled: boolean
+  isFormValid: () => boolean
+  isFormDisabled: boolean
 }>()
 
 const emit = defineEmits<{
   (event: 'submit'): void
 }>()
 
-const currentStep = ref<STEPS>(STEPS.first)
+const slots = useSlots()
+
+const { t } = useI18n()
+
+const currentStepIndex = ref(1)
+
+const stepsNumber = computed(() => Object.keys(slots).length)
+const isFirstStep = computed(() => currentStepIndex.value === 1)
+const isFinalStep = computed(() => currentStepIndex.value === stepsNumber.value)
+
+const nextButtonText = computed(() =>
+  isFinalStep.value ? props.submitText : t('steps-form.next-step-lbl'),
+)
 
 const submit = () => {
+  if (!props.isFormValid()) return
+
   emit('submit')
 }
 
-const switchStep = (type: STEPS) => {
-  switch (type) {
-    case STEPS.second:
-      currentStep.value = STEPS.second
-      break
-    case STEPS.first:
-    default:
-      currentStep.value = STEPS.first
-      break
+const nextStep = () => {
+  if (!props.isFormValid()) return
+
+  if (isFinalStep.value) {
+    submit()
+    return
   }
+
+  currentStepIndex.value++
+}
+
+const previousStep = () => {
+  if (isFirstStep.value) return
+
+  currentStepIndex.value--
 }
 </script>
 

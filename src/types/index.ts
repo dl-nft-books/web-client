@@ -7,9 +7,5 @@ export * from './api'
 export * from './chain.types'
 export * from './guide.types'
 export * from './symbols'
-export type { TokenFullInfo, TokenBaseInfo } from '@/composables/use-nft-tokens'
-export type { FullBookInfo, BaseBookInfo } from '@/composables/use-books'
-export type {
-  Signature,
-  BuyParams,
-} from '@/composables/contracts/use-marketplace'
+export * from './nft-tokens.types'
+export * from './marketplace.types'
