@@ -16,8 +16,13 @@ import { MetamaskProvider } from '@rarimo/providers-evm'
 import { utils } from 'ethers'
 
 import { useNetworksStore, useWeb3ProvidersStore } from '@/store'
-import { BuyParams, Signature, useContractRegistry } from '@/composables'
-import { MarketPlace__factory, UnwrappedProvider } from '@/types'
+import { useContractRegistry } from '@/composables'
+import {
+  MarketPlace__factory,
+  UnwrappedProvider,
+  BuyParams,
+  Signature,
+} from '@/types'
 import { config } from '@/config'
 
 export function useNftCheckout(contractRegistryAddress?: string) {
@@ -43,10 +48,6 @@ export function useNftCheckout(contractRegistryAddress?: string) {
   }
 
   const _initContractRegistry = async (chainId: number) => {
-    if (!networkStore.list.length) {
-      await networkStore.loadNetworks()
-    }
-
     const appropriateRegistryAddress = networkStore.list.find(
       network => network.chain_id === chainId,
     )?.factory_address

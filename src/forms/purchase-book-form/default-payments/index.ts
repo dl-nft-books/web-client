@@ -1,0 +1,5 @@
+export { default as NativeTemplate } from '@/forms/purchase-book-form/default-payments/NativeTemplate.vue'
+export { default as Erc20Template } from '@/forms/purchase-book-form/default-payments/Erc20Template.vue'
+export { default as VoucherTemplate } from '@/forms/purchase-book-form/default-payments/VoucherTemplate.vue'
+export { default as NftTemplate } from '@/forms/purchase-book-form/default-payments/NftTemplate.vue'
+export { default as PromocodeTemplate } from '@/forms/purchase-book-form/default-payments/PromocodeTemplate.vue'

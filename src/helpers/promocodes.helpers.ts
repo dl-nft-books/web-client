@@ -18,11 +18,11 @@ export const handlePromocodeError = (error: Error) => {
 
   switch (error.constructor) {
     case errors.NotFoundError:
-      return t('purchase-book-form.promocode-invalid-msg')
+      return t('promocode-template.promocode-invalid-msg')
     case PromocodeExpiredError:
-      return t('purchase-book-form.promocode-expired-msg')
+      return t('promocode-template.promocode-expired-msg')
     case PromocodeFullyUsedError:
-      return t('purchase-book-form.promocode-used-msg')
+      return t('promocode-template.promocode-used-msg')
     default:
       return t('errors.default')
   }

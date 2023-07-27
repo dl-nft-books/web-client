@@ -73,14 +73,6 @@
           v-if="book"
           v-model:is-shown="isPurchaseModalShown"
           :book="book"
-          :is-valid-chain="isValidChain"
-          @submit="submit"
-        />
-
-        <purchasing-success-modal
-          v-model:is-shown="isPurchaseSuccessModalShown"
-          :message="successBuyMessage"
-          :link="linkToTx"
         />
       </template>
     </template>
@@ -97,7 +89,6 @@ import {
   Loader,
   AppButton,
   PurchasingModal,
-  PurchasingSuccessModal,
   Marquee,
   Collapse,
   Icon,
@@ -106,7 +97,7 @@ import {
 import { BookDetails, BookChainInfo } from '@/pages/bookshelf'
 import { ref, computed } from 'vue'
 
-import { ErrorHandler, getBlockExplorerLink } from '@/helpers'
+import { ErrorHandler } from '@/helpers'
 
 import { useBooks } from '@/composables'
 import { FullBookInfo } from '@/types'
@@ -127,9 +118,6 @@ const provider = computed(() => web3Store.provider)
 
 const isLoaded = ref(false)
 const isPurchaseModalShown = ref(false)
-const isPurchaseSuccessModalShown = ref(false)
-const successBuyMessage = ref('')
-const linkToTx = ref('')
 
 const { getBookById } = useBooks()
 
@@ -149,27 +137,6 @@ const buyButtonText = computed(() =>
     ? t('bookshelf-item-page.purchase-btn')
     : t('bookshelf-item-page.rarimo-btn'),
 )
-
-const submit = async (message?: string) => {
-  try {
-    if (message) {
-      successBuyMessage.value = t('bookshelf-item-page.voucher-payment-msg')
-      linkToTx.value = getBlockExplorerLink(
-        provider.value.chainId!,
-        message,
-        'tx',
-      )
-    } else {
-      successBuyMessage.value = t('purchasing-success-modal.message')
-      linkToTx.value = ''
-    }
-
-    isPurchaseModalShown.value = false
-    isPurchaseSuccessModalShown.value = true
-  } catch (error) {
-    ErrorHandler.process(error)
-  }
-}
 
 const init = async () => {
   isLoaded.value = false
