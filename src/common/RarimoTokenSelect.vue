@@ -4,6 +4,7 @@
       v-for="item in valueOptions"
       :key="item.address"
       class="rarimo-token-select__option"
+      type="button"
       :class="{
         'rarimo-token-select__option--picked':
           item.address === modelValue?.address,

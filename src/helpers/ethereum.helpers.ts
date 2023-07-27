@@ -11,6 +11,7 @@ import {
 } from '@/enums'
 import { isMobile } from '@/helpers'
 import {
+  GOERLI_CHAIN,
   POLYGON_MAINNET_CHAIN,
   POLYGON_MUMBAI_CHAIN,
   Q_MAINNET_CHAIN,
@@ -27,6 +28,8 @@ export const getJsonRpcProvider = (
   switch (chain.toString() as SupportedChain) {
     case ETHEREUM_CHAINS.sepolia:
       return new ethers.providers.JsonRpcProvider(SEPOLIA_CHAIN.rpcUrl)
+    case ETHEREUM_CHAINS.goerli:
+      return new ethers.providers.JsonRpcProvider(GOERLI_CHAIN.rpcUrl)
     case Q_CHAINS.mainet:
       return new ethers.providers.JsonRpcProvider(Q_MAINNET_CHAIN.rpcUrl)
     case Q_CHAINS.testnet:
