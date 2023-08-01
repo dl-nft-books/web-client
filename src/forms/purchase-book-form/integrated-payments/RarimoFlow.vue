@@ -267,7 +267,8 @@ const submitFunc = async (editorInstance: UseImageEditor | null) => {
     !priceRaw ||
     !provider.value.selectedAddress ||
     !editorInstance ||
-    !tokenPrice.value
+    !tokenPrice.value ||
+    !targetChain.value
   )
     return
 
@@ -281,7 +282,7 @@ const submitFunc = async (editorInstance: UseImageEditor | null) => {
       banner,
       book,
       account: provider.value.selectedAddress,
-      chainId: Number(provider.value.chainId),
+      chainId: Number(targetChain.value.id),
       tokenAddress: '',
     })
 
