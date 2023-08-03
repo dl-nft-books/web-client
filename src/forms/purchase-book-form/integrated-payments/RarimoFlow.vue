@@ -209,7 +209,10 @@ const getBridgeChains = () => {
 const initializeSupportedTokens = async () => {
   const tokens = await getSupportedTokens()
 
-  if (!tokens?.length) throw new Error('no payment tokens')
+  if (!tokens?.length) {
+    paymentTokensRaw.value = []
+    throw new Error('no payment tokens')
+  }
 
   paymentTokensRaw.value = tokens
   paymentTokensList.value = tokens.map(token => ({
