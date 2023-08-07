@@ -4,8 +4,9 @@
       v-if="isLoadFailed"
       :message="$t('native-template.loading-error-msg')"
     />
-    <template v-else-if="tokenPrice">
+    <template v-else-if="formattedTokenAmount">
       <readonly-field
+        :key="formattedTokenAmount"
         :label="$t('native-template.token-amount-lbl')"
         :value="formattedTokenAmount"
         :error-message="balanceError"
@@ -29,7 +30,7 @@ import { ErrorMessage, Loader, BookPreview, MountedTeleport } from '@/common'
 import { useBalance, useNftTokens, useFormValidation } from '@/composables'
 import { useWeb3ProvidersStore } from '@/store'
 import { ReadonlyField } from '@/fields'
-import { ErrorHandler, safeInject } from '@/helpers'
+import { ErrorHandler, calcFormattedTokenAmount, safeInject } from '@/helpers'
 
 import { PromocodeTemplate } from '@/forms/purchase-book-form'
 import { ExposedPromocodeRef } from '@/forms/purchase-book-form/default-payments/PromocodeTemplate.vue'
@@ -51,6 +52,7 @@ const {
 
 const promocodeRef = ref<ExposedPromocodeRef | null>(null)
 const promocode = ref<Promocode | null>(null)
+const formattedTokenAmount = ref('')
 
 const {
   balance,
@@ -58,6 +60,7 @@ const {
   isPriceAndBalanceLoaded,
   tokenPrice,
   loadBalanceAndPrice,
+  getPrice,
 } = useBalance()
 
 const { mintWithEth, buildFormMintData } = useNftTokens()
@@ -65,17 +68,6 @@ const { mintWithEth, buildFormMintData } = useNftTokens()
 const web3ProvidersStore = useWeb3ProvidersStore()
 
 const provider = computed(() => web3ProvidersStore.provider)
-
-const formattedTokenAmount = computed(() => {
-  if (!tokenPrice.value) return ''
-
-  return new BN(book.pricePerOneToken, {
-    decimals: tokenPrice.value.token.decimals,
-  })
-    .fromFraction(tokenPrice.value.token.decimals)
-    .div(tokenPrice.value.price)
-    .toString()
-})
 
 const balanceError = computed(() => getFieldErrorMessage('balance'))
 
@@ -110,11 +102,14 @@ const submitFunc = async (editorInstance: UseImageEditor | null) => {
       ...(promocode.value ? { promocodeId: promocode.value.id } : {}),
     })
 
+    const discount = promocode.value?.discount ?? 0
+
     const nativeTokenAmount = new BN(book.pricePerOneToken, {
       decimals: tokenPrice.value.token.decimals,
     })
       .div(tokenPrice.value.price)
       .mul(TOKEN_AMOUNT_COEFFICIENT)
+      .mul(1 - discount)
       .toFixed()
 
     await mintWithEth(buyParams, signature, nativeTokenAmount)
@@ -132,12 +127,19 @@ isFormValid.value = () =>
   Boolean(promocodeRef.value?.isPromocodeValid()) && isTemplateValid()
 
 watch(
-  () => promocodeRef.value?.tokenPrice,
-  () => {
-    if (!promocodeRef.value?.tokenPrice) return
+  () => promocodeRef.value?.promocode,
+  async () => {
+    if (!promocodeRef.value) return
 
     promocode.value = promocodeRef.value.promocode
-    tokenPrice.value = promocodeRef.value.tokenPrice
+
+    await getPrice('', TOKEN_TYPES.native)
+
+    formattedTokenAmount.value = calcFormattedTokenAmount(
+      tokenPrice.value,
+      book.pricePerOneToken,
+      promocode.value?.discount ?? 0,
+    )
   },
 )
 
@@ -147,6 +149,11 @@ watch(
     await loadBalanceAndPrice('', TOKEN_TYPES.native)
 
     if (!tokenPrice.value) return
+
+    formattedTokenAmount.value = calcFormattedTokenAmount(
+      tokenPrice.value,
+      book.pricePerOneToken,
+    )
 
     touchField('balance')
   },

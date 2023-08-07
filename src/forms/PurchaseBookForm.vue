@@ -59,7 +59,6 @@
 </template>
 
 <script setup lang="ts">
-import 'simple-fabric-vue-image-editor/dist/fabric-vue-image-editor-ts.css'
 import { ImageEditor, UseImageEditor } from 'simple-fabric-vue-image-editor'
 
 import { computed, provide, ref, reactive } from 'vue'

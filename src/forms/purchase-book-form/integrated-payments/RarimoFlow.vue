@@ -68,7 +68,7 @@ import { required, truthyValue, not } from '@/validators'
 import {
   PaymentToken,
   BridgeChain,
-  EstimatedPrice,
+  SwapEstimation,
   ChainNames,
 } from '@rarimo/nft-checkout'
 import { config } from '@/config'
@@ -109,7 +109,7 @@ const sourceChainList = ref<SelectOption[]>([])
 
 const estimatedPrice = ref<EstimatedPriceInfo>()
 
-let priceRaw: EstimatedPrice | undefined = undefined
+let priceRaw: SwapEstimation | undefined = undefined
 
 const web3ProvidersStore = useWeb3ProvidersStore()
 
@@ -153,7 +153,7 @@ const formattedTokenAmount = computed(() => {
 
 const targetChain = computed(() =>
   isDevelopment
-    ? chainListRaw.value.find(chain => chain.name === ChainNames.Sepolia)
+    ? chainListRaw.value.find(chain => chain.name === ChainNames.Goerli)
     : chainListRaw.value.find(chain => chain.name === ChainNames.Polygon),
 )
 
@@ -206,10 +206,13 @@ const getBridgeChains = () => {
   }
 }
 
-const initializeSupportedTokens = async (sourceChain: BridgeChain) => {
-  const tokens = await getSupportedTokens(sourceChain)
+const initializeSupportedTokens = async () => {
+  const tokens = await getSupportedTokens()
 
-  if (!tokens?.length) throw new Error('no payment tokens')
+  if (!tokens?.length) {
+    paymentTokensRaw.value = []
+    throw new Error('no payment tokens')
+  }
 
   paymentTokensRaw.value = tokens
   paymentTokensList.value = tokens.map(token => ({
@@ -232,9 +235,9 @@ const initializeEstimatedPrice = async () => {
     impact: price.impact!,
     balance: (price.from as unknown as { balance: string }).balance,
     price: {
-      value: price.price.value,
-      decimals: price.price.decimals,
-      symbol: price.price.symbol,
+      value: price.amountIn.value,
+      decimals: price.amountIn.decimals,
+      symbol: price.to.symbol,
     },
     initialPrice: {
       value: formattedTokenAmount.value,
@@ -267,7 +270,8 @@ const submitFunc = async (editorInstance: UseImageEditor | null) => {
     !priceRaw ||
     !provider.value.address ||
     !editorInstance ||
-    !tokenPrice.value
+    !tokenPrice.value ||
+    !targetChain.value
   )
     return
 
@@ -281,7 +285,7 @@ const submitFunc = async (editorInstance: UseImageEditor | null) => {
       banner,
       book,
       account: provider.value.address,
-      chainId: Number(config.DEFAULT_CHAIN_ID),
+      chainId: Number(targetChain.value.id),
       tokenAddress: '',
     })
 
@@ -344,7 +348,7 @@ watch(
         bridgeChains.sourceChain,
         bridgeChains.targetChain,
       )
-      await initializeSupportedTokens(bridgeChains.sourceChain)
+      await initializeSupportedTokens()
     } catch (error) {
       ErrorHandler.processWithoutFeedback(error)
       noAvailableTokens.value = true

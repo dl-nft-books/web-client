@@ -6,13 +6,7 @@
     :disabled="isSwitchingChain"
   >
     <template #head="{ menu }">
-      <loader v-if="isLoadingNetworks" />
-      <error-message
-        v-else-if="isLoadFailed"
-        class="header-network-switcher__error"
-        :message="$t('networks.network-error')"
-      />
-      <div v-else class="header-network-switcher__wrapper" @click="menu.open">
+      <div class="header-network-switcher__wrapper" @click="menu.open">
         <network-item
           :modification="`non-active ${modification}`"
           :name="networkName"
@@ -36,10 +30,10 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, computed, onMounted } from 'vue'
-import { DropDown, NetworkItem, Loader, ErrorMessage } from '@/common'
+import { ref, computed } from 'vue'
+import { DropDown, NetworkItem } from '@/common'
 import { useWeb3ProvidersStore, useNetworksStore } from '@/store'
-import { ErrorHandler, getNetworkScheme, switchNetwork } from '@/helpers'
+import { getNetworkScheme, switchNetwork } from '@/helpers'
 import { ChainId } from '@distributedlab/w3p'
 import { useWindowSize } from '@vueuse/core'
 import { WINDOW_BREAKPOINTS } from '@/enums'
@@ -60,8 +54,6 @@ const { width } = useWindowSize()
 const networksStore = useNetworksStore()
 
 const isSwitchingChain = ref(false)
-const isLoadingNetworks = ref(true)
-const isLoadFailed = ref(false)
 
 const networkSwitcherClasses = computed(() => [
   'header-network-switcher',
@@ -87,18 +79,6 @@ const changeNetwork = async (chainID: ChainId) => {
   await switchNetwork(chainID)
   isSwitchingChain.value = false
 }
-
-onMounted(async () => {
-  try {
-    await networksStore.loadNetworks()
-    await networksStore.loadChainList()
-
-    isLoadingNetworks.value = false
-  } catch (error) {
-    ErrorHandler.processWithoutFeedback(error)
-    isLoadFailed.value = true
-  }
-})
 </script>
 
 <style lang="scss" scoped>

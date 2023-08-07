@@ -6,7 +6,7 @@ import {
   Price,
   PaymentToken,
   CheckoutOperation,
-  EstimatedPrice,
+  SwapEstimation,
   BridgeChain,
 } from '@rarimo/nft-checkout'
 
@@ -58,11 +58,11 @@ export function useNftCheckout(contractRegistryAddress?: string) {
   }
 
   const getSupportedChains = () => {
-    return checkout && checkout.loadSupportedChains()
+    return checkout && checkout.getSupportedChains()
   }
 
-  const getSupportedTokens = (chain: BridgeChain) => {
-    return checkout && checkout.loadPaymentTokens(chain)
+  const getSupportedTokens = () => {
+    return checkout && checkout.getPaymentTokens()
   }
 
   const initCheckout = async (
@@ -93,11 +93,15 @@ export function useNftCheckout(contractRegistryAddress?: string) {
   }
 
   const getEstimatedPrice = async (paymentToken: PaymentToken) => {
-    return checkout && checkout.estimatePrice(paymentToken)
+    if (!checkout) return
+
+    const resp = await checkout.estimatePrice([paymentToken])
+
+    return resp[0]
   }
 
   const performCheckout = async (
-    estimatedPrice: EstimatedPrice,
+    estimatedPrice: SwapEstimation,
     txOpts: {
       buyParams: BuyParams
       signature: Signature
@@ -120,7 +124,7 @@ export function useNftCheckout(contractRegistryAddress?: string) {
       [[marketPlaceAddress], [txOpts.amountOfEth], [encodedFunctionData]],
     )
 
-    const txHash = await checkout.checkout(estimatedPrice, { bundle })
+    const txHash = await checkout.checkout([estimatedPrice], { bundle })
 
     return txHash
   }

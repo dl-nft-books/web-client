@@ -1,5 +1,6 @@
 import getSymbolFromCurrency from 'currency-symbol-map'
 import { BN, BnLike } from '@/utils/math.util'
+import { TokenPrice } from '@/types'
 
 export function cropAddress(address: string) {
   return `${address.slice(0, 6)}...${address.slice(-5)}`
@@ -44,4 +45,22 @@ export function formatNumber(amount: BnLike) {
   })
 
   return formattedAmount
+}
+
+export const calcFormattedTokenAmount = (
+  tokenPrice: TokenPrice | null,
+  bookPrice: string,
+  discount = 0,
+) => {
+  if (!tokenPrice) return ''
+
+  const formatted = new BN(bookPrice, {
+    decimals: tokenPrice.token.decimals,
+  })
+    .fromFraction(tokenPrice.token.decimals)
+    .div(tokenPrice.price)
+
+  return discount
+    ? formatted.mul(1 - discount).toString()
+    : formatted.toString()
 }

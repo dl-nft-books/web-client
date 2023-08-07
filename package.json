@@ -1,6 +1,6 @@
 {
   "name": "web-client-nft-books",
-  "version": "1.4.0",
+  "version": "1.5.0",
   "gitHooks": {
     "pre-commit": "yarn lint",
     "pre-push": "yarn test && yarn rsc"
@@ -28,8 +28,8 @@
     "@distributedlab/utils": "^2.0.0",
     "@distributedlab/w3p": "^1.0.0-rc.0",
     "@invisiburu/vue-picker": "^2.1.0",
-    "@rarimo/nft-checkout": "^2.0.0-rc.2",
-    "@rarimo/providers-evm": "^2.0.0-rc.2",
+    "@rarimo/nft-checkout": "^2.0.0-rc.12",
+    "@rarimo/providers-evm": "^2.0.0-rc.12",
     "@solana/web3.js": "1.52.0",
     "@vuelidate/core": "^2.0.0-alpha.44",
     "@vuelidate/validators": "^2.0.0-alpha.31",
@@ -74,7 +74,7 @@
     "eslint": "8.22.0",
     "eslint-plugin-prettier": "^4.0.0",
     "eslint-plugin-promise": "^6.0.1",
-    "eslint-plugin-vue": "^9.4.0",
+    "eslint-plugin-vue": "9.4.0",
     "eslint-plugin-vue-i18n": "^0.3.0",
     "happy-dom": "^6.0.4",
     "prettier": "^2.5.1",

@@ -22,6 +22,7 @@
 
     <template v-else-if="tokenPrice">
       <readonly-field
+        :key="formattedTokenAmount"
         :label="$t('erc20-template.token-amount-lbl')"
         :value="formattedTokenAmount"
         :error-message="balanceError"
@@ -58,7 +59,7 @@ import { ExposedPromocodeRef } from '@/forms/purchase-book-form/default-payments
 import { BN } from '@/utils/math.util'
 import { useWeb3ProvidersStore } from '@/store'
 import { FORM_STATES, TOKEN_TYPES } from '@/enums'
-import { ErrorHandler, safeInject } from '@/helpers'
+import { ErrorHandler, calcFormattedTokenAmount, safeInject } from '@/helpers'
 
 const {
   bookInfo: book,
@@ -74,6 +75,7 @@ const form = reactive({
 const isLoading = ref(false)
 const promocodeRef = ref<ExposedPromocodeRef | null>(null)
 const promocode = ref<Promocode | null>(null)
+const formattedTokenAmount = ref('')
 
 const web3ProvidersStore = useWeb3ProvidersStore()
 const {
@@ -83,22 +85,12 @@ const {
   isTokenAddressUnsupported,
   tokenPrice,
   loadBalanceAndPrice: _loadBalanceAndPrice,
+  getPrice,
 } = useBalance()
 
 const { buildFormMintData, mintWithErc20, approveTokenSpend } = useNftTokens()
 
 const provider = computed(() => web3ProvidersStore.provider)
-
-const formattedTokenAmount = computed(() => {
-  if (!tokenPrice.value) return ''
-
-  return new BN(book.pricePerOneToken, {
-    decimals: tokenPrice.value.token.decimals,
-  })
-    .fromFraction(tokenPrice.value.token.decimals)
-    .div(tokenPrice.value.price)
-    .toString()
-})
 const balanceError = computed(() => getFieldErrorMessage('balance'))
 
 const { getFieldErrorMessage, touchField, isFormValid } = useFormValidation(
@@ -116,6 +108,11 @@ const loadBalanceAndPrice = debounce(async () => {
   await _loadBalanceAndPrice(form.tokenAddress, TOKEN_TYPES.erc20)
 
   if (!tokenPrice.value) return
+
+  formattedTokenAmount.value = calcFormattedTokenAmount(
+    tokenPrice.value,
+    book.pricePerOneToken,
+  )
 
   touchField('balance')
 
@@ -142,7 +139,7 @@ const submitFunc = async (editorInstance: UseImageEditor | null) => {
       book,
       account: provider.value.address,
       chainId: Number(provider.value.chainId),
-      tokenAddress: '',
+      tokenAddress: form.tokenAddress,
       ...(promocode.value ? { promocodeId: promocode.value.id } : {}),
     })
 
@@ -172,12 +169,19 @@ _isFormValid.value = () =>
   Boolean(promocodeRef.value?.isPromocodeValid()) && isFormValid()
 
 watch(
-  () => promocodeRef.value?.tokenPrice,
-  () => {
-    if (!promocodeRef.value?.tokenPrice) return
+  () => promocodeRef.value?.promocode,
+  async () => {
+    if (!promocodeRef.value) return
 
     promocode.value = promocodeRef.value.promocode
-    tokenPrice.value = promocodeRef.value.tokenPrice
+
+    await getPrice(form.tokenAddress, TOKEN_TYPES.erc20)
+
+    formattedTokenAmount.value = calcFormattedTokenAmount(
+      tokenPrice.value,
+      book.pricePerOneToken,
+      promocode.value?.discount ?? 0,
+    )
   },
 )
 
@@ -187,9 +191,6 @@ watch(
     if (!form.tokenAddress) return
 
     loadBalanceAndPrice()
-  },
-  {
-    immediate: true,
   },
 )
 </script>
