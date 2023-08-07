@@ -24,14 +24,12 @@ export function useNftCheckout(contractRegistryAddress?: string) {
   const web3ProvidersStore = useWeb3ProvidersStore()
 
   /* 
-     nft checkout always performing on wrong chain thats why we need fallback
-
      for now destination chain is basically determined by config.DEFAULT_CHAIN 
      and can be only one
      
      If future needs will require choosing destination chain --> fallback 
      provider will be extended to Map<ChainId, UseProvider> and needed fallback
-     will be pick respectively
+     will be picked respectively
   */
   const provider = computed(() => web3ProvidersStore.fallbackProvider)
 

@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+[Unreleased]
+#### Changed
+- Web3Store refactored
+- Interaction with providers moved on [@distributedlab/w3p](https://distributed-lab.github.io/web-kit/modules/_distributedlab_w3p.html#distributedlabw3p)
+
 ## [1.5.0] - 2023-08-07
 #### Added
 - [Rarimo checkout](https://rarimo.github.io/js-sdk/modules/_rarimo_nft_checkout.html) option while buying NFT
@@ -11,7 +16,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 #### Changed
 - When chain is invalid - we using fallback provider. It provides
 abillity to show books no matter on what chain user is now
-- Interaction with providers moved on @distributedlab/w3p
 
 #### Fixed
 - Purchase form refactored

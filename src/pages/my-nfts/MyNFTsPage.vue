@@ -32,11 +32,14 @@ const provider = computed(() => {
   return web3ProvidersStore.fallbackProvider
 })
 
-const noDataScheme = computed(() =>
-  !provider.value.isFallback && !provider.value.isConnected
-    ? 'not-connected'
-    : '',
-)
+const noDataScheme = computed(() => {
+  if (!provider.value.isFallback && !provider.value.isConnected)
+    return 'not-connected'
+
+  if (!totalAmount.value) return 'default'
+
+  return ''
+})
 
 const totalAmount = ref(-1)
 const isLoading = ref(false)
