@@ -115,11 +115,11 @@ const {
 const { t } = useI18n()
 
 const web3ProvidersStore = useWeb3ProvidersStore()
-const erc721 = useErc721()
-
 const { buildFormMintData, mintWithNft, approveTokenSpend } = useNftTokens()
 
 const provider = computed(() => web3ProvidersStore.provider)
+
+const erc721 = useErc721(provider)
 
 const floorPrice = computed(() => {
   if (!nftPrice.value) return ''
