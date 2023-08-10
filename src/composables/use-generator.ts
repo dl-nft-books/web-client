@@ -1,12 +1,7 @@
 import { api } from '@/api'
-import { JsonApiBodyBuilder } from '@distributedlab/jac'
+import { JsonApiBodyBuilder, JsonApiRecordBase } from '@distributedlab/jac'
 import { computed } from 'vue'
-import {
-  CreateTaskResponse,
-  JsonApiRecordBase,
-  MintSignatureResponse,
-  Task,
-} from '@/types'
+import { CreateTaskResponse, MintSignatureResponse, Task } from '@/types'
 import { useVoucher, useContractRegistry } from '@/composables'
 import { useNetworksStore, useWeb3ProvidersStore } from '@/store'
 

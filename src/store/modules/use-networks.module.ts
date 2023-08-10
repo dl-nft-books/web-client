@@ -1,11 +1,23 @@
 import { defineStore } from 'pinia'
-import { Network, PageOrder } from '@/types'
+import { JsonApiRecordBase } from '@distributedlab/jac'
+
+import { PageOrder } from '@/types'
 import { api } from '@/api'
 import { config } from '@/config'
 
 type ChainInfo = {
   name: string
   chainId: number
+}
+
+type Network = JsonApiRecordBase<'networks'> & {
+  chain_id: number
+  factory_address: string
+  name: string
+  token_name: string
+  token_symbol: string
+  decimals: number
+  rpc_url: string
 }
 
 const chainListLink = 'https://chainid.network/chains_mini.json'

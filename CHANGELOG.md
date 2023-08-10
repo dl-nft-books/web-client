@@ -7,11 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [Unreleased]
 #### Removed
 - Old local json api client
+- Unused helpers and types
 
 #### Changed
 - Web3Store refactored
 - Interaction with providers moved on [@distributedlab/w3p](https://distributed-lab.github.io/web-kit/modules/_distributedlab_w3p.html#distributedlabw3p)
 - Work with api moved on [@distributeslab/jac](https://distributed-lab.github.io/web-kit/modules/_distributedlab_jac.html)
+- Refactored `types` folder
 
 ## [1.5.0] - 2023-08-07
 #### Added
