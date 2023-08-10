@@ -1,5 +1,5 @@
 import { i18n } from '@/localization'
-import { errors } from '@/api/json-api'
+import { errors } from '@distributedlab/jac'
 
 export class PromocodeExpiredError extends Error {
   constructor(errorMessage = '') {

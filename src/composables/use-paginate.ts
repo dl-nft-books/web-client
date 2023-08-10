@@ -1,5 +1,4 @@
-import { JsonApiResponse } from '@/api/json-api/response'
-import { JsonApiLinkFields } from '@/api/json-api/types'
+import { JsonApiResponse, JsonApiLinkFields } from '@distributedlab/jac'
 import { config } from '@config'
 import { onMounted, Ref, ref, watch, computed, ComputedRef } from 'vue'
 import { ErrorHandler } from '@/helpers'

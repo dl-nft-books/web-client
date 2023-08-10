@@ -130,13 +130,15 @@ export function useNftTokens() {
     const { data } = await api.get<Payment[]>(
       '/integrations/tracker/payments',
       {
-        page: {
-          limit: opts.pageLimit || config.DEFAULT_PAGE_LIMIT,
-          order: opts.pageOrder || 'desc',
-        },
-        filter: {
-          token_id: opts.tokenId,
-          contract_address: opts.tokenAddress,
+        query: {
+          page: {
+            limit: opts.pageLimit || config.DEFAULT_PAGE_LIMIT,
+            order: opts.pageOrder || 'desc',
+          },
+          filter: {
+            token_id: opts.tokenId,
+            contract_address: opts.tokenAddress,
+          },
         },
       },
     )

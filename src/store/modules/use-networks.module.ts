@@ -24,9 +24,11 @@ export const useNetworksStore = defineStore('networks', {
       const { data: networks } = await api.get<Network[]>(
         '/integrations/networks',
         {
-          page: {
-            limit: opts?.pageLimit || config.DEFAULT_PAGE_LIMIT,
-            order: opts?.pageOrder || 'desc',
+          query: {
+            page: {
+              limit: opts?.pageLimit || config.DEFAULT_PAGE_LIMIT,
+              order: opts?.pageOrder || 'desc',
+            },
           },
         },
       )

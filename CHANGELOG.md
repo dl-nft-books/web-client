@@ -5,9 +5,13 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 [Unreleased]
+#### Removed
+- Old local json api client
+
 #### Changed
 - Web3Store refactored
 - Interaction with providers moved on [@distributedlab/w3p](https://distributed-lab.github.io/web-kit/modules/_distributedlab_w3p.html#distributedlabw3p)
+- Work with api moved on [@distributeslab/jac](https://distributed-lab.github.io/web-kit/modules/_distributedlab_jac.html)
 
 ## [1.5.0] - 2023-08-07
 #### Added

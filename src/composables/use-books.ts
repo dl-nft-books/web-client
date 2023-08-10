@@ -143,12 +143,14 @@ export function useBooks(contractRegistryAddress?: string) {
     const { data: dataWithoutNetworks } = await api.get<Book[]>(
       '/integrations/books',
       {
-        filter: {
-          contract: contractFilter,
-        },
-        page: {
-          limit: limit,
-          order: 'desc',
+        query: {
+          filter: {
+            contract: contractFilter,
+          },
+          page: {
+            limit: limit,
+            order: 'desc',
+          },
         },
       },
     )
@@ -156,12 +158,14 @@ export function useBooks(contractRegistryAddress?: string) {
     if (!dataWithoutNetworks.length) return []
 
     const { data } = await api.get<Book[]>('/integrations/books', {
-      filter: {
-        id: dataWithoutNetworks.map(book => book.id).join(','),
-      },
-      page: {
-        limit: limit,
-        order: 'desc',
+      query: {
+        filter: {
+          id: dataWithoutNetworks.map(book => book.id).join(','),
+        },
+        page: {
+          limit: limit,
+          order: 'desc',
+        },
       },
     })
 
