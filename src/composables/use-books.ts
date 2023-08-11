@@ -1,9 +1,9 @@
+import { ChainId } from '@distributedlab/w3p'
+
 import { api } from '@/api'
 import { Book, FullBookInfo, BaseBookInfo } from '@/types'
-import { ChainId } from '@distributedlab/w3p'
 import { useMarketplace, useContractRegistry } from '@/composables'
 import { useNetworksStore, useWeb3ProvidersStore } from '@/store'
-import { BN } from '@/utils/math.util'
 
 import { IMarketplace } from '@/types/contracts/MarketPlace'
 import { config } from '@/config'
@@ -55,7 +55,7 @@ export function useBooks(contractRegistryAddress?: string) {
   ): BaseBookInfo => {
     return {
       ...backendData,
-      pricePerOneToken: new BN(contractData.pricePerOneToken._hex).toString(),
+      pricePerOneToken: contractData.pricePerOneToken.toString(),
       tokenName: contractData.baseTokenData.tokenName,
       tokenContract: contractData.baseTokenData.tokenContract,
       isDisabled: contractData.isDisabled,
@@ -69,16 +69,11 @@ export function useBooks(contractRegistryAddress?: string) {
   ): FullBookInfo => {
     return {
       ...backendData,
-      pricePerOneToken: new BN(
-        contractData.tokenParams.pricePerOneToken._hex,
-      ).toString(),
-      minNFTFloorPrice: new BN(
-        contractData.tokenParams.minNFTFloorPrice._hex,
-      ).toString(),
+      pricePerOneToken: contractData.tokenParams.pricePerOneToken.toString(),
+      minNFTFloorPrice: contractData.tokenParams.minNFTFloorPrice.toString(),
       voucherTokenContract: contractData.tokenParams.voucherTokenContract,
-      voucherTokensAmount: new BN(
-        contractData.tokenParams.voucherTokensAmount._hex,
-      ).toString(),
+      voucherTokensAmount:
+        contractData.tokenParams.voucherTokensAmount.toString(),
       fundsRecipient: contractData.tokenParams.fundsRecipient,
       isNFTBuyable: contractData.tokenParams.isNFTBuyable,
       isDisabled: contractData.tokenParams.isDisabled,
@@ -203,7 +198,7 @@ export function useBooks(contractRegistryAddress?: string) {
 
     if (!amount) return
 
-    return new BN(amount._hex).toString()
+    return amount.toString()
   }
 
   const getBookById = async (

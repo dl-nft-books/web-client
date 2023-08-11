@@ -47,6 +47,7 @@
 import { UseImageEditor } from 'simple-fabric-vue-image-editor'
 import { reactive, ref, computed, watch, toRefs } from 'vue'
 import { debounce } from 'lodash'
+import { BN } from '@distributedlab/tools'
 
 import { Loader, ErrorMessage, BookPreview, MountedTeleport } from '@/common'
 import { PromocodeTemplate } from '@/forms/purchase-book-form'
@@ -56,7 +57,6 @@ import { required, address, enoughBnAmount } from '@/validators'
 
 import { Promocode, PurchaseFormKey } from '@/types'
 import { ExposedPromocodeRef } from '@/forms/purchase-book-form/default-payments/PromocodeTemplate.vue'
-import { BN } from '@/utils/math.util'
 import { useWeb3ProvidersStore } from '@/store'
 import { FORM_STATES, TOKEN_TYPES } from '@/enums'
 import { ErrorHandler, calcFormattedTokenAmount, safeInject } from '@/helpers'
@@ -102,7 +102,9 @@ const { getFieldErrorMessage, touchField, isFormValid } = useFormValidation(
 )
 
 const loadBalanceAndPrice = debounce(async () => {
-  if (!isFormValid()) return
+  touchField('tokenAddress')
+
+  if (getFieldErrorMessage('tokenAddress')) return
 
   isLoading.value = true
   await _loadBalanceAndPrice(form.tokenAddress, TOKEN_TYPES.erc20)
@@ -143,14 +145,13 @@ const submitFunc = async (editorInstance: UseImageEditor | null) => {
       ...(promocode.value ? { promocodeId: promocode.value.id } : {}),
     })
 
+    // approving to spend exact amount that needed
     await approveTokenSpend(
       TOKEN_TYPES.erc20,
-      new BN(formattedTokenAmount.value, {
-        decimals: tokenPrice.value.token.decimals,
-      })
-        .toFraction(tokenPrice.value.token.decimals)
-        .toString()
-        .split('.')[0],
+      BN.fromRaw(formattedTokenAmount.value)
+        .round(tokenPrice.value.token.decimals)
+        .raw.toString()
+        .slice(0, tokenPrice.value.token.decimals + 1),
       form.tokenAddress,
     )
 

@@ -28,6 +28,7 @@
 
 <script setup lang="ts">
 import { ref, computed } from 'vue'
+import { time } from '@distributedlab/tools'
 
 import { Loader, ErrorMessage, BookCard, AppButton } from '@/common'
 
@@ -35,7 +36,6 @@ import { ErrorHandler } from '@/helpers'
 import { useBooks, useContractPagination } from '@/composables'
 import { useWeb3ProvidersStore } from '@/store'
 import { BaseBookInfo } from '@/types'
-import { DateUtil } from '@distributedlab/utils'
 
 const props = defineProps<{
   totalAmount: number
@@ -70,7 +70,7 @@ const processBookList = (bookList: BaseBookInfo[]) => {
   return bookList
     .filter(book => !book.isDisabled)
     .sort((oneBook, anotherBook) =>
-      DateUtil.isBefore(oneBook.created_at, anotherBook.created_at) ? 1 : -1,
+      time(oneBook.created_at).isBefore(anotherBook.created_at) ? 1 : -1,
     )
 }
 

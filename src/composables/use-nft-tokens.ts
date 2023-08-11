@@ -1,3 +1,8 @@
+import { constants } from 'ethers'
+import { computed, ref, watch } from 'vue'
+import { useFetch } from '@vueuse/core'
+import { BN } from '@distributedlab/tools'
+
 import { api } from '@/api'
 import {
   useMarketplace,
@@ -20,10 +25,6 @@ import {
   TokenFullInfo,
 } from '@/types'
 import { IMarketplace } from '@/types/contracts/MarketPlace'
-import { BN } from '@/utils/math.util'
-import { computed, ref, watch } from 'vue'
-import { useFetch } from '@vueuse/core'
-import { constants } from 'ethers'
 
 type TokensRaw = {
   tokenContract: string
@@ -100,12 +101,11 @@ export function useNftTokens() {
       marketPlaceAddress.value,
     )
 
-    if (
-      new BN(allowance?.toString() || 0).compare(tokenAmount) === 1 ||
-      new BN(allowance?.toString() || 0).compare(tokenAmount) === 0
-    ) {
+    if (!allowance) throw new Error('failed to get current allowance')
+
+    if (BN.fromBigInt(allowance.toString()).gte(BN.fromBigInt(tokenAmount))) {
       return true
-    } else if (new BN(allowance?.toString() || 0).compare(tokenAmount) === -1) {
+    } else {
       await approveErc20(marketPlaceAddress.value, tokenAmount)
     }
 
@@ -117,7 +117,7 @@ export function useNftTokens() {
   ): TokensRaw => {
     return {
       tokenContract: token.tokenContract,
-      tokenIds: token.tokenIds.map(el => new BN(el._hex).toString()),
+      tokenIds: token.tokenIds.map(el => el.toString()),
     }
   }
 

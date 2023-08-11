@@ -1,0 +1,1 @@
+export const DEFAULT_BN_PRECISION = 26

@@ -29,11 +29,12 @@
 </template>
 
 <script lang="ts" setup>
+import { time } from '@distributedlab/tools'
+
 import { Icon } from '@/common'
 import {
   formatFiatAssetFromWei,
   formatAssetFromWei,
-  formatMDY,
   globalizeTokenType,
 } from '@/helpers'
 
@@ -59,7 +60,9 @@ const getDetails = () => {
   let commonDetails: NftDetails[] = [
     {
       label: t('nft-details.purchase-date-lbl'),
-      value: formatMDY(props.nftToken.payment.purchase_timestamp),
+      value: time(props.nftToken.payment.purchase_timestamp).format(
+        'MMMM D, YYYY',
+      ),
     },
     {
       label: t('nft-details.price-lbl'),

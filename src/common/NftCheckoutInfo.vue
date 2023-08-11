@@ -21,8 +21,7 @@
 </template>
 
 <script setup lang="ts">
-import { formatAssetFromWei } from '@/helpers'
-import { BN } from '@distributedlab/utils'
+import { BN } from '@distributedlab/tools'
 
 export type EstimatedPriceInfo = {
   gasPrice: string
@@ -43,13 +42,10 @@ const props = defineProps<{ info: EstimatedPriceInfo }>()
 const DECIMALS = 5
 
 const priceConversion = [
-  formatAssetFromWei(
-    new BN(props.info.initialPrice.value).toWei().toString(),
-    DECIMALS,
-  ),
+  BN.fromRaw(props.info.initialPrice.value, DECIMALS).toString(),
   props.info.initialPrice.symbol,
   '=',
-  formatAssetFromWei(props.info.price.value, DECIMALS),
+  BN.fromBigInt(props.info.price.value).round(DECIMALS).toString(),
   props.info.price.symbol,
 ].join(' ')
 </script>

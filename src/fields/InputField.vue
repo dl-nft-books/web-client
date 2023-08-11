@@ -45,8 +45,9 @@
 
 <script setup lang="ts">
 import { computed, ref, useAttrs } from 'vue'
+import { BN } from '@distributedlab/tools'
 import uuid from 'uuidv4'
-import { BN } from '@distributedlab/utils'
+
 import { Icon } from '@/common'
 import { ICON_NAMES } from '@/enums'
 
@@ -87,7 +88,7 @@ const uid = uuid()
 
 const isPasswordShown = ref(false)
 
-const isNumberType = computed(() => props.type === 'text')
+const isNumberType = computed(() => props.type === 'number')
 const isPasswordType = computed(() => props.type === 'password')
 
 const min = computed((): string => (attrs?.min as string) || '')
@@ -104,6 +105,7 @@ const isReadonly = computed(() =>
 const listeners = computed(() => ({
   input: (event: Event) => {
     const eventTarget = event.target as HTMLInputElement
+
     if (isNumberType.value) {
       eventTarget.value = normalizeRange(eventTarget.value)
     }
@@ -132,9 +134,9 @@ const inputClasses = computed(() => {
 const normalizeRange = (value: string | number): string => {
   let result = value
 
-  if (min.value && new BN(value).compare(min.value) < 0) {
+  if (min.value && BN.fromRaw(result).lt(BN.fromRaw(min.value))) {
     result = min.value
-  } else if (max.value && new BN(value).compare(max.value) > 0) {
+  } else if (max.value && BN.fromRaw(result).gt(BN.fromRaw(max.value))) {
     result = max.value
   }
 

@@ -24,7 +24,7 @@
 
 <script setup lang="ts">
 import { computed, watch, ref } from 'vue'
-import { BN } from '@/utils/math.util'
+import { BN, DECIMALS } from '@distributedlab/tools'
 
 import { ErrorMessage, Loader, BookPreview, MountedTeleport } from '@/common'
 import { useBalance, useNftTokens, useFormValidation } from '@/composables'
@@ -40,6 +40,7 @@ import { FORM_STATES, TOKEN_TYPES } from '@/enums'
 import { enoughBnAmount } from '@/validators'
 
 import { UseImageEditor } from 'simple-fabric-vue-image-editor'
+import { DEFAULT_BN_PRECISION } from '@/const'
 
 const TOKEN_AMOUNT_COEFFICIENT = 1.02
 
@@ -104,13 +105,15 @@ const submitFunc = async (editorInstance: UseImageEditor | null) => {
 
     const discount = promocode.value?.discount ?? 0
 
-    const nativeTokenAmount = new BN(book.pricePerOneToken, {
-      decimals: tokenPrice.value.token.decimals,
-    })
-      .div(tokenPrice.value.price)
-      .mul(TOKEN_AMOUNT_COEFFICIENT)
-      .mul(1 - discount)
-      .toFixed()
+    BN.setConfig({ precision: DECIMALS.WEI })
+
+    const nativeTokenAmount = BN.fromBigInt(book.pricePerOneToken)
+      .div(BN.fromRaw(tokenPrice.value.price, tokenPrice.value.token.decimals))
+      .mul(BN.fromRaw(TOKEN_AMOUNT_COEFFICIENT))
+      .mul(BN.fromRaw(1 - discount))
+      .raw.toString()
+
+    BN.setConfig({ precision: DEFAULT_BN_PRECISION })
 
     await mintWithEth(buyParams, signature, nativeTokenAmount)
 

@@ -41,6 +41,7 @@
 
 <script setup lang="ts">
 import { computed, reactive, ref, watch, toRefs } from 'vue'
+import { BN, DECIMALS } from '@distributedlab/tools'
 
 import {
   Loader,
@@ -60,8 +61,7 @@ import {
   useFormValidation,
 } from '@/composables'
 
-import { ErrorHandler, safeInject } from '@/helpers'
-import { BN } from '@/utils/math.util'
+import { ErrorHandler, safeInject, calcFormattedTokenAmount } from '@/helpers'
 import { useWeb3ProvidersStore } from '@/store'
 import { FORM_STATES, TOKEN_TYPES } from '@/enums'
 import { required, truthyValue, not } from '@/validators'
@@ -75,6 +75,7 @@ import { config } from '@/config'
 import { ethers } from 'ethers'
 import { EstimatedPriceInfo } from '@/common/NftCheckoutInfo.vue'
 import { UseImageEditor } from 'simple-fabric-vue-image-editor'
+import { DEFAULT_BN_PRECISION } from '@/const'
 
 type SelectOption = {
   label: string
@@ -143,12 +144,7 @@ const provider = computed(() => web3ProvidersStore.provider)
 const formattedTokenAmount = computed(() => {
   if (!tokenPrice.value) return ''
 
-  return new BN(book.pricePerOneToken, {
-    decimals: tokenPrice.value.token.decimals,
-  })
-    .fromFraction(tokenPrice.value.token.decimals)
-    .div(tokenPrice.value.price)
-    .toString()
+  return calcFormattedTokenAmount(tokenPrice.value, book.pricePerOneToken)
 })
 
 const targetChain = computed(() =>
@@ -252,12 +248,14 @@ const initializeCheckout = async (
 ) => {
   if (!tokenPrice.value || !provider.value.address) return
 
-  const nftPrice = new BN(book.pricePerOneToken, {
-    decimals: tokenPrice.value?.token.decimals,
-  })
-    .div(tokenPrice.value.price)
-    .mul(TOKEN_AMOUNT_COEFFICIENT)
-    .toFixed()
+  BN.setConfig({ precision: DECIMALS.WEI })
+
+  const nftPrice = BN.fromBigInt(book.pricePerOneToken)
+    .div(BN.fromRaw(tokenPrice.value.price, tokenPrice.value.token.decimals))
+    .mul(BN.fromRaw(TOKEN_AMOUNT_COEFFICIENT))
+    .raw.toString()
+
+  BN.setConfig({ precision: DEFAULT_BN_PRECISION })
 
   await initCheckout(sourceChain, targetChain, {
     recipient: provider.value.address,
@@ -289,12 +287,14 @@ const submitFunc = async (editorInstance: UseImageEditor | null) => {
       tokenAddress: '',
     })
 
-    const nativeTokenAmount = new BN(book.pricePerOneToken, {
-      decimals: tokenPrice.value.token.decimals,
-    })
-      .div(tokenPrice.value.price)
-      .mul(TOKEN_AMOUNT_COEFFICIENT)
-      .toFixed()
+    BN.setConfig({ precision: DECIMALS.WEI })
+
+    const nativeTokenAmount = BN.fromBigInt(book.pricePerOneToken)
+      .div(BN.fromRaw(tokenPrice.value.price, tokenPrice.value.token.decimals))
+      .mul(BN.fromRaw(TOKEN_AMOUNT_COEFFICIENT))
+      .raw.toString()
+
+    BN.setConfig({ precision: DEFAULT_BN_PRECISION })
 
     await performCheckout(priceRaw, {
       buyParams,

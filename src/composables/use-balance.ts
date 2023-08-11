@@ -1,10 +1,10 @@
 import { ref, computed } from 'vue'
 import { ethers } from 'ethers'
+import { BN } from '@distributedlab/tools'
 import { errors } from '@/api/json-api'
 
 import { NftPrice, TokenPrice } from '@/types'
 import { TOKEN_TYPES } from '@/enums'
-import { BN } from '@/utils/math.util'
 import { useWeb3ProvidersStore, useNetworksStore } from '@/store'
 import { useErc20, usePricer } from '@/composables'
 import { ErrorHandler } from '@/helpers'
@@ -63,9 +63,9 @@ export function useBalance() {
     const decimals = await erc20.getDecimals()
     const balance = await erc20.getBalanceOf(provider.value.address)
 
-    if (!balance) return
+    if (!balance || !decimals) return
 
-    return new BN(balance.toString()).fromFraction(decimals).toString()
+    return BN.fromBigInt(balance.toString(), decimals).toString()
   }
 
   const getBalance = async (tokenAddress: string, tokenType: TOKEN_TYPES) => {
@@ -83,7 +83,7 @@ export function useBalance() {
         accountBalance = await provider.value.getBalance(
           provider.value.address!,
         )
-        balance.value = new BN(accountBalance).fromWei().toString()
+        balance.value = BN.fromBigInt(accountBalance).toString()
         break
       default:
         break

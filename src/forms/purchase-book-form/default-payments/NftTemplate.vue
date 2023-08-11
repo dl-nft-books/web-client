@@ -64,8 +64,7 @@ import { UseImageEditor } from 'simple-fabric-vue-image-editor'
 import { computed, reactive, watch, ref, toRefs } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { debounce } from 'lodash'
-
-import { BN } from '@/utils/math.util'
+import { BN, DECIMALS } from '@distributedlab/tools'
 
 import {
   InputField,
@@ -86,6 +85,7 @@ import { required, address, enoughBnAmount, truthyValue } from '@/validators'
 import { useWeb3ProvidersStore } from '@/store'
 import { FORM_STATES, TOKEN_TYPES } from '@/enums'
 import { ErrorHandler, formatAssetFromWei, safeInject } from '@/helpers'
+import { DEFAULT_BN_PRECISION } from '@/const'
 
 const {
   bookInfo: book,
@@ -124,7 +124,13 @@ const erc721 = useErc721(provider)
 const floorPrice = computed(() => {
   if (!nftPrice.value) return ''
 
-  return new BN(nftPrice.value.floor_price).toWei().toString()
+  BN.setConfig({ precision: DECIMALS.WEI })
+
+  const price = BN.fromRaw(nftPrice.value.floor_price).raw.toString()
+
+  BN.setConfig({ precision: DEFAULT_BN_PRECISION })
+
+  return price
 })
 
 const floorPriceError = computed(() =>

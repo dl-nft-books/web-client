@@ -13,7 +13,7 @@ import { createI18nMessage, MessageProps } from '@vuelidate/validators'
 import { get } from 'lodash-es'
 import { i18n } from '@/localization'
 import { ethers } from 'ethers'
-import { BnLike, BN } from '@/utils/math.util'
+import { BN, BnLike } from '@distributedlab/tools'
 
 const { t } = i18n.global || i18n
 
@@ -60,9 +60,9 @@ export const address = <ValidationRule>withI18nMessage({
 })
 
 export const enoughBnAmount = (target: BnLike | Ref<BnLike>): ValidationRule =>
-  <ValidationRule>(
-    withI18nMessage(
-      (amount: BnLike | Ref<BnLike>) =>
-        new BN(unref(amount)).compare(unref(target)) >= 0,
-    )
-  )
+  <ValidationRule>withI18nMessage((amount: BnLike | Ref<BnLike>) => {
+    const bnTarget = BN.fromRaw(unref(target).toString(), 18)
+    const bnAmount = BN.fromRaw(unref(amount).toString(), 18)
+
+    return bnAmount.gt(bnTarget)
+  })

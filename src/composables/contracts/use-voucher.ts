@@ -1,12 +1,13 @@
 import { Ref, computed, ref } from 'vue'
+import { ethers } from 'ethers'
+import { time } from '@distributedlab/tools'
+
 import {
   Voucher__factory,
   EthProviderRpcError,
   UnwrappedProvider,
 } from '@/types'
 import { handleEthError } from '@/helpers'
-import { DateUtil } from '@distributedlab/utils'
-import { ethers } from 'ethers'
 import { config } from '@/config'
 import { Signature } from '@/types'
 
@@ -77,7 +78,7 @@ export const useVoucher = (
         provider.value.chainId,
       ])
 
-      const endSigTimestamp = DateUtil.now().add(SIG_END_OFFSET, 'hours').unix()
+      const endSigTimestamp = time().add(SIG_END_OFFSET, 'hours').timestamp
 
       const signedData = await provider.value.signTypedData(
         {

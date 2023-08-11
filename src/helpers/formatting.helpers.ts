@@ -1,5 +1,5 @@
 import getSymbolFromCurrency from 'currency-symbol-map'
-import { BN, BnLike } from '@/utils/math.util'
+import { BN, BnLike } from '@distributedlab/tools'
 import { TokenPrice } from '@/types'
 
 export function cropAddress(address: string) {
@@ -13,18 +13,10 @@ function _formatMoney(formattedAmount: string, currency = '') {
     : `${formattedAmount} ${currency}`
 }
 
-export function formatFiatAsset(amount: BnLike, currency = '') {
-  const formattedAmount = new BN(amount).format({
-    decimals: 2,
-  })
-
-  return _formatMoney(formattedAmount, currency)
-}
-
 export function formatFiatAssetFromWei(amount: BnLike, currency = '') {
-  const formattedAmount = new BN(amount).fromWei().format({
-    decimals: 2,
-  })
+  const formattedAmount = BN.fromBigInt(amount)
+    .format({ decimals: 2 })
+    .toString()
 
   return _formatMoney(formattedAmount, currency)
 }
@@ -34,17 +26,9 @@ export function formatAssetFromWei(
   decimals: number,
   currency = '',
 ) {
-  const formattedAmount = new BN(amount).fromWei().format({ decimals })
+  const formattedAmount = BN.fromBigInt(amount).format({ decimals }).toString()
 
   return currency ? `${formattedAmount} ${currency}` : formattedAmount
-}
-
-export function formatNumber(amount: BnLike) {
-  const formattedAmount = new BN(amount).format({
-    decimals: 2,
-  })
-
-  return formattedAmount
 }
 
 export const calcFormattedTokenAmount = (
@@ -54,13 +38,11 @@ export const calcFormattedTokenAmount = (
 ) => {
   if (!tokenPrice) return ''
 
-  const formatted = new BN(bookPrice, {
-    decimals: tokenPrice.token.decimals,
-  })
-    .fromFraction(tokenPrice.token.decimals)
-    .div(tokenPrice.price)
+  const formatted = BN.fromBigInt(bookPrice).div(
+    BN.fromRaw(tokenPrice.price, tokenPrice.token.decimals),
+  )
 
   return discount
-    ? formatted.mul(1 - discount).toString()
+    ? formatted.mul(BN.fromRaw(1 - discount)).toString()
     : formatted.toString()
 }
