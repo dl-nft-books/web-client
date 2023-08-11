@@ -57,11 +57,11 @@ export function useBalance() {
   }
 
   const getErc20Balance = async (tokenAddress: string) => {
-    if (!provider.value.selectedAddress) return
+    if (!provider.value.address) return
 
-    const erc20 = useErc20(tokenAddress)
+    const erc20 = useErc20(provider, tokenAddress)
     const decimals = await erc20.getDecimals()
-    const balance = await erc20.getBalanceOf(provider.value.selectedAddress)
+    const balance = await erc20.getBalanceOf(provider.value.address)
 
     if (!balance) return
 
@@ -81,7 +81,7 @@ export function useBalance() {
         break
       case TOKEN_TYPES.native:
         accountBalance = await provider.value.getBalance(
-          provider.value.selectedAddress!,
+          provider.value.address!,
         )
         balance.value = new BN(accountBalance).fromWei().toString()
         break

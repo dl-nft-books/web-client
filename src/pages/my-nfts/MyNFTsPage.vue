@@ -22,11 +22,24 @@ import { useBooks } from '@/composables'
 import { ErrorHandler } from '@/helpers'
 
 const web3ProvidersStore = useWeb3ProvidersStore()
-const provider = computed(() => web3ProvidersStore.provider)
+const provider = computed(() => {
+  if (
+    web3ProvidersStore.provider.isConnected &&
+    web3ProvidersStore.isValidChain
+  )
+    return web3ProvidersStore.provider
 
-const noDataScheme = computed(() =>
-  !provider.value.isConnected ? 'not-connected' : '',
-)
+  return web3ProvidersStore.fallbackProvider
+})
+
+const noDataScheme = computed(() => {
+  if (!provider.value.isFallback && !provider.value.isConnected)
+    return 'not-connected'
+
+  if (!totalAmount.value) return 'default'
+
+  return ''
+})
 
 const totalAmount = ref(-1)
 const isLoading = ref(false)

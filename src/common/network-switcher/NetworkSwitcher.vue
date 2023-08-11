@@ -1,6 +1,6 @@
 <template>
   <drop-down
-    v-if="provider.selectedAddress"
+    v-if="provider.address"
     :class="networkSwitcherClasses"
     :right="dropDownShift"
     :disabled="isSwitchingChain"
@@ -34,7 +34,7 @@ import { ref, computed } from 'vue'
 import { DropDown, NetworkItem } from '@/common'
 import { useWeb3ProvidersStore, useNetworksStore } from '@/store'
 import { getNetworkScheme, switchNetwork } from '@/helpers'
-import { ChainId } from '@/types'
+import { ChainId } from '@distributedlab/w3p'
 import { useWindowSize } from '@vueuse/core'
 import { WINDOW_BREAKPOINTS } from '@/enums'
 

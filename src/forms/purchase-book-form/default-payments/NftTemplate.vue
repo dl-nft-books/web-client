@@ -115,11 +115,11 @@ const {
 const { t } = useI18n()
 
 const web3ProvidersStore = useWeb3ProvidersStore()
-const erc721 = useErc721()
-
 const { buildFormMintData, mintWithNft, approveTokenSpend } = useNftTokens()
 
 const provider = computed(() => web3ProvidersStore.provider)
+
+const erc721 = useErc721(provider)
 
 const floorPrice = computed(() => {
   if (!nftPrice.value) return ''
@@ -179,7 +179,7 @@ const onTokenIdInput = async () => {
 
     const owner = await erc721.getOwner(form.tokenId)
 
-    if (owner !== provider.value.selectedAddress) isNftOwnedByUser.value = false
+    if (owner !== provider.value.address) isNftOwnedByUser.value = false
   } catch (error) {
     isNftExist.value = false
     ErrorHandler.processWithoutFeedback(error)
@@ -192,7 +192,7 @@ const onTokenIdInput = async () => {
 }
 
 const submitFunc = async (editorInstance: UseImageEditor | null) => {
-  if (!editorInstance || !provider.value.selectedAddress) return
+  if (!editorInstance || !provider.value.address) return
 
   formState.value = FORM_STATES.pending
   try {
@@ -203,7 +203,7 @@ const submitFunc = async (editorInstance: UseImageEditor | null) => {
     const { buyParams, signature } = await buildFormMintData({
       banner,
       book,
-      account: provider.value.selectedAddress,
+      account: provider.value.address,
       chainId: Number(provider.value.chainId),
       tokenAddress: form.tokenAddress,
       nftId: form.tokenId,
@@ -230,12 +230,12 @@ submit.value = submitFunc
 isFormValid.value = isTemplateValid
 
 watch(
-  () => [form.tokenId, provider.value.selectedAddress],
+  () => [form.tokenId, provider.value.address],
   debounce(onTokenIdInput, 400),
 )
 
 watch(
-  () => [provider.value.selectedAddress, form.tokenAddress],
+  () => [provider.value.address, form.tokenAddress],
   () => {
     nftPrice.value = null
     loadBalanceAndPrice()

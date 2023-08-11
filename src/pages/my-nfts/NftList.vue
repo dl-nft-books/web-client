@@ -32,11 +32,8 @@ import { MyNftsNoData } from '@/pages/my-nfts'
 import { ErrorHandler } from '@/helpers'
 import { ref, computed, watch } from 'vue'
 import { useWeb3ProvidersStore } from '@/store'
-import {
-  useContractPagination,
-  useNftTokens,
-  TokenBaseInfo,
-} from '@/composables'
+import { TokenBaseInfo } from '@/types'
+import { useContractPagination, useNftTokens } from '@/composables'
 
 const props = defineProps<{
   totalAmount: number
@@ -51,7 +48,7 @@ const { getNftList } = useNftTokens()
 
 const loadList = computed(
   () => (limit: number, offset: number) =>
-    getNftList(provider.value.selectedAddress, limit, offset),
+    getNftList(provider.value.address, limit, offset),
 )
 
 const { loadNextPage, isLoading, isLoadMoreBtnShown, loadFirstPage } =

@@ -250,7 +250,7 @@ const initializeCheckout = async (
   sourceChain: BridgeChain,
   targetChain: BridgeChain,
 ) => {
-  if (!tokenPrice.value || !provider.value.selectedAddress) return
+  if (!tokenPrice.value || !provider.value.address) return
 
   const nftPrice = new BN(book.pricePerOneToken, {
     decimals: tokenPrice.value?.token.decimals,
@@ -260,7 +260,7 @@ const initializeCheckout = async (
     .toFixed()
 
   await initCheckout(sourceChain, targetChain, {
-    recipient: provider.value.selectedAddress,
+    recipient: provider.value.address,
     nftPrice,
   })
 }
@@ -268,7 +268,7 @@ const initializeCheckout = async (
 const submitFunc = async (editorInstance: UseImageEditor | null) => {
   if (
     !priceRaw ||
-    !provider.value.selectedAddress ||
+    !provider.value.address ||
     !editorInstance ||
     !tokenPrice.value ||
     !targetChain.value
@@ -284,7 +284,7 @@ const submitFunc = async (editorInstance: UseImageEditor | null) => {
     const { buyParams, signature } = await buildFormMintData({
       banner,
       book,
-      account: provider.value.selectedAddress,
+      account: provider.value.address,
       chainId: Number(targetChain.value.id),
       tokenAddress: '',
     })
@@ -360,7 +360,7 @@ watch(
 )
 
 watch(
-  () => provider.value.selectedAddress,
+  () => provider.value.address,
   async () => {
     isLoading.value = true
     await initForm()

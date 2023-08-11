@@ -107,7 +107,7 @@ const {
 )
 
 const submitFunc = async (editorInstance: UseImageEditor | null) => {
-  if (!editorInstance || !provider.value.selectedAddress) return
+  if (!editorInstance || !provider.value.address) return
 
   formState.value = FORM_STATES.pending
   try {
@@ -116,7 +116,7 @@ const submitFunc = async (editorInstance: UseImageEditor | null) => {
     if (!banner) throw new Error('Failed to format canvas to FormData')
 
     const currentTask = await createNewGenerationTask({
-      account: provider.value.selectedAddress,
+      account: provider.value.address,
       bookId: book.id,
       chainId: Number(provider.value.chainId),
     })
@@ -148,7 +148,7 @@ submit.value = submitFunc
 isFormValid.value = isTemplateValid
 
 watch(
-  () => provider.value.selectedAddress,
+  () => provider.value.address,
   async () => {
     if (!isVoucherSupported.value) {
       isLoading.value = false

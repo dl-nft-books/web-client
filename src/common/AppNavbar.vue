@@ -34,7 +34,7 @@
     </div>
     <div class="app-navbar__provider-button-wrapper">
       <app-button
-        v-if="!provider.selectedAddress"
+        v-if="!provider.address"
         class="app-navbar__provider-btn"
         scheme="flat"
         size="small"
@@ -49,6 +49,7 @@
 </template>
 
 <script lang="ts" setup>
+import { computed } from 'vue'
 import {
   AppButton,
   AppLogo,
@@ -58,16 +59,16 @@ import {
 } from '@/common'
 import { useWeb3ProvidersStore } from '@/store'
 import { Bus } from '@/helpers'
-import { storeToRefs } from 'pinia'
 
-const { provider } = storeToRefs(useWeb3ProvidersStore())
+const web3Store = useWeb3ProvidersStore()
+const provider = computed(() => web3Store.provider)
 
 const openSidebar = () => {
   Bus.emit(Bus.eventList.openSidebar)
 }
 
 const handleProviderClick = () => {
-  if (provider.value.selectedAddress) {
+  if (provider.value?.address) {
     return
   }
   provider.value.connect()

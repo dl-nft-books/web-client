@@ -34,21 +34,42 @@ const MAX_METADATA_WAIT_TIME = 8000 // ms
 
 export function useNftTokens() {
   const networkStore = useNetworksStore()
-  const web3Store = useWeb3ProvidersStore()
+  const web3ProvidersStore = useWeb3ProvidersStore()
 
-  const provider = computed(() => web3Store.provider)
   const marketPlaceAddress = ref('')
 
-  const { getMarketPlaceAddress, init: initRegistry } = useContractRegistry()
+  const provider = computed(() => {
+    if (
+      web3ProvidersStore.provider.isConnected &&
+      web3ProvidersStore.isValidChain
+    )
+      return web3ProvidersStore.provider
+
+    return web3ProvidersStore.fallbackProvider
+  })
+
+  const { getMarketPlaceAddress, init: initRegistry } =
+    useContractRegistry(provider)
+
   const {
     getUserTokens,
     init: initMarketPlace,
     buyTokenWithERC20,
     buyTokenWithETH,
     buyTokenWithNFT,
-  } = useMarketplace()
-  const { init: initErc721, tokenURI, approve: approveErc721 } = useErc721()
-  const { init: initErc20, approve: approveErc20, getAllowance } = useErc20()
+  } = useMarketplace(provider)
+
+  const {
+    init: initErc721,
+    tokenURI,
+    approve: approveErc721,
+  } = useErc721(provider)
+
+  const {
+    init: initErc20,
+    approve: approveErc20,
+    getAllowance,
+  } = useErc20(provider)
 
   const _initMarketPlace = async (address?: string) => {
     const _marketPlaceAddress = address || (await getMarketPlaceAddress())
@@ -61,22 +82,7 @@ export function useNftTokens() {
   }
 
   const _initContractRegistry = async (chainId: number) => {
-    const appropriateRegistryAddress = networkStore.list.find(
-      network => network.chain_id === chainId,
-    )?.factory_address
-
-    // in case we don't have registry on that chain - we use default one
-    if (!appropriateRegistryAddress) {
-      const defaultRegistryAddress = networkStore.list.find(
-        network => network.chain_id === Number(config.DEFAULT_CHAIN_ID),
-      )?.factory_address
-
-      if (!defaultRegistryAddress)
-        throw new Error('failed to get default registry address')
-
-      initRegistry(defaultRegistryAddress)
-      return
-    }
+    const appropriateRegistryAddress = networkStore.getRegistryAddress(chainId)
 
     initRegistry(appropriateRegistryAddress)
   }
@@ -85,12 +91,12 @@ export function useNftTokens() {
     tokenAmount: string,
     tokenAddress?: string,
   ): Promise<boolean> => {
-    if (!provider.value.selectedAddress) return false
+    if (!provider.value.address) return false
 
     if (tokenAddress) initErc20(tokenAddress)
 
     const allowance = await getAllowance(
-      provider.value.selectedAddress,
+      provider.value.address,
       marketPlaceAddress.value,
     )
 
@@ -200,9 +206,6 @@ export function useNftTokens() {
     collectionAddress: string,
     tokenId: string,
   ): Promise<TokenFullInfo> => {
-    if (!provider.value.isConnected)
-      throw new Error('Provider is not connected')
-
     await _initContractRegistry(Number(provider.value.chainId))
     await _initMarketPlace()
     initErc721(collectionAddress)
@@ -256,7 +259,7 @@ export function useNftTokens() {
     tokenAddress?: string,
     tokenId?: string,
   ) => {
-    if (!provider.value.selectedAddress || !marketPlaceAddress.value) return
+    if (!provider.value.address || !marketPlaceAddress.value) return
 
     switch (tokenType) {
       case TOKEN_TYPES.erc20:

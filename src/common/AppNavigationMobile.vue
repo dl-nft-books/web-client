@@ -44,7 +44,7 @@
           type="button"
           :icon-left="$icons.metamask"
           size="small"
-          :disabled="provider.selectedAddress"
+          :disabled="provider.address"
           :text="connectProviderButtonText"
           @click="provider.connect"
         />
@@ -103,8 +103,8 @@ const { t } = useI18n()
 const isShowSidebar = ref(false)
 
 const connectProviderButtonText = computed(() => {
-  return provider.value.selectedAddress
-    ? cropAddress(provider.value.selectedAddress)
+  return provider.value.address
+    ? cropAddress(provider.value.address)
     : t('app-navbar.connect-provider-button')
 })
 

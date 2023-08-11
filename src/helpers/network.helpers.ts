@@ -1,5 +1,6 @@
 import { config } from '@/config'
 import {
+  GOERLI_CHAIN,
   POLYGON_MAINNET_CHAIN,
   POLYGON_MUMBAI_CHAIN,
   Q_MAINNET_CHAIN,
@@ -12,11 +13,11 @@ import {
   POLYGON_CHAINS,
   Q_CHAINS,
   ICON_NAMES,
-  EIP1193,
 } from '@/enums'
-import { ChainId, ChainUrlInfo, EthProviderRpcError } from '@/types'
+import { ChainUrlInfo } from '@/types'
+import { ChainId, CHAIN_TYPES } from '@distributedlab/w3p'
 import { ErrorHandler } from '@/helpers'
-import { useWeb3ProvidersStore } from '@/store'
+import { useNetworksStore, useWeb3ProvidersStore } from '@/store'
 
 export function getNetworkScheme(chainID: ChainId): NETWORKS {
   switch (chainID?.toString()) {
@@ -65,6 +66,8 @@ export function getNetworkInfo(chainID: ChainId): ChainUrlInfo | null {
       return Q_MAINNET_CHAIN
     case ETHEREUM_CHAINS.sepolia:
       return SEPOLIA_CHAIN
+    case ETHEREUM_CHAINS.goerli:
+      return GOERLI_CHAIN
     default:
       return null
   }
@@ -114,17 +117,31 @@ export function getBlockExplorerLink(
 
 export async function switchNetwork(chainID: ChainId) {
   const { provider } = useWeb3ProvidersStore()
+  const networkStore = useNetworksStore()
+
+  const networkURLs = getNetworkInfo(chainID)
+  const networkInfo = networkStore.getNetworkByID(Number(chainID))
+
+  if (!networkInfo || !networkURLs) throw new Error('Unsupported network')
+
   try {
     await provider.switchChain(chainID)
   } catch (error) {
-    const ethError = error as EthProviderRpcError
-
     // if wallet has no chain added we need to add it and switch to it
-    if (ethError?.code === EIP1193.walletMissingChain) {
-      await provider.addNetwork(chainID)
-      return
-    }
+    await provider.addChain({
+      id: chainID,
+      name: networkInfo.name,
+      rpcUrl: networkURLs.rpcUrl,
+      explorerUrl: networkURLs.blockExplorerUrl,
+      type: CHAIN_TYPES.EVM,
+      token: {
+        name: networkInfo.token_name,
+        symbol: networkInfo.token_symbol,
+        decimals: networkInfo.decimals,
+      },
+      icon: '',
+    })
 
-    ErrorHandler.process(error)
+    ErrorHandler.processWithoutFeedback(error)
   }
 }

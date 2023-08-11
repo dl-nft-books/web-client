@@ -37,7 +37,7 @@ const init = async () => {
     await web3Store.detectProviders()
     await networkStore.loadNetworks()
     await networkStore.loadChainList()
-    await web3Store.init(networkStore.list.map(el => el.chain_id))
+    await web3Store.init()
 
     document.title = config.APP_NAME
   } catch (error) {

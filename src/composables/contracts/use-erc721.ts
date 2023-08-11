@@ -1,12 +1,15 @@
-import { ref, computed } from 'vue'
-import { Erc721__factory, EthProviderRpcError } from '@/types'
-import { useWeb3ProvidersStore } from '@/store'
+import { ref, computed, Ref } from 'vue'
+import {
+  Erc721__factory,
+  EthProviderRpcError,
+  UnwrappedProvider,
+} from '@/types'
 import { handleEthError, sleep } from '@/helpers'
 
-export const useErc721 = (address?: string) => {
-  const web3ProvidersStore = useWeb3ProvidersStore()
-  const provider = computed(() => web3ProvidersStore.dynamicProvider)
-
+export const useErc721 = (
+  provider: Ref<UnwrappedProvider>,
+  address?: string,
+) => {
   const contractAddress = ref(address || '')
 
   const contractInstance = computed(

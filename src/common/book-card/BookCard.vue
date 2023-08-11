@@ -29,7 +29,8 @@
 import { AppButton, BookCardNetwork } from '@/common'
 import { formatFiatAssetFromWei, getNetworkScheme } from '@/helpers'
 import { computed } from 'vue'
-import { BaseBookInfo, TokenBaseInfo, useNftTokens } from '@/composables'
+import { useNftTokens } from '@/composables'
+import { BaseBookInfo, TokenBaseInfo } from '@/types'
 import { ROUTE_NAMES, CURRENCIES, NETWORKS } from '@/enums'
 import { useI18n } from 'vue-i18n'
 import { router } from '@/router'
@@ -47,7 +48,6 @@ const props = withDefaults(
     modification: 'default',
     backgroundColor: 'primary',
     actionBtnText: '',
-    network: null,
     scheme: 'nft',
   },
 )

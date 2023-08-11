@@ -1,100 +1,103 @@
 import { defineStore } from 'pinia'
-import { UseProvider, useProvider, useWeb3 } from '@/composables'
-import { ChainId, DesignatedProvider } from '@/types'
-import { PROVIDERS } from '@/enums'
+import { computed } from 'vue'
+import { useProvider } from '@/composables'
 import { config } from '@/config'
 import { getJsonRpcProvider } from '@/helpers'
 import { useNetworksStore } from '@/store'
 
-export type UnwrappedProvider = ReturnType<
-  typeof useWeb3ProvidersStore
->['provider']
+import {
+  ProviderDetector,
+  PROVIDERS,
+  MetamaskProvider,
+  RawProvider,
+  FallbackEvmProvider,
+} from '@distributedlab/w3p'
+import { router } from '@/router'
+import { FALLBACK_PROVIDERS } from '@/enums'
+import { SUPPORTED_PROVIDERS } from '@/types'
 
-export const useWeb3ProvidersStore = defineStore('web3-providers-store', {
-  state: () => ({
-    providers: [] as DesignatedProvider[],
-    _provider: useProvider(),
-    fallbackProviders: new Map<ChainId, UseProvider>(),
-  }),
-  actions: {
-    async detectProviders() {
-      const web3 = useWeb3()
-      await web3.init()
-      this.providers = web3.providers.value
-    },
+class MetamaskFallbackProvider extends FallbackEvmProvider {
+  constructor(rawProvider: RawProvider) {
+    super(rawProvider)
+  }
 
-    async init(chainList?: ChainId[]) {
-      // temporary
-      const metamaskProvider = this.providers.find(
-        provider => provider.name === PROVIDERS.metamask,
-      )
+  static get providerType() {
+    return FALLBACK_PROVIDERS.MetamaskFallback
+  }
 
-      if (metamaskProvider) await this._provider.init(metamaskProvider)
+  async connect(): Promise<void> {
+    try {
+      const METAMASK_APP_CONNECT_URL = `https://metamask.app.link/dapp/${window.location.host}${router.currentRoute.value.fullPath}`
 
-      await this.setupFallbackProviders(chainList)
-    },
+      window.open(METAMASK_APP_CONNECT_URL)
+    } catch (error) {
+      window.location.reload()
+    }
+  }
+}
 
-    /* 
-      if user has no extension or mobile metamask app we are using 
-      fallback provider to redirect him to app or to page where 
-      he can download it
-    */
-    async setupFallbackProviders(
-      chainList: ChainId[] = [Number(config.DEFAULT_CHAIN_ID)],
-    ) {
-      for (const chain of chainList) {
-        const provider = useProvider()
+const STORE_NAME = 'web3-providers-store'
 
-        const fallbackInstance: DesignatedProvider = {
-          name: PROVIDERS.metamaskFallback,
-          instance: getJsonRpcProvider(chain),
-        }
+export const useWeb3ProvidersStore = defineStore(STORE_NAME, () => {
+  const networkStore = useNetworksStore()
 
-        await provider.init(fallbackInstance)
+  const provider = useProvider()
+  const fallbackProvider = useProvider()
 
-        this.fallbackProviders.set(chain, provider)
-      }
-    },
+  const providerDetector = computed(
+    () => new ProviderDetector<SUPPORTED_PROVIDERS>(),
+  )
+  const isValidChain = computed(() =>
+    networkStore.list.some(
+      i => Number(i.chain_id) === Number(provider.chainId?.value),
+    ),
+  )
 
-    addProvider(provider: DesignatedProvider) {
-      this.providers.push(provider)
-    },
-  },
-  getters: {
-    /* 
-      instance for interacting with contracts
-      if user connected to invalid chain - we using fallback provider on
-      default chain, otherwise --> regular provider
-    */
-    dynamicProvider: state => {
-      const networkStore = useNetworksStore()
+  async function detectProviders() {
+    await providerDetector.value.init()
+  }
 
-      const isValidChain = networkStore.list.some(
-        i => Number(i.chain_id) === Number(state._provider.chainId),
-      )
-      const isConnected = state._provider.isConnected
+  async function setupFallback() {
+    providerDetector.value.addProvider({
+      name: FALLBACK_PROVIDERS.MetamaskFallback,
+      instance: getJsonRpcProvider(
+        Number(config.DEFAULT_CHAIN_ID),
+      ) as unknown as RawProvider,
+    })
 
-      const providerInstance =
-        isValidChain && isConnected
-          ? state._provider
-          : state.fallbackProviders.get(Number(config.DEFAULT_CHAIN_ID))
+    await fallbackProvider.init(MetamaskFallbackProvider, {
+      providerDetector: providerDetector.value,
+    })
+  }
 
-      return providerInstance as typeof state._provider
-    },
-    /*
-      for basic needs in regular components
-      if user has no providers or has provider, but didn't connect a wallet
-      we using fallback provider on default chain
-    */
-    provider: state => {
-      const isConnected = state._provider.isConnected
+  async function init() {
+    // setuping fallback to be able to use it when its needed
+    await setupFallback()
 
-      const providerInstance =
-        state._provider.selectedProvider && isConnected
-          ? state._provider
-          : state.fallbackProviders.get(Number(config.DEFAULT_CHAIN_ID))
+    const metamaskProvider = providerDetector.value.getProvider(
+      PROVIDERS.Metamask,
+    )
 
-      return providerInstance as typeof state._provider
-    },
-  },
+    // if metamask provider is present --> init it
+    if (metamaskProvider) {
+      await provider.init(MetamaskProvider, {
+        providerDetector: providerDetector.value,
+      })
+      return
+    }
+
+    // if no metamask provider found --> fallback is main provider
+    await provider.init(MetamaskFallbackProvider, {
+      providerDetector: providerDetector.value,
+    })
+  }
+
+  return {
+    detectProviders,
+    init,
+
+    provider,
+    fallbackProvider,
+    isValidChain,
+  }
 })
