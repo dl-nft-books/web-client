@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Old local json api client
 - Unused helpers and types
 
+## [1.5.1] - 2023-08-11
 #### Changed
 - Web3Store refactored
 - Interaction with providers moved on [@distributedlab/w3p](https://distributed-lab.github.io/web-kit/modules/_distributedlab_w3p.html#distributedlabw3p)
@@ -135,7 +136,8 @@ abillity to show books no matter on what chain user is now
 #### Under the hood changes
 - merged from https://gitlab.com/distributed_lab/frontend/vue-template
 
-[Unreleased]: https://github.com/dl-nft-books/web-client/compare/v1.5.0...main
+[Unreleased]: https://github.com/dl-nft-books/web-client/compare/v1.5.1...main
+[1.5.1]: https://github.com/dl-nft-books/web-client/compare/v1.5.0...v1.5.1
 [1.5.0]: https://github.com/dl-nft-books/web-client/compare/v1.4.0...v1.5.0
 [1.4.0]: https://github.com/dl-nft-books/web-client/compare/v1.3.1...v1.4.0
 [1.3.1]: https://github.com/dl-nft-books/web-client/compare/v1.3.0-rc.1...v1.3.1
