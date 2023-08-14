@@ -17,7 +17,7 @@
         :subtitle="$t('erc20-template.unsupported-token-subtitle')"
       />
 
-      <error-message v-else :message="$t('erc20-template.loading-error-msg')" />
+      <message-field v-else :title="$t('erc20-template.loading-error-msg')" />
     </template>
 
     <template v-else-if="tokenPrice">
@@ -49,7 +49,7 @@ import { reactive, ref, computed, watch, toRefs } from 'vue'
 import { debounce } from 'lodash'
 import { BN } from '@distributedlab/tools'
 
-import { Loader, ErrorMessage, BookPreview, MountedTeleport } from '@/common'
+import { Loader, BookPreview, MountedTeleport } from '@/common'
 import { PromocodeTemplate } from '@/forms/purchase-book-form'
 import { InputField, MessageField, ReadonlyField } from '@/fields'
 import { useFormValidation, useBalance, useNftTokens } from '@/composables'
@@ -60,6 +60,7 @@ import { ExposedPromocodeRef } from '@/forms/purchase-book-form/default-payments
 import { useWeb3ProvidersStore } from '@/store'
 import { FORM_STATES, TOKEN_TYPES } from '@/enums'
 import { ErrorHandler, calcFormattedTokenAmount, safeInject } from '@/helpers'
+import { DEFAULT_BN_PRECISION } from '@/const'
 
 const {
   bookInfo: book,
@@ -107,7 +108,10 @@ const loadBalanceAndPrice = debounce(async () => {
   if (getFieldErrorMessage('tokenAddress')) return
 
   isLoading.value = true
+
   await _loadBalanceAndPrice(form.tokenAddress, TOKEN_TYPES.erc20)
+
+  isLoading.value = false
 
   if (!tokenPrice.value) return
 
@@ -117,8 +121,6 @@ const loadBalanceAndPrice = debounce(async () => {
   )
 
   touchField('balance')
-
-  isLoading.value = false
 }, 400)
 
 const submitFunc = async (editorInstance: UseImageEditor | null) => {
@@ -145,13 +147,19 @@ const submitFunc = async (editorInstance: UseImageEditor | null) => {
       ...(promocode.value ? { promocodeId: promocode.value.id } : {}),
     })
 
+    BN.setConfig({ precision: tokenPrice.value.token.decimals })
+
     // approving to spend exact amount that needed
+    const amountToApprove = BN.fromRaw(
+      formattedTokenAmount.value,
+      tokenPrice.value.token.decimals,
+    ).raw.toString()
+
+    BN.setConfig({ precision: DEFAULT_BN_PRECISION })
+
     await approveTokenSpend(
       TOKEN_TYPES.erc20,
-      BN.fromRaw(formattedTokenAmount.value)
-        .round(tokenPrice.value.token.decimals)
-        .raw.toString()
-        .slice(0, tokenPrice.value.token.decimals + 1),
+      amountToApprove,
       form.tokenAddress,
     )
 
