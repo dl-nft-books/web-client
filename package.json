@@ -25,6 +25,7 @@
     "@rarimo/nft-checkout/@pancakeswap/sdk/@pancakeswap/swap-sdk-core": "0.0.1"
   },
   "dependencies": {
+    "@distributedlab/jac": "^1.0.0-rc.6",
     "@distributedlab/utils": "^2.0.0",
     "@distributedlab/w3p": "^1.0.0-rc.0",
     "@invisiburu/vue-picker": "^2.1.0",

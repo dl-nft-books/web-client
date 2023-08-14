@@ -1,4 +1,4 @@
-import { JsonApiRecordBase } from '@/types'
+import { JsonApiRecordBase } from '@distributedlab/jac'
 
 export type Task = JsonApiRecordBase<'files'> & {
   id: string
