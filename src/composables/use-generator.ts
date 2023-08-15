@@ -1,11 +1,7 @@
 import { api } from '@/api'
+import { JsonApiBodyBuilder, JsonApiRecordBase } from '@distributedlab/jac'
 import { computed } from 'vue'
-import {
-  CreateTaskResponse,
-  JsonApiRecordBase,
-  MintSignatureResponse,
-  Task,
-} from '@/types'
+import { CreateTaskResponse, MintSignatureResponse, Task } from '@/types'
 import { useVoucher, useContractRegistry } from '@/composables'
 import { useNetworksStore, useWeb3ProvidersStore } from '@/store'
 
@@ -44,18 +40,18 @@ export function useGenerator() {
     bookId: string
     chainId: number
   }): Promise<CreateTaskResponse> => {
+    const body = new JsonApiBodyBuilder()
+      .setType('tasks')
+      .setAttributes({
+        account: opts.account,
+        book_id: +opts.bookId,
+        chain_id: opts.chainId,
+      })
+      .build()
+
     const { data } = await api.post<CreateTaskResponse>(
       '/integrations/core/tasks',
-      {
-        data: {
-          type: 'tasks',
-          attributes: {
-            account: opts.account,
-            book_id: +opts.bookId,
-            chain_id: opts.chainId,
-          },
-        },
-      },
+      { body },
     )
 
     return data
@@ -67,7 +63,7 @@ export function useGenerator() {
   ): Promise<Task> => {
     const { data } = await api.post<Task>(
       `/integrations/core/tasks/${taskId}/banner`,
-      banner,
+      { body: banner },
     )
 
     return data
@@ -111,9 +107,11 @@ export function useGenerator() {
       : '/integrations/core/signature/mint'
 
     const { data } = await api.get<MintSignatureResponse>(apiEndpoint, {
-      task_id: taskId,
-      ...(promocodeId ? { promocode_id: promocodeId } : {}),
-      ...(tokenAddress ? { token_address: tokenAddress } : {}),
+      query: {
+        task_id: taskId,
+        ...(promocodeId ? { promocode_id: promocodeId } : {}),
+        ...(tokenAddress ? { token_address: tokenAddress } : {}),
+      },
     })
 
     return data
@@ -142,24 +140,24 @@ export function useGenerator() {
 
     if (!permitSignature) throw new Error('failed to form signature')
 
-    const { data } = await api.post<VoucherTxResponse>(
-      '/integrations/core/buy/voucher',
-      {
-        data: {
+    const body = new JsonApiBodyBuilder()
+      .setAttributes({
+        voucher_address: voucherAddress,
+        task_id: taskId,
+        end_sig_timestamp: permitSignature.endSigTimestamp,
+        permit_sig: {
           attributes: {
-            voucher_address: voucherAddress,
-            task_id: taskId,
-            end_sig_timestamp: permitSignature.endSigTimestamp,
-            permit_sig: {
-              attributes: {
-                r: permitSignature.r,
-                s: permitSignature.s,
-                v: permitSignature.v,
-              },
-            },
+            r: permitSignature.r,
+            s: permitSignature.s,
+            v: permitSignature.v,
           },
         },
-      },
+      })
+      .build()
+
+    const { data } = await api.post<VoucherTxResponse>(
+      '/integrations/core/buy/voucher',
+      { body },
     )
 
     return data.tx_hash

@@ -1,6 +1,6 @@
 import { ref, computed } from 'vue'
 import { ethers } from 'ethers'
-import { errors } from '@/api/json-api'
+import { errors } from '@distributedlab/jac'
 
 import { NftPrice, TokenPrice } from '@/types'
 import { TOKEN_TYPES } from '@/enums'

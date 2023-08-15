@@ -1,5 +1,6 @@
+import { JsonApiRecordBase } from '@distributedlab/jac'
+
 import { PROMOCODE_STATUSES } from '@/enums'
-import { JsonApiRecordBase } from '@/types'
 
 export type PromocodeValidation = JsonApiRecordBase<'validate-promocode'> & {
   state: PROMOCODE_STATUSES

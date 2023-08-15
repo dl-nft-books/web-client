@@ -20,7 +20,7 @@ export function usePromocode() {
     return api.get<PromocodeValidation>(
       `/integrations/core/promocodes/validate/${promocode}`,
       {
-        book_id: bookId,
+        query: { book_id: bookId },
       },
     )
   }
