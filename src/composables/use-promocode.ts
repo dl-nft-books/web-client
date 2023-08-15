@@ -1,13 +1,13 @@
-import { Promocode } from '@/types'
+import { Promocode, PromocodeValidation } from '@/types'
 import { reactive } from 'vue'
-import { validatePromocode as _validatePromocode } from '@/api'
 import {
   handlePromocodeError,
   PromocodeExpiredError,
   PromocodeFullyUsedError,
 } from '@/helpers'
-import { PROMOCODE_LENGTH } from '@/const'
+import { MAX_PROMOCODE_LENGTH, MIN_PROMOCODE_LENGTH } from '@/const'
 import { PROMOCODE_STATUSES } from '@/enums'
+import { api } from '@/api'
 
 export function usePromocode() {
   const promocodeInfo = reactive({
@@ -15,6 +15,15 @@ export function usePromocode() {
     promocode: null as Promocode | null,
     error: '',
   })
+
+  const _validatePromocode = (promocode: string, bookId: number) => {
+    return api.get<PromocodeValidation>(
+      `/integrations/core/promocodes/validate/${promocode}`,
+      {
+        book_id: bookId,
+      },
+    )
+  }
 
   const checkStatus = (state: PROMOCODE_STATUSES) => {
     if (state !== PROMOCODE_STATUSES.ACTIVE) {
@@ -31,8 +40,11 @@ export function usePromocode() {
     }
   }
 
-  const validatePromocode = async (promocode: string) => {
-    if (promocode.length !== PROMOCODE_LENGTH) {
+  const validatePromocode = async (promocode: string, bookId: number) => {
+    if (
+      promocode.length > MAX_PROMOCODE_LENGTH ||
+      promocode.length < MIN_PROMOCODE_LENGTH
+    ) {
       promocodeInfo.promocode = null
       promocodeInfo.error = ''
       return
@@ -40,7 +52,7 @@ export function usePromocode() {
     promocodeInfo.isLoading = true
 
     try {
-      const { data } = await _validatePromocode(promocode)
+      const { data } = await _validatePromocode(promocode, bookId)
 
       checkStatus(data.state)
 

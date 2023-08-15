@@ -5,7 +5,9 @@
     "field-error_email": "Field must be a valid email",
     "field-error_address": "Field must be a valid address",
     "field-error_minLength": "Value must be at least {min} chars",
-    "field-error_maxLength": "Value can't be greater than {max} chars"
+    "field-error_maxLength": "Value can't be greater than {max} chars",
+    "field-error_urlSymbols": "All unsafe and reserved url chars are restricted",
+    "field-error_enoughBnAmount": "You don't have enough token amount"
   },
   "errors": {
     "default": "Oops... Something went wrong",
@@ -80,12 +82,24 @@
   "app-footer": {
     "faq-link": "faq",
     "help-link": "Help & Support",
-    "blog-link": "blog"
+    "blog-link": "blog",
+    "docs-link": "Documentation"
+  },
+  "app-logo": {
+    "title": "DISTRIBUTED STORE",
+    "subtitle": "Powered by",
+    "acsent": "RARIMO"
   },
   "bookshelf-header": {
     "title": "Create your nft library",
-    "book-description-title": "Every book with your",
-    "book-description-subtitle": "personal sign inside"
+    "subtitle": "Buy a book and get it as NFT with a personalised design"
+  },
+  "book-details": {
+    "voucher-token-lbl": "Buy with a voucher token",
+    "nft-lbl": "Buy with NFT",
+    "floor-price-lbl": "Floor price",
+    "price-lbl": "Price",
+    "network-lbl": "Supported network"
   },
   "statistics-page": {
     "chains-popularity-lbl": "Chains Popularity",
@@ -137,6 +151,11 @@
     "floor-price-explanation": "Floor price is the minimum NFT price that can be exchanged for a book",
     "voucher-explanation": "You can use the voucher token when you pay"
   },
+  "steps-form" : {
+    "next-step-lbl": "Next step",
+    "prev-step-lbl": "Back",
+    "step-lbl": "Step {number}"
+  },
   "networks": {
     "polygon": "Polygon Mainnet",
     "ethereum": "Ethereum Mainnet",
@@ -147,7 +166,7 @@
     "network-error": "Failed to load network list"
   },
   "my-nfts-page": {
-    "loading-error-msg": "This page is currently unavailable due to connection problems with IPFS. Please, try again later.",
+    "loading-error-msg": "This chain is unsupported",
     "no-data-msg": "Empty data, please add new",
     "title": "My NFTs",
     "details-btn": "Details",
@@ -263,13 +282,20 @@
     "subtitle": "Now we are carrying out technical work to make our site better, and the purchase of books is even more convenient! We'll be waiting for you here a little later.",
     "alt-technical-work": "technical work image"
   },
+  "book-chain-info": {
+    "title-part-1": "You are trying to purchase an NFT from ",
+    "title-part-2": "while your wallet is connected to ",
+    "subtitle": "Use the cross-chain feature Rarimo to purchase this NFT."
+  },
   "bookshelf-item-page": {
     "loading-error-msg": "Oops.... Something went wrong",
     "purchase-btn": "BUY",
+    "rarimo-btn": "Buy with Rarimo",
     "badge-1": "For any acceptable token",
-    "badge-2": "Add your personal sign",
+    "badge-2": "Draw your personal banner",
     "network-title": "Supported by",
-    "connect-btn": "Connect Wallet"
+    "connect-btn": "Connect Wallet",
+    "description-lbl": "Show full description"
   },
   "purchasing-modal": {
     "title": "Purchasing",
@@ -279,28 +305,51 @@
     "generation-title": "Generation"
   },
   "purchase-book-form": {
-    "token-address-lbl": "Enter Token Address",
-    "signature-lbl": "Your Signature",
-    "signature-placeholder": "Write the signature you would like to see in your book",
     "generate-btn": "GENERATE NFT",
-    "token-type-lbl": "Token Type",
-    "token-amount-lbl": "Amount to spend",
-    "voucher-token-lbl": "Voucher Token Address",
-    "voucher-token-amount-lbl": "Amount of Voucher Token",
+    "loading-error-msg":"Oops... Something went wrong",
+    "default-payment": "Pay on current chain",
+    "rarimo-payment": "Use Rarimo and pay with another token",
+    "rarimo-tip": "You can use cross-chain feature Rarimo to pay on any networks."
+  },
+  "generation-view": {
+    "submitting-title": "We are generating your NFT.",
+    "submitting-message": "As soon as NFT book generates you will need to pay"
+  },
+  "generation-success-view": {
+    "title": "Your payment was successful.",
+    "message": "As soon as the NFT book is minted, it will appear in your wallet and in the My NFTs tab.",
+    "link": "Check on block explorer"
+  },
+  "default-payment-flow": {
+    "token-type-lbl": "Payment Type"
+  },
+  "promocode-template": {
     "promocode-lbl": "Promocode",
     "promocode-placeholder": "Enter Promocode",
     "promocode-applied-msg": "{amount}% discount applied",
     "promocode-invalid-msg": "This promocode is invalid",
     "promocode-expired-msg": "This promocode is expired",
-    "promocode-used-msg": "This promocode is used maximum amount of times",
-    "loading-error-msg":"Oops... Something went wrong",
+    "promocode-used-msg": "This promocode is used maximum amount of times"
+  },
+  "native-template": {
+    "token-amount-lbl": "Amount to spend",
+    "loading-error-msg":"Failed to load balance and price"
+  },
+  "erc20-template": {
+    "token-address-lbl": "Enter Token Address",
+    "token-amount-lbl": "Amount to spend",
     "unsupported-token-title": "This token unsupported.",
     "unsupported-token-subtitle": "Please choose another token.",
-    "submitting-title": "We are generating your NFT.",
-    "submitting-message": "As soon as NFT book generates you will need to pay",
-    "not-enough-balance-msg": "You don't have enough tokens to buy this NFT",
+    "loading-error-msg":"Failed to load token balance",
+    "not-enough-balance-msg": "You don't have enough tokens to buy this NFT"
+  },
+  "voucher-template": {
+    "voucher-token-lbl": "Voucher Token Address",
+    "voucher-token-amount-lbl": "Amount of Voucher Token",
+    "loading-error-msg":"Failed to load voucher balance",
+    "voucher-payment-msg": "Transaction has been sent. It may take a while. You can check transaction status by this link",
     "voucher-token-unsupported-msg": "This payment method is not supported for the purchase of this book",
-    "not-enough-voucher-tokens-msg": "You don't have enough voucher tokens to buy this NFT. Required amount: {amount}." 
+    "not-enough-voucher-tokens-msg": "You don't have enough voucher tokens to buy this NFT. Required amount: {amount}."
   },
   "nft-template": {
     "token-address-lbl": "Token Address",
@@ -317,19 +366,29 @@
     "user-is-not-owner": "You don't own this NFT",
     "nft-not-exist": "NFT with such id doesn't exist"
   },
+  "rarimo-template": {
+    "source-chain-lbl": "Source chain",
+    "source-chain-placeholder": "Chain to pay from",
+    "payment-token-lbl": "Payment token",
+    "payment-token-placeholder": "Token to pay with",
+    "estimated-price-lbl": "Estimated price",
+    "no-payment-tokens": "No payment tokens available for that setup",
+    "not-enough-balance": "Not enough tokens to buy",
+    "error-message": "Failed to load balance and price"
+  },
+  "nft-checkout-info": {
+    "impact-lbl": "Price impact",
+    "impact-value": "{impact}%",
+    "price-conversion-lbl": "Price conversion",
+    "network-fee-lbl": "Network fees"
+  },
   "book-preview": {
     "label": "Floor price"
-  },
-  "purchasing-success-modal": {
-    "head-title": "Purchasing",
-    "title": "Your payment was successful.",
-    "message": "As soon as the NFT book is minted, it will appear in your wallet and in the My NFTs tab.",
-    "ok-btn": "Ok"
   },
   "my-nft-item-page": {
     "loading-error-msg": "This page is currently unavailable due to connection problems with IPFS. Please, try again later.",
     "purchase-btn": "Buy",
-    "my-purchase-tab": "My Purchase",
+    "my-purchase-tab": "My NFT",
     "book-description-tab": "Book Description"
   },
   "nft-description": {
@@ -339,22 +398,22 @@
   },
   "nft-details": {
     "price-lbl": "Price",
-    "floor-price-lbl": "Exchanged NFT Floor Price",
     "exchanged-nft-address": "Exchanged NFT address",
-    "exchanged-nft-id": "Exchanged NFT ID",
     "purchase-date-lbl": "Purchase Date",
     "your-token-lbl": "Your Token",
     "token-amount-lbl": "Amount of Your Token",
-    "signature-lbl": "Your Signature",
     "document-lbl": "Document",
-    "token-id-lbl": "Token ID"
+    "token-id-lbl": "Token ID",
+    "payment-type-lbl": "Payment type"
   },
   "my-nfts-no-data": {
     "message-first": "Your bookshelf is still empty.",
     "message-second": "All of your purchased NFTs will be stored here",
+    "wrong-chain-message": "To see your NFT's switch to supported network",
     "marketplace-btn": "Go to Marketplace",
     "connect-metamask-btn": "Connect to MetaMask",
-    "connect-metamask-message": "To see purchased NFTs, please connect your MetaMask Wallet"
+    "connect-metamask-message": "To see purchased NFTs, please connect your MetaMask Wallet",
+    "switch-chain-btn": "Switch chain"
   },
   "token-types": {
     "erc20-lbl": "ERC-20",
@@ -362,5 +421,10 @@
     "voucher-lbl": "Voucher Token",
     "nft": "NFT",
     "not-found-lbl": "Token type not found"
+  },
+  "browser-support": {
+    "title": "Make sure you are using the correct browser",
+    "subtitle": "For the best experience on our site, we recommend using Google Chrome, Opera, Opera GX, Microsoft Edge, Firefox or Brave. Please note that the site may not function properly on other browsers.",
+    "submit-btn": "Understood"
   }
 }

@@ -217,6 +217,7 @@ $z-local-index: 1;
   &--disabled,
   &--readonly {
     opacity: 0.5;
+    pointer-events: none;
   }
 }
 
@@ -239,9 +240,9 @@ $z-local-index: 1;
   flex: 1;
 
   .select-field--dark & {
-    --field-bg: var(--background-quaternary);
+    --field-bg: var(--background-secondary);
     --field-border: rgba(var(--white-rgb), 0.5);
-    --field-text: var(--text-primary-invert-main);
+    --field-text: var(--text-primary-light);
   }
 
   .select-field--transparent-head & {
@@ -257,6 +258,11 @@ $z-local-index: 1;
   width: 100%;
   height: 100%;
   font-weight: 400;
+  background-color: var(--background-primary-main);
+
+  &:hover {
+    border: toRem(1) solid var(--primary-main);
+  }
 
   @include field-border;
 
@@ -319,7 +325,7 @@ $z-local-index: 1;
   }
 
   .select-field--dark & {
-    --field-bg: var(--background-quaternary);
+    --field-bg: var(--background-secondary);
   }
 }
 

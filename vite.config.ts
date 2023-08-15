@@ -25,6 +25,17 @@ export default defineConfig(({ command, mode }) => {
       port: Number(env.VITE_APP_PORT),
     },
     publicDir: 'static',
+    optimizeDeps: {
+      esbuildOptions: {
+        target: 'esnext',
+        supported: {
+          bigint: true,
+        },
+      },
+    },
+    build: {
+      target: ['esnext'],
+    },
     plugins: [
       vue(),
       createSvgIconsPlugin({
@@ -66,6 +77,11 @@ export default defineConfig(({ command, mode }) => {
         '@': `${root}/`,
         '@config': `${root}/config.ts`,
         '@static': `${root}/../static`,
+        /* 
+          uniswap by default exporting wrong build
+          + they doesn't have jsbi as a dependency but using it in their package
+        */
+        '@uniswap/router-sdk': '@uniswap/router-sdk/dist/router-sdk.esm.js',
       },
     },
   }

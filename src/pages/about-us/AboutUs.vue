@@ -11,27 +11,17 @@
 
     <about-us-decription />
 
-    <img
-      class="about-us__cubes about-us__cubes--right"
-      :src="CUBES_IMAGES.RIGHT"
-    />
-
     <about-us-quote-card
-      class="about-us__quote-card"
+      class="about-us__quote-card about-us__quote-card--with-bg"
+      scheme="dark"
       :title="$t('about-us-page.founder-title')"
       :subtitle="$t('about-us-page.founder-subtitle')"
       :image="FOUNDERS_IMAGES.KRAVCHENKO"
       :quotes-list="KravchenkoQuotes"
     />
 
-    <img
-      class="about-us__cubes about-us__cubes--left"
-      :src="CUBES_IMAGES.LEFT"
-    />
-
     <about-us-quote-card
       class="about-us__quote-card"
-      scheme="dark"
       modification="reverse"
       :title="$t('about-us-page.founder-title-2')"
       :subtitle="$t('about-us-page.founder-subtitle-2')"
@@ -40,8 +30,8 @@
     />
 
     <img
-      class="about-us__cubes about-us__cubes--bottom"
-      :src="CUBES_IMAGES.BOTTOM"
+      class="about-us__background about-us__background--bottom"
+      src="/images/fancy-lines.png"
     />
   </div>
 </template>
@@ -51,12 +41,6 @@ import { AboutUsDecription, AboutUsQuoteCard } from '@/pages/about-us'
 import { useI18n } from 'vue-i18n'
 
 const { t } = useI18n()
-
-const CUBES_IMAGES = {
-  LEFT: '/images/about-us-left.png',
-  RIGHT: '/images/about-us-right.png',
-  BOTTOM: '/images/about-us-right-back.png',
-}
 
 const FOUNDERS_IMAGES = {
   KURBATOV: '/images/olexandr-kurbatov.png',
@@ -77,13 +61,37 @@ const KurbatovQuotes = [
 .about-us {
   max-width: 100%;
   padding: 0;
-  background-color: var(--background-quinary);
+  background-color: var(--background-primary-dark);
   position: relative;
+  z-index: var(--z-index-layer-2);
 }
 
 .about-us__quote-card {
   padding-top: toRem(140);
   padding-bottom: toRem(100);
+  position: relative;
+
+  &--with-bg {
+    --bg-height: #{toRem(560)};
+
+    &:before {
+      content: '';
+      position: absolute;
+      top: calc(var(--bg-height) / 14);
+      right: 0;
+      border-radius: toRem(30) 0 0 toRem(30);
+      background-color: var(--background-primary-main);
+      width: 90%;
+      height: var(--bg-height);
+
+      @include respond-to(medium) {
+        --bg-height: #{toRem(600)};
+
+        width: 100%;
+        border-radius: toRem(30);
+      }
+    }
+  }
 }
 
 /* stylelint-disable */
@@ -93,9 +101,9 @@ const KurbatovQuotes = [
     var(--app-padding-left);
   background-image: linear-gradient(
       360deg,
-      var(--background-quinary) 0.12%,
-      rgba(var(--background-quinary-rgb), 0.9) 55.52%,
-      rgba(var(--background-quinary-rgb), 0.5) 100%
+      var(--background-primary-dark) 0.12%,
+      rgba(var(--background-primary-dark-rgb), 0.9) 55.52%,
+      rgba(var(--background-primary-dark-rgb), 0.5) 100%
     ),
     url('/images/backround-about-us.png');
   background-size: cover;
@@ -148,5 +156,9 @@ const KurbatovQuotes = [
     right: 0;
     bottom: 0;
   }
+}
+
+.about-us__background {
+  @include background-image;
 }
 </style>

@@ -1,144 +1,58 @@
 <template>
   <div class="bookshelf-page">
-    <bookshelf-cubes />
     <bookshelf-header />
-    <section class="bookshelf-page__title-wrapper">
-      <h3 class="bookshelf-page__title">
-        {{ $t('bookshelf-page.title') }}
-      </h3>
-      <div class="bookshelf-page__actions">
-        <bookshelf-network-switcher
-          v-show="isFilterVisible"
-          v-model="currentNetworkChainId"
-        />
-        <input-field
-          v-model="searchModel"
-          class="bookshelf-page__actions-search"
-          :class="{
-            'bookshelf-page__actions-search--full-width': !isFilterVisible,
-          }"
-          schemes="icon-left"
-          :modifications="searchFieldModifications"
-          :placeholder="$t('bookshelf-page.search-placeholder')"
-          :icon-name="$icons.search"
-          @focus="onSearchFocus"
-          @blur="onSearchBlur"
-        />
-      </div>
-    </section>
-    <error-message
-      v-if="isLoadFailed"
-      :message="$t('bookshelf-page.loading-error-msg')"
-    />
-    <template v-else-if="books.length || isLoading">
-      <div v-if="books.length" class="bookshelf-page__list">
-        <book-card
-          v-for="book in books"
-          :key="book.id"
-          :book="book"
-          :network="networkStore.getNetworkByID(book.chain_id)"
-        />
-      </div>
+    <h1 class="bookshelf-page__title">
+      {{ $t('bookshelf-page.title') }}
+    </h1>
 
-      <loader v-if="isLoading" />
-
-      <app-button
-        v-if="isLoadMoreBtnShown"
-        class="bookshelf-page__load-more-btn"
-        size="small"
-        scheme="flat"
-        color="primary"
-        :text="$t('bookshelf-page.load-more-btn')"
-        @click="loadNextPage"
-      />
-    </template>
+    <loader v-if="isLoading" />
+    <book-list v-else-if="totalAmount > 0" :total-amount="totalAmount" />
     <no-data-message v-else :message="$t('bookshelf-page.no-data-msg')" />
+    <img
+      class="bookshelf-page__background bookshelf-page__background--bottom"
+      src="/images/fancy-lines.png"
+    />
   </div>
 </template>
 
 <script lang="ts" setup>
 import { ref, computed, watch } from 'vue'
-import { debounce } from 'lodash'
 
-import {
-  Loader,
-  ErrorMessage,
-  NoDataMessage,
-  BookCard,
-  AppButton,
-  BookshelfNetworkSwitcher,
-} from '@/common'
-import { InputField } from '@/fields'
+import { Loader, NoDataMessage } from '@/common'
+import { useBooks } from '@/composables'
+import { BookshelfHeader, BookList } from '@/pages/bookshelf'
+import { useWeb3ProvidersStore } from '@/store'
 import { ErrorHandler } from '@/helpers'
-import { BOOK_DEPLOY_STATUSES, WINDOW_BREAKPOINTS } from '@/enums'
-import { usePaginate, useBooks } from '@/composables'
-import { Book, ChainId } from '@/types'
-import { BookshelfHeader, BookshelfCubes } from '@/pages/bookshelf'
-import { useNetworksStore } from '@/store'
-import { useWindowSize } from '@vueuse/core'
 
-const networkStore = useNetworksStore()
-const { width } = useWindowSize()
-const { getBooks } = useBooks()
+const webProvidersStore = useWeb3ProvidersStore()
 
-const isLoadFailed = ref(false)
-const books = ref<Book[]>([])
-const currentNetworkChainId = ref<ChainId>(0)
+const provider = computed(() => webProvidersStore.provider)
 
-const searchByString = ref('')
-const searchModel = ref('')
-const isFilterVisible = ref(true)
+const totalAmount = ref(-1)
+const isLoading = ref(false)
 
-const isSmallScreen = computed(() => width.value <= WINDOW_BREAKPOINTS.small)
-const searchFieldModifications = computed(() =>
-  ['dark', 'border-rounded', isSmallScreen.value ? '' : 'icon-large'].join(' '),
-)
+const { getTotalBooksAmount } = useBooks()
 
-const loadList = computed(
-  () => () =>
-    getBooks({
-      deployStatus: [BOOK_DEPLOY_STATUSES.successful],
-      title: searchByString.value,
-      chainId: currentNetworkChainId.value,
-    }),
-)
+const init = async () => {
+  if (!provider.value.chainId) return
 
-const { loadNextPage, isLoading, isLoadMoreBtnShown } = usePaginate(
-  loadList,
-  setList,
-  concatList,
-  onError,
-)
+  isLoading.value = true
+  totalAmount.value = -1
 
-function setList(chunk: Book[]) {
-  books.value = chunk ?? []
-}
+  try {
+    const data = await getTotalBooksAmount(provider.value.chainId)
 
-function concatList(chunk: Book[]) {
-  books.value = books.value.concat(chunk ?? [])
-}
+    if (!data) throw new Error('No books found')
 
-function onError(e: Error) {
-  ErrorHandler.processWithoutFeedback(e)
-  isLoadFailed.value = true
-}
-
-const onSearchFocus = () => {
-  if (isSmallScreen.value) {
-    isFilterVisible.value = false
+    totalAmount.value = Number(data)
+  } catch (error) {
+    ErrorHandler.processWithoutFeedback(error)
   }
+
+  isLoading.value = false
 }
 
-const onSearchBlur = () => {
-  isFilterVisible.value = true
-}
-
-watch(
-  searchModel,
-  debounce(() => {
-    searchByString.value = searchModel.value
-  }, 200),
-)
+watch(() => provider.value.chainId, init, { immediate: true })
 </script>
 
 <style lang="scss" scoped>
@@ -146,155 +60,25 @@ watch(
   gap: toRem(34);
   padding-top: toRem(200);
   padding-bottom: toRem(200);
+  margin-top: toRem(-220);
+  background-color: var(--background-primary-dark);
   position: relative;
   z-index: var(--z-index-layer-2);
-  margin-top: toRem(-220);
-  background-color: var(--black);
   overflow: hidden;
   display: flex;
   flex-direction: column;
-
-  /* Chain image */
-  &:before {
-    content: '';
-    position: absolute;
-    width: 100vw;
-    top: toRem(110);
-    left: 0;
-    z-index: var(--z-index-layer-1);
-    height: vh(100);
-    background: url('/images/cubes.png') no-repeat right top / contain;
-    background-size: clamp(toRem(250), 45%, toRem(800));
-
-    @include respond-to(medium) {
-      background-size: toRem(450);
-      top: toRem(280);
-    }
-
-    @include respond-to(small) {
-      background-size: toRem(250);
-      top: toRem(400);
-    }
-  }
-
-  /* White bg under the header */
-  &:after {
-    content: '';
-    position: absolute;
-    top: toRem(-600);
-    left: toRem(-42);
-    transform: rotate(-10deg);
-    width: 120vw;
-    height: toRem(1100);
-    background-size: 45%;
-    background-color: var(--white);
-    border-radius: toRem(300);
-    z-index: var(--z-index-layer-bottom);
-
-    @include respond-to(medium) {
-      left: toRem(-60);
-      width: 160vw;
-      top: toRem(-580);
-    }
-
-    @include respond-to(small) {
-      top: toRem(-250);
-      left: toRem(-60);
-      width: 160vw;
-      border-radius: toRem(200);
-      height: 205vw;
-    }
-  }
-}
-
-.bookshelf-page__actions {
-  position: relative;
-  z-index: var(--z-index-layer-3);
-  display: flex;
-  justify-content: flex-end;
-  align-items: center;
-  gap: toRem(20);
-  width: 45%;
-  height: toRem(52);
-
-  @include respond-to(tablet) {
-    width: 70%;
-    height: toRem(46);
-  }
-
-  @include respond-to(small) {
-    width: 100%;
-  }
-}
-
-.bookshelf-page__actions-search {
-  width: clamp(toRem(150), 50%, toRem(285));
-  height: toRem(52);
-
-  @include respond-to(tablet) {
-    height: toRem(46);
-    width: 50%;
-  }
-
-  &--full-width {
-    width: 100%;
-  }
-}
-
-.bookshelf-page__title-wrapper {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: toRem(20);
-
-  @include respond-to(small) {
-    flex-direction: column;
-    align-items: flex-start;
-  }
 }
 
 .bookshelf-page__title {
   text-transform: uppercase;
-  position: relative;
-  color: var(--text-primary-invert-main);
 
-  @include text-shadow;
-
-  &:after {
-    content: ' ';
-    position: absolute;
-    top: toRem(50);
-    left: 0;
-    width: toRem(120);
-    height: toRem(2);
-    background-color: var(--primary-main);
-
-    @include respond-to(medium) {
-      width: toRem(60);
-      top: toRem(40);
-    }
-  }
-
-  @include respond-to(medium) {
-    font-size: toRem(24);
+  @include respond-to(tablet) {
+    text-align: center;
+    font-size: toRem(26);
   }
 }
 
-.bookshelf-page__list {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(toRem(292), 1fr));
-  grid-gap: toRem(20);
-  position: relative;
-  z-index: var(--z-index-layer-2);
-}
-
-.bookshelf-page__load-more-btn {
-  margin: toRem(20) auto 0;
-  width: toRem(240);
-  color: var(--white);
-  border: toRem(2) solid var(--white);
-
-  --app-button-flat-text-hover: var(--primary-light);
-  --app-button-flat-border: #{toRem(2)} solid var(--primary-light);
+.bookshelf-page__background {
+  @include background-image;
 }
 </style>

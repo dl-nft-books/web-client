@@ -11,27 +11,32 @@
       </transition>
     </router-view>
     <app-footer />
+    <browser-support />
   </div>
 </template>
 
 <script lang="ts" setup>
-import { AppNavbar, AppFooter } from '@/common'
+import { AppNavbar, AppFooter, BrowserSupport } from '@/common'
 
 import { ErrorHandler } from '@/helpers/error-handler'
-import { ref } from 'vue'
+import { ref, watch } from 'vue'
 import { useNotifications } from '@/composables'
 import { config } from '@config'
-import { useWeb3ProvidersStore } from '@/store'
+import { useWeb3ProvidersStore, useNetworksStore } from '@/store'
 import { Bus } from '@/helpers'
 
 const isAppInitialized = ref(false)
 const web3Store = useWeb3ProvidersStore()
+const networkStore = useNetworksStore()
+
+const body = ref<HTMLBodyElement | null>(document.querySelector('body'))
 
 const init = async () => {
   try {
     useNotifications()
     await web3Store.detectProviders()
-
+    await networkStore.loadNetworks()
+    await networkStore.loadChainList()
     await web3Store.init()
 
     document.title = config.APP_NAME
@@ -44,10 +49,22 @@ const init = async () => {
 init()
 
 const isScrollEnabled = ref(true)
+
 Bus.on(
   Bus.eventList.toggleScroll,
-  () => (isScrollEnabled.value = !isScrollEnabled.value),
+  scrollState => (isScrollEnabled.value = Boolean(scrollState)),
 )
+
+watch(isScrollEnabled, () => {
+  if (!body.value) return
+
+  if (!isScrollEnabled.value) {
+    body.value.classList.add('body-scroll-disabled')
+    return
+  }
+
+  body.value.classList.remove('body-scroll-disabled')
+})
 </script>
 
 <style lang="scss" scoped>

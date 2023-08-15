@@ -1,12 +1,15 @@
-import { ref, computed } from 'vue'
-import { Erc721__factory, EthProviderRpcError } from '@/types'
-import { useWeb3ProvidersStore } from '@/store'
+import { ref, computed, Ref } from 'vue'
+import {
+  Erc721__factory,
+  EthProviderRpcError,
+  UnwrappedProvider,
+} from '@/types'
 import { handleEthError, sleep } from '@/helpers'
 
-export const useErc721 = (address?: string) => {
-  const web3ProvidersStore = useWeb3ProvidersStore()
-  const provider = computed(() => web3ProvidersStore.provider)
-
+export const useErc721 = (
+  provider: Ref<UnwrappedProvider>,
+  address?: string,
+) => {
   const contractAddress = ref(address || '')
 
   const contractInstance = computed(
@@ -89,6 +92,17 @@ export const useErc721 = (address?: string) => {
       handleEthError(error as EthProviderRpcError)
     }
   }
+
+  const tokenURI = async (tokenId: string) => {
+    if (!contractInstance.value) return
+
+    try {
+      return contractInstance.value.tokenURI(tokenId)
+    } catch (error) {
+      handleEthError(error as EthProviderRpcError)
+    }
+  }
+
   return {
     init,
 
@@ -98,5 +112,6 @@ export const useErc721 = (address?: string) => {
     getName,
     getOwner,
     getSymbol,
+    tokenURI,
   }
 }

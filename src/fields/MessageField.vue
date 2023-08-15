@@ -1,6 +1,6 @@
 <template>
   <div :class="messageClasses">
-    <icon class="message-field__icon" :name="icon" />
+    <icon v-if="!noIcon" class="message-field__icon" :name="icon" />
     <div>
       <p class="message-field__title">
         {{ title }}
@@ -17,21 +17,26 @@ import { Icon } from '@/common'
 import { ICON_NAMES } from '@/enums'
 import { computed } from 'vue'
 
-type SCHEMES = 'error' | 'success'
+type SCHEMES = 'error' | 'success' | 'info'
+type MODIFICATION = 'no-icon' | 'default'
 
 const props = withDefaults(
   defineProps<{
     scheme?: SCHEMES
+    modification?: MODIFICATION
     icon?: ICON_NAMES
     title: string
     subtitle?: string | null
   }>(),
   {
     scheme: 'error',
+    modification: 'default',
     icon: ICON_NAMES.exclamationCircle,
     subtitle: null,
   },
 )
+
+const noIcon = computed(() => props.modification === 'no-icon')
 
 const messageClasses = computed(() => [
   'message-field',
@@ -48,35 +53,35 @@ const messageClasses = computed(() => [
   padding: toRem(12) toRem(10);
 
   &--error {
-    background: var(--background-error);
+    background: var(--error-main);
   }
 
   &--success {
-    background: var(--background-success);
+    background: var(--success-dark);
+  }
+
+  &--info {
+    background: var(--background-tertiary);
+    border: toRem(1) solid var(--border-primary-main);
   }
 }
 
 .message-field__icon {
-  --size: #{toRem(15)};
+  --size: #{toRem(20)};
 
   max-width: var(--size);
   max-height: var(--size);
-
-  .message-field--error & {
-    color: var(--error-main);
-  }
+  color: var(--text-primary-light);
 }
 
 .message-field__title {
   font-size: toRem(14);
   line-height: 1.2;
+  font-weight: 600;
+  color: var(--text-primary-light);
 
-  .message-field--error & {
-    color: var(--error-main);
-  }
-
-  .message-field--success & {
-    color: var(--text-success);
+  .message-field--info & {
+    font-weight: 400;
   }
 }
 </style>

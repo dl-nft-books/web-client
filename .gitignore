@@ -22,3 +22,4 @@ deprecated
 *.sln
 *.local
 stats.html
+.env

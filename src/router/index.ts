@@ -35,9 +35,10 @@ const routes: Array<RouteRecordRaw> = [
     path: '/my-nfts',
     name: ROUTE_NAMES.myNfts,
     component: () => import('@/pages/my-nfts/MyNFTsPage.vue'),
+    meta: { [ROUTE_METAS.isDarkPage]: true },
   },
   {
-    path: '/my-nft/:id',
+    path: '/my-nft/:contractAddress/:id',
     props: true,
     name: ROUTE_NAMES.myNftItem,
     component: () => import('@/pages/my-nfts/MyNftItemPage.vue'),
@@ -52,6 +53,7 @@ const routes: Array<RouteRecordRaw> = [
     path: '/technical-work',
     name: ROUTE_NAMES.technicalWork,
     component: () => import('@/pages/TechnicalWork.vue'),
+    meta: { [ROUTE_METAS.isDarkPage]: true },
   },
   {
     path: '/statistics',

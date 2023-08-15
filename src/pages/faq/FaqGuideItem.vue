@@ -54,21 +54,6 @@ const currentGuide = computed(() => {
 }
 
 .faq-guide-item__title {
-  text-transform: uppercase;
-  position: relative;
-
-  &:after {
-    content: ' ';
-    position: absolute;
-    top: toRem(30);
-    left: 0;
-    width: toRem(138);
-    height: toRem(3);
-    background-color: var(--primary-main);
-
-    @include respond-to(small) {
-      width: toRem(60);
-    }
-  }
+  font-weight: 700;
 }
 </style>

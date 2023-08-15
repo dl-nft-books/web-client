@@ -36,28 +36,28 @@ const changeTab = (tab: string) => {
 <style lang="scss" scoped>
 .tabs {
   display: flex;
-  gap: toRem(14);
-  padding-bottom: toRem(2);
-  border-bottom: toRem(1) solid var(--border-secondary-main);
+  gap: toRem(50);
+  padding-bottom: toRem(12);
+  border-bottom: toRem(1) solid var(--disable-primary-main);
 }
 
 .tabs__button {
   padding-right: toRem(10);
   position: relative;
-  font-size: toRem(24);
+  font-size: toRem(20);
   font-weight: 400;
   color: var(--text-secondary-main);
   transition: color 0.2s linear;
 
   &--active {
     color: var(--text-primary-main);
-    font-weight: 500;
+    font-weight: 700;
 
     &:after {
       content: '';
       position: absolute;
       left: 0;
-      bottom: toRem(-3);
+      bottom: toRem(-13);
       width: 100%;
       height: toRem(2);
       background: var(--primary-main);

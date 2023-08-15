@@ -18,8 +18,8 @@
           class="app-footer__text-link"
         />
         <app-button
-          :href="$config.BLOG_LINK"
-          :text="$t('app-footer.blog-link')"
+          :href="$config.DOCS_LINK"
+          :text="$t('app-footer.docs-link')"
           scheme="default"
           class="app-footer__text-link"
         />
@@ -58,6 +58,10 @@ const SOCIAL_LINKS = [
     iconName: ICON_NAMES.linkedinCircle,
     link: config.LINKEDIN_LINK,
   },
+  {
+    iconName: ICON_NAMES.instagramCircle,
+    link: config.INSTAGRAM_LINK,
+  },
 ]
 </script>
 
@@ -65,7 +69,7 @@ const SOCIAL_LINKS = [
 .app-footer {
   width: 100%;
   padding: toRem(40) var(--app-padding-right) toRem(40) var(--app-padding-left);
-  background: var(--background-secondary);
+  background: var(--background-primary-main);
   z-index: var(--z-index-layer-1);
   position: relative;
 }
@@ -83,7 +87,7 @@ const SOCIAL_LINKS = [
 
   @include respond-to(medium) {
     flex-direction: column;
-    row-gap: toRem(25);
+    gap: toRem(15);
   }
 }
 
@@ -97,12 +101,17 @@ const SOCIAL_LINKS = [
   @include respond-to(small) {
     flex-direction: column;
     align-items: center;
+    margin-bottom: toRem(15);
   }
 }
 
 .app-footer__text-link {
   font-weight: 500;
-  color: var(--text-primary-invert-main);
+  color: var(--text-primary-light);
+
+  @include respond-to(small) {
+    padding: toRem(12) 0;
+  }
 }
 
 .app-footer__social-links {
@@ -117,6 +126,6 @@ const SOCIAL_LINKS = [
 }
 
 .app-footer__social-link-icon {
-  color: var(--background-secondary);
+  color: var(--background-primary-main);
 }
 </style>

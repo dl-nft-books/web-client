@@ -1,101 +1,81 @@
 <template>
   <div class="my-nfts-page">
-    <h3>
+    <h3 class="my-nfts-page__title">
       {{ $t('my-nfts-page.title') }}
     </h3>
-    <template v-if="provider.isConnected">
-      <error-message
-        v-if="isLoadFailed"
-        :message="$t('my-nfts-page.loading-error-msg')"
-      />
-      <template v-else-if="nftList.length || isLoading">
-        <div v-if="nftList.length" class="my-nfts-page__list">
-          <book-card
-            v-for="book in nftList"
-            :key="book.id"
-            background-color="tertiary"
-            :book="book"
-            :action-btn-text="$t('my-nfts-page.details-btn')"
-          />
-        </div>
-
-        <loader v-if="isLoading" />
-
-        <app-button
-          v-if="isLoadMoreBtnShown"
-          class="my-nfts-page__load-more-btn"
-          size="small"
-          scheme="flat"
-          :text="$t('my-nfts-page.load-more-btn')"
-          @click="loadNextPage"
-        />
-      </template>
-
-      <my-nfts-no-data v-else />
+    <loader v-if="isLoading" />
+    <template v-else>
+      <my-nfts-no-data v-if="noDataScheme" :scheme="noDataScheme" />
+      <nft-list v-else-if="totalAmount" :total-amount="totalAmount" />
     </template>
 
-    <my-nfts-no-data v-else is-not-connected />
+    <img class="my-nfts-page__background" src="/images/fancy-lines.png" />
   </div>
 </template>
 
 <script lang="ts" setup>
-import { Loader, ErrorMessage, BookCard, AppButton } from '@/common'
-import { MyNftsNoData } from '@/pages/my-nfts'
-import { ErrorHandler } from '@/helpers'
-import { ref, computed } from 'vue'
+import { Loader } from '@/common'
+import { MyNftsNoData, NftList } from '@/pages/my-nfts'
+import { computed, ref, watch } from 'vue'
 import { useWeb3ProvidersStore } from '@/store'
-import { usePaginate, useGenerator } from '@/composables'
-import { Token } from '@/types'
-import { GENERATED_NFT_STATUSES } from '@/enums'
+import { useBooks } from '@/composables'
+import { ErrorHandler } from '@/helpers'
 
 const web3ProvidersStore = useWeb3ProvidersStore()
-const provider = computed(() => web3ProvidersStore.provider)
+const provider = computed(() => {
+  if (
+    web3ProvidersStore.provider.isConnected &&
+    web3ProvidersStore.isValidChain
+  )
+    return web3ProvidersStore.provider
 
-const { getGeneratedTokens } = useGenerator()
+  return web3ProvidersStore.fallbackProvider
+})
 
-const isLoadFailed = ref(false)
-const nftList = ref<Token[]>([])
+const noDataScheme = computed(() => {
+  if (!provider.value.isFallback && !provider.value.isConnected)
+    return 'not-connected'
 
-const loadList = computed(
-  () => () =>
-    getGeneratedTokens({
-      account: [provider.value.selectedAddress!],
-      status: [GENERATED_NFT_STATUSES.finishedUploading],
-    }),
-)
+  if (!totalAmount.value) return 'default'
 
-const { loadNextPage, isLoading, isLoadMoreBtnShown } = usePaginate(
-  loadList,
-  setList,
-  concatList,
-  onError,
-)
+  return ''
+})
 
-function setList(chunk: Token[]) {
-  nftList.value = chunk ?? []
+const totalAmount = ref(-1)
+const isLoading = ref(false)
+
+const { getTotalBooksAmount } = useBooks()
+
+const init = async () => {
+  isLoading.value = true
+  totalAmount.value = -1
+
+  try {
+    const data = await getTotalBooksAmount(provider.value.chainId)
+    if (!data) throw new Error('No books found')
+
+    totalAmount.value = Number(data)
+  } catch (error) {
+    ErrorHandler.processWithoutFeedback(error)
+  }
+
+  isLoading.value = false
 }
 
-function concatList(chunk: Token[]) {
-  nftList.value = nftList.value.concat(chunk ?? [])
-}
-
-function onError(e: Error) {
-  ErrorHandler.processWithoutFeedback(e)
-  isLoadFailed.value = true
-}
+watch(() => provider.value.chainId, init, { immediate: true })
 </script>
 
 <style lang="scss" scoped>
 .my-nfts-page {
   display: flex;
   flex-direction: column;
-  flex: 1;
-  gap: toRem(34);
   padding-top: toRem(70);
   padding-bottom: toRem(200);
-  background: url('/images/background-cubes.png') no-repeat right center /
-    contain;
-  background-size: clamp(toRem(300), 30%, toRem(400));
+  overflow: hidden;
+  flex: 1;
+  position: relative;
+  background-color: var(--background-primary-dark);
+  z-index: var(--z-index-layer-2);
 
   @include respond-to(tablet) {
     padding-top: toRem(10);
@@ -103,13 +83,12 @@ function onError(e: Error) {
   }
 }
 
-.my-nfts-page__list {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(toRem(292), 1fr));
-  grid-gap: toRem(20);
+.my-nfts-page__title {
+  color: var(--text-primary-invert-main);
+  margin-bottom: toRem(18);
 }
 
-.my-nfts-page__load-more-btn {
-  margin: toRem(20) auto 0;
+.my-nfts-page__background {
+  @include background-image;
 }
 </style>

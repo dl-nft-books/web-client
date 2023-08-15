@@ -1,21 +1,17 @@
 <template>
   <div class="bookshelf-item-page">
     <template v-if="isLoaded">
-      <error-message
-        v-if="isLoadFailed"
-        :message="$t('bookshelf-item-page.loading-error-msg')"
-      />
-      <template v-else-if="book">
+      <template v-if="book">
         <div class="bookshelf-item-page__cover-wrp">
           <img
             :src="book.banner.attributes.url"
-            :alt="book.title"
+            :alt="book.tokenName"
             class="bookshelf-item-page__cover"
           />
         </div>
         <div class="bookshelf-item-page__details">
           <h2 class="bookshelf-item-page__title">
-            {{ book.title }}
+            {{ book.tokenName }}
           </h2>
           <marquee
             :text="[
@@ -24,30 +20,43 @@
             ]"
           />
 
-          <section class="bookshelf-item-page__prices">
-            <bookshelf-prices
-              :price="formatFiatAssetFromWei(book.price, CURRENCIES.USD)"
-              :floor-price="
-                formatFiatAssetFromWei(book.floor_price, CURRENCIES.USD)
-              "
-              :voucher-link="
-                book.voucher_token !== ethers.constants.AddressZero
-                  ? getBlockExplorerLink(book.chain_id, book.voucher_token)
-                  : undefined
-              "
-            />
-          </section>
+          <collapse>
+            <template #head="{ collapse }">
+              <div
+                class="bookshelf-item-page__description-wrapper"
+                @click="collapse.toggle"
+              >
+                <p>
+                  {{ $t('bookshelf-item-page.description-lbl') }}
+                </p>
+                <icon
+                  class="bookshelf-item-page__description-icon"
+                  :class="{
+                    'bookshelf-item-page__description-icon--rotated':
+                      collapse.isOpen,
+                  }"
+                  :name="$icons.chevronDown"
+                />
+              </div>
+            </template>
+            <p class="bookshelf-item-page__description">
+              {{ book.description }}
+            </p>
+          </collapse>
 
-          <bookshelf-network-info
-            v-if="bookNetwork"
-            :name="bookNetwork.name"
-            :scheme="getNetworkScheme(bookNetwork.chain_id.toString())"
+          <book-details :book="book" />
+
+          <book-chain-info
+            v-if="!isValidChain && provider.chainId"
+            :source-chain="provider.chainId"
+            :target-chain="$config.DEFAULT_CHAIN_ID"
           />
+
           <app-button
             v-if="provider.isConnected"
             class="bookshelf-item-page__purchase-btn"
             size="small"
-            :text="$t('bookshelf-item-page.purchase-btn')"
+            :text="buyButtonText"
             @click="isPurchaseModalShown = true"
           />
 
@@ -58,101 +67,89 @@
             :text="$t('bookshelf-item-page.connect-btn')"
             @click="provider.connect"
           />
-
-          <hr class="bookshelf-item-page__devider" />
-          <p class="bookshelf-item-page__description">
-            {{ book.description }}
-          </p>
         </div>
 
         <purchasing-modal
           v-if="book"
           v-model:is-shown="isPurchaseModalShown"
           :book="book"
-          @submit="submit"
-        />
-
-        <purchasing-success-modal
-          v-model:is-shown="isPurchaseSuccessModalShown"
         />
       </template>
     </template>
     <loader v-else class="bookshelf-item-page__loader" />
+    <img
+      class="bookshelf-item-page__background"
+      src="/images/fancy-lines.png"
+    />
   </div>
 </template>
 
 <script lang="ts" setup>
 import {
   Loader,
-  ErrorMessage,
   AppButton,
   PurchasingModal,
-  PurchasingSuccessModal,
   Marquee,
+  Collapse,
+  Icon,
 } from '@/common'
 
-import { BookshelfNetworkInfo, BookshelfPrices } from '@/pages/bookshelf'
-import { ref, watch, computed } from 'vue'
-import {
-  formatFiatAssetFromWei,
-  ErrorHandler,
-  getNetworkScheme,
-  getBlockExplorerLink,
-} from '@/helpers'
-import { CURRENCIES } from '@/enums'
+import { BookDetails, BookChainInfo } from '@/pages/bookshelf'
+import { ref, computed } from 'vue'
+
+import { ErrorHandler } from '@/helpers'
+
 import { useBooks } from '@/composables'
-import { useWeb3ProvidersStore, useNetworksStore } from '@/store'
-import { storeToRefs } from 'pinia'
-import { ethers } from 'ethers'
-import { Book } from '@/types'
+import { FullBookInfo } from '@/types'
+
+import { useWeb3ProvidersStore } from '@/store'
+import { router } from '@/router'
+import { ROUTE_NAMES } from '@/enums'
+import { useI18n } from 'vue-i18n'
 
 const props = defineProps<{
   id: string
 }>()
-const { provider } = storeToRefs(useWeb3ProvidersStore())
+
+const { t } = useI18n()
+
+const web3Store = useWeb3ProvidersStore()
+const provider = computed(() => web3Store.provider)
 
 const isLoaded = ref(false)
-const isLoadFailed = ref(false)
 const isPurchaseModalShown = ref(false)
-const isPurchaseSuccessModalShown = ref(false)
 
-const networkStore = useNetworksStore()
 const { getBookById } = useBooks()
-const bookNetwork = computed(() =>
-  networkStore.getNetworkByID(book.value?.chain_id),
+
+const book = ref<FullBookInfo | undefined>()
+const isValidChain = computed(() =>
+  Boolean(
+    book.value &&
+      book.value.networks.some(
+        network =>
+          network.attributes.chain_id === Number(provider.value.chainId),
+      ),
+  ),
 )
 
-const book = ref<Book | undefined>()
-
-const submit = async () => {
-  try {
-    isPurchaseModalShown.value = false
-    isPurchaseSuccessModalShown.value = true
-  } catch (error) {
-    ErrorHandler.process(error)
-  }
-}
+const buyButtonText = computed(() =>
+  isValidChain.value
+    ? t('bookshelf-item-page.purchase-btn')
+    : t('bookshelf-item-page.rarimo-btn'),
+)
 
 const init = async () => {
+  isLoaded.value = false
   try {
-    const data = await getBookById(props.id)
+    const data = await getBookById(props.id, provider.value.chainId!)
 
     book.value = data
   } catch (error) {
     ErrorHandler.processWithoutFeedback(error)
-    isLoadFailed.value = true
+    router.push({ name: ROUTE_NAMES.bookshelf })
   }
   isLoaded.value = true
 }
-
-watch(
-  () => provider.value.isConnected,
-  value => {
-    if (!value) {
-      isPurchaseModalShown.value = false
-    }
-  },
-)
 
 init()
 </script>
@@ -170,17 +167,14 @@ init()
   padding-top: toRem(40);
   padding-bottom: toRem(150);
   justify-content: center;
-  background: url('/images/background-cubes.png') no-repeat right center /
-    contain;
-  background-size: clamp(toRem(300), 30%, toRem(500));
+  background-color: var(--background-primary-dark);
+  position: relative;
+  z-index: var(--z-index-layer-1);
 
   @include respond-to(medium) {
     display: flex;
     flex-direction: column;
     row-gap: toRem(40);
-    background: url('/images/background-cubes.png') no-repeat right top /
-      contain;
-    background-size: clamp(toRem(300), 50%, toRem(500));
   }
 
   @include respond-to(small) {
@@ -214,11 +208,11 @@ init()
 .bookshelf-item-page__details {
   display: flex;
   flex-direction: column;
+  gap: toRem(20);
 }
 
 .bookshelf-item-page__title {
   text-transform: uppercase;
-  margin-bottom: toRem(34);
   max-width: 100%;
   word-wrap: break-word;
 
@@ -227,49 +221,53 @@ init()
   }
 }
 
-.bookshelf-item-page__prices {
-  width: 70%;
-  margin: toRem(49) 0;
-
-  @include respond-to(tablet) {
-    width: 90%;
-    margin: toRem(49) 0 toRem(30) 0;
-  }
-}
-
-.bookshelf-item-page__info {
-  display: flex;
-  flex-direction: column;
-  text-align: right;
-  user-select: none;
-  gap: toRem(5);
-}
-
 .bookshelf-item-page__purchase-btn {
-  text-transform: uppercase;
   width: 100%;
   height: toRem(60);
-  font-size: toRem(22);
+  font-size: toRem(24);
+  font-weight: 700;
   line-height: 120%;
+  margin-top: toRem(25);
 }
 
-.bookshelf-item-page__devider {
-  width: 100%;
-  height: toRem(1);
-  margin-top: toRem(45);
-  border: none;
-  background-color: var(--border-secondary-main);
+.bookshelf-item-page__description-wrapper {
+  background-color: var(--background-primary-main);
+  border-radius: toRem(6);
+  padding: toRem(10) toRem(14);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  user-select: none;
+  transition: 0.2s ease-in-out;
+  transition-property: background-color;
+
+  &:hover {
+    cursor: pointer;
+    background-color: var(--background-primary-light);
+  }
 }
 
 .bookshelf-item-page__description {
-  color: var(--text-secondary-main);
-  margin-top: toRem(10);
-  word-wrap: break-word;
+  padding: toRem(20);
+  max-width: 100%;
+  word-break: break-all;
   white-space: pre-wrap;
-  font-size: toRem(24);
+}
 
-  @include respond-to(medium) {
-    font-size: toRem(18);
+.bookshelf-item-page__description-icon {
+  --size: #{toRem(20)};
+
+  max-width: var(--size);
+  max-height: var(--size);
+  transition: 0.2s ease-in-out;
+  transition-property: transform;
+
+  &--rotated {
+    transform: rotate(180deg);
   }
+}
+
+.bookshelf-item-page__background {
+  @include background-image;
 }
 </style>

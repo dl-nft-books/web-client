@@ -8,17 +8,14 @@
   --black: #{$black};
   --black-rgb: #{$black-rgb};
 
-  --background-primary: #{$background-primary};
+  --background-primary-light: #{$background-primary-light};
+  --background-primary-light-rgb: #{$background-primary-light-rgb};
+  --background-primary-main: #{$background-primary-main};
+  --background-primary-dark: #{$background-primary-dark};
+  --background-primary-dark-rgb: #{$background-primary-dark-rgb};
+
   --background-secondary: #{$background-secondary};
   --background-tertiary: #{$background-tertiary};
-  --background-quaternary: #{$background-quaternary};
-  --background-quinary: #{$background-quinary};
-  --background-quinary-rgb: #{$background-quinary-rgb};
-  --background-error: #{$background-error};
-  --background-success: #{$background-success};
-  --background-switcher: #{$background-switcher};
-  --background-switcher-picked: #{$background-switcher-picked};
-  --background-switcher-picked-rgb: #{$background-switcher-picked-rgb};
 
   /* status colors */
   --success-light: #{$success-light};
@@ -60,17 +57,17 @@
   --text-secondary-invert-main: #{$text-secondary-invert-main};
   --text-secondary-invert-dark: #{$text-secondary-invert-dark};
 
-  --text-success: #{$text-success};
   --text-diclaimer: #{$text-diclaimer};
-  --text-guides: #{$text-guides};
 
   /* border colors */
   --border-primary-light: #{$border-primary-light};
   --border-primary-main: #{$border-primary-main};
   --border-primary-dark: #{$border-primary-dark};
-  --border-secondary-main: #{$border-secondary-main};
-  --border-secondary-dark: #{$border-secondary-dark};
-  --border-black: #{$border-black};
+
+  /* disable colors */
+  --disable-primary-light: #{$disable-primary-light};
+  --disable-primary-main: #{$disable-primary-main};
+  --disable-primary-dark: #{$disable-primary-dark};
 
   /* other colors */
   --network-purple-dark: #{$network-purple-dark};
@@ -80,13 +77,10 @@
   --drop-down-shadow: #{$drop-down-shadow};
   --drop-down-shadow-rgb: #{$drop-down-shadow-rgb};
   --shadow-color: #{$shadow-color};
-  --guide-card-color: #{$guide-card-color};
-  --guide-card-color-rgb: #{$guide-card-color-rgb};
 
   /* App variables */
   --app-txt: #{$text-primary-main};
-  --app-font-family: 'Gilroy', sans-serif;
-  --app-font-family-secondary: 'Metropolis';
+  --app-font-family: 'Jakarta', sans-serif;
   --app-padding-right: #{toRem(100)};
   --app-padding-left: #{toRem(100)};
 
@@ -110,7 +104,7 @@
   /* Field variables */
 
   /* --------------------------------------- */
-  --field-bg: var(--background-primary);
+  --field-bg: var(--background-primary-main);
 
   /* label */
   --field-label: var(--text-primary-main);

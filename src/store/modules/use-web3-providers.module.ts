@@ -1,49 +1,103 @@
 import { defineStore } from 'pinia'
-import { useProvider, useWeb3 } from '@/composables'
-import { DesignatedProvider } from '@/types'
-import { PROVIDERS } from '@/enums'
+import { computed } from 'vue'
+import { useProvider } from '@/composables'
+import { config } from '@/config'
+import { getJsonRpcProvider } from '@/helpers'
+import { useNetworksStore } from '@/store'
 
-export const useWeb3ProvidersStore = defineStore('web3-providers-store', {
-  state: () => ({
-    providers: [] as DesignatedProvider[],
-    provider: useProvider(),
-  }),
-  actions: {
-    async detectProviders() {
-      const web3 = useWeb3()
-      await web3.init()
-      this.providers = web3.providers.value
-    },
+import {
+  ProviderDetector,
+  PROVIDERS,
+  MetamaskProvider,
+  RawProvider,
+  FallbackEvmProvider,
+} from '@distributedlab/w3p'
+import { router } from '@/router'
+import { FALLBACK_PROVIDERS } from '@/enums'
+import { SUPPORTED_PROVIDERS } from '@/types'
 
-    async init() {
-      const metamaskFallBack: DesignatedProvider = {
-        name: PROVIDERS.metamaskFallback,
-        instance: undefined,
-      }
+class MetamaskFallbackProvider extends FallbackEvmProvider {
+  constructor(rawProvider: RawProvider) {
+    super(rawProvider)
+  }
 
-      this.addProvider(metamaskFallBack)
+  static get providerType() {
+    return FALLBACK_PROVIDERS.MetamaskFallback
+  }
 
-      // temporary
-      const metamaskProvider = this.providers.find(
-        provider => provider.name === PROVIDERS.metamask,
-      )
+  async connect(): Promise<void> {
+    try {
+      const METAMASK_APP_CONNECT_URL = `https://metamask.app.link/dapp/${window.location.host}${router.currentRoute.value.fullPath}`
 
-      if (metamaskProvider) {
-        await this.provider.init(metamaskProvider)
-      } else {
-        /* if user has no extension or mobile metamask app we are using 
-           fallback provider to redirect him to app or to page where 
-           he can download it */
-        const fallbackProvider = this.providers.find(
-          provider => provider.name === PROVIDERS.metamaskFallback,
-        )
+      window.open(METAMASK_APP_CONNECT_URL)
+    } catch (error) {
+      window.location.reload()
+    }
+  }
+}
 
-        if (fallbackProvider) await this.provider.init(fallbackProvider)
-      }
-    },
+const STORE_NAME = 'web3-providers-store'
 
-    addProvider(provider: DesignatedProvider) {
-      this.providers.push(provider)
-    },
-  },
+export const useWeb3ProvidersStore = defineStore(STORE_NAME, () => {
+  const networkStore = useNetworksStore()
+
+  const provider = useProvider()
+  const fallbackProvider = useProvider()
+
+  const providerDetector = computed(
+    () => new ProviderDetector<SUPPORTED_PROVIDERS>(),
+  )
+  const isValidChain = computed(() =>
+    networkStore.list.some(
+      i => Number(i.chain_id) === Number(provider.chainId?.value),
+    ),
+  )
+
+  async function detectProviders() {
+    await providerDetector.value.init()
+  }
+
+  async function setupFallback() {
+    providerDetector.value.addProvider({
+      name: FALLBACK_PROVIDERS.MetamaskFallback,
+      instance: getJsonRpcProvider(
+        Number(config.DEFAULT_CHAIN_ID),
+      ) as unknown as RawProvider,
+    })
+
+    await fallbackProvider.init(MetamaskFallbackProvider, {
+      providerDetector: providerDetector.value,
+    })
+  }
+
+  async function init() {
+    // setuping fallback to be able to use it when its needed
+    await setupFallback()
+
+    const metamaskProvider = providerDetector.value.getProvider(
+      PROVIDERS.Metamask,
+    )
+
+    // if metamask provider is present --> init it
+    if (metamaskProvider) {
+      await provider.init(MetamaskProvider, {
+        providerDetector: providerDetector.value,
+      })
+      return
+    }
+
+    // if no metamask provider found --> fallback is main provider
+    await provider.init(MetamaskFallbackProvider, {
+      providerDetector: providerDetector.value,
+    })
+  }
+
+  return {
+    detectProviders,
+    init,
+
+    provider,
+    fallbackProvider,
+    isValidChain,
+  }
 })

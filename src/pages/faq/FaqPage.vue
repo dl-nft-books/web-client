@@ -1,9 +1,9 @@
 <template>
   <div class="faq-page">
     <header class="faq-page__head">
-      <h3 class="faq-page__title">
+      <h1 class="faq-page__title">
         {{ $t('faq-page.title') }}
-      </h3>
+      </h1>
     </header>
     <section class="faq-page__overview">
       <div>
@@ -50,7 +50,7 @@ const overviewPoints = [
 .faq-page {
   max-width: 100%;
   padding: 0;
-  background-color: var(--background-quinary);
+  background-color: var(--background-primary-dark);
 }
 
 .faq-page__title {
@@ -71,9 +71,9 @@ const overviewPoints = [
     var(--app-padding-left);
   background-image: linear-gradient(
       360deg,
-      var(--background-quinary) 0.12%,
-      rgba(var(--background-quinary-rgb), 0.9) 55.52%,
-      rgba(var(--background-quinary-rgb), 0.5) 100%
+      var(--background-primary-dark) 0.12%,
+      rgba(var(--background-primary-dark-rgb), 0.9) 55.52%,
+      rgba(var(--background-primary-dark-rgb), 0.5) 100%
     ),
     url('/images/faq-background.png');
   background-size: cover;
@@ -102,6 +102,7 @@ const overviewPoints = [
   color: var(--primary-main);
   margin-bottom: toRem(20);
   margin-top: toRem(60);
+  font-weight: 700;
 
   @include respond-to(medium) {
     margin-top: toRem(20);

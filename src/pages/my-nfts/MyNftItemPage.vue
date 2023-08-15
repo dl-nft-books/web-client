@@ -2,7 +2,7 @@
   <div class="my-nft-item-page">
     <template v-if="isLoaded">
       <error-message
-        v-if="isLoadFailed"
+        v-if="errorMsg"
         class="my-nft-item-page__error"
         :message="$t('my-nft-item-page.loading-error-msg')"
       />
@@ -10,32 +10,37 @@
       <template v-else-if="nftToken">
         <div class="my-nft-item-page__cover-wrp">
           <img
-            :src="nftToken.image_url"
-            :alt="nftToken.name"
+            :src="nftToken.metadata.image"
+            :alt="nftToken.metadata.name"
             class="my-nft-item-page__cover"
           />
         </div>
         <div class="my-nft-item-page__details">
           <h2 class="my-nft-item-page__title">
-            {{ nftToken.name }}
+            {{ nftToken.metadata.name }}
           </h2>
           <tabs
             v-model="currentTab"
             :tabs="Object.values(TABS)"
             class="my-nft-item-page__tabs"
           />
-          <nft-description
-            v-if="currentTab === TABS.bookDescription.id"
-            :description="nftToken.description"
-          />
-          <nft-details
-            v-if="currentTab === TABS.myPurchase.id"
-            :nft-token="nftToken"
-          />
+          <transition name="tabs">
+            <nft-description
+              v-if="currentTab === TABS.bookDescription.id"
+              :description="nftToken.metadata.description"
+            />
+          </transition>
+          <transition name="tabs">
+            <nft-details
+              v-if="currentTab === TABS.myPurchase.id"
+              :nft-token="nftToken"
+            />
+          </transition>
         </div>
       </template>
     </template>
     <loader v-else class="my-nft-item-page__loader" />
+    <img class="my-nfts-item-page__background" src="/images/fancy-lines.png" />
   </div>
 </template>
 
@@ -50,12 +55,12 @@ import {
 
 import { ErrorHandler } from '@/helpers'
 import { ref } from 'vue'
-import { useGenerator } from '@/composables'
-import { Token } from '@/types'
+import { useNftTokens } from '@/composables'
 import { useI18n } from 'vue-i18n'
+import { TokenFullInfo } from '@/types'
 
 const { t } = useI18n()
-const { getGeneratedTokenById } = useGenerator()
+const { getNft } = useNftTokens()
 
 const TABS = {
   myPurchase: {
@@ -70,21 +75,24 @@ const TABS = {
 
 const props = defineProps<{
   id: string
+  contractAddress: string
 }>()
 
 const isLoaded = ref(false)
-const isLoadFailed = ref(false)
+const errorMsg = ref('')
 const currentTab = ref(TABS.myPurchase.id)
 
-const nftToken = ref<Token | undefined>()
+const nftToken = ref<TokenFullInfo | undefined>()
 
 const init = async () => {
   try {
-    const data = await getGeneratedTokenById(props.id)
+    const data = await getNft(props.contractAddress, props.id)
+
     nftToken.value = data
   } catch (error) {
     ErrorHandler.processWithoutFeedback(error)
-    isLoadFailed.value = true
+
+    if (error instanceof Error) errorMsg.value = error.message
   }
   isLoaded.value = true
 }
@@ -105,17 +113,14 @@ init()
   padding-top: toRem(40);
   padding-bottom: toRem(100);
   justify-content: center;
-  background: url('/images/background-cubes.png') no-repeat right center /
-    contain;
-  background-size: clamp(toRem(300), 30%, toRem(400));
+  background-color: var(--background-primary-dark);
+  position: relative;
+  z-index: var(--z-index-layer-1);
 
   @include respond-to(medium) {
     display: flex;
     flex-direction: column;
     row-gap: toRem(40);
-    background: url('/images/background-cubes.png') no-repeat right top /
-      contain;
-    background-size: clamp(toRem(300), 50%, toRem(500));
   }
 
   @include respond-to(small) {
@@ -164,5 +169,21 @@ init()
 
 .my-nft-item-page__tabs {
   margin-bottom: toRem(40);
+}
+
+.tabs-enter-active,
+.tabs-leave-active {
+  transition: 0.25s ease;
+  transition-property: opacity, transform;
+}
+
+.tabs-enter-from,
+.tabs-leave-to {
+  opacity: 0;
+  transform: translateX(toRem(-50));
+}
+
+.my-nfts-item-page__background {
+  @include background-image;
 }
 </style>
