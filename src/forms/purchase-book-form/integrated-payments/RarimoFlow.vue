@@ -41,7 +41,7 @@
 
 <script setup lang="ts">
 import { computed, reactive, ref, watch, toRefs } from 'vue'
-import { BN, DECIMALS } from '@distributedlab/tools'
+import { BN } from '@distributedlab/tools'
 
 import {
   Loader,
@@ -75,7 +75,6 @@ import { config } from '@/config'
 import { ethers } from 'ethers'
 import { EstimatedPriceInfo } from '@/common/NftCheckoutInfo.vue'
 import { UseImageEditor } from 'simple-fabric-vue-image-editor'
-import { DEFAULT_BN_PRECISION } from '@/const'
 
 type SelectOption = {
   label: string
@@ -248,14 +247,9 @@ const initializeCheckout = async (
 ) => {
   if (!tokenPrice.value || !provider.value.address) return
 
-  BN.setConfig({ precision: DECIMALS.WEI })
-
   const nftPrice = BN.fromBigInt(book.pricePerOneToken)
     .div(BN.fromRaw(tokenPrice.value.price, tokenPrice.value.token.decimals))
-    .mul(BN.fromRaw(TOKEN_AMOUNT_COEFFICIENT))
-    .raw.toString()
-
-  BN.setConfig({ precision: DEFAULT_BN_PRECISION })
+    .mul(BN.fromRaw(TOKEN_AMOUNT_COEFFICIENT)).value
 
   await initCheckout(sourceChain, targetChain, {
     recipient: provider.value.address,
@@ -286,15 +280,9 @@ const submitFunc = async (editorInstance: UseImageEditor | null) => {
       chainId: Number(targetChain.value.id),
       tokenAddress: '',
     })
-
-    BN.setConfig({ precision: DECIMALS.WEI })
-
     const nativeTokenAmount = BN.fromBigInt(book.pricePerOneToken)
       .div(BN.fromRaw(tokenPrice.value.price, tokenPrice.value.token.decimals))
-      .mul(BN.fromRaw(TOKEN_AMOUNT_COEFFICIENT))
-      .raw.toString()
-
-    BN.setConfig({ precision: DEFAULT_BN_PRECISION })
+      .mul(BN.fromRaw(TOKEN_AMOUNT_COEFFICIENT)).value
 
     await performCheckout(priceRaw, {
       buyParams,

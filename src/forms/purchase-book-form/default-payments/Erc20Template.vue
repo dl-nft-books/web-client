@@ -60,7 +60,6 @@ import { ExposedPromocodeRef } from '@/forms/purchase-book-form/default-payments
 import { useWeb3ProvidersStore } from '@/store'
 import { FORM_STATES, TOKEN_TYPES } from '@/enums'
 import { ErrorHandler, calcFormattedTokenAmount, safeInject } from '@/helpers'
-import { DEFAULT_BN_PRECISION } from '@/const'
 
 const {
   bookInfo: book,
@@ -147,15 +146,11 @@ const submitFunc = async (editorInstance: UseImageEditor | null) => {
       ...(promocode.value ? { promocodeId: promocode.value.id } : {}),
     })
 
-    BN.setConfig({ precision: tokenPrice.value.token.decimals })
-
     // approving to spend exact amount that needed
     const amountToApprove = BN.fromRaw(
       formattedTokenAmount.value,
       tokenPrice.value.token.decimals,
-    ).raw.toString()
-
-    BN.setConfig({ precision: DEFAULT_BN_PRECISION })
+    ).value
 
     await approveTokenSpend(
       TOKEN_TYPES.erc20,
