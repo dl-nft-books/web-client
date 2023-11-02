@@ -133,7 +133,8 @@ abillity to show books no matter on what chain user is now
 #### Under the hood changes
 - merged from https://gitlab.com/distributed_lab/frontend/vue-template
 
-[Unreleased]: https://github.com/dl-nft-books/web-client/compare/v1.5.1...main
+[Unreleased]: https://github.com/dl-nft-books/web-client/compare/v1.5.2...main
+[1.5.2]: https://github.com/dl-nft-books/web-client/compare/v1.5.1...v1.5.2
 [1.5.1]: https://github.com/dl-nft-books/web-client/compare/v1.5.0...v1.5.1
 [1.5.0]: https://github.com/dl-nft-books/web-client/compare/v1.4.0...v1.5.0
 [1.4.0]: https://github.com/dl-nft-books/web-client/compare/v1.3.1...v1.4.0
