@@ -645,21 +645,21 @@
     tiny-warning "^1.0.3"
     toformat "^2.0.0"
 
-"@rarimo/bridge@^2.0.0-rc.13":
-  version "2.0.0-rc.13"
-  resolved "https://registry.yarnpkg.com/@rarimo/bridge/-/bridge-2.0.0-rc.13.tgz#44b98d440dae92430e759e6ffa8afe1b613c842e"
-  integrity sha512-/jjbeG3sCnwaIOMCo+JDgxDNEal4pemO8B18dMx0fUvTa0oLHjRWEzi90bu0NuSdj5d282z/h0zAyOgopfBfxQ==
+"@rarimo/bridge@^2.0.0-rc.29":
+  version "2.0.0-rc.29"
+  resolved "https://registry.yarnpkg.com/@rarimo/bridge/-/bridge-2.0.0-rc.29.tgz#7ca653b97ee1d98d691f826b3b5e10a9509a1fc4"
+  integrity sha512-uHl2YZppJsUClRuVjyVmaGiXVVRuz0Qg6N5yZpI2/VwfFQxIzjNeZOjfr8ljunMXk1Pyn7EDo2gCKfXFfIxo6w==
   dependencies:
     "@distributedlab/reactivity" "^1.0.0-rc.6"
     "@distributedlab/tools" "^1.0.0-rc.6"
-    "@rarimo/provider" "^2.0.0-rc.13"
-    "@rarimo/shared" "^2.0.0-rc.13"
+    "@rarimo/provider" "^2.0.0-rc.29"
+    "@rarimo/shared" "^2.0.0-rc.29"
     ethers "^5.7.2"
 
-"@rarimo/nft-checkout@^2.0.0-rc.12":
-  version "2.0.0-rc.13"
-  resolved "https://registry.yarnpkg.com/@rarimo/nft-checkout/-/nft-checkout-2.0.0-rc.13.tgz#74cd47de2ff444b3dfc9dc6f395def296d55a8b1"
-  integrity sha512-BKjeSN8oUDI+iTnX/Zuw3lQB0wVzv5sCs/qUJ7CTOSR9r3fmBPfvBXgKaikHw6B21Hgsv5Go3oQk4PnJBTArLw==
+"@rarimo/nft-checkout@^2.0.0-rc.29":
+  version "2.0.0-rc.29"
+  resolved "https://registry.yarnpkg.com/@rarimo/nft-checkout/-/nft-checkout-2.0.0-rc.29.tgz#64eb9116c10773c2ddb125f72930ce3a4e43fb8a"
+  integrity sha512-ZnLdrwe8k8L9jNi+aGxe18JiruwaDvnT6VGA56W3DP2AW4PhI5W/Li0S9eFKlF17EoF+9t34jERtIeuvEf0xVQ==
   dependencies:
     "@distributedlab/fetcher" "^1.0.0-rc.6"
     "@distributedlab/reactivity" "^1.0.0-rc.6"
@@ -667,49 +667,49 @@
     "@ethersproject/abstract-provider" "^5.7.0"
     "@ethersproject/properties" "^5.7.0"
     "@ethersproject/providers" "^5.7.2"
-    "@rarimo/bridge" "^2.0.0-rc.13"
-    "@rarimo/provider" "^2.0.0-rc.13"
-    "@rarimo/shared" "^2.0.0-rc.13"
-    "@rarimo/swap" "^2.0.0-rc.13"
+    "@rarimo/bridge" "^2.0.0-rc.29"
+    "@rarimo/provider" "^2.0.0-rc.29"
+    "@rarimo/shared" "^2.0.0-rc.29"
+    "@rarimo/swap" "^2.0.0-rc.29"
     ethers "^5.7.2"
 
-"@rarimo/provider@^2.0.0-rc.13":
-  version "2.0.0-rc.13"
-  resolved "https://registry.yarnpkg.com/@rarimo/provider/-/provider-2.0.0-rc.13.tgz#6d54f632b36de58b9daf6b1460cb6765c5892369"
-  integrity sha512-SldToHbSZyOoJd4N0pD6hULP2NP+tu9zZCnoXzQNFYxw6MQbhMi5Ioy1rgvUKwQhBr8bJr1l0E7/UnTSEh3vQQ==
+"@rarimo/provider@^2.0.0-rc.29":
+  version "2.0.0-rc.29"
+  resolved "https://registry.yarnpkg.com/@rarimo/provider/-/provider-2.0.0-rc.29.tgz#ae64743281b03975ec06bd6f1d0ced1dd86fb148"
+  integrity sha512-iC8Qtk5MMlSHAF5KXsqbdXmWLSyzQoN8Ri+j8f4oswqR2B/kmcj+xWwCQB4nStySbLb3AYPmx1B3QI6tGMNVFQ==
   dependencies:
     "@distributedlab/tools" "^1.0.0-rc.6"
-    "@rarimo/shared" "^2.0.0-rc.13"
+    "@rarimo/shared" "^2.0.0-rc.29"
 
-"@rarimo/providers-evm@^2.0.0-rc.12":
-  version "2.0.0-rc.13"
-  resolved "https://registry.yarnpkg.com/@rarimo/providers-evm/-/providers-evm-2.0.0-rc.13.tgz#383d937a7603d6bb31a2bede4be6f216ab5874ee"
-  integrity sha512-wA9PRCbNmtLup8Niu5Yx+ftEHEF1PbpbAY3hwcL/E82NQufBqIATdRrxDBwlnJYbLSylu1UUsR9UbxX3WgRnSQ==
+"@rarimo/providers-evm@^2.0.0-rc.29":
+  version "2.0.0-rc.29"
+  resolved "https://registry.yarnpkg.com/@rarimo/providers-evm/-/providers-evm-2.0.0-rc.29.tgz#2b8f9ff3b196b3cb393dd06674e380547f29fa32"
+  integrity sha512-jr9DsIZRdP7T7C8gtrZkHk+XfK3s4/DirxIJ9Z5M3Km3AWsnV+1Wnp2WfrXdR5zVOSGgBLt/8iMXEVLNyMM4tQ==
   dependencies:
     "@ethersproject/abstract-provider" "^5.7.0"
     "@ethersproject/properties" "^5.7.0"
-    "@rarimo/provider" "^2.0.0-rc.13"
-    "@rarimo/shared" "^2.0.0-rc.13"
+    "@rarimo/provider" "^2.0.0-rc.29"
+    "@rarimo/shared" "^2.0.0-rc.29"
     ethers "^5.7.2"
     web3-core "^1.8.2"
 
-"@rarimo/shared@^2.0.0-rc.13":
-  version "2.0.0-rc.13"
-  resolved "https://registry.yarnpkg.com/@rarimo/shared/-/shared-2.0.0-rc.13.tgz#0d0c07e1af629516621c8af08495bcff50b8df05"
-  integrity sha512-hoVTx5l8jF754hjhn7s/WTggI1LJRIMpq+PJ7k0xYB3dv7leHLLFTzlEN5cCZfeWvfTk7tBpnRQhydEz+pbm4Q==
+"@rarimo/shared@^2.0.0-rc.29":
+  version "2.0.0-rc.29"
+  resolved "https://registry.yarnpkg.com/@rarimo/shared/-/shared-2.0.0-rc.29.tgz#dfd76de7dab2616ee3d08f15e6ebb7aa73b67a3c"
+  integrity sha512-jtMLaiAeSRKY4qaAGEV1C5fRFq7d0jm0J2Gqyy9QBSsuqNhVhReLzel9ZLhYAAxcwKcmdJGIDBD/TV66Feobyw==
   dependencies:
     "@distributedlab/jac" "^1.0.0-rc.6"
     "@distributedlab/tools" "^1.0.0-rc.6"
 
-"@rarimo/swap@^2.0.0-rc.13":
-  version "2.0.0-rc.13"
-  resolved "https://registry.yarnpkg.com/@rarimo/swap/-/swap-2.0.0-rc.13.tgz#04fdc648e71c125447b6259be74c4e323dabbfe2"
-  integrity sha512-WB+I/eaJi/0RRZ1+JSLf2QyzmvgHqsPHC1IH51btxOErb6fAdQetKuZfyhBiZy+qO3tQcEjWkYYrrMa8S8a0Jg==
+"@rarimo/swap@^2.0.0-rc.29":
+  version "2.0.0-rc.29"
+  resolved "https://registry.yarnpkg.com/@rarimo/swap/-/swap-2.0.0-rc.29.tgz#fa6290c7cdb85eb933fdd86190b25d2a0dc36a0b"
+  integrity sha512-xtCN4pVTWo4XlJapUnjAHymb3J5Y3CVY4Kxr1jQnbO8CdvczeNa62WoVEpLUGKxXYmIv2OniC3NZCEYOgvDIJg==
   dependencies:
     "@distributedlab/reactivity" "^1.0.0-rc.6"
-    "@rarimo/bridge" "^2.0.0-rc.13"
-    "@rarimo/provider" "^2.0.0-rc.13"
-    "@rarimo/shared" "^2.0.0-rc.13"
+    "@rarimo/bridge" "^2.0.0-rc.29"
+    "@rarimo/provider" "^2.0.0-rc.29"
+    "@rarimo/shared" "^2.0.0-rc.29"
 
 "@rushstack/eslint-patch@^1.1.3":
   version "1.3.2"
