@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.5.2] - 2023-11-02
+#### Changed
+- Updated Rarimo SDK to v2.0.0-rc.29
+
 ## [1.5.1] - 2023-08-11
 #### Changed
 - Web3Store refactored
@@ -129,7 +133,8 @@ abillity to show books no matter on what chain user is now
 #### Under the hood changes
 - merged from https://gitlab.com/distributed_lab/frontend/vue-template
 
-[Unreleased]: https://github.com/dl-nft-books/web-client/compare/v1.5.1...main
+[Unreleased]: https://github.com/dl-nft-books/web-client/compare/v1.5.2...main
+[1.5.2]: https://github.com/dl-nft-books/web-client/compare/v1.5.1...v1.5.2
 [1.5.1]: https://github.com/dl-nft-books/web-client/compare/v1.5.0...v1.5.1
 [1.5.0]: https://github.com/dl-nft-books/web-client/compare/v1.4.0...v1.5.0
 [1.4.0]: https://github.com/dl-nft-books/web-client/compare/v1.3.1...v1.4.0

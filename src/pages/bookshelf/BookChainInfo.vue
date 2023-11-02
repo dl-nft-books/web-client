@@ -15,7 +15,7 @@
 
 <script setup lang="ts">
 import { computed } from 'vue'
-import { ChainId } from '@/types'
+import { ChainId } from '@distributedlab/w3p'
 import { useNetworksStore } from '@/store'
 import { useI18n } from 'vue-i18n'
 
