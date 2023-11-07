@@ -37,9 +37,10 @@ import {
   globalizeTokenType,
 } from '@/helpers'
 
-import { CURRENCIES, TOKEN_TYPES } from '@/enums'
+import { TOKEN_TYPES } from '@/enums'
 import { TokenFullInfo } from '@/types'
 import { useI18n } from 'vue-i18n'
+import { useWeb3ProvidersStore } from '@/store'
 
 type NftDetails = {
   label: string
@@ -52,6 +53,7 @@ const props = defineProps<{
 }>()
 
 const { t } = useI18n()
+const web3Store = useWeb3ProvidersStore()
 
 const getDetails = () => {
   if (!props.nftToken.payment) return []
@@ -65,7 +67,7 @@ const getDetails = () => {
       label: t('nft-details.price-lbl'),
       value: formatFiatAssetFromWei(
         props.nftToken.payment.minted_token_price,
-        CURRENCIES.USD,
+        web3Store.chainCurrency,
       ),
     },
     {

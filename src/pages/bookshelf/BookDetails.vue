@@ -48,10 +48,11 @@
 import { Icon } from '@/common'
 import { formatFiatAssetFromWei } from '@/helpers'
 
-import { CURRENCIES, ICON_NAMES } from '@/enums'
-import { FullBookInfo } from '@/composables'
+import { ICON_NAMES } from '@/enums'
+import { FullBookInfo } from '@/types'
 import { getNetworkScheme, getIconByScheme } from '@/helpers'
 import { useI18n } from 'vue-i18n'
+import { useWeb3ProvidersStore } from '@/store'
 
 type BookDetails = {
   label: string
@@ -64,6 +65,7 @@ type BookDetails = {
 const props = defineProps<{ book: FullBookInfo }>()
 
 const { t } = useI18n()
+const web3Store = useWeb3ProvidersStore()
 
 const getNetworkIcon = (chainId: number): ICON_NAMES => {
   const scheme = getNetworkScheme(chainId)
@@ -75,11 +77,14 @@ const MAX_PRICE_LENGTH = 5
 
 const getDetails = (): BookDetails[] => {
   const formattedFloorPrice = props.book.isNFTBuyable
-    ? formatFiatAssetFromWei(props.book.minNFTFloorPrice, CURRENCIES.USD)
+    ? formatFiatAssetFromWei(
+        props.book.minNFTFloorPrice,
+        web3Store.chainCurrency,
+      )
     : ''
   const formattedPrice = formatFiatAssetFromWei(
     props.book.pricePerOneToken,
-    CURRENCIES.USD,
+    web3Store.chainCurrency,
   )
 
   return [
