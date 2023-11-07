@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+#### Changed
+- Now if the user is connected to the Q chain and Q is in supported networks, then all the prices will be displayed in Q.
+
 ## [1.5.2] - 2023-11-02
 #### Changed
 - Updated Rarimo SDK to v2.0.0-rc.29

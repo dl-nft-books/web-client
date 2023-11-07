@@ -12,7 +12,7 @@
     </h5>
     <footer class="book-card__footer">
       <h4 v-if="price" class="book-card__price">
-        {{ formatFiatAssetFromWei(price, CURRENCIES.USD) }}
+        {{ formatFiatAssetFromWei(price, web3Store.chainCurrency) }}
       </h4>
 
       <app-button
@@ -31,9 +31,10 @@ import { formatFiatAssetFromWei, getNetworkScheme } from '@/helpers'
 import { computed } from 'vue'
 import { useNftTokens } from '@/composables'
 import { BaseBookInfo, TokenBaseInfo } from '@/types'
-import { ROUTE_NAMES, CURRENCIES, NETWORKS } from '@/enums'
+import { ROUTE_NAMES, NETWORKS } from '@/enums'
 import { useI18n } from 'vue-i18n'
 import { router } from '@/router'
+import { useWeb3ProvidersStore } from '@/store'
 
 type SCHEME = 'book' | 'nft'
 
@@ -54,6 +55,8 @@ const props = withDefaults(
 
 const { t } = useI18n()
 const { isNftToken } = useNftTokens()
+
+const web3Store = useWeb3ProvidersStore()
 
 const bookCardClasses = computed(() =>
   [

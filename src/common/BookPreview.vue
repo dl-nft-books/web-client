@@ -29,8 +29,8 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import { formatFiatAssetFromWei } from '@/helpers'
-import { CURRENCIES } from '@/enums'
 import { FullBookInfo } from '@/types'
+import { useWeb3ProvidersStore } from '@/store'
 
 type MODIFICATIONS = 'floor-price' | 'default'
 
@@ -44,12 +44,14 @@ const props = withDefaults(
   },
 )
 
+const web3Store = useWeb3ProvidersStore()
+
 const price = computed(() =>
   formatFiatAssetFromWei(
     props.modification === 'floor-price'
       ? props.book.minNFTFloorPrice
       : props.book.pricePerOneToken,
-    CURRENCIES.USD,
+    web3Store.chainCurrency,
   ),
 )
 </script>

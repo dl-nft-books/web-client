@@ -13,7 +13,7 @@ import {
   FallbackEvmProvider,
 } from '@distributedlab/w3p'
 import { router } from '@/router'
-import { FALLBACK_PROVIDERS } from '@/enums'
+import { CURRENCIES, FALLBACK_PROVIDERS, Q_CHAINS } from '@/enums'
 import { SUPPORTED_PROVIDERS } from '@/types'
 
 class MetamaskFallbackProvider extends FallbackEvmProvider {
@@ -51,6 +51,21 @@ export const useWeb3ProvidersStore = defineStore(STORE_NAME, () => {
     networkStore.list.some(
       i => Number(i.chain_id) === Number(provider.chainId?.value),
     ),
+  )
+
+  /*
+      Temporary solution. We need to display Q as a currency only for Q Chains.
+  */
+  const chainCurrency = computed(() =>
+    [Q_CHAINS.mainet, Q_CHAINS.testnet].includes(
+      provider.chainId?.value?.toString() as Q_CHAINS,
+    ) &&
+    networkStore.list.some(
+      network =>
+        network.chain_id.toString() === provider.chainId?.value?.toString(),
+    )
+      ? CURRENCIES.Q
+      : CURRENCIES.USD,
   )
 
   async function detectProviders() {
@@ -99,5 +114,6 @@ export const useWeb3ProvidersStore = defineStore(STORE_NAME, () => {
     provider,
     fallbackProvider,
     isValidChain,
+    chainCurrency,
   }
 })
