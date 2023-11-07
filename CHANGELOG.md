@@ -4,7 +4,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [1.5.3-rc.1]
 #### Changed
 - Now if the user is connected to the Q chain and Q is in supported networks, then all the prices will be displayed in Q.
 
@@ -137,7 +137,8 @@ abillity to show books no matter on what chain user is now
 #### Under the hood changes
 - merged from https://gitlab.com/distributed_lab/frontend/vue-template
 
-[Unreleased]: https://github.com/dl-nft-books/web-client/compare/v1.5.2...main
+[Unreleased]: https://github.com/dl-nft-books/web-client/compare/v1.5.3-rc.1...main
+[1.5.3-rc.1]: https://github.com/dl-nft-books/web-client/compare/v1.5.2...v1.5.3-rc.1
 [1.5.2]: https://github.com/dl-nft-books/web-client/compare/v1.5.1...v1.5.2
 [1.5.1]: https://github.com/dl-nft-books/web-client/compare/v1.5.0...v1.5.1
 [1.5.0]: https://github.com/dl-nft-books/web-client/compare/v1.4.0...v1.5.0
