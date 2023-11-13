@@ -34,6 +34,15 @@ $media-breakpoints: (
   text-overflow: ellipsis;
 }
 
+/* stylelint-disable value-no-vendor-prefix */
+@mixin line-clamp ($lines) {
+  display: -webkit-box;
+  -webkit-line-clamp: $lines;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+/* stylelint-enable value-no-vendor-prefix */
+
 @mixin field-text {
   font-size: var(--field-text-font-size);
   line-height: var(--field-text-line-height);
