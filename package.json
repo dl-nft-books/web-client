@@ -1,6 +1,6 @@
 {
   "name": "web-client-nft-books",
-  "version": "1.5.3-rc.1",
+  "version": "1.5.3-rc.2",
   "gitHooks": {
     "pre-commit": "yarn lint",
     "pre-push": "yarn test && yarn rsc"

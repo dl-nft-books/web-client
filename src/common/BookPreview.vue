@@ -58,8 +58,8 @@ const price = computed(() =>
 
 <style lang="scss" scoped>
 .book-preview {
-  display: flex;
-  width: 100%;
+  display: grid;
+  grid-template-columns: 30% 1fr;
   gap: toRem(20);
   padding-bottom: toRem(24);
   margin-bottom: toRem(10);
@@ -99,7 +99,6 @@ const price = computed(() =>
 .book-preview__details {
   display: flex;
   flex-direction: column;
-  max-width: 60%;
 }
 
 .book-preview__title {
@@ -107,8 +106,9 @@ const price = computed(() =>
   font-size: toRem(18);
   line-height: 1.2;
   font-weight: 600;
+  word-break: break-all;
 
-  @include text-ellipsis;
+  @include line-clamp(3);
 }
 
 .book-preview__price {
