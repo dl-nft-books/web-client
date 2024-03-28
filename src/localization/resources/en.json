@@ -297,7 +297,8 @@
     "loading-error-msg":"Oops... Something went wrong",
     "default-payment": "Pay on current chain",
     "rarimo-payment": "Use Rarimo and pay with another token",
-    "rarimo-tip": "You can use cross-chain feature Rarimo to pay on any networks."
+    "rarimo-tip": "You can use cross-chain feature Rarimo to pay on any networks.",
+    "editor-tip": "Make sure to draw something on your book cover"
   },
   "generation-view": {
     "submitting-title": "We are generating your NFT.",
