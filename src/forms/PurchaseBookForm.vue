@@ -53,6 +53,10 @@
           ref="editorInstance"
           :image-url="book.banner.attributes.url"
         />
+        <message-field
+          scheme="info"
+          :title="$t('purchase-book-form.editor-tip')"
+        />
       </template>
     </steps-form>
   </div>
